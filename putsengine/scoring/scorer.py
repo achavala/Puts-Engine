@@ -109,11 +109,74 @@ class PutScorer:
         self,
         distribution: Optional[DistributionSignal]
     ) -> float:
-        """Score distribution quality (30% weight)."""
+        """
+        Score distribution quality (30% weight).
+        
+        INSTITUTIONAL-GRADE SCORING for -3% to -15% moves:
+
+        Price-Volume Signals (Core - 45% max):
+        - HIGH RVOL red day: 0.20 (strongest signal)
+        - Gap down no recovery: 0.15
+        - Multi-day weakness: 0.12
+        - Standard signals: 0.08 each
+        
+        Returns the distribution score from signals.
+        """
         if not distribution:
             return 0.0
 
-        return distribution.score
+        # If score was already calculated, use it
+        if distribution.score > 0:
+            return distribution.score
+        
+        # Otherwise, calculate from signals dict
+        if not distribution.signals:
+            return 0.0
+        
+        score = 0.0
+        signals = distribution.signals
+        
+        # === PRICE-VOLUME SIGNALS (45% max) ===
+        
+        # HIGH RVOL red day is the STRONGEST bearish signal
+        if signals.get("high_rvol_red_day", False):
+            score += 0.20
+        
+        # Gap down without recovery = trapped longs
+        if signals.get("gap_down_no_recovery", False):
+            score += 0.15
+        
+        # Multi-day weakness = sustained pressure
+        if signals.get("multi_day_weakness", False):
+            score += 0.12
+        
+        # Standard signals (0.08 each)
+        if distribution.flat_price_rising_volume or signals.get("flat_price_rising_volume", False):
+            score += 0.08
+        if distribution.failed_breakout or signals.get("failed_breakout", False):
+            score += 0.08
+        if distribution.lower_highs_flat_rsi or signals.get("lower_highs_flat_rsi", False):
+            score += 0.08
+        if distribution.vwap_loss or signals.get("vwap_loss", False):
+            score += 0.08
+        
+        # === DARK POOL (10%) ===
+        if distribution.repeated_sell_blocks or signals.get("repeated_sell_blocks", False):
+            score += 0.10
+        
+        # === INSIDER/CONGRESS BOOSTS ===
+        if signals.get("c_level_selling", False):
+            score += 0.10
+        if signals.get("insider_cluster", False):
+            score += 0.06
+        if signals.get("congress_selling", False):
+            score += 0.04
+        
+        # === POST-EARNINGS NEGATIVE ===
+        if signals.get("is_post_earnings_negative", False):
+            score += 0.10
+        
+        return min(score, 1.0)
 
     def _score_liquidity(
         self,
@@ -163,30 +226,82 @@ class PutScorer:
         Score catalyst proximity (10% weight).
 
         Catalysts that can accelerate downside:
-        - Earnings approaching
-        - FOMC/macro events
-        - Sector-specific events
-        - Insider selling clusters
-
-        Note: This is a simplified implementation.
-        Production would integrate earnings calendars and event APIs.
+        - Post-earnings with negative guidance (+0.3)
+        - Insider/Congress selling clusters (+0.2)
+        - Recent price weakness (+0.2)
+        - High RVOL on down move (+0.3)
         """
-        # Default to neutral - would need earnings calendar integration
-        return 0.5
+        score = 0.0
+
+        # Check distribution signals for catalyst info
+        if candidate.distribution and candidate.distribution.signals:
+            signals = candidate.distribution.signals
+            
+            # Post-earnings negative = strong catalyst
+            if signals.get("is_post_earnings_negative", False):
+                score += 0.35
+            
+            # C-level selling cluster = medium catalyst
+            if signals.get("c_level_selling", False):
+                score += 0.25
+            elif signals.get("insider_cluster", False):
+                score += 0.15
+            
+            # Congress selling = weak catalyst
+            if signals.get("congress_selling", False):
+                score += 0.10
+
+        # Check acceleration for timing catalysts
+        if candidate.acceleration:
+            # Failed reclaim = momentum catalyst
+            if candidate.acceleration.failed_reclaim:
+                score += 0.15
+            
+            # Below all key levels = trend catalyst
+            if (candidate.acceleration.price_below_vwap and 
+                candidate.acceleration.price_below_ema20 and
+                candidate.acceleration.price_below_prior_low):
+                score += 0.20
+
+        return min(score, 1.0)
 
     def _score_sentiment(self, candidate: PutCandidate) -> float:
         """
         Score sentiment divergence (5% weight).
 
-        Bearish when:
-        - Price up but sentiment down
-        - Analyst downgrades
-        - Short interest rising
-
-        Note: Simplified implementation.
+        Bearish sentiment signals:
+        - Rising put OI while price flat = smart money bearish
+        - Skew steepening = puts getting expensive (fear)
+        - Call selling = bullishness fading
+        - Gamma flipping short = dealers turning bearish
         """
-        # Default to neutral
-        return 0.5
+        score = 0.0
+
+        # Options sentiment from distribution
+        if candidate.distribution:
+            # Rising put OI = institutional bearishness
+            if candidate.distribution.rising_put_oi:
+                score += 0.30
+            
+            # Skew steepening = fear increasing
+            if candidate.distribution.skew_steepening:
+                score += 0.25
+            
+            # Call selling at bid = bulls exiting
+            if candidate.distribution.call_selling_at_bid:
+                score += 0.25
+
+        # Dealer sentiment from acceleration
+        if candidate.acceleration:
+            # Gamma flipping short = dealers turning bearish
+            if candidate.acceleration.gamma_flipping_short:
+                score += 0.20
+            
+            # Net delta negative = overall bearish positioning
+            if candidate.acceleration.net_delta_negative:
+                score += 0.15
+
+        return min(score, 1.0)
 
     def _score_technical(self, candidate: PutCandidate) -> float:
         """

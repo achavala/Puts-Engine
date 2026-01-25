@@ -28,8 +28,8 @@ class UnusualWhalesClient:
 
     BASE_URL = "https://api.unusualwhales.com"
     
-    # Rate limiting: ~2 requests per second to avoid 429 errors
-    MIN_REQUEST_INTERVAL = 0.5  # 500ms between requests
+    # Rate limiting: reduced for parallel scanning with external semaphore
+    MIN_REQUEST_INTERVAL = 0.15  # 150ms between requests (semaphore limits concurrency)
 
     def __init__(self, settings: Settings):
         self.settings = settings

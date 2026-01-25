@@ -35,8 +35,10 @@ class Settings(BaseSettings):
     unusual_whales_api_key: str = Field(..., description="Unusual Whales API key")
 
     # Engine Configuration
-    min_score_threshold: float = Field(default=0.68, ge=0.0, le=1.0)
-    max_daily_trades: int = Field(default=2, ge=1, le=10)
+    # Lowered from 0.68 to 0.55 for earlier opportunity detection
+    # 0.55-0.65 = MONITORING, 0.65+ = ACTIONABLE, 0.75+ = HIGH CONVICTION
+    min_score_threshold: float = Field(default=0.55, ge=0.0, le=1.0)
+    max_daily_trades: int = Field(default=3, ge=1, le=10)
     max_position_size: float = Field(default=0.05, ge=0.01, le=0.20)
 
     # DTE and Delta constraints

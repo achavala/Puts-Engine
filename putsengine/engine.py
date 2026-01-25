@@ -94,6 +94,11 @@ class PutsEngine:
         self.daily_report: Optional[DailyReport] = None
         self.candidates: List[PutCandidate] = []
         self.api_calls = {"alpaca": 0, "polygon": 0, "unusual_whales": 0}
+        
+        # Caching for performance
+        self._cached_regime: Optional[MarketRegimeData] = None
+        self._regime_cache_time: Optional[datetime] = None
+        self._regime_cache_ttl = 300  # 5 minutes cache
 
         logger.info("PutsEngine initialized")
 
@@ -587,72 +592,107 @@ class PutsEngine:
 
         return execution
 
+    async def get_cached_regime(self) -> MarketRegimeData:
+        """Get market regime with caching (5 min TTL)."""
+        now = datetime.now()
+        if (self._cached_regime is None or 
+            self._regime_cache_time is None or
+            (now - self._regime_cache_time).total_seconds() > self._regime_cache_ttl):
+            self._cached_regime = await self.market_regime.analyze()
+            self._regime_cache_time = now
+        return self._cached_regime
+
     async def run_single_symbol(
         self,
-        symbol: str
+        symbol: str,
+        fast_mode: bool = True
     ) -> PutCandidate:
         """
         Run complete analysis on a single symbol.
-
-        Useful for testing or manual analysis.
-
+        
         Args:
             symbol: Stock ticker to analyze
+            fast_mode: If True, uses caching and skips expensive calls for low-score candidates
 
         Returns:
             Fully analyzed PutCandidate
         """
-        logger.info(f"Single symbol analysis: {symbol}")
-
-        # Check market regime first
-        regime = await self.market_regime.analyze()
-        if not regime.is_tradeable:
-            logger.warning(f"Market regime blocks trading: {regime.block_reasons}")
-
         candidate = PutCandidate(
             symbol=symbol,
             timestamp=datetime.now()
         )
 
-        # Get price
-        quote = await self.alpaca.get_latest_quote(symbol)
-        if quote and "quote" in quote:
-            candidate.current_price = float(quote["quote"].get("ap", 0))
+        try:
+            # Use cached market regime (saves 1 API call per ticker)
+            regime = await self.get_cached_regime()
+            
+            # FAST MODE: Quick price check first
+            quote = await self.alpaca.get_latest_quote(symbol)
+            if quote and "quote" in quote:
+                candidate.current_price = float(quote["quote"].get("ap", 0))
+            
+            if candidate.current_price == 0:
+                candidate.composite_score = 0.0
+                return candidate
 
-        # Run all layers
-        candidate.distribution = await self.distribution.analyze(symbol)
-        candidate.distribution_score = candidate.distribution.score
+            # Distribution analysis (core signal)
+            candidate.distribution = await self.distribution.analyze(symbol)
+            candidate.distribution_score = candidate.distribution.score
 
-        candidate.liquidity = await self.liquidity.analyze(symbol)
-        candidate.liquidity_score = candidate.liquidity.score
+            # FAST MODE: Early exit if distribution score too low
+            if fast_mode and candidate.distribution_score < 0.25:
+                candidate.block_reasons.append(BlockReason.NO_DISTRIBUTION)
+                candidate.composite_score = candidate.distribution_score * 0.3
+                return candidate
 
-        candidate.acceleration = await self.acceleration.analyze(symbol)
+            # Liquidity check
+            candidate.liquidity = await self.liquidity.analyze(symbol)
+            candidate.liquidity_score = candidate.liquidity.score
 
-        is_blocked, reasons, gex = await self.dealer.analyze(symbol)
-        candidate.gex_data = gex
-        candidate.dealer_score = await self.dealer.get_dealer_score(symbol)
-        candidate.block_reasons = reasons
+            # FAST MODE: Early exit if liquidity too low
+            if fast_mode and candidate.liquidity_score < 0.2:
+                candidate.composite_score = (candidate.distribution_score * 0.3 + 
+                                            candidate.liquidity_score * 0.15)
+                return candidate
 
-        if candidate.acceleration.is_late_entry:
-            candidate.block_reasons.append(BlockReason.LATE_IV_SPIKE)
+            # Acceleration window (timing)
+            candidate.acceleration = await self.acceleration.analyze(symbol)
 
-        if candidate.distribution_score < 0.3:
-            candidate.block_reasons.append(BlockReason.NO_DISTRIBUTION)
+            if candidate.acceleration.is_late_entry:
+                candidate.block_reasons.append(BlockReason.LATE_IV_SPIKE)
+                if fast_mode:
+                    candidate.composite_score = 0.3
+                    return candidate
 
-        candidate.passed_all_gates = len(candidate.block_reasons) == 0
+            # Dealer positioning (most expensive - UW API)
+            is_blocked, reasons, gex = await self.dealer.analyze(symbol)
+            candidate.gex_data = gex
+            candidate.dealer_score = await self.dealer.get_dealer_score(symbol)
+            
+            if is_blocked:
+                candidate.block_reasons.extend(reasons)
 
-        # Score
-        if candidate.passed_all_gates:
+            if candidate.distribution_score < 0.3:
+                candidate.block_reasons.append(BlockReason.NO_DISTRIBUTION)
+
+            candidate.passed_all_gates = len(candidate.block_reasons) == 0
+
+            # Score the candidate
             candidate.composite_score = self.scorer.score_candidate(candidate)
 
-            # Select contract
-            contract = await self.strike_selector.select_contract(candidate)
-            if contract:
-                candidate.contract_symbol = contract.symbol
-                candidate.recommended_strike = contract.strike
-                candidate.recommended_expiration = contract.expiration
-                candidate.recommended_delta = contract.delta
-                candidate.entry_price = contract.mid_price
+            # Only select contract for high-scoring candidates (saves API calls)
+            if candidate.composite_score >= 0.60:
+                contract = await self.strike_selector.select_contract(candidate)
+                if contract:
+                    candidate.contract_symbol = contract.symbol
+                    candidate.recommended_strike = contract.strike
+                    candidate.recommended_expiration = contract.expiration
+                    candidate.recommended_delta = contract.delta
+                    candidate.entry_price = contract.mid_price
+
+        except Exception as e:
+            logger.debug(f"Error analyzing {symbol}: {e}")
+            candidate.composite_score = 0.0
 
         return candidate
 

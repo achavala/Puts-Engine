@@ -1,0 +1,85 @@
+{
+  "generated_at": "2026-01-25T13:41:18.607733",
+  "analysis_date": "2026-01-23",
+  "next_week_start": "2026-01-27",
+  "gamma_drain": [
+    {
+      "symbol": "INTC",
+      "score": 0.65,
+      "tier": "\ud83d\udcaa STRONG",
+      "close": 45.07,
+      "daily_change": -3.82,
+      "rvol": 2.68,
+      "rsi": 58.4,
+      "next_week_potential": "-4% to -8%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "high_rvol_red_day",
+        "gap_down_no_recovery",
+        "below_prior_low"
+      ]
+    },
+    {
+      "symbol": "COIN",
+      "score": 0.55,
+      "tier": "\ud83d\udcaa STRONG",
+      "close": 216.95,
+      "daily_change": -2.6,
+      "rvol": 1.63,
+      "rsi": 39.2,
+      "next_week_potential": "-4% to -8%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "high_rvol_red_day",
+        "multi_day_weakness",
+        "below_prior_low"
+      ]
+    }
+  ],
+  "distribution": [],
+  "liquidity": [
+    {
+      "symbol": "GS",
+      "score": 0.63,
+      "tier": "\ud83d\udcaa STRONG",
+      "close": 918.88,
+      "daily_change": -1.63,
+      "rvol": 1.8,
+      "rsi": 51.1,
+      "next_week_potential": "-3.5% to -7.5%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "high_rvol_red_day",
+        "gap_down_no_recovery",
+        "below_prior_low",
+        "lower_highs"
+      ]
+    },
+    {
+      "symbol": "DKNG",
+      "score": 0.48,
+      "tier": "\ud83d\udc40 MONITORING",
+      "close": 29.97,
+      "daily_change": -4.71,
+      "rvol": 1.59,
+      "rsi": 27.0,
+      "next_week_potential": "-2.5% to -5.5%",
+      "confidence": "LOW",
+      "signals": [
+        "high_rvol_red_day",
+        "below_prior_low",
+        "lower_highs"
+      ]
+    }
+  ],
+  "summary": {
+    "total_candidates": 4,
+    "gamma_drain_count": 2,
+    "distribution_count": 0,
+    "liquidity_count": 2,
+    "explosive_count": 0,
+    "very_strong_count": 0,
+    "strong_count": 3,
+    "monitoring_count": 1
+  }
+}

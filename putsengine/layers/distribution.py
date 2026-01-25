@@ -130,10 +130,16 @@ class DistributionLayer:
 
         # Store all signals in dict for easy access
         signal.signals = {
+            # Price-Volume Signals
             "flat_price_rising_volume": signal.flat_price_rising_volume,
             "failed_breakout": signal.failed_breakout,
             "lower_highs_flat_rsi": signal.lower_highs_flat_rsi,
             "vwap_loss": signal.vwap_loss,
+            # NEW: Enhanced price-volume signals
+            "high_rvol_red_day": pv_signals.get("high_rvol_red_day", False),
+            "gap_down_no_recovery": pv_signals.get("gap_down_no_recovery", False),
+            "multi_day_weakness": pv_signals.get("multi_day_weakness", False),
+            # Options Flow Signals
             "call_selling_at_bid": signal.call_selling_at_bid,
             "put_buying_at_ask": signal.put_buying_at_ask,
             "rising_put_oi": signal.rising_put_oi,
@@ -143,7 +149,7 @@ class DistributionLayer:
             "c_level_selling": insider_result.get("c_level_selling", False),
             "insider_cluster": insider_result.get("insider_cluster", False),
             "congress_selling": congress_result.get("congress_selling", False),
-            # New per Final Architect Report
+            # Earnings signals
             "is_pre_earnings": is_pre_earnings,  # BLOCK signal
             "is_post_earnings_negative": is_post_earnings and guidance_sentiment == "negative",
         }
@@ -167,12 +173,17 @@ class DistributionLayer:
         - Failed breakout = rejection at resistance
         - Lower highs + flat RSI = distribution pattern
         - VWAP loss = institutional selling
+        - HIGH RVOL on red day = institutional selling
+        - Gap down without recovery = trapped longs
         """
         signals = {
             "flat_price_rising_volume": False,
             "failed_breakout": False,
             "lower_highs_flat_rsi": False,
-            "vwap_loss": False
+            "vwap_loss": False,
+            "high_rvol_red_day": False,
+            "gap_down_no_recovery": False,
+            "multi_day_weakness": False
         }
 
         try:
@@ -209,10 +220,116 @@ class DistributionLayer:
             if minute_bars:
                 signals["vwap_loss"] = self._detect_vwap_loss(minute_bars)
 
+            # 5. HIGH RVOL on red day (CRITICAL - institutional selling)
+            # Per Architect: "RVOL > 2.0 on red day" is valid distribution trap
+            signals["high_rvol_red_day"] = self._detect_high_rvol_red_day(daily_bars)
+
+            # 6. Gap down without recovery (trapped longs)
+            signals["gap_down_no_recovery"] = self._detect_gap_down_no_recovery(daily_bars)
+
+            # 7. Multi-day price weakness (3+ consecutive red days or lower closes)
+            signals["multi_day_weakness"] = self._detect_multi_day_weakness(daily_bars)
+
         except Exception as e:
             logger.error(f"Error in price-volume analysis for {symbol}: {e}")
 
         return signals
+
+    def _detect_high_rvol_red_day(self, bars: List[PriceBar]) -> bool:
+        """
+        Detect high relative volume on a down day.
+        
+        Per Final Architect Report:
+        "RVOL > 2.0 on red day" = valid distribution pattern.
+        
+        This indicates institutional selling - they're moving large
+        blocks with urgency, creating volume spike on down move.
+        """
+        if len(bars) < 20:
+            return False
+
+        # Calculate average volume (exclude last bar)
+        avg_volume = np.mean([b.volume for b in bars[-20:-1]])
+        
+        if avg_volume == 0:
+            return False
+
+        # Get today/most recent bar
+        recent_bar = bars[-1]
+        rvol = recent_bar.volume / avg_volume
+
+        # Check if red day (close < open)
+        is_red = recent_bar.close < recent_bar.open
+
+        # RVOL > 2.0 on red day = distribution signal
+        if rvol >= 2.0 and is_red:
+            logger.info(f"HIGH RVOL RED DAY: RVOL={rvol:.1f}x, Change={((recent_bar.close/recent_bar.open)-1)*100:.1f}%")
+            return True
+
+        # Also check: RVOL > 1.5 with significant drop (>2%)
+        price_change = (recent_bar.close - recent_bar.open) / recent_bar.open
+        if rvol >= 1.5 and price_change < -0.02:
+            logger.info(f"ELEVATED RVOL with drop: RVOL={rvol:.1f}x, Drop={price_change*100:.1f}%")
+            return True
+
+        return False
+
+    def _detect_gap_down_no_recovery(self, bars: List[PriceBar]) -> bool:
+        """
+        Detect gap down that fails to recover.
+        
+        Per Architect: "Gap up → first 30-min candle closes red" is bearish.
+        Inverse also applies: Gap down that doesn't recover = trapped longs.
+        
+        This pattern often precedes -5% to -15% moves as trapped
+        longs are forced to sell.
+        """
+        if len(bars) < 2:
+            return False
+
+        # Compare today's open vs yesterday's close
+        yesterday = bars[-2]
+        today = bars[-1]
+
+        gap_pct = (today.open - yesterday.close) / yesterday.close
+
+        # Gap down of at least 1%
+        if gap_pct < -0.01:
+            # Check if price recovered: today's close should be above today's open
+            # If close < open, gap wasn't recovered
+            if today.close <= today.open:
+                # Extra confirmation: close below yesterday's close
+                if today.close < yesterday.close:
+                    logger.info(f"GAP DOWN NO RECOVERY: Gap={gap_pct*100:.1f}%, Close < Open")
+                    return True
+
+        return False
+
+    def _detect_multi_day_weakness(self, bars: List[PriceBar]) -> bool:
+        """
+        Detect multi-day price weakness pattern.
+        
+        3+ consecutive lower closes or red days indicates
+        sustained selling pressure - often precedes larger move.
+        """
+        if len(bars) < 5:
+            return False
+
+        recent = bars[-5:]
+        
+        # Count consecutive lower closes
+        lower_closes = 0
+        for i in range(1, len(recent)):
+            if recent[i].close < recent[i-1].close:
+                lower_closes += 1
+            else:
+                break  # Reset count if we get an up close
+        
+        # Count red days (close < open)
+        red_days = sum(1 for b in recent[-3:] if b.close < b.open)
+        
+        # 3+ consecutive lower closes OR 3 red days in last 3 = weakness
+        return lower_closes >= 3 or red_days >= 3
 
     def _detect_flat_price_rising_volume(self, bars: List[PriceBar]) -> bool:
         """
@@ -659,32 +776,70 @@ class DistributionLayer:
     def _calculate_distribution_score(self, signal: DistributionSignal) -> float:
         """
         Calculate composite distribution score.
+        
+        INSTITUTIONAL-GRADE SCORING for -3% to -15% moves:
 
-        Scoring:
-        - Price-volume signals: 0.25 each (max 1.0)
-        - Options signals: 0.20 each (max 0.80)
-        - Dark pool: 0.20
-
-        We need >=2 price-volume signals for a valid setup.
+        Price-Volume Signals (Core - 45% max):
+        - Standard signals: 0.10 each
+        - HIGH RVOL red day: 0.20 (strongest signal)
+        - Gap down no recovery: 0.15
+        - Multi-day weakness: 0.15
+        
+        Options Flow Signals (Confirmation - 35% max):
+        - Each signal: 0.10 each
+        
+        Dark Pool (Institutional - 10%):
+        - Repeated sell blocks: 0.10
+        
+        Minimum requirement: 1 strong signal OR 2+ weak signals
         """
         score = 0.0
 
-        # Price-volume signals (25% each, need at least 2)
-        pv_signals = [
+        # === PRICE-VOLUME SIGNALS (45% max) ===
+        
+        # Standard signals (0.10 each)
+        standard_pv = [
             signal.flat_price_rising_volume,
             signal.failed_breakout,
             signal.lower_highs_flat_rsi,
             signal.vwap_loss
         ]
-        pv_count = sum(1 for s in pv_signals if s)
+        standard_count = sum(1 for s in standard_pv if s)
+        
+        # Enhanced signals from signals dict
+        high_rvol = signal.signals.get("high_rvol_red_day", False)
+        gap_down = signal.signals.get("gap_down_no_recovery", False)
+        multi_day = signal.signals.get("multi_day_weakness", False)
+        
+        # HIGH RVOL red day is the STRONGEST bearish signal
+        if high_rvol:
+            score += 0.20
+            logger.info(f"{signal.symbol}: HIGH RVOL RED DAY - strong bearish signal (+0.20)")
+        
+        # Gap down without recovery = trapped longs
+        if gap_down:
+            score += 0.15
+        
+        # Multi-day weakness = sustained pressure
+        if multi_day:
+            score += 0.15
+        
+        # Standard signals add incrementally
+        score += min(standard_count * 0.10, 0.30)
+        
+        # Cap PV at 45%
+        pv_score = min(score, 0.45)
+        score = pv_score
 
-        if pv_count >= 2:
-            score += min(pv_count * 0.15, 0.40)  # Cap at 40%
-        else:
-            # Insufficient price-volume signals
-            return 0.0  # Hard requirement
-
-        # Options flow signals (20% each)
+        # === MINIMUM REQUIREMENT CHECK ===
+        # Need at least: 1 strong signal OR 2 weak signals
+        strong_signals = high_rvol or gap_down
+        total_weak = standard_count + (1 if multi_day else 0)
+        
+        if not strong_signals and total_weak < 2:
+            return 0.0  # Insufficient evidence
+        
+        # === OPTIONS FLOW SIGNALS (35% max) ===
         options_signals = [
             signal.call_selling_at_bid,
             signal.put_buying_at_ask,
@@ -692,11 +847,20 @@ class DistributionLayer:
             signal.skew_steepening
         ]
         opt_count = sum(1 for s in options_signals if s)
-        score += opt_count * 0.15  # 15% each
-
-        # Dark pool signal
+        
+        # Aggressive put buying is strongest options signal
+        if signal.put_buying_at_ask:
+            score += 0.12
+        if signal.call_selling_at_bid:
+            score += 0.10
+        if signal.rising_put_oi:
+            score += 0.08
+        if signal.skew_steepening:
+            score += 0.08
+        
+        # === DARK POOL (10%) ===
         if signal.repeated_sell_blocks:
-            score += 0.15
+            score += 0.10
 
         return min(score, 1.0)
 
