@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python run.py:*)",
+      "WebSearch",
+      "WebFetch(domain:api.unusualwhales.com)",
+      "WebFetch(domain:pypi.org)",
+      "WebFetch(domain:gist.github.com)",
+      "WebFetch(domain:lobehub.com)",
+      "WebFetch(domain:unusualwhales.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(streamlit run:*)"
+    ]
+  }
+}
