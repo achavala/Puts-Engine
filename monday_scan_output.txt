@@ -1,0 +1,620 @@
+2026-01-26 14:40:08.360 | INFO     | putsengine.scheduler:run_scan:255 - ============================================================
+2026-01-26 14:40:08.360 | INFO     | putsengine.scheduler:run_scan:256 - SCHEDULED SCAN: MONDAY_SCAN
+2026-01-26 14:40:08.361 | INFO     | putsengine.scheduler:run_scan:257 - Time: 2026-01-26 14:40:08 ET
+2026-01-26 14:40:08.361 | INFO     | putsengine.scheduler:run_scan:258 - ============================================================
+2026-01-26 14:40:08.361 | INFO     | putsengine.scheduler:run_scan:265 - Scanning 163 tickers...
+2026-01-26 14:40:08.361 | INFO     | putsengine.layers.market_regime:analyze:61 - Analyzing market regime...
+2026-01-26 14:40:08.857 | DEBUG    | putsengine.layers.market_regime:_analyze_index:175 - SPY: Price=693.22, VWAP=693.24, Below VWAP
+2026-01-26 14:40:08.981 | DEBUG    | putsengine.layers.market_regime:_analyze_index:175 - QQQ: Price=627.28, VWAP=627.33, Below VWAP
+2026-01-26 14:40:09.714 | INFO     | putsengine.layers.market_regime:analyze:132 - Market regime: bearish_neutral, Tradeable: True, SPY<VWAP: True, QQQ<VWAP: True, GEX: 0, VIX: 25.52 (-0.64%)
+2026-01-26 14:40:09.714 | INFO     | putsengine.scheduler:run_scan:274 - Market Regime: bearish_neutral
+2026-01-26 14:40:09.714 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for LUNR...
+2026-01-26 14:40:10.023 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.3%, Close < Open
+2026-01-26 14:40:11.309 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - LUNR: Distribution score 0.15 from signals: ['gap_down_no_recovery']
+2026-01-26 14:40:11.309 | INFO     | putsengine.layers.distribution:analyze:168 - LUNR distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:40:11.309 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for XLK...
+2026-01-26 14:40:13.066 | INFO     | putsengine.layers.distribution:analyze:168 - XLK distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:40:13.066 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for GEV...
+2026-01-26 14:40:14.622 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - GEV: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:40:14.623 | INFO     | putsengine.layers.distribution:analyze:168 - GEV distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:40:14.623 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for SWKS...
+2026-01-26 14:40:16.968 | INFO     | putsengine.layers.distribution:analyze:168 - SWKS distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:40:16.968 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for OKLO...
+2026-01-26 14:40:17.524 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.7%, Close < Open
+2026-01-26 14:40:18.701 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - OKLO: Distribution score 0.30 from signals: ['gap_down_no_recovery', 'multi_day_weakness']
+2026-01-26 14:40:18.702 | INFO     | putsengine.layers.distribution:analyze:168 - OKLO distribution analysis: Score=0.30 (base=0.30, boost=+0.00), Active signals=2/18
+2026-01-26 14:40:18.702 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for CLOV...
+2026-01-26 14:40:20.380 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - CLOV: Distribution score 0.15 from signals: ['repeated_sell_blocks']
+2026-01-26 14:40:20.381 | INFO     | putsengine.layers.distribution:analyze:168 - CLOV distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:40:20.381 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for IWM...
+2026-01-26 14:40:22.154 | INFO     | putsengine.layers.distribution:analyze:123 - IWM: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:40:22.155 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - IWM: Distribution score 0.25 from signals: ['multi_day_weakness', 'is_post_earnings_negative']
+2026-01-26 14:40:22.155 | INFO     | putsengine.layers.distribution:analyze:168 - IWM distribution analysis: Score=0.35 (base=0.25, boost=+0.10), Active signals=2/18
+2026-01-26 14:40:22.155 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for HD...
+2026-01-26 14:40:23.785 | INFO     | putsengine.layers.distribution:analyze:168 - HD distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:40:23.785 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for NVDA...
+2026-01-26 14:40:25.555 | INFO     | putsengine.layers.distribution:analyze:123 - NVDA: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:40:25.555 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - NVDA: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:40:25.555 | INFO     | putsengine.layers.distribution:analyze:168 - NVDA distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:40:25.555 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for NFLX...
+2026-01-26 14:40:27.191 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:999 - NFLX: Pre-earnings penalty applied (no distribution signals)
+2026-01-26 14:40:27.191 | INFO     | putsengine.layers.distribution:analyze:168 - NFLX distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=1/18
+2026-01-26 14:40:27.191 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for SMR...
+2026-01-26 14:40:27.539 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.3%, Close < Open
+2026-01-26 14:40:28.965 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - SMR: Distribution score 0.15 from signals: ['gap_down_no_recovery']
+2026-01-26 14:40:28.966 | INFO     | putsengine.layers.distribution:analyze:168 - SMR distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:40:28.966 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for BBAI...
+2026-01-26 14:40:30.613 | INFO     | putsengine.layers.distribution:analyze:123 - BBAI: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:40:30.613 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - BBAI: Distribution score 0.25 from signals: ['repeated_sell_blocks', 'is_post_earnings_negative']
+2026-01-26 14:40:30.613 | INFO     | putsengine.layers.distribution:analyze:168 - BBAI distribution analysis: Score=0.35 (base=0.25, boost=+0.10), Active signals=2/18
+2026-01-26 14:40:30.613 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for HIMS...
+2026-01-26 14:40:32.389 | INFO     | putsengine.layers.distribution:analyze:168 - HIMS distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:40:32.390 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ASTS...
+2026-01-26 14:40:33.992 | INFO     | putsengine.layers.distribution:analyze:168 - ASTS distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:40:33.992 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for LEU...
+2026-01-26 14:40:35.513 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - LEU: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:40:35.514 | INFO     | putsengine.layers.distribution:analyze:168 - LEU distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:40:35.514 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for AMAT...
+2026-01-26 14:40:37.141 | INFO     | putsengine.layers.distribution:analyze:168 - AMAT distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:40:37.142 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for BB...
+2026-01-26 14:40:38.477 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:40:40.682 | INFO     | putsengine.layers.distribution:analyze:168 - BB distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:40:40.682 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for INTC...
+2026-01-26 14:40:41.169 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.8%, Close < Open
+2026-01-26 14:40:41.234 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:40:43.291 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:40:45.355 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:40:47.419 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:40:49.488 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:40:51.556 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:40:53.651 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:40:56.042 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:999 - INTC: Pre-earnings penalty applied (no distribution signals)
+2026-01-26 14:40:56.044 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - INTC: Distribution score 0.10 from signals: ['gap_down_no_recovery', 'is_pre_earnings']
+2026-01-26 14:40:56.044 | INFO     | putsengine.layers.distribution:analyze:168 - INTC distribution analysis: Score=0.10 (base=0.10, boost=+0.00), Active signals=2/18
+2026-01-26 14:40:56.044 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for V...
+2026-01-26 14:40:56.403 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:40:58.466 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:01.476 | INFO     | putsengine.layers.distribution:analyze:168 - V distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:41:01.476 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for QUBT...
+2026-01-26 14:41:03.217 | INFO     | putsengine.layers.distribution:analyze:123 - QUBT: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:41:03.219 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - QUBT: Distribution score 0.25 from signals: ['repeated_sell_blocks', 'is_post_earnings_negative']
+2026-01-26 14:41:03.219 | INFO     | putsengine.layers.distribution:analyze:168 - QUBT distribution analysis: Score=0.35 (base=0.25, boost=+0.10), Active signals=2/18
+2026-01-26 14:41:03.219 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for META...
+2026-01-26 14:41:05.232 | INFO     | putsengine.layers.distribution:analyze:123 - META: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:41:05.233 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - META: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:41:05.233 | INFO     | putsengine.layers.distribution:analyze:168 - META distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:41:05.233 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for DNN...
+2026-01-26 14:41:06.993 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - DNN: Distribution score 0.15 from signals: ['repeated_sell_blocks']
+2026-01-26 14:41:06.993 | INFO     | putsengine.layers.distribution:analyze:168 - DNN distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:41:06.993 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ILMN...
+2026-01-26 14:41:08.812 | INFO     | putsengine.layers.distribution:analyze:168 - ILMN distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:41:08.812 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for DKNG...
+2026-01-26 14:41:10.450 | INFO     | putsengine.layers.distribution:analyze:123 - DKNG: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:41:10.450 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - DKNG: Distribution score 0.20 from signals: ['vwap_loss', 'is_post_earnings_negative']
+2026-01-26 14:41:10.451 | INFO     | putsengine.layers.distribution:analyze:168 - DKNG distribution analysis: Score=0.30 (base=0.20, boost=+0.10), Active signals=2/18
+2026-01-26 14:41:10.451 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for SOUN...
+2026-01-26 14:41:12.162 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - SOUN: Distribution score 0.15 from signals: ['repeated_sell_blocks']
+2026-01-26 14:41:12.163 | INFO     | putsengine.layers.distribution:analyze:168 - SOUN distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:41:12.163 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for LILM...
+2026-01-26 14:41:13.592 | INFO     | putsengine.layers.distribution:analyze:168 - LILM distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:41:13.592 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for FCEL...
+2026-01-26 14:41:13.883 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.9%, Close < Open
+2026-01-26 14:41:15.284 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - FCEL: Distribution score 0.15 from signals: ['gap_down_no_recovery']
+2026-01-26 14:41:15.285 | INFO     | putsengine.layers.distribution:analyze:168 - FCEL distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:41:15.285 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for UPST...
+2026-01-26 14:41:16.949 | INFO     | putsengine.layers.distribution:analyze:123 - UPST: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:41:16.949 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - UPST: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:41:16.949 | INFO     | putsengine.layers.distribution:analyze:168 - UPST distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:41:16.949 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for CIFR...
+2026-01-26 14:41:18.551 | INFO     | putsengine.layers.distribution:analyze:168 - CIFR distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:41:18.551 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for CRSP...
+2026-01-26 14:41:20.124 | INFO     | putsengine.layers.distribution:analyze:123 - CRSP: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:41:20.124 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - CRSP: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:41:20.124 | INFO     | putsengine.layers.distribution:analyze:168 - CRSP distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:41:20.124 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for TSM...
+2026-01-26 14:41:21.643 | INFO     | putsengine.layers.distribution:analyze:168 - TSM distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:41:21.643 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for BILL...
+2026-01-26 14:41:23.210 | INFO     | putsengine.layers.distribution:analyze:168 - BILL distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:41:23.211 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for NVAX...
+2026-01-26 14:41:25.120 | INFO     | putsengine.layers.distribution:analyze:168 - NVAX distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:41:25.121 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for CEG...
+2026-01-26 14:41:26.901 | INFO     | putsengine.layers.distribution:analyze:123 - CEG: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:41:26.902 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - CEG: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:41:26.902 | INFO     | putsengine.layers.distribution:analyze:168 - CEG distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:41:26.903 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for JOBY...
+2026-01-26 14:41:28.485 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - JOBY: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:41:28.486 | INFO     | putsengine.layers.distribution:analyze:168 - JOBY distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:41:28.486 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for AVGO...
+2026-01-26 14:41:29.385 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:31.457 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:33.517 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:35.600 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:37.790 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - AVGO: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:41:37.791 | INFO     | putsengine.layers.distribution:analyze:168 - AVGO distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:41:37.791 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for BA...
+2026-01-26 14:41:38.264 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:40.327 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:42.413 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:44.514 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:46.615 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:48.706 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:50.799 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:53.000 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - BA: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:41:53.000 | INFO     | putsengine.layers.distribution:analyze:168 - BA distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:41:53.001 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for NU...
+2026-01-26 14:41:53.469 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:55.535 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:57.627 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:41:59.717 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:02.432 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - NU: Distribution score 0.15 from signals: ['repeated_sell_blocks']
+2026-01-26 14:42:02.435 | INFO     | putsengine.layers.distribution:analyze:168 - NU distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:42:02.435 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for MS...
+2026-01-26 14:42:04.132 | INFO     | putsengine.layers.distribution:analyze:123 - MS: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:42:04.133 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - MS: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:42:04.133 | INFO     | putsengine.layers.distribution:analyze:168 - MS distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:42:04.133 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for NTLA...
+2026-01-26 14:42:04.489 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.7%, Close < Open
+2026-01-26 14:42:05.724 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - NTLA: Distribution score 0.15 from signals: ['gap_down_no_recovery']
+2026-01-26 14:42:05.725 | INFO     | putsengine.layers.distribution:analyze:168 - NTLA distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:42:05.725 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for LRCX...
+2026-01-26 14:42:07.267 | INFO     | putsengine.layers.distribution:analyze:168 - LRCX distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:42:07.267 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for SNOW...
+2026-01-26 14:42:08.896 | INFO     | putsengine.layers.distribution:analyze:168 - SNOW distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:42:08.897 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for PATH...
+2026-01-26 14:42:10.430 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - PATH: Distribution score 0.15 from signals: ['repeated_sell_blocks']
+2026-01-26 14:42:10.431 | INFO     | putsengine.layers.distribution:analyze:168 - PATH distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:42:10.431 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for GS...
+2026-01-26 14:42:12.090 | INFO     | putsengine.layers.distribution:analyze:168 - GS distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:42:12.090 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for PLTR...
+2026-01-26 14:42:13.608 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:999 - PLTR: Pre-earnings penalty applied (no distribution signals)
+2026-01-26 14:42:13.609 | INFO     | putsengine.layers.distribution:analyze:168 - PLTR distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=1/18
+2026-01-26 14:42:13.609 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for LMT...
+2026-01-26 14:42:15.396 | INFO     | putsengine.layers.distribution:analyze:123 - LMT: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:42:15.397 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - LMT: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:42:15.397 | INFO     | putsengine.layers.distribution:analyze:168 - LMT distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:42:15.398 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for RBLX...
+2026-01-26 14:42:17.155 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - RBLX: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:42:17.156 | INFO     | putsengine.layers.distribution:analyze:168 - RBLX distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:42:17.157 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for GOOG...
+2026-01-26 14:42:19.097 | INFO     | putsengine.layers.distribution:analyze:168 - GOOG distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:42:19.097 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for VST...
+2026-01-26 14:42:20.813 | INFO     | putsengine.layers.distribution:analyze:168 - VST distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:42:20.813 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for TDOC...
+2026-01-26 14:42:22.468 | INFO     | putsengine.layers.distribution:analyze:168 - TDOC distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:42:22.469 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for APP...
+2026-01-26 14:42:24.099 | INFO     | putsengine.layers.distribution:analyze:168 - APP distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:42:24.099 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for KOSS...
+2026-01-26 14:42:25.708 | INFO     | putsengine.layers.distribution:analyze:168 - KOSS distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:42:25.708 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for DIA...
+2026-01-26 14:42:27.276 | INFO     | putsengine.layers.distribution:analyze:168 - DIA distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:42:27.276 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for NNE...
+2026-01-26 14:42:27.664 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-2.4%, Close < Open
+2026-01-26 14:42:29.088 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - NNE: Distribution score 0.15 from signals: ['gap_down_no_recovery']
+2026-01-26 14:42:29.089 | INFO     | putsengine.layers.distribution:analyze:168 - NNE distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:42:29.089 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for OSCR...
+2026-01-26 14:42:30.331 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:32.404 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:34.569 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - OSCR: Distribution score 0.15 from signals: ['repeated_sell_blocks']
+2026-01-26 14:42:34.570 | INFO     | putsengine.layers.distribution:analyze:168 - OSCR distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:42:34.570 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for RKLB...
+2026-01-26 14:42:34.910 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-2.4%, Close < Open
+2026-01-26 14:42:34.969 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:37.030 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:39.089 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:41.161 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:43.230 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:45.330 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:47.394 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:49.638 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - RKLB: Distribution score 0.15 from signals: ['gap_down_no_recovery']
+2026-01-26 14:42:49.638 | INFO     | putsengine.layers.distribution:analyze:168 - RKLB distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:42:49.639 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for BAC...
+2026-01-26 14:42:50.066 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:52.130 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:54.186 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:56.268 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:42:58.431 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:01.071 | INFO     | putsengine.layers.distribution:analyze:123 - BAC: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:43:01.072 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - BAC: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:43:01.072 | INFO     | putsengine.layers.distribution:analyze:168 - BAC distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:43:01.072 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for RMBS...
+2026-01-26 14:43:02.841 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - RMBS: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:43:02.841 | INFO     | putsengine.layers.distribution:analyze:168 - RMBS distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:43:02.841 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for GOOGL...
+2026-01-26 14:43:04.424 | INFO     | putsengine.layers.distribution:analyze:168 - GOOGL distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:43:04.425 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for MRVL...
+2026-01-26 14:43:06.837 | INFO     | putsengine.layers.distribution:analyze:123 - MRVL: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:43:06.838 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - MRVL: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:43:06.838 | INFO     | putsengine.layers.distribution:analyze:168 - MRVL distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:43:06.838 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for BEAM...
+2026-01-26 14:43:08.420 | INFO     | putsengine.layers.distribution:analyze:168 - BEAM distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:43:08.420 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for MSFT...
+2026-01-26 14:43:10.101 | INFO     | putsengine.layers.distribution:analyze:123 - MSFT: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:43:10.102 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - MSFT: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:43:10.102 | INFO     | putsengine.layers.distribution:analyze:168 - MSFT distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:43:10.102 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for CLSK...
+2026-01-26 14:43:10.545 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.5%, Close < Open
+2026-01-26 14:43:12.020 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - CLSK: Distribution score 0.40 from signals: ['vwap_loss', 'gap_down_no_recovery', 'repeated_sell_blocks']
+2026-01-26 14:43:12.021 | INFO     | putsengine.layers.distribution:analyze:168 - CLSK distribution analysis: Score=0.40 (base=0.40, boost=+0.00), Active signals=3/18
+2026-01-26 14:43:12.021 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ACHR...
+2026-01-26 14:43:13.737 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - ACHR: Distribution score 0.15 from signals: ['repeated_sell_blocks']
+2026-01-26 14:43:13.737 | INFO     | putsengine.layers.distribution:analyze:168 - ACHR distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:43:13.737 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for NBIS...
+2026-01-26 14:43:15.451 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - NBIS: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:43:15.451 | INFO     | putsengine.layers.distribution:analyze:168 - NBIS distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:43:15.451 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for RGTI...
+2026-01-26 14:43:17.385 | INFO     | putsengine.layers.distribution:analyze:168 - RGTI distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:43:17.386 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for WULF...
+2026-01-26 14:43:19.131 | INFO     | putsengine.layers.distribution:analyze:168 - WULF distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:43:19.132 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for GME...
+2026-01-26 14:43:20.673 | INFO     | putsengine.layers.distribution:analyze:168 - GME distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:43:20.673 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ADBE...
+2026-01-26 14:43:22.258 | INFO     | putsengine.layers.distribution:analyze:168 - ADBE distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:43:22.272 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for SQQQ...
+2026-01-26 14:43:23.864 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - SQQQ: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:43:23.864 | INFO     | putsengine.layers.distribution:analyze:168 - SQQQ distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:43:23.864 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for HOOD...
+2026-01-26 14:43:25.650 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - HOOD: Distribution score 0.10 from signals: ['vwap_loss']
+2026-01-26 14:43:25.650 | INFO     | putsengine.layers.distribution:analyze:168 - HOOD distribution analysis: Score=0.10 (base=0.10, boost=+0.00), Active signals=1/18
+2026-01-26 14:43:25.650 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for SMCI...
+2026-01-26 14:43:27.407 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - SMCI: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:43:27.407 | INFO     | putsengine.layers.distribution:analyze:168 - SMCI distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:43:27.408 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for IREN...
+2026-01-26 14:43:29.114 | INFO     | putsengine.layers.distribution:analyze:168 - IREN distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:43:29.114 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for HIPO...
+2026-01-26 14:43:29.491 | DEBUG    | putsengine.clients.unusual_whales_client:get_flow_recent:158 - Error parsing flow: float() argument must be a string or a number, not 'NoneType'
+2026-01-26 14:43:29.634 | DEBUG    | putsengine.clients.unusual_whales_client:get_flow_recent:158 - Error parsing flow: float() argument must be a string or a number, not 'NoneType'
+2026-01-26 14:43:30.439 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:32.617 | INFO     | putsengine.layers.distribution:analyze:168 - HIPO distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:43:32.618 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for FSLR...
+2026-01-26 14:43:33.130 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:35.188 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:37.253 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:39.324 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:41.428 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:43.520 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:45.622 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:47.851 | INFO     | putsengine.layers.distribution:analyze:123 - FSLR: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:43:47.851 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - FSLR: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:43:47.851 | INFO     | putsengine.layers.distribution:analyze:168 - FSLR distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:43:47.852 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for TQQQ...
+2026-01-26 14:43:48.461 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:50.533 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:52.601 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:54.662 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:56.726 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:43:58.789 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:01.070 | INFO     | putsengine.layers.distribution:analyze:168 - TQQQ distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:44:01.070 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for UUUU...
+2026-01-26 14:44:02.702 | INFO     | putsengine.layers.distribution:analyze:168 - UUUU distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:44:02.703 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for QBTS...
+2026-01-26 14:44:04.293 | INFO     | putsengine.layers.distribution:analyze:168 - QBTS distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:44:04.293 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for CCJ...
+2026-01-26 14:44:05.958 | INFO     | putsengine.layers.distribution:analyze:168 - CCJ distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:44:05.959 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for NOC...
+2026-01-26 14:44:07.441 | INFO     | putsengine.layers.distribution:analyze:168 - NOC distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:44:07.442 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for NRG...
+2026-01-26 14:44:09.105 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - NRG: Distribution score 0.25 from signals: ['vwap_loss', 'multi_day_weakness']
+2026-01-26 14:44:09.106 | INFO     | putsengine.layers.distribution:analyze:168 - NRG distribution analysis: Score=0.25 (base=0.25, boost=+0.00), Active signals=2/18
+2026-01-26 14:44:09.106 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for COIN...
+2026-01-26 14:44:10.908 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - COIN: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:44:10.908 | INFO     | putsengine.layers.distribution:analyze:168 - COIN distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:44:10.908 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for AI...
+2026-01-26 14:44:12.600 | INFO     | putsengine.layers.distribution:analyze:123 - AI: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:44:12.600 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - AI: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:44:12.600 | INFO     | putsengine.layers.distribution:analyze:168 - AI distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:44:12.601 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for MRNA...
+2026-01-26 14:44:14.413 | INFO     | putsengine.layers.distribution:analyze:168 - MRNA distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:44:14.414 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for AAPL...
+2026-01-26 14:44:16.099 | INFO     | putsengine.layers.distribution:analyze:123 - AAPL: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:44:16.100 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - AAPL: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:44:16.100 | INFO     | putsengine.layers.distribution:analyze:168 - AAPL distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:44:16.100 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for AFRM...
+2026-01-26 14:44:17.830 | INFO     | putsengine.layers.distribution:analyze:123 - AFRM: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:44:17.831 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - AFRM: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:44:17.831 | INFO     | putsengine.layers.distribution:analyze:168 - AFRM distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:44:17.832 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for AMZN...
+2026-01-26 14:44:19.504 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:995 - AMZN: Pre-earnings with weak distribution - neutral
+2026-01-26 14:44:19.504 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - AMZN: Distribution score 0.10 from signals: ['vwap_loss', 'is_pre_earnings']
+2026-01-26 14:44:19.504 | INFO     | putsengine.layers.distribution:analyze:168 - AMZN distribution analysis: Score=0.10 (base=0.10, boost=+0.00), Active signals=2/18
+2026-01-26 14:44:19.504 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for BLDP...
+2026-01-26 14:44:19.838 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.1%, Close < Open
+2026-01-26 14:44:21.003 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - BLDP: Distribution score 0.15 from signals: ['gap_down_no_recovery']
+2026-01-26 14:44:21.003 | INFO     | putsengine.layers.distribution:analyze:168 - BLDP distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:44:21.003 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for AMD...
+2026-01-26 14:44:21.373 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.1%, Close < Open
+2026-01-26 14:44:22.569 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - AMD: Distribution score 0.15 from signals: ['gap_down_no_recovery']
+2026-01-26 14:44:22.569 | INFO     | putsengine.layers.distribution:analyze:168 - AMD distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:44:22.570 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for MCD...
+2026-01-26 14:44:24.142 | INFO     | putsengine.layers.distribution:analyze:168 - MCD distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:44:24.143 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for LOW...
+2026-01-26 14:44:25.694 | INFO     | putsengine.layers.distribution:analyze:168 - LOW distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:44:25.695 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ON...
+2026-01-26 14:44:27.228 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - ON: Distribution score 0.40 from signals: ['vwap_loss', 'multi_day_weakness', 'repeated_sell_blocks']
+2026-01-26 14:44:27.228 | INFO     | putsengine.layers.distribution:analyze:168 - ON distribution analysis: Score=0.40 (base=0.40, boost=+0.00), Active signals=3/18
+2026-01-26 14:44:27.229 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for MU...
+2026-01-26 14:44:27.558 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.0%, Close < Open
+2026-01-26 14:44:28.822 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - MU: Distribution score 0.15 from signals: ['gap_down_no_recovery']
+2026-01-26 14:44:28.823 | INFO     | putsengine.layers.distribution:analyze:168 - MU distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:44:28.823 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ROOT...
+2026-01-26 14:44:29.227 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:31.310 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:33.371 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:35.433 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:37.525 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:39.620 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:41.728 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:43.913 | INFO     | putsengine.layers.distribution:analyze:168 - ROOT distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:44:43.914 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for HUT...
+2026-01-26 14:44:44.365 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:46.448 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:48.542 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:50.683 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:52.754 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:54.825 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:56.929 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:44:59.136 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - HUT: Distribution score 0.10 from signals: ['vwap_loss']
+2026-01-26 14:44:59.136 | INFO     | putsengine.layers.distribution:analyze:168 - HUT distribution analysis: Score=0.10 (base=0.10, boost=+0.00), Active signals=1/18
+2026-01-26 14:44:59.137 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ENPH...
+2026-01-26 14:44:59.492 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:02.714 | INFO     | putsengine.layers.distribution:analyze:168 - ENPH distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:02.715 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ALAB...
+2026-01-26 14:45:04.470 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - ALAB: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:45:04.470 | INFO     | putsengine.layers.distribution:analyze:168 - ALAB distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:45:04.470 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for VZ...
+2026-01-26 14:45:06.061 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - VZ: Distribution score 0.10 from signals: ['vwap_loss']
+2026-01-26 14:45:06.062 | INFO     | putsengine.layers.distribution:analyze:168 - VZ distribution analysis: Score=0.10 (base=0.10, boost=+0.00), Active signals=1/18
+2026-01-26 14:45:06.062 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for SBUX...
+2026-01-26 14:45:07.686 | INFO     | putsengine.layers.distribution:analyze:168 - SBUX distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:07.686 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for IONQ...
+2026-01-26 14:45:09.707 | INFO     | putsengine.layers.distribution:analyze:123 - IONQ: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:45:09.707 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - IONQ: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:45:09.707 | INFO     | putsengine.layers.distribution:analyze:168 - IONQ distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:45:09.708 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for TSLA...
+2026-01-26 14:45:11.374 | INFO     | putsengine.layers.distribution:analyze:168 - TSLA distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:11.374 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for LMND...
+2026-01-26 14:45:12.958 | INFO     | putsengine.layers.distribution:analyze:168 - LMND distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:12.958 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for GSAT...
+2026-01-26 14:45:14.775 | INFO     | putsengine.layers.distribution:analyze:168 - GSAT distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:14.775 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for RIOT...
+2026-01-26 14:45:16.548 | INFO     | putsengine.layers.distribution:analyze:123 - RIOT: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:45:16.549 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - RIOT: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:45:16.549 | INFO     | putsengine.layers.distribution:analyze:168 - RIOT distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:45:16.550 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for MARA...
+2026-01-26 14:45:16.947 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.1%, Close < Open
+2026-01-26 14:45:18.203 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - MARA: Distribution score 0.40 from signals: ['vwap_loss', 'gap_down_no_recovery', 'repeated_sell_blocks']
+2026-01-26 14:45:18.204 | INFO     | putsengine.layers.distribution:analyze:168 - MARA distribution analysis: Score=0.40 (base=0.40, boost=+0.00), Active signals=3/18
+2026-01-26 14:45:18.204 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for MSTR...
+2026-01-26 14:45:19.947 | INFO     | putsengine.layers.distribution:analyze:168 - MSTR distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:19.947 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for REGN...
+2026-01-26 14:45:21.466 | INFO     | putsengine.layers.distribution:analyze:168 - REGN distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:21.471 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for NKE...
+2026-01-26 14:45:23.177 | INFO     | putsengine.layers.distribution:analyze:168 - NKE distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:23.177 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for NIO...
+2026-01-26 14:45:24.945 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - NIO: Distribution score 0.15 from signals: ['repeated_sell_blocks']
+2026-01-26 14:45:24.945 | INFO     | putsengine.layers.distribution:analyze:168 - NIO distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:45:24.945 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for INOD...
+2026-01-26 14:45:26.525 | INFO     | putsengine.layers.distribution:analyze:168 - INOD distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:26.525 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for CMCSA...
+2026-01-26 14:45:28.083 | INFO     | putsengine.layers.distribution:analyze:123 - CMCSA: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:45:28.084 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - CMCSA: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:45:28.084 | INFO     | putsengine.layers.distribution:analyze:168 - CMCSA distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:45:28.084 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for TGT...
+2026-01-26 14:45:29.659 | INFO     | putsengine.layers.distribution:analyze:168 - TGT distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:29.660 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for BBBY...
+2026-01-26 14:45:30.486 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:32.585 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:34.701 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:36.773 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:38.868 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:41.076 | INFO     | putsengine.layers.distribution:analyze:168 - BBBY distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:41.078 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for JPM...
+2026-01-26 14:45:41.507 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:43.594 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:45.682 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:47.774 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:49.883 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:51.968 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:54.073 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:56.364 | INFO     | putsengine.layers.distribution:analyze:168 - JPM distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:45:56.365 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for BITF...
+2026-01-26 14:45:56.807 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:45:58.875 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:46:01.956 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - BITF: Distribution score 0.15 from signals: ['repeated_sell_blocks']
+2026-01-26 14:46:01.958 | INFO     | putsengine.layers.distribution:analyze:168 - BITF distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:46:01.959 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for PYPL...
+2026-01-26 14:46:03.762 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - PYPL: Distribution score 0.10 from signals: ['vwap_loss']
+2026-01-26 14:46:03.762 | INFO     | putsengine.layers.distribution:analyze:168 - PYPL distribution analysis: Score=0.10 (base=0.10, boost=+0.00), Active signals=1/18
+2026-01-26 14:46:03.763 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for SQ...
+2026-01-26 14:46:09.070 | INFO     | putsengine.layers.distribution:analyze:168 - SQ distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:46:09.071 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for XLF...
+2026-01-26 14:46:11.861 | INFO     | putsengine.layers.distribution:analyze:168 - XLF distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:46:11.862 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for WFC...
+2026-01-26 14:46:13.777 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:999 - WFC: Pre-earnings penalty applied (no distribution signals)
+2026-01-26 14:46:13.782 | INFO     | putsengine.layers.distribution:analyze:168 - WFC distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=1/18
+2026-01-26 14:46:13.782 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for WDC...
+2026-01-26 14:46:15.587 | INFO     | putsengine.layers.distribution:analyze:168 - WDC distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:46:15.590 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for AMC...
+2026-01-26 14:46:17.427 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - AMC: Distribution score 0.15 from signals: ['repeated_sell_blocks']
+2026-01-26 14:46:17.428 | INFO     | putsengine.layers.distribution:analyze:168 - AMC distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:46:17.428 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ORCL...
+2026-01-26 14:46:19.137 | INFO     | putsengine.layers.distribution:analyze:123 - ORCL: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:46:19.139 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - ORCL: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:46:19.139 | INFO     | putsengine.layers.distribution:analyze:168 - ORCL distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:46:19.139 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for LTBR...
+2026-01-26 14:46:20.590 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - LTBR: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:46:20.591 | INFO     | putsengine.layers.distribution:analyze:168 - LTBR distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:46:20.591 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for RIVN...
+2026-01-26 14:46:23.120 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - RIVN: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:46:23.120 | INFO     | putsengine.layers.distribution:analyze:168 - RIVN distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:46:23.121 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for AMSC...
+2026-01-26 14:46:24.705 | INFO     | putsengine.layers.distribution:analyze:168 - AMSC distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:46:24.705 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ASML...
+2026-01-26 14:46:26.541 | INFO     | putsengine.layers.distribution:analyze:168 - ASML distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:46:26.541 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for SPY...
+2026-01-26 14:46:28.187 | INFO     | putsengine.layers.distribution:analyze:168 - SPY distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:46:28.188 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for XLE...
+2026-01-26 14:46:29.951 | INFO     | putsengine.layers.distribution:analyze:168 - XLE distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:46:29.952 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for AXP...
+2026-01-26 14:46:31.527 | INFO     | putsengine.layers.distribution:analyze:168 - AXP distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:46:31.527 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for QQQ...
+2026-01-26 14:46:33.417 | INFO     | putsengine.layers.distribution:analyze:168 - QQQ distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:46:33.418 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for EDIT...
+2026-01-26 14:46:35.081 | INFO     | putsengine.layers.distribution:analyze:168 - EDIT distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:46:35.081 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for C...
+2026-01-26 14:46:36.085 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:46:38.143 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:46:40.207 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:46:42.303 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:46:44.518 | INFO     | putsengine.layers.distribution:analyze:168 - C distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:46:44.519 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for SPCE...
+2026-01-26 14:46:44.947 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:46:47.019 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:46:49.121 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:46:51.218 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:46:53.309 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:46:55.416 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:46:57.507 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:00.146 | INFO     | putsengine.layers.distribution:analyze:168 - SPCE distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:47:00.147 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for FOUR...
+2026-01-26 14:47:01.807 | INFO     | putsengine.layers.distribution:analyze:168 - FOUR distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:47:01.807 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for QCOM...
+2026-01-26 14:47:03.513 | INFO     | putsengine.layers.distribution:analyze:123 - QCOM: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:47:03.514 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - QCOM: Distribution score 0.35 from signals: ['vwap_loss', 'multi_day_weakness', 'is_post_earnings_negative']
+2026-01-26 14:47:03.514 | INFO     | putsengine.layers.distribution:analyze:168 - QCOM distribution analysis: Score=0.45 (base=0.35, boost=+0.10), Active signals=3/18
+2026-01-26 14:47:03.514 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for MA...
+2026-01-26 14:47:05.150 | INFO     | putsengine.layers.distribution:analyze:123 - MA: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:47:05.151 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - MA: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:47:05.152 | INFO     | putsengine.layers.distribution:analyze:168 - MA distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:47:05.152 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for PL...
+2026-01-26 14:47:05.463 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.3%, Close < Open
+2026-01-26 14:47:06.712 | INFO     | putsengine.layers.distribution:analyze:123 - PL: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:47:06.713 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - PL: Distribution score 0.25 from signals: ['gap_down_no_recovery', 'is_post_earnings_negative']
+2026-01-26 14:47:06.713 | INFO     | putsengine.layers.distribution:analyze:168 - PL distribution analysis: Score=0.35 (base=0.25, boost=+0.10), Active signals=2/18
+2026-01-26 14:47:06.713 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for AMWL...
+2026-01-26 14:47:08.269 | INFO     | putsengine.layers.distribution:analyze:168 - AMWL distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:47:08.270 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for KLAC...
+2026-01-26 14:47:09.801 | INFO     | putsengine.layers.distribution:analyze:168 - KLAC distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:47:09.802 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for BE...
+2026-01-26 14:47:10.136 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-2.0%, Close < Open
+2026-01-26 14:47:11.361 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - BE: Distribution score 0.30 from signals: ['gap_down_no_recovery', 'multi_day_weakness']
+2026-01-26 14:47:11.361 | INFO     | putsengine.layers.distribution:analyze:168 - BE distribution analysis: Score=0.30 (base=0.30, boost=+0.00), Active signals=2/18
+2026-01-26 14:47:11.361 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for LCID...
+2026-01-26 14:47:13.254 | INFO     | putsengine.layers.distribution:analyze:123 - LCID: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:47:13.254 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - LCID: Distribution score 0.25 from signals: ['repeated_sell_blocks', 'is_post_earnings_negative']
+2026-01-26 14:47:13.254 | INFO     | putsengine.layers.distribution:analyze:168 - LCID distribution analysis: Score=0.35 (base=0.25, boost=+0.10), Active signals=2/18
+2026-01-26 14:47:13.254 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for DIS...
+2026-01-26 14:47:14.822 | INFO     | putsengine.layers.distribution:analyze:123 - DIS: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:47:14.822 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:999 - DIS: Pre-earnings penalty applied (no distribution signals)
+2026-01-26 14:47:14.822 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - DIS: Distribution score 0.05 from signals: ['is_pre_earnings', 'is_post_earnings_negative']
+2026-01-26 14:47:14.822 | INFO     | putsengine.layers.distribution:analyze:168 - DIS distribution analysis: Score=0.15 (base=0.05, boost=+0.10), Active signals=2/18
+2026-01-26 14:47:14.822 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for CLS...
+2026-01-26 14:47:16.508 | INFO     | putsengine.layers.distribution:analyze:168 - CLS distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:47:16.508 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for TMUS...
+2026-01-26 14:47:18.166 | INFO     | putsengine.layers.distribution:analyze:168 - TMUS distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:47:18.167 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for CRM...
+2026-01-26 14:47:19.829 | INFO     | putsengine.layers.distribution:analyze:123 - CRM: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:47:19.829 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - CRM: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:47:19.829 | INFO     | putsengine.layers.distribution:analyze:168 - CRM distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:47:19.830 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for WMT...
+2026-01-26 14:47:21.380 | INFO     | putsengine.layers.distribution:analyze:168 - WMT distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:47:21.381 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for RTX...
+2026-01-26 14:47:22.984 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - RTX: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:47:22.985 | INFO     | putsengine.layers.distribution:analyze:168 - RTX distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:47:22.985 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for APLD...
+2026-01-26 14:47:24.743 | INFO     | putsengine.layers.distribution:analyze:168 - APLD distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:47:24.743 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for STX...
+2026-01-26 14:47:26.362 | INFO     | putsengine.layers.distribution:analyze:168 - STX distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:47:26.362 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for T...
+2026-01-26 14:47:28.065 | INFO     | putsengine.layers.distribution:analyze:168 - T distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:47:28.065 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for TEM...
+2026-01-26 14:47:28.674 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:30.731 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:32.782 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:34.837 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:36.886 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:38.938 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:41.126 | INFO     | putsengine.layers.distribution:analyze:168 - TEM distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:47:41.129 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for EVTL...
+2026-01-26 14:47:41.562 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:43.646 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:45.736 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:47.830 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:49.933 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:52.039 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:54.126 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:56.351 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - EVTL: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:47:56.353 | INFO     | putsengine.layers.distribution:analyze:168 - EVTL distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:47:56.353 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for BNTX...
+2026-01-26 14:47:56.833 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:47:58.887 | DEBUG    | putsengine.clients.unusual_whales_client:_request:110 - UW rate limit - waiting 2s before retry
+2026-01-26 14:48:01.754 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - BNTX: Distribution score 0.15 from signals: ['multi_day_weakness']
+2026-01-26 14:48:01.755 | INFO     | putsengine.layers.distribution:analyze:168 - BNTX distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:48:01.755 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for CRDO...
+2026-01-26 14:48:02.088 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.5%, Close < Open
+2026-01-26 14:48:03.348 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - CRDO: Distribution score 0.30 from signals: ['gap_down_no_recovery', 'multi_day_weakness']
+2026-01-26 14:48:03.349 | INFO     | putsengine.layers.distribution:analyze:168 - CRDO distribution analysis: Score=0.30 (base=0.30, boost=+0.00), Active signals=2/18
+2026-01-26 14:48:03.349 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for RDW...
+2026-01-26 14:48:04.901 | INFO     | putsengine.layers.distribution:analyze:123 - RDW: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:48:04.902 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - RDW: Distribution score 0.25 from signals: ['repeated_sell_blocks', 'is_post_earnings_negative']
+2026-01-26 14:48:04.902 | INFO     | putsengine.layers.distribution:analyze:168 - RDW distribution analysis: Score=0.35 (base=0.25, boost=+0.10), Active signals=2/18
+2026-01-26 14:48:04.902 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ARKK...
+2026-01-26 14:48:06.471 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - ARKK: Distribution score 0.10 from signals: ['vwap_loss']
+2026-01-26 14:48:06.471 | INFO     | putsengine.layers.distribution:analyze:168 - ARKK distribution analysis: Score=0.10 (base=0.10, boost=+0.00), Active signals=1/18
+2026-01-26 14:48:06.471 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for VRTX...
+2026-01-26 14:48:08.050 | INFO     | putsengine.layers.distribution:analyze:123 - VRTX: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:48:08.052 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - VRTX: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:48:08.053 | INFO     | putsengine.layers.distribution:analyze:168 - VRTX distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:48:08.053 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for PLUG...
+2026-01-26 14:48:09.622 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - PLUG: Distribution score 0.15 from signals: ['repeated_sell_blocks']
+2026-01-26 14:48:09.622 | INFO     | putsengine.layers.distribution:analyze:168 - PLUG distribution analysis: Score=0.15 (base=0.15, boost=+0.00), Active signals=1/18
+2026-01-26 14:48:09.622 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for TLN...
+2026-01-26 14:48:10.041 | INFO     | putsengine.layers.distribution:_detect_gap_down_no_recovery:330 - GAP DOWN NO RECOVERY: Gap=-1.6%, Close < Open
+2026-01-26 14:48:11.387 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - TLN: Distribution score 0.40 from signals: ['vwap_loss', 'gap_down_no_recovery', 'multi_day_weakness']
+2026-01-26 14:48:11.387 | INFO     | putsengine.layers.distribution:analyze:168 - TLN distribution analysis: Score=0.40 (base=0.40, boost=+0.00), Active signals=3/18
+2026-01-26 14:48:11.388 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for COST...
+2026-01-26 14:48:13.132 | INFO     | putsengine.layers.distribution:analyze:168 - COST distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:48:13.132 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for ONDS...
+2026-01-26 14:48:14.800 | INFO     | putsengine.layers.distribution:analyze:123 - ONDS: Post-earnings with negative guidance - boost +0.10
+2026-01-26 14:48:14.800 | DEBUG    | putsengine.layers.distribution:_calculate_distribution_score:1004 - ONDS: Distribution score 0.10 from signals: ['is_post_earnings_negative']
+2026-01-26 14:48:14.800 | INFO     | putsengine.layers.distribution:analyze:168 - ONDS distribution analysis: Score=0.20 (base=0.10, boost=+0.10), Active signals=1/18
+2026-01-26 14:48:14.801 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for SOFI...
+2026-01-26 14:48:16.349 | INFO     | putsengine.layers.distribution:analyze:168 - SOFI distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:48:16.349 | INFO     | putsengine.layers.distribution:analyze:70 - Analyzing distribution for GLXY...
+2026-01-26 14:48:17.904 | INFO     | putsengine.layers.distribution:analyze:168 - GLXY distribution analysis: Score=0.00 (base=0.00, boost=+0.00), Active signals=0/18
+2026-01-26 14:48:17.910 | INFO     | putsengine.scheduler:_save_results:434 - Results saved to scheduled_scan_results.json
+2026-01-26 14:48:17.910 | INFO     | putsengine.scheduler:run_scan:368 - ============================================================
+2026-01-26 14:48:17.910 | INFO     | putsengine.scheduler:run_scan:369 - SCAN COMPLETE: MONDAY_SCAN
+2026-01-26 14:48:17.910 | INFO     | putsengine.scheduler:run_scan:370 - Tickers scanned: 163
+2026-01-26 14:48:17.910 | INFO     | putsengine.scheduler:run_scan:371 - Errors: 0
+2026-01-26 14:48:17.910 | INFO     | putsengine.scheduler:run_scan:372 - Gamma Drain candidates: 0
+2026-01-26 14:48:17.910 | INFO     | putsengine.scheduler:run_scan:373 - Distribution candidates: 0
+2026-01-26 14:48:17.910 | INFO     | putsengine.scheduler:run_scan:374 - Liquidity candidates: 0
+2026-01-26 14:48:17.910 | INFO     | putsengine.scheduler:run_scan:387 - ============================================================
+======================================================================
+MONDAY MARKET SCAN - 2026-01-26 14:40:08 ET
+======================================================================
+
+
+======================================================================
+SCAN RESULTS BY ENGINE
+======================================================================
+
+Tickers Scanned: 163
+Market Regime:   bearish_neutral
+Errors:          0
+
+GAMMA DRAIN ENGINE (0 candidates)
+----------------------------------------------------------------------
+No candidates
+
+DISTRIBUTION ENGINE (0 candidates)
+----------------------------------------------------------------------
+No candidates
+
+LIQUIDITY ENGINE (0 candidates)
+----------------------------------------------------------------------
+No candidates
+
+======================================================================
+TOTAL CANDIDATES: 0
+======================================================================

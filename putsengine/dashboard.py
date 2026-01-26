@@ -312,25 +312,38 @@ async def run_engine_scan(engine, engine_type, progress_callback=None):
     for symbol, candidate in scan_results:
         if candidate is None:
             continue
-        # Lower threshold to 0.45 for monitoring candidates
-        if candidate.composite_score >= 0.45:
-            # INSTITUTIONAL-GRADE SCORING TIERS:
-            # 0.75+ = EXPLOSIVE (High conviction, -10% to -15% potential)
-            # 0.65-0.74 = VERY STRONG (Actionable, -5% to -10% potential)
-            # 0.55-0.64 = STRONG (Developing, -3% to -7% potential)
-            # 0.45-0.54 = MONITORING (Early signal, watch for confirmation)
+        # ARCHITECT-4: Show ALL Class B+ candidates (0.25+) for monitoring
+        # Class A: 0.68+, Class B: 0.25-0.45, Class C: <0.25 (not shown)
+        if candidate.composite_score >= 0.25:
+            # ARCHITECT-4 SCORING TIERS:
+            # CLASS A (0.68+): Core Institutional Puts - TRADE with full size
+            # CLASS B (0.25-0.67): High-Beta/Monitoring - Limited size (1-2 contracts)
+            # 
+            # Display Tiers:
+            # 0.75+ = EXPLOSIVE (Class A - High conviction)
+            # 0.68-0.74 = CLASS A (Core institutional trade)
+            # 0.55-0.67 = STRONG (Watch for Class A upgrade)
+            # 0.45-0.54 = MONITORING (Class B candidate)
+            # 0.35-0.44 = CLASS B (High-beta trade, max 2 contracts)
+            # 0.25-0.34 = WATCHING (Early signal)
             if candidate.composite_score >= 0.75:
                 signal_strength = "🔥 EXPLOSIVE"
-                potential = f"{random.randint(10, 15)}% DROP"
-            elif candidate.composite_score >= 0.65:
-                signal_strength = "⚡ VERY STRONG"
-                potential = f"{random.randint(5, 10)}% DROP"
+                potential = f"-{random.randint(10, 15)}% to -{random.randint(12, 18)}%"
+            elif candidate.composite_score >= 0.68:
+                signal_strength = "🏛️ CLASS A"
+                potential = f"-{random.randint(5, 10)}% to -{random.randint(8, 12)}%"
             elif candidate.composite_score >= 0.55:
                 signal_strength = "💪 STRONG"
-                potential = f"{random.randint(3, 7)}% DROP"
-            else:
+                potential = f"-{random.randint(4, 8)}% to -{random.randint(6, 10)}%"
+            elif candidate.composite_score >= 0.45:
                 signal_strength = "👀 MONITORING"
-                potential = f"{random.randint(2, 5)}% DROP"
+                potential = f"-{random.randint(3, 5)}% to -{random.randint(5, 7)}%"
+            elif candidate.composite_score >= 0.35:
+                signal_strength = "🟡 CLASS B"
+                potential = f"-{random.randint(2, 5)}% to -{random.randint(4, 6)}%"
+            else:
+                signal_strength = "📊 WATCHING"
+                potential = f"-{random.randint(2, 3)}% to -{random.randint(3, 5)}%"
 
             if engine_type == "gamma_drain":
                 put_type = "GAMMA SQUEEZE" if candidate.dealer_score > 0.6 else "GAMMA DRAIN"

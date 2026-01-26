@@ -49,16 +49,18 @@ SCAN_LOG_FILE = Path("logs/scheduled_scans.log")
 
 
 def get_signal_tier(score: float) -> str:
-    """Get signal tier from score."""
+    """Get signal tier from score per ARCHITECT-4 Class System."""
     if score >= 0.75:
         return "🔥 EXPLOSIVE"
-    elif score >= 0.65:
-        return "⚡ VERY STRONG"
+    elif score >= 0.68:
+        return "🏛️ CLASS A"
     elif score >= 0.55:
         return "💪 STRONG"
     elif score >= 0.45:
         return "👀 MONITORING"
     elif score >= 0.35:
+        return "🟡 CLASS B"
+    elif score >= 0.25:
         return "📊 WATCHING"
     else:
         return "❌ BELOW THRESHOLD"
@@ -287,8 +289,10 @@ class PutsEngineScheduler:
                     # Run distribution analysis
                     distribution = await self._distribution_layer.analyze(symbol)
                     
-                    # Skip if no signals and low score
-                    if distribution.score < self.settings.min_score_threshold:
+                    # ARCHITECT-4: Show ALL Class B+ candidates (0.25+)
+                    # Class A: 0.68+ (core trades), Class B: 0.25-0.67 (monitoring/high-beta)
+                    # Use class_b_min_score (0.25) for display, not class_a_min_score (0.68)
+                    if distribution.score < self.settings.class_b_min_score:
                         processed += 1
                         continue
                     
