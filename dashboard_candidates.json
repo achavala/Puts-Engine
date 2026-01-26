@@ -1,85 +1,2106 @@
 {
-  "generated_at": "2026-01-25T13:41:18.607733",
-  "analysis_date": "2026-01-23",
+  "generated_at": "2026-01-26T17:24:42.783302",
+  "analysis_date": "2026-01-26",
   "next_week_start": "2026-01-27",
   "gamma_drain": [
     {
-      "symbol": "INTC",
-      "score": 0.65,
-      "tier": "\ud83d\udcaa STRONG",
-      "close": 45.07,
-      "daily_change": -3.82,
-      "rvol": 2.68,
-      "rsi": 58.4,
-      "next_week_potential": "-4% to -8%",
+      "symbol": "CLSK",
+      "score": 0.4,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -5%",
       "confidence": "MEDIUM",
       "signals": [
-        "high_rvol_red_day",
-        "gap_down_no_recovery",
-        "below_prior_low"
+        "vwap_loss",
+        "repeated_sell_blocks",
+        "multi_day_weakness"
       ]
     },
     {
-      "symbol": "COIN",
-      "score": 0.55,
-      "tier": "\ud83d\udcaa STRONG",
-      "close": 216.95,
-      "daily_change": -2.6,
-      "rvol": 1.63,
-      "rsi": 39.2,
-      "next_week_potential": "-4% to -8%",
+      "symbol": "MARA",
+      "score": 0.4,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -5%",
       "confidence": "MEDIUM",
       "signals": [
-        "high_rvol_red_day",
-        "multi_day_weakness",
-        "below_prior_low"
+        "vwap_loss",
+        "repeated_sell_blocks",
+        "multi_day_weakness"
       ]
-    }
-  ],
-  "distribution": [],
-  "liquidity": [
+    },
     {
-      "symbol": "GS",
-      "score": 0.63,
-      "tier": "\ud83d\udcaa STRONG",
-      "close": 918.88,
-      "daily_change": -1.63,
-      "rvol": 1.8,
-      "rsi": 51.1,
-      "next_week_potential": "-3.5% to -7.5%",
+      "symbol": "BBAI",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -5%",
       "confidence": "MEDIUM",
       "signals": [
-        "high_rvol_red_day",
-        "gap_down_no_recovery",
-        "below_prior_low",
-        "lower_highs"
+        "repeated_sell_blocks",
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "LCID",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -5%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "vwap_loss",
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "QUBT",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -5%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "repeated_sell_blocks",
+        "is_post_earnings_negative"
       ]
     },
     {
       "symbol": "DKNG",
-      "score": 0.48,
-      "tier": "\ud83d\udc40 MONITORING",
-      "close": 29.97,
-      "daily_change": -4.71,
-      "rvol": 1.59,
-      "rsi": 27.0,
-      "next_week_potential": "-2.5% to -5.5%",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -4%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "repeated_sell_blocks",
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "CLOV",
+      "score": 0.25,
+      "tier": "\ud83d\udcca WATCHING",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -4%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "vwap_loss",
+        "repeated_sell_blocks"
+      ]
+    },
+    {
+      "symbol": "IONQ",
+      "score": 0.25,
+      "tier": "\ud83d\udcca WATCHING",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -4%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "RIOT",
+      "score": 0.25,
+      "tier": "\ud83d\udcca WATCHING",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -4%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "repeated_sell_blocks"
+      ]
+    },
+    {
+      "symbol": "AFRM",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
       "confidence": "LOW",
       "signals": [
-        "high_rvol_red_day",
-        "below_prior_low",
-        "lower_highs"
+        "is_post_earnings_negative"
       ]
+    },
+    {
+      "symbol": "AI",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "AMC",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "repeated_sell_blocks"
+      ]
+    },
+    {
+      "symbol": "COIN",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "RBLX",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "SOUN",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "GLXY",
+      "score": 0.1,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "APLD",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "APP",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "BB",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "BBBY",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "BITF",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "CIFR",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "GME",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "HOOD",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "HUT",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "IREN",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "KOSS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "MSTR",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "NBIS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "NIO",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "PATH",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "PLTR",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "QBTS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "RGTI",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "RIVN",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "SMCI",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "SNOW",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "SOFI",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "UPST",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "WULF",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    }
+  ],
+  "distribution": [
+    {
+      "symbol": "QCOM",
+      "score": 0.45,
+      "tier": "\ud83d\udc40 MONITORING",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-3% to -7%",
+      "confidence": "HIGH",
+      "signals": [
+        "vwap_loss",
+        "gap_down_no_recovery",
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "ON",
+      "score": 0.4,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -5%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "vwap_loss",
+        "gap_down_no_recovery",
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "CRDO",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -4%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "gap_down_no_recovery",
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "AAPL",
+      "score": 0.25,
+      "tier": "\ud83d\udcca WATCHING",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -4%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "CRM",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "GOOG",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "MA",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "MRVL",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "MSFT",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "ORCL",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "ALAB",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "MU",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "INTC",
+      "score": 0.1,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "gap_down_no_recovery"
+      ]
+    },
+    {
+      "symbol": "ADBE",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "AMAT",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "AMD",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "AMWL",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "AMZN",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "ASML",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "AVGO",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "AXP",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "BAC",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "BILL",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "C",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "CLS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "COST",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "DIS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "FOUR",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "GOOGL",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "GS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "HD",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "HIMS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "HIPO",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "JPM",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "KLAC",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "LMND",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "LOW",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "LRCX",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "MCD",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "META",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "MS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "NFLX",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "NKE",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "NU",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "NVDA",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "OSCR",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "PYPL",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "RMBS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "ROOT",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "SBUX",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "SQ",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "STX",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "SWKS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "TDOC",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "TEM",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "TGT",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "TSLA",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "TSM",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "V",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "WDC",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "WFC",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "WMT",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    }
+  ],
+  "liquidity": [
+    {
+      "symbol": "TLN",
+      "score": 0.4,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -5%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "vwap_loss",
+        "gap_down_no_recovery",
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "IWM",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -5%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "vwap_loss",
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "PL",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -5%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "vwap_loss",
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "RDW",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -5%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "repeated_sell_blocks",
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "BE",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -4%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "vwap_loss",
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "OKLO",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -4%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "vwap_loss",
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "BLDP",
+      "score": 0.25,
+      "tier": "\ud83d\udcca WATCHING",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -4%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "vwap_loss",
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "NRG",
+      "score": 0.25,
+      "tier": "\ud83d\udcca WATCHING",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-2% to -4%",
+      "confidence": "MEDIUM",
+      "signals": [
+        "vwap_loss",
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "CMCSA",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "FSLR",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "LMT",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "ONDS",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "VRTX",
+      "score": 0.2,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "is_post_earnings_negative"
+      ]
+    },
+    {
+      "symbol": "BNTX",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "EVTL",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "FCEL",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "GEV",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "INOD",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "JOBY",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "LUNR",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "gap_down_no_recovery"
+      ]
+    },
+    {
+      "symbol": "NNE",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "gap_down_no_recovery"
+      ]
+    },
+    {
+      "symbol": "PLUG",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "repeated_sell_blocks"
+      ]
+    },
+    {
+      "symbol": "RKLB",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "RTX",
+      "score": 0.15,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "multi_day_weakness"
+      ]
+    },
+    {
+      "symbol": "ARKK",
+      "score": 0.1,
+      "tier": "\u26aa LOW SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "-1% to -3%",
+      "confidence": "LOW",
+      "signals": [
+        "vwap_loss"
+      ]
+    },
+    {
+      "symbol": "ACHR",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "AMSC",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "ASTS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "BA",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "BEAM",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "CCJ",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "CEG",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "CRSP",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "DIA",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "DNN",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "EDIT",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "ENPH",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "GSAT",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "ILMN",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "LEU",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "LILM",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "LTBR",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "MRNA",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "NOC",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "NTLA",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "NVAX",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "QQQ",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "REGN",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "SMR",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "SPCE",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "SPY",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "SQQQ",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "T",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "TMUS",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "TQQQ",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "UUUU",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "VST",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "VZ",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "XLE",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "XLF",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
+    },
+    {
+      "symbol": "XLK",
+      "score": 0,
+      "tier": "\u2b1c NO SIGNAL",
+      "close": 100,
+      "daily_change": 0,
+      "rvol": 1.0,
+      "rsi": 50,
+      "next_week_potential": "N/A",
+      "confidence": "LOW",
+      "signals": []
     }
   ],
   "summary": {
-    "total_candidates": 4,
-    "gamma_drain_count": 2,
-    "distribution_count": 0,
-    "liquidity_count": 2,
-    "explosive_count": 0,
-    "very_strong_count": 0,
-    "strong_count": 3,
-    "monitoring_count": 1
+    "total_candidates": 163,
+    "gamma_drain_count": 40,
+    "distribution_count": 62,
+    "liquidity_count": 61,
+    "with_signals": 54,
+    "high_conviction": 11
   }
 }
