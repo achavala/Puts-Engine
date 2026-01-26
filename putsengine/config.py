@@ -35,10 +35,12 @@ class Settings(BaseSettings):
     unusual_whales_api_key: str = Field(..., description="Unusual Whales API key")
 
     # Engine Configuration
-    # Lowered from 0.68 to 0.55 for earlier opportunity detection
-    # 0.55-0.65 = MONITORING, 0.65+ = ACTIONABLE, 0.75+ = HIGH CONVICTION
-    min_score_threshold: float = Field(default=0.55, ge=0.0, le=1.0)
-    max_daily_trades: int = Field(default=3, ge=1, le=10)
+    # CRITICAL: Lowered from 0.55 to 0.40 to catch early signals
+    # 0.40-0.54 = WATCHING, 0.55-0.64 = MONITORING, 0.65-0.74 = STRONG, 0.75+ = EXPLOSIVE
+    # These missed trades had low scores because signals were weak on Friday
+    # We need to catch them EARLIER in the distribution process
+    min_score_threshold: float = Field(default=0.40, ge=0.0, le=1.0)
+    max_daily_trades: int = Field(default=5, ge=1, le=10)  # Increased from 3
     max_position_size: float = Field(default=0.05, ge=0.01, le=0.20)
 
     # DTE and Delta constraints
@@ -84,13 +86,15 @@ class EngineConfig:
             "SMCI", "PLTR", "SNOW", "COIN", "HOOD", "SOFI", "PATH", "MSTR",
             "UPST", "AFRM", "RBLX", "DKNG", "RIVN", "LCID", "NIO"
         ],
-        # Space & Aerospace (10)
+        # Space & Aerospace (14) - Added eVTOL names
         "space_aerospace": [
-            "RKLB", "ASTS", "SPCE", "PL", "RDW", "LUNR", "BA", "LMT", "RTX", "NOC"
+            "RKLB", "ASTS", "SPCE", "PL", "RDW", "LUNR", "BA", "LMT", "RTX", "NOC",
+            "ACHR", "JOBY", "LILM", "EVTL"  # eVTOL - often move together with space
         ],
-        # Nuclear & Energy (10)
+        # Nuclear & Energy (12) - Added UUUU, DNN
         "nuclear_energy": [
-            "OKLO", "SMR", "CCJ", "LEU", "NNE", "CEG", "VST", "NRG", "FSLR", "ENPH"
+            "OKLO", "SMR", "CCJ", "LEU", "NNE", "CEG", "VST", "NRG", "FSLR", "ENPH",
+            "UUUU", "DNN"  # Uranium plays - CRITICAL for sector moves
         ],
         # Quantum Computing (4)
         "quantum": [
@@ -121,9 +125,10 @@ class EngineConfig:
         "meme": [
             "GME", "AMC", "BBBY", "BB", "KOSS", "CLOV"
         ],
-        # Fintech (9)
+        # Fintech & InsurTech (12) - Added LMND, ROOT, HIPO
         "fintech": [
-            "SQ", "PYPL", "AFRM", "UPST", "SOFI", "HOOD", "NU", "BILL", "FOUR"
+            "SQ", "PYPL", "AFRM", "UPST", "SOFI", "HOOD", "NU", "BILL", "FOUR",
+            "LMND", "ROOT", "HIPO"  # InsurTech - high beta, move with fintech
         ],
         # Healthcare (5)
         "healthcare": [
@@ -145,9 +150,10 @@ class EngineConfig:
         "consumer": [
             "DIS", "NFLX", "SBUX", "NKE", "MCD", "TGT", "WMT", "COST", "HD", "LOW"
         ],
-        # Telecom (4)
+        # Telecom & Wireless (6) - Added ONDS
         "telecom": [
-            "T", "VZ", "TMUS", "CMCSA"
+            "T", "VZ", "TMUS", "CMCSA",
+            "ONDS", "GSAT"  # Wireless/satellite
         ],
     }
 
@@ -165,10 +171,14 @@ class EngineConfig:
         return cls.UNIVERSE_SECTORS.get(sector, [])
 
     # Distribution Detection Thresholds
-    VOLUME_SPIKE_THRESHOLD = 1.5  # 1.5x average volume
+    # LOWERED from 1.5 to 1.3 to catch more moves - institutional moves often 1.3x-2.0x
+    VOLUME_SPIKE_THRESHOLD = 1.3  # 1.3x average volume (was 1.5)
     RSI_OVERBOUGHT = 70
     RSI_OVERSOLD = 30
     FAILED_BREAKOUT_THRESHOLD = 0.02  # 2% retracement
+    # RVOL thresholds for distribution detection
+    RVOL_HIGH_THRESHOLD = 1.5  # 1.5x is elevated (was 2.0)
+    RVOL_EXTREME_THRESHOLD = 2.0  # 2.0x is extreme institutional activity
 
     # Liquidity Vacuum Thresholds
     BID_COLLAPSE_THRESHOLD = 0.30  # 30% reduction in bid size

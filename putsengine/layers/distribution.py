@@ -83,6 +83,11 @@ class DistributionLayer:
         signal.failed_breakout = pv_signals.get("failed_breakout", False)
         signal.lower_highs_flat_rsi = pv_signals.get("lower_highs_flat_rsi", False)
         signal.vwap_loss = pv_signals.get("vwap_loss", False)
+        
+        # Store enhanced price-volume signals EARLY so they can be used in score calculation
+        high_rvol_red_day = pv_signals.get("high_rvol_red_day", False)
+        gap_down_no_recovery = pv_signals.get("gap_down_no_recovery", False)
+        multi_day_weakness = pv_signals.get("multi_day_weakness", False)
 
         # B. Options Flow Analysis
         options_signals = await self._analyze_options_flow(symbol)
@@ -117,28 +122,21 @@ class DistributionLayer:
             earnings_boost = 0.10
             logger.info(f"{symbol}: Post-earnings with negative guidance - boost +0.10")
 
-        # Calculate composite score with boosts
-        base_score = self._calculate_distribution_score(signal)
+        # *** CRITICAL FIX: Store signals BEFORE score calculation ***
+        # Store all signals in dict for easy access (needed for score calculation)
+        gap_up_reversal = pv_signals.get("gap_up_reversal", False)
         
-        # Apply boosts ONLY if base_score > 0 (confirmation, not trigger)
-        # Per Architect: "Use as confirmation, not trigger"
-        if base_score > 0:
-            total_boost = min(insider_boost + congress_boost + earnings_boost, 0.25)  # Cap total boost at 0.25
-            signal.score = min(base_score + total_boost, 1.0)
-        else:
-            signal.score = base_score
-
-        # Store all signals in dict for easy access
         signal.signals = {
             # Price-Volume Signals
             "flat_price_rising_volume": signal.flat_price_rising_volume,
             "failed_breakout": signal.failed_breakout,
             "lower_highs_flat_rsi": signal.lower_highs_flat_rsi,
             "vwap_loss": signal.vwap_loss,
-            # NEW: Enhanced price-volume signals
-            "high_rvol_red_day": pv_signals.get("high_rvol_red_day", False),
-            "gap_down_no_recovery": pv_signals.get("gap_down_no_recovery", False),
-            "multi_day_weakness": pv_signals.get("multi_day_weakness", False),
+            # Enhanced price-volume signals (stored early above)
+            "high_rvol_red_day": high_rvol_red_day,
+            "gap_down_no_recovery": gap_down_no_recovery,
+            "gap_up_reversal": gap_up_reversal,  # NEW: Distribution trap
+            "multi_day_weakness": multi_day_weakness,
             # Options Flow Signals
             "call_selling_at_bid": signal.call_selling_at_bid,
             "put_buying_at_ask": signal.put_buying_at_ask,
@@ -153,13 +151,24 @@ class DistributionLayer:
             "is_pre_earnings": is_pre_earnings,  # BLOCK signal
             "is_post_earnings_negative": is_post_earnings and guidance_sentiment == "negative",
         }
+        
+        # NOW calculate score (signals dict is populated)
+        base_score = self._calculate_distribution_score(signal)
+        
+        # Apply boosts ONLY if base_score > 0 (confirmation, not trigger)
+        # Per Architect: "Use as confirmation, not trigger"
+        if base_score > 0:
+            total_boost = min(insider_boost + congress_boost + earnings_boost, 0.25)  # Cap total boost at 0.25
+            signal.score = min(base_score + total_boost, 1.0)
+        else:
+            signal.score = base_score
 
         active_signals = sum(1 for v in signal.signals.values() if v)
         boost_applied = insider_boost + congress_boost + earnings_boost
         logger.info(
             f"{symbol} distribution analysis: "
             f"Score={signal.score:.2f} (base={base_score:.2f}, boost=+{boost_applied:.2f}), "
-            f"Active signals={active_signals}/12"
+            f"Active signals={active_signals}/{len(signal.signals)}"
         )
 
         return signal
@@ -175,6 +184,7 @@ class DistributionLayer:
         - VWAP loss = institutional selling
         - HIGH RVOL on red day = institutional selling
         - Gap down without recovery = trapped longs
+        - Gap UP reversal = distribution trap (NEW!)
         """
         signals = {
             "flat_price_rising_volume": False,
@@ -183,6 +193,7 @@ class DistributionLayer:
             "vwap_loss": False,
             "high_rvol_red_day": False,
             "gap_down_no_recovery": False,
+            "gap_up_reversal": False,  # NEW: Distribution trap pattern
             "multi_day_weakness": False
         }
 
@@ -227,7 +238,11 @@ class DistributionLayer:
             # 6. Gap down without recovery (trapped longs)
             signals["gap_down_no_recovery"] = self._detect_gap_down_no_recovery(daily_bars)
 
-            # 7. Multi-day price weakness (3+ consecutive red days or lower closes)
+            # 7. Gap UP reversal (CRITICAL - distribution trap!)
+            # This catches UUUU-type moves: gaps up, then reverses hard
+            signals["gap_up_reversal"] = self._detect_gap_up_reversal(daily_bars)
+
+            # 8. Multi-day price weakness (3+ consecutive red days or lower closes)
             signals["multi_day_weakness"] = self._detect_multi_day_weakness(daily_bars)
 
         except Exception as e:
@@ -242,14 +257,15 @@ class DistributionLayer:
         Per Final Architect Report:
         "RVOL > 2.0 on red day" = valid distribution pattern.
         
+        UPDATED: Also catch RVOL > 1.3 with significant moves
         This indicates institutional selling - they're moving large
         blocks with urgency, creating volume spike on down move.
         """
         if len(bars) < 20:
             return False
 
-        # Calculate average volume (exclude last bar)
-        avg_volume = np.mean([b.volume for b in bars[-20:-1]])
+        # Calculate average volume (exclude last bar to get true average)
+        avg_volume = np.mean([b.volume for b in bars[-21:-1]])  # Use 20 bars before current
         
         if avg_volume == 0:
             return False
@@ -258,18 +274,29 @@ class DistributionLayer:
         recent_bar = bars[-1]
         rvol = recent_bar.volume / avg_volume
 
-        # Check if red day (close < open)
+        # Check if red day (close < open OR close < previous close)
         is_red = recent_bar.close < recent_bar.open
+        if len(bars) >= 2:
+            is_down_day = recent_bar.close < bars[-2].close
+        else:
+            is_down_day = is_red
 
-        # RVOL > 2.0 on red day = distribution signal
-        if rvol >= 2.0 and is_red:
-            logger.info(f"HIGH RVOL RED DAY: RVOL={rvol:.1f}x, Change={((recent_bar.close/recent_bar.open)-1)*100:.1f}%")
+        # Price change calculation
+        price_change = (recent_bar.close - recent_bar.open) / recent_bar.open if recent_bar.open > 0 else 0
+
+        # EXTREME: RVOL >= 2.0 on red day = strong distribution signal
+        if rvol >= self.config.RVOL_EXTREME_THRESHOLD and (is_red or is_down_day):
+            logger.info(f"EXTREME RVOL RED DAY: RVOL={rvol:.1f}x, Change={price_change*100:.1f}%")
             return True
 
-        # Also check: RVOL > 1.5 with significant drop (>2%)
-        price_change = (recent_bar.close - recent_bar.open) / recent_bar.open
-        if rvol >= 1.5 and price_change < -0.02:
-            logger.info(f"ELEVATED RVOL with drop: RVOL={rvol:.1f}x, Drop={price_change*100:.1f}%")
+        # HIGH: RVOL >= 1.5 with significant drop (>1.5%)
+        if rvol >= self.config.RVOL_HIGH_THRESHOLD and price_change < -0.015:
+            logger.info(f"HIGH RVOL with drop: RVOL={rvol:.1f}x, Drop={price_change*100:.1f}%")
+            return True
+
+        # ELEVATED: RVOL >= 1.3 with big drop (>3%) - catch institutional selling
+        if rvol >= self.config.VOLUME_SPIKE_THRESHOLD and price_change < -0.03:
+            logger.info(f"ELEVATED RVOL significant drop: RVOL={rvol:.1f}x, Drop={price_change*100:.1f}%")
             return True
 
         return False
@@ -302,6 +329,43 @@ class DistributionLayer:
                 if today.close < yesterday.close:
                     logger.info(f"GAP DOWN NO RECOVERY: Gap={gap_pct*100:.1f}%, Close < Open")
                     return True
+
+        return False
+
+    def _detect_gap_up_reversal(self, bars: List[PriceBar]) -> bool:
+        """
+        CRITICAL FIX: Detect gap UP that reverses hard.
+        
+        This is the "sell the news" / distribution trap pattern:
+        - Stock gaps UP (looks bullish)
+        - But closes significantly below open (distribution)
+        
+        This caught UUUU which gapped +5% then fell -15%!
+        
+        Institutional behavior: They use gap up as exit liquidity.
+        """
+        if len(bars) < 2:
+            return False
+
+        yesterday = bars[-2]
+        today = bars[-1]
+
+        # Gap up of at least 1%
+        gap_pct = (today.open - yesterday.close) / yesterday.close
+        if gap_pct < 0.01:
+            return False
+
+        # Significant reversal: close at least 2% below open
+        intraday_drop = (today.close - today.open) / today.open
+        if intraday_drop < -0.02:
+            logger.info(f"GAP UP REVERSAL: Gap={gap_pct*100:.1f}%, Intraday drop={intraday_drop*100:.1f}%")
+            return True
+        
+        # Also flag if close is below yesterday's close (complete reversal)
+        if today.close < yesterday.close and gap_pct > 0.02:
+            total_reversal = (today.close - today.open) / today.open
+            logger.info(f"COMPLETE GAP UP REVERSAL: Gap={gap_pct*100:.1f}%, Total drop={total_reversal*100:.1f}%")
+            return True
 
         return False
 
@@ -777,38 +841,26 @@ class DistributionLayer:
         """
         Calculate composite distribution score.
         
+        CRITICAL FIX: Previous version was too restrictive!
+        We were missing trades because the minimum requirement check
+        didn't count dark pool and options signals.
+        
         INSTITUTIONAL-GRADE SCORING for -3% to -15% moves:
-
-        Price-Volume Signals (Core - 45% max):
-        - Standard signals: 0.10 each
-        - HIGH RVOL red day: 0.20 (strongest signal)
-        - Gap down no recovery: 0.15
-        - Multi-day weakness: 0.15
+        - Every signal contributes to score
+        - No artificial minimum requirement (signals ARE the evidence)
+        - Dark pool blocks are strong institutional signal
         
-        Options Flow Signals (Confirmation - 35% max):
-        - Each signal: 0.10 each
-        
-        Dark Pool (Institutional - 10%):
-        - Repeated sell blocks: 0.10
-        
-        Minimum requirement: 1 strong signal OR 2+ weak signals
+        Scoring:
+        - Strong signals: 0.15-0.20 each
+        - Medium signals: 0.10 each
+        - Weak signals: 0.05 each
         """
         score = 0.0
-
-        # === PRICE-VOLUME SIGNALS (45% max) ===
         
-        # Standard signals (0.10 each)
-        standard_pv = [
-            signal.flat_price_rising_volume,
-            signal.failed_breakout,
-            signal.lower_highs_flat_rsi,
-            signal.vwap_loss
-        ]
-        standard_count = sum(1 for s in standard_pv if s)
-        
-        # Enhanced signals from signals dict
+        # === ENHANCED PRICE-VOLUME SIGNALS (highest value) ===
         high_rvol = signal.signals.get("high_rvol_red_day", False)
         gap_down = signal.signals.get("gap_down_no_recovery", False)
+        gap_up_reversal = signal.signals.get("gap_up_reversal", False)  # NEW
         multi_day = signal.signals.get("multi_day_weakness", False)
         
         # HIGH RVOL red day is the STRONGEST bearish signal
@@ -816,53 +868,82 @@ class DistributionLayer:
             score += 0.20
             logger.info(f"{signal.symbol}: HIGH RVOL RED DAY - strong bearish signal (+0.20)")
         
-        # Gap down without recovery = trapped longs
+        # Gap down without recovery = trapped longs (STRONG)
         if gap_down:
             score += 0.15
         
-        # Multi-day weakness = sustained pressure
+        # Gap UP reversal = distribution trap (CRITICAL - caught UUUU!)
+        # This is when institutions sell into gap-up strength
+        if gap_up_reversal:
+            score += 0.25  # HIGHEST score - this is the clearest distribution pattern
+            logger.info(f"{signal.symbol}: GAP UP REVERSAL - distribution trap (+0.25)")
+        
+        # Multi-day weakness = sustained pressure (STRONG)
         if multi_day:
             score += 0.15
         
-        # Standard signals add incrementally
-        score += min(standard_count * 0.10, 0.30)
-        
-        # Cap PV at 45%
-        pv_score = min(score, 0.45)
-        score = pv_score
-
-        # === MINIMUM REQUIREMENT CHECK ===
-        # Need at least: 1 strong signal OR 2 weak signals
-        strong_signals = high_rvol or gap_down
-        total_weak = standard_count + (1 if multi_day else 0)
-        
-        if not strong_signals and total_weak < 2:
-            return 0.0  # Insufficient evidence
-        
-        # === OPTIONS FLOW SIGNALS (35% max) ===
-        options_signals = [
-            signal.call_selling_at_bid,
-            signal.put_buying_at_ask,
-            signal.rising_put_oi,
-            signal.skew_steepening
-        ]
-        opt_count = sum(1 for s in options_signals if s)
-        
-        # Aggressive put buying is strongest options signal
-        if signal.put_buying_at_ask:
-            score += 0.12
-        if signal.call_selling_at_bid:
+        # === STANDARD PRICE-VOLUME SIGNALS (0.10 each) ===
+        if signal.flat_price_rising_volume:
             score += 0.10
+        if signal.failed_breakout:
+            score += 0.10
+        if signal.lower_highs_flat_rsi:
+            score += 0.10
+        if signal.vwap_loss:
+            score += 0.10  # VWAP loss is important!
+        
+        # === OPTIONS FLOW SIGNALS (0.08-0.12 each) ===
+        if signal.put_buying_at_ask:
+            score += 0.12  # Aggressive put buying
+        if signal.call_selling_at_bid:
+            score += 0.10  # Call selling
         if signal.rising_put_oi:
             score += 0.08
         if signal.skew_steepening:
             score += 0.08
         
-        # === DARK POOL (10%) ===
+        # === DARK POOL (CRITICAL - institutional selling) ===
+        # Repeated sell blocks means big money is distributing!
         if signal.repeated_sell_blocks:
+            score += 0.15  # Increased from 0.10 - this is strong evidence!
+        
+        # === INSIDER/CONGRESS SIGNALS (from signals dict) ===
+        if signal.signals.get("c_level_selling", False):
+            score += 0.10  # C-level selling is very bearish
+        if signal.signals.get("insider_cluster", False):
+            score += 0.08
+        if signal.signals.get("congress_selling", False):
+            score += 0.05
+        
+        # === EARNINGS CONTEXT ===
+        # Post-earnings negative = valid setup
+        if signal.signals.get("is_post_earnings_negative", False):
             score += 0.10
-
-        return min(score, 1.0)
+        
+        # Pre-earnings penalty logic (FIXED)
+        # Only penalize if setup is BULLISH (no bearish signals present)
+        # If already showing distribution (INTC pattern), don't penalize
+        is_pre_earnings = signal.signals.get("is_pre_earnings", False)
+        has_bearish_signals = (
+            signal.vwap_loss or 
+            gap_down or 
+            gap_up_reversal or 
+            high_rvol or 
+            signal.repeated_sell_blocks
+        )
+        
+        if is_pre_earnings and not has_bearish_signals:
+            score -= 0.05  # Only penalize bullish setups before earnings
+            logger.debug(f"{signal.symbol}: Pre-earnings penalty applied (no bearish signals)")
+        elif is_pre_earnings and has_bearish_signals:
+            logger.info(f"{signal.symbol}: Pre-earnings but bearish signals present - NO penalty")
+        
+        # Log what contributed
+        if score > 0:
+            active = [k for k, v in signal.signals.items() if v]
+            logger.debug(f"{signal.symbol}: Distribution score {score:.2f} from signals: {active}")
+        
+        return min(max(score, 0.0), 1.0)  # Clamp between 0 and 1
 
     async def get_distribution_candidates(
         self,

@@ -1,0 +1,130 @@
+{
+  "timestamp": "2026-01-26T11:42:06.003158",
+  "settings": {
+    "min_score_threshold": 0.25,
+    "volume_spike_threshold": 1.3,
+    "rvol_high_threshold": 1.5,
+    "rvol_extreme_threshold": 2.0
+  },
+  "results": [
+    {
+      "symbol": "RIOT",
+      "score": 0.44999999999999996,
+      "tier": "\ud83d\udcca WATCHING",
+      "active_signals": [
+        "vwap_loss",
+        "repeated_sell_blocks",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 3,
+      "would_catch": true
+    },
+    {
+      "symbol": "PL",
+      "score": 0.35,
+      "tier": "\u274c BELOW THRESHOLD",
+      "active_signals": [
+        "gap_down_no_recovery",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "would_catch": true
+    },
+    {
+      "symbol": "INTC",
+      "score": 0.15,
+      "tier": "\u274c BELOW THRESHOLD",
+      "active_signals": [
+        "gap_down_no_recovery",
+        "is_pre_earnings"
+      ],
+      "signal_count": 2,
+      "would_catch": false
+    },
+    {
+      "symbol": "AMD",
+      "score": 0.25,
+      "tier": "\u274c BELOW THRESHOLD",
+      "active_signals": [
+        "vwap_loss",
+        "gap_down_no_recovery"
+      ],
+      "signal_count": 2,
+      "would_catch": true
+    },
+    {
+      "symbol": "UUUU",
+      "score": 0.25,
+      "tier": "\u274c BELOW THRESHOLD",
+      "active_signals": [
+        "gap_up_reversal"
+      ],
+      "signal_count": 1,
+      "would_catch": true
+    },
+    {
+      "symbol": "LUNR",
+      "score": 0.15,
+      "tier": "\u274c BELOW THRESHOLD",
+      "active_signals": [
+        "gap_down_no_recovery"
+      ],
+      "signal_count": 1,
+      "would_catch": false
+    },
+    {
+      "symbol": "ONDS",
+      "score": 0.35,
+      "tier": "\u274c BELOW THRESHOLD",
+      "active_signals": [
+        "repeated_sell_blocks",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "would_catch": true
+    },
+    {
+      "symbol": "LMND",
+      "score": 0.0,
+      "tier": "\u274c BELOW THRESHOLD",
+      "active_signals": [],
+      "signal_count": 0,
+      "would_catch": false
+    },
+    {
+      "symbol": "CIFR",
+      "score": 0.15,
+      "tier": "\u274c BELOW THRESHOLD",
+      "active_signals": [
+        "repeated_sell_blocks"
+      ],
+      "signal_count": 1,
+      "would_catch": false
+    },
+    {
+      "symbol": "PLUG",
+      "score": 0.15,
+      "tier": "\u274c BELOW THRESHOLD",
+      "active_signals": [
+        "repeated_sell_blocks"
+      ],
+      "signal_count": 1,
+      "would_catch": false
+    },
+    {
+      "symbol": "ACHR",
+      "score": 0.15,
+      "tier": "\u274c BELOW THRESHOLD",
+      "active_signals": [
+        "repeated_sell_blocks"
+      ],
+      "signal_count": 1,
+      "would_catch": false
+    }
+  ],
+  "summary": {
+    "total": 11,
+    "caught": 5,
+    "catch_rate": 45.45454545454545
+  }
+}

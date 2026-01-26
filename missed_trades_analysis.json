@@ -1,0 +1,220 @@
+[
+  {
+    "symbol": "RIOT",
+    "in_universe": true,
+    "data_available": true,
+    "friday_close": 16.695,
+    "friday_change": -2.681433984261153,
+    "gap_pct": -0.7233796296296295,
+    "rvol": 1.0,
+    "rsi": 60.40415073730203,
+    "multi_day_weakness": false,
+    "lower_highs": false,
+    "distribution_signals": 3,
+    "reasons_missed": [
+      "RSI too low (60.4) - not overbought",
+      "RVOL too low (1.00x) - not unusual volume",
+      "Already dropped -2.7% on Friday - missed entry window",
+      "No multi-day weakness pattern"
+    ]
+  },
+  {
+    "symbol": "PL",
+    "in_universe": false,
+    "data_available": true,
+    "friday_close": 25.9853,
+    "friday_change": -2.3109022556391077,
+    "gap_pct": -1.262063845582776,
+    "rvol": 1.0,
+    "rsi": 68.34495037805294,
+    "multi_day_weakness": false,
+    "lower_highs": false,
+    "distribution_signals": 2,
+    "reasons_missed": [
+      "NOT IN TICKER UNIVERSE",
+      "RSI too low (68.3) - not overbought",
+      "RVOL too low (1.00x) - not unusual volume",
+      "Already dropped -2.3% on Friday - missed entry window",
+      "No multi-day weakness pattern"
+    ]
+  },
+  {
+    "symbol": "INTC",
+    "in_universe": true,
+    "data_available": true,
+    "friday_close": 42.7634,
+    "friday_change": -3.4250225835591777,
+    "gap_pct": -1.752828932771243,
+    "rvol": 1.0,
+    "rsi": 54.70696265389802,
+    "multi_day_weakness": true,
+    "lower_highs": true,
+    "distribution_signals": 3,
+    "reasons_missed": [
+      "RSI too low (54.7) - not overbought",
+      "RVOL too low (1.00x) - not unusual volume",
+      "Already dropped -3.4% on Friday - missed entry window"
+    ]
+  },
+  {
+    "symbol": "AMD",
+    "in_universe": true,
+    "data_available": true,
+    "friday_close": 252.58,
+    "friday_change": -1.6222321758943665,
+    "gap_pct": -1.1302372150338886,
+    "rvol": 1.0,
+    "rsi": 69.32041216879293,
+    "multi_day_weakness": false,
+    "lower_highs": false,
+    "distribution_signals": 1,
+    "reasons_missed": [
+      "RSI too low (69.3) - not overbought",
+      "RVOL too low (1.00x) - not unusual volume",
+      "Too few distribution signals",
+      "No multi-day weakness pattern"
+    ]
+  },
+  {
+    "symbol": "UUUU",
+    "in_universe": false,
+    "data_available": true,
+    "friday_close": 22.675,
+    "friday_change": -15.265321375186849,
+    "gap_pct": 4.941176470588241,
+    "rvol": 1.0,
+    "rsi": 65.35231836436657,
+    "multi_day_weakness": false,
+    "lower_highs": false,
+    "distribution_signals": 0,
+    "reasons_missed": [
+      "NOT IN TICKER UNIVERSE",
+      "RSI too low (65.4) - not overbought",
+      "RVOL too low (1.00x) - not unusual volume",
+      "Already dropped -15.3% on Friday - missed entry window",
+      "Too few distribution signals",
+      "No multi-day weakness pattern"
+    ]
+  },
+  {
+    "symbol": "LUNR",
+    "in_universe": false,
+    "data_available": true,
+    "friday_close": 18.555,
+    "friday_change": -6.098178137651831,
+    "gap_pct": -1.347978032950572,
+    "rvol": 1.0,
+    "rsi": 50.668495029139535,
+    "multi_day_weakness": true,
+    "lower_highs": false,
+    "distribution_signals": 1,
+    "reasons_missed": [
+      "NOT IN TICKER UNIVERSE",
+      "RSI too low (50.7) - not overbought",
+      "RVOL too low (1.00x) - not unusual volume",
+      "Already dropped -6.1% on Friday - missed entry window",
+      "Too few distribution signals"
+    ]
+  },
+  {
+    "symbol": "ONDS",
+    "in_universe": false,
+    "data_available": true,
+    "friday_close": 11.2702,
+    "friday_change": -7.241152263374481,
+    "gap_pct": -0.16433853738701376,
+    "rvol": 1.0,
+    "rsi": 43.01647486640503,
+    "multi_day_weakness": true,
+    "lower_highs": true,
+    "distribution_signals": 1,
+    "reasons_missed": [
+      "NOT IN TICKER UNIVERSE",
+      "RSI too low (43.0) - not overbought",
+      "RVOL too low (1.00x) - not unusual volume",
+      "Already dropped -7.2% on Friday - missed entry window",
+      "Too few distribution signals"
+    ]
+  },
+  {
+    "symbol": "LMND",
+    "in_universe": false,
+    "data_available": true,
+    "friday_close": 87.4,
+    "friday_change": -5.513513513513507,
+    "gap_pct": -0.8042895442359249,
+    "rvol": 1.0,
+    "rsi": 60.95990027010182,
+    "multi_day_weakness": true,
+    "lower_highs": true,
+    "distribution_signals": 0,
+    "reasons_missed": [
+      "NOT IN TICKER UNIVERSE",
+      "RSI too low (61.0) - not overbought",
+      "RVOL too low (1.00x) - not unusual volume",
+      "Already dropped -5.5% on Friday - missed entry window",
+      "Too few distribution signals"
+    ]
+  },
+  {
+    "symbol": "CIFR",
+    "in_universe": false,
+    "data_available": true,
+    "friday_close": 16.56,
+    "friday_change": -5.7484348321001795,
+    "gap_pct": 0.0,
+    "rvol": 1.0,
+    "rsi": 40.9706546275395,
+    "multi_day_weakness": false,
+    "lower_highs": false,
+    "distribution_signals": 1,
+    "reasons_missed": [
+      "NOT IN TICKER UNIVERSE",
+      "RSI too low (41.0) - not overbought",
+      "RVOL too low (1.00x) - not unusual volume",
+      "Already dropped -5.7% on Friday - missed entry window",
+      "Too few distribution signals",
+      "No multi-day weakness pattern"
+    ]
+  },
+  {
+    "symbol": "PLUG",
+    "in_universe": false,
+    "data_available": true,
+    "friday_close": 2.359,
+    "friday_change": -4.68686868686869,
+    "gap_pct": -0.9999999999999963,
+    "rvol": 1.0,
+    "rsi": 49.604601006470155,
+    "multi_day_weakness": true,
+    "lower_highs": false,
+    "distribution_signals": 1,
+    "reasons_missed": [
+      "NOT IN TICKER UNIVERSE",
+      "RSI too low (49.6) - not overbought",
+      "RVOL too low (1.00x) - not unusual volume",
+      "Already dropped -4.7% on Friday - missed entry window",
+      "Too few distribution signals"
+    ]
+  },
+  {
+    "symbol": "ACHR",
+    "in_universe": false,
+    "data_available": true,
+    "friday_close": 8.175,
+    "friday_change": -4.553415061295958,
+    "gap_pct": -0.5226480836236925,
+    "rvol": 1.0,
+    "rsi": 44.859813084112155,
+    "multi_day_weakness": true,
+    "lower_highs": true,
+    "distribution_signals": 1,
+    "reasons_missed": [
+      "NOT IN TICKER UNIVERSE",
+      "RSI too low (44.9) - not overbought",
+      "RVOL too low (1.00x) - not unusual volume",
+      "Already dropped -4.6% on Friday - missed entry window",
+      "Too few distribution signals"
+    ]
+  }
+]
