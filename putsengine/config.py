@@ -34,14 +34,37 @@ class Settings(BaseSettings):
     # Unusual Whales API
     unusual_whales_api_key: str = Field(..., description="Unusual Whales API key")
 
-    # Engine Configuration
-    # CRITICAL: Lowered from 0.55 to 0.40 to catch early signals
-    # 0.40-0.54 = WATCHING, 0.55-0.64 = MONITORING, 0.65-0.74 = STRONG, 0.75+ = EXPLOSIVE
-    # These missed trades had low scores because signals were weak on Friday
-    # We need to catch them EARLIER in the distribution process
-    min_score_threshold: float = Field(default=0.40, ge=0.0, le=1.0)
-    max_daily_trades: int = Field(default=5, ge=1, le=10)  # Increased from 3
+    # ============================================================================
+    # ENGINE CONFIGURATION - ARCHITECT-4 CLASS A/B SEPARATION
+    # ============================================================================
+    # 
+    # CLASS A: Core Institutional Puts (Original logic)
+    #   - Score >= 0.68
+    #   - All 3 permissions required (Gamma + Liquidity + Incentive)
+    #   - Full size (up to 5 contracts)
+    #   - High expectancy, low frequency
+    #
+    # CLASS B: High-Beta Reaction Puts (New logic, constrained)
+    #   - Score 0.25-0.45
+    #   - High-beta universe ONLY
+    #   - Max 1-2 contracts
+    #   - Mixed expectancy, higher frequency
+    #
+    # CLASS C: Monitor Only (Never traded)
+    #   - Dark pool signal alone
+    #   - No VWAP loss / liquidity vacuum
+    #
+    class_a_min_score: float = Field(default=0.68, ge=0.50, le=1.0)  # Core threshold
+    class_b_min_score: float = Field(default=0.25, ge=0.15, le=0.50)  # High-beta threshold
+    class_b_max_score: float = Field(default=0.45, ge=0.30, le=0.67)  # Cap for Class B
+    
+    # Legacy threshold (uses Class A)
+    min_score_threshold: float = Field(default=0.68, ge=0.0, le=1.0)
+    
+    max_daily_trades: int = Field(default=5, ge=1, le=10)
+    max_daily_class_b_trades: int = Field(default=2, ge=1, le=3)  # Limit Class B
     max_position_size: float = Field(default=0.05, ge=0.01, le=0.20)
+    max_class_b_contracts: int = Field(default=2, ge=1, le=2)  # Max 2 contracts Class B
 
     # DTE and Delta constraints
     dte_min: int = Field(default=7, ge=1)
@@ -222,6 +245,60 @@ class EngineConfig:
     MIN_AVG_VOLUME = 500_000  # 500K shares/day
     MIN_OPTIONS_VOLUME = 1000  # 1000 contracts/day
     MAX_SPREAD_PCT = 0.05  # 5% max bid-ask spread
+    
+    # ============================================================================
+    # ARCHITECT-4 ADDITION: HIGH-BETA GROUPS FOR CLASS B TRADES
+    # ============================================================================
+    # These tickers can use Class B logic (lower threshold, sector correlation)
+    # DO NOT add large caps here - they stay Class A only
+    
+    HIGH_BETA_GROUPS = {
+        # Crypto miners - move together with Bitcoin
+        "crypto_miners": ["RIOT", "MARA", "CIFR", "CLSK", "HUT", "BITF", "WULF"],
+        # eVTOL / Aviation - move together
+        "evtol": ["ACHR", "JOBY", "LILM", "EVTL"],
+        # Clean energy - correlated
+        "clean_energy": ["PLUG", "FCEL", "BE", "BLDP", "ENPH", "FSLR"],
+        # Space / Satellite - correlated
+        "space": ["LUNR", "PL", "RKLB", "SPCE", "ASTS"],
+        # Quantum computing - correlated
+        "quantum": ["IONQ", "RGTI", "QBTS", "QUBT"],
+        # Nuclear / Uranium - correlated
+        "nuclear": ["UUUU", "CCJ", "LEU", "DNN", "SMR", "OKLO"],
+        # Meme stocks - sentiment driven
+        "meme": ["GME", "AMC", "BBBY", "BB", "KOSS", "CLOV"],
+    }
+    
+    # Flatten all high-beta tickers for quick lookup
+    @classmethod
+    def get_high_beta_tickers(cls) -> set:
+        """Get all high-beta tickers (Class B eligible)."""
+        tickers = set()
+        for group in cls.HIGH_BETA_GROUPS.values():
+            tickers.update(group)
+        return tickers
+    
+    @classmethod
+    def get_sector_peers(cls, symbol: str) -> list:
+        """Get peer tickers in the same high-beta sector."""
+        for group_name, tickers in cls.HIGH_BETA_GROUPS.items():
+            if symbol in tickers:
+                return [t for t in tickers if t != symbol]
+        return []
+    
+    @classmethod
+    def is_high_beta(cls, symbol: str) -> bool:
+        """Check if symbol is in high-beta universe."""
+        return symbol in cls.get_high_beta_tickers()
+    
+    # ============================================================================
+    # ARCHITECT-4 ADDITION: SECTOR VELOCITY BOOST CONSTRAINTS
+    # ============================================================================
+    # Per Architect: "Apply ONLY if distribution_present AND liquidity_present"
+    SECTOR_VELOCITY_MIN_PEERS = 3  # Minimum peers with score > 0.30
+    SECTOR_VELOCITY_BOOST_MIN = 0.05
+    SECTOR_VELOCITY_BOOST_MAX = 0.10
+    SECTOR_PEER_MIN_SCORE = 0.30  # Peer must have this score to count
 
 
 def get_settings() -> Settings:

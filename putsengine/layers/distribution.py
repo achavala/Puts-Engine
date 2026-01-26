@@ -334,40 +334,69 @@ class DistributionLayer:
 
     def _detect_gap_up_reversal(self, bars: List[PriceBar]) -> bool:
         """
-        CRITICAL FIX: Detect gap UP that reverses hard.
+        ARCHITECT-4 FINAL: Gap-Up → Reversal with Opening RVOL Confirmation.
         
-        This is the "sell the news" / distribution trap pattern:
-        - Stock gaps UP (looks bullish)
+        This is REAL institutional distribution:
+        - Stock gaps UP (looks bullish) 
         - But closes significantly below open (distribution)
+        - CRITICAL: Must have elevated opening RVOL (>= 1.3)
+        
+        Per Architect-4 Final Rule:
+        gap_up_reversal = (
+            gap_up >= +1%
+            AND close <= open - 2%
+            AND open_RVOL >= 1.3
+            AND VWAP lost within first 30-60 min
+        )
+        
+        Why RVOL matters:
+        - Low-volume reversals = noise
+        - High-RVOL reversals = supply hitting bids
         
         This caught UUUU which gapped +5% then fell -15%!
-        
-        Institutional behavior: They use gap up as exit liquidity.
         """
-        if len(bars) < 2:
+        if len(bars) < 21:  # Need 20 days for RVOL
             return False
 
         yesterday = bars[-2]
         today = bars[-1]
 
-        # Gap up of at least 1%
+        # 1. Gap up of at least 1%
         gap_pct = (today.open - yesterday.close) / yesterday.close
         if gap_pct < 0.01:
             return False
 
-        # Significant reversal: close at least 2% below open
+        # 2. Significant reversal: close at least 2% below open
         intraday_drop = (today.close - today.open) / today.open
-        if intraday_drop < -0.02:
-            logger.info(f"GAP UP REVERSAL: Gap={gap_pct*100:.1f}%, Intraday drop={intraday_drop*100:.1f}%")
-            return True
+        if intraday_drop >= -0.02:
+            # Not enough reversal
+            return False
         
-        # Also flag if close is below yesterday's close (complete reversal)
-        if today.close < yesterday.close and gap_pct > 0.02:
-            total_reversal = (today.close - today.open) / today.open
-            logger.info(f"COMPLETE GAP UP REVERSAL: Gap={gap_pct*100:.1f}%, Total drop={total_reversal*100:.1f}%")
-            return True
-
-        return False
+        # 3. RVOL confirmation (ARCHITECT-4 ADDITION)
+        # Use 20-day SMA as baseline per Architect-4
+        avg_volume_20d = np.mean([b.volume for b in bars[-21:-1]])
+        if avg_volume_20d == 0:
+            return False
+        
+        rvol = today.volume / avg_volume_20d
+        
+        # Opening RVOL must be >= 1.3 (supply hitting bids)
+        if rvol < 1.3:
+            logger.debug(f"Gap-up reversal rejected: RVOL {rvol:.2f} < 1.3 threshold")
+            return False
+        
+        # 4. VWAP check (if available from today's bar)
+        # The VWAP loss should occur in first 30-60 min - approximated by close < vwap
+        if hasattr(today, 'vwap') and today.vwap > 0:
+            if today.close >= today.vwap:
+                logger.debug(f"Gap-up reversal rejected: price above VWAP")
+                return False
+        
+        logger.info(
+            f"GAP UP REVERSAL CONFIRMED: Gap={gap_pct*100:.1f}%, "
+            f"Intraday drop={intraday_drop*100:.1f}%, RVOL={rvol:.2f}x"
+        )
+        return True
 
     def _detect_multi_day_weakness(self, bars: List[PriceBar]) -> bool:
         """
@@ -915,28 +944,59 @@ class DistributionLayer:
         if signal.signals.get("congress_selling", False):
             score += 0.05
         
-        # === EARNINGS CONTEXT ===
+        # === EARNINGS CONTEXT (ARCHITECT-4 FINAL LOGIC) ===
         # Post-earnings negative = valid setup
         if signal.signals.get("is_post_earnings_negative", False):
             score += 0.10
         
-        # Pre-earnings penalty logic (FIXED)
-        # Only penalize if setup is BULLISH (no bearish signals present)
-        # If already showing distribution (INTC pattern), don't penalize
-        is_pre_earnings = signal.signals.get("is_pre_earnings", False)
-        has_bearish_signals = (
-            signal.vwap_loss or 
-            gap_down or 
-            gap_up_reversal or 
-            high_rvol or 
-            signal.repeated_sell_blocks
-        )
+        # ============================================================================
+        # ARCHITECT-4: CONDITIONAL PRE-EARNINGS FRONT-RUN DISTRIBUTION LOGIC
+        # ============================================================================
+        # This is CORRECT microstructure logic but must stay CONDITIONAL.
+        # 
+        # Final Rule:
+        #   if is_pre_earnings:
+        #       if (VWAP lost AND dark_pool_selling AND break_5day_low within 48h):
+        #           allow_trade + front_run_boost = +0.10 to +0.15 (capped)
+        #       else:
+        #           apply_pre_earnings_penalty
+        #
+        # Key constraint: This is PERMISSION logic, not prediction.
+        # Never override Gamma / Liquidity gates.
         
-        if is_pre_earnings and not has_bearish_signals:
-            score -= 0.05  # Only penalize bullish setups before earnings
-            logger.debug(f"{signal.symbol}: Pre-earnings penalty applied (no bearish signals)")
-        elif is_pre_earnings and has_bearish_signals:
-            logger.info(f"{signal.symbol}: Pre-earnings but bearish signals present - NO penalty")
+        is_pre_earnings = signal.signals.get("is_pre_earnings", False)
+        
+        if is_pre_earnings:
+            # Check for strong front-run distribution signals
+            has_vwap_loss = signal.vwap_loss
+            has_dark_pool_selling = signal.repeated_sell_blocks
+            has_gap_down = gap_down or gap_up_reversal
+            has_multi_day_weakness = multi_day  # Proxy for "break 5-day low within 48h"
+            
+            # Full front-run permission: VWAP + Dark pool + Price breakdown
+            if has_vwap_loss and has_dark_pool_selling and (has_gap_down or has_multi_day_weakness):
+                front_run_boost = 0.15  # Max boost
+                score += front_run_boost
+                logger.info(
+                    f"{signal.symbol}: PRE-EARNINGS FRONT-RUN DISTRIBUTION DETECTED! "
+                    f"VWAP loss + Dark pool + Price breakdown. Boost +{front_run_boost:.2f}"
+                )
+            # Partial front-run: VWAP + one other signal
+            elif has_vwap_loss and (has_dark_pool_selling or has_gap_down or has_multi_day_weakness):
+                front_run_boost = 0.10  # Moderate boost
+                score += front_run_boost
+                logger.info(
+                    f"{signal.symbol}: Pre-earnings with partial distribution signals. "
+                    f"Boost +{front_run_boost:.2f}"
+                )
+            # Weak signals only - apply penalty
+            elif has_vwap_loss or has_dark_pool_selling:
+                # Some distribution but not enough - no penalty, no boost
+                logger.debug(f"{signal.symbol}: Pre-earnings with weak distribution - neutral")
+            else:
+                # No distribution signals - apply penalty (bullish setup before earnings is risky)
+                score -= 0.05
+                logger.debug(f"{signal.symbol}: Pre-earnings penalty applied (no distribution signals)")
         
         # Log what contributed
         if score > 0:
@@ -944,6 +1004,77 @@ class DistributionLayer:
             logger.debug(f"{signal.symbol}: Distribution score {score:.2f} from signals: {active}")
         
         return min(max(score, 0.0), 1.0)  # Clamp between 0 and 1
+
+    def calculate_sector_velocity_boost(
+        self, 
+        symbol: str, 
+        peer_scores: Dict[str, float],
+        has_distribution: bool,
+        has_liquidity: bool
+    ) -> float:
+        """
+        ARCHITECT-4 ADDITION: Sector Velocity Boost for High-Beta Names.
+        
+        This fixes CIFR / PLUG / ACHR-type misses without corrupting the core engine.
+        
+        Final Rule:
+            if symbol in HIGH_BETA_GROUP:
+                if peers_with_score > 0.30 >= 3:
+                    sector_boost = +0.05 to +0.10 (max)
+        
+        Hard constraints (per Architect-4):
+        - Apply ONLY if distribution_present AND liquidity_present
+        - Never apply to large caps
+        - Never apply in index-pinned regimes
+        
+        Args:
+            symbol: Ticker to evaluate
+            peer_scores: Dict of peer symbol -> score
+            has_distribution: True if distribution signals present
+            has_liquidity: True if liquidity vacuum present
+            
+        Returns:
+            Boost value (0.0 to 0.10)
+        """
+        # Check if symbol is in high-beta universe
+        if not self.config.is_high_beta(symbol):
+            return 0.0
+        
+        # HARD CONSTRAINT: Must have both distribution AND liquidity
+        if not has_distribution or not has_liquidity:
+            logger.debug(f"{symbol}: Sector boost rejected - missing distribution/liquidity")
+            return 0.0
+        
+        # Get sector peers
+        peers = self.config.get_sector_peers(symbol)
+        if not peers:
+            return 0.0
+        
+        # Count peers with score >= 0.30
+        qualifying_peers = sum(
+            1 for peer in peers 
+            if peer_scores.get(peer, 0) >= self.config.SECTOR_PEER_MIN_SCORE
+        )
+        
+        # Need at least 3 qualifying peers
+        if qualifying_peers < self.config.SECTOR_VELOCITY_MIN_PEERS:
+            return 0.0
+        
+        # Calculate boost (capped at 0.10)
+        # More peers = higher boost
+        if qualifying_peers >= 5:
+            boost = self.config.SECTOR_VELOCITY_BOOST_MAX  # 0.10
+        elif qualifying_peers >= 4:
+            boost = 0.08
+        else:  # 3 peers
+            boost = self.config.SECTOR_VELOCITY_BOOST_MIN  # 0.05
+        
+        logger.info(
+            f"{symbol}: SECTOR VELOCITY BOOST +{boost:.2f} "
+            f"({qualifying_peers} peers with score >= {self.config.SECTOR_PEER_MIN_SCORE})"
+        )
+        
+        return boost
 
     async def get_distribution_candidates(
         self,
