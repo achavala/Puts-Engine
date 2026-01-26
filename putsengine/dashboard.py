@@ -28,6 +28,36 @@ from putsengine.models import PutCandidate, MarketRegimeData, BlockReason
 st.set_page_config(page_title="PutsEngine", page_icon="📉", layout="wide", initial_sidebar_state="expanded")
 
 # ============================================================================
+# SCHEDULED SCAN RESULTS LOADER
+# ============================================================================
+SCHEDULED_RESULTS_FILE = Path(__file__).parent.parent / "scheduled_scan_results.json"
+
+
+def load_scheduled_scan_results() -> Optional[Dict]:
+    """Load results from the scheduled scanner if available."""
+    try:
+        if SCHEDULED_RESULTS_FILE.exists():
+            with open(SCHEDULED_RESULTS_FILE, 'r') as f:
+                data = json.load(f)
+                
+            # Check if results are fresh (within last 35 minutes)
+            if data.get('last_scan'):
+                try:
+                    last_scan = datetime.fromisoformat(data['last_scan'].replace('Z', '+00:00'))
+                    now = datetime.now(pytz.UTC)
+                    if hasattr(last_scan, 'tzinfo') and last_scan.tzinfo is None:
+                        last_scan = pytz.timezone('US/Eastern').localize(last_scan)
+                    age_minutes = (now - last_scan).total_seconds() / 60
+                    
+                    if age_minutes < 35:  # Fresh results
+                        return data
+                except:
+                    pass
+    except Exception as e:
+        pass
+    return None
+
+# ============================================================================
 # AUTO-REFRESH CONFIGURATION - 30 MINUTES (FULLY AUTOMATIC)
 # ============================================================================
 AUTO_REFRESH_INTERVAL_MS = 30 * 60 * 1000  # 30 minutes in milliseconds
