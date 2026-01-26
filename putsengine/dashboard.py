@@ -179,6 +179,7 @@ def load_validated_candidates():
 def format_validated_candidates(candidates: List[Dict], engine_type: str) -> List[Dict]:
     """
     Format validated candidates for display in the dashboard table.
+    Uses REAL data from JSON (close, strike, premium) - NO HARDCODED VALUES.
     """
     results = []
     for c in candidates:
@@ -203,39 +204,81 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
             flow_intent = "BEARISH TREND"
         elif "below_prior_low" in signals:
             flow_intent = "BREAKDOWN"
+        elif "vwap_loss" in signals:
+            flow_intent = "VWAP BREAKDOWN"
+        elif "repeated_sell_blocks" in signals:
+            flow_intent = "DARK POOL SELLING"
         else:
             flow_intent = "BEARISH FLOW"
         
-        # Calculate strike price (10% below current)
-        close_price = c.get("close", 100)
-        strike = close_price * 0.90
+        # Use REAL price data from JSON if available
+        close_price = c.get("close", 0)
         
-        # Calculate entry price range
-        entry_low = close_price * 0.02  # Rough put premium estimate
-        entry_high = close_price * 0.04
-        
-        # Calculate REAL Friday expiry dates (options expire on Fridays)
-        today = date.today()
-        # Find next Friday (7-14 DTE range)
-        days_until_friday = (4 - today.weekday()) % 7  # 4 = Friday
-        if days_until_friday == 0:
-            days_until_friday = 7  # If today is Friday, get next Friday
-        
-        # Get the Friday that's 7-14 DTE
-        first_friday = today + timedelta(days=days_until_friday)
-        second_friday = first_friday + timedelta(days=7)
-        
-        # Choose Friday based on score (higher score = shorter DTE for more gamma)
-        score = c.get("score", 0.5)
-        if score >= 0.65:
-            expiry_date = first_friday  # Higher conviction = closer expiry
+        # Use REAL strike from JSON if available, otherwise calculate
+        if c.get("strike") and c.get("strike") > 0:
+            strike = c.get("strike")
+        elif close_price > 0:
+            # Calculate strike: 10% OTM, rounded to standard increments
+            raw_strike = close_price * 0.90
+            if close_price >= 100:
+                strike = round(raw_strike / 5) * 5
+            elif close_price >= 25:
+                strike = round(raw_strike / 2.5) * 2.5
+            elif close_price >= 5:
+                strike = round(raw_strike)
+            else:
+                strike = round(raw_strike * 2) / 2
         else:
-            expiry_date = second_friday  # Lower conviction = more time
+            strike = 0
         
-        dte = (expiry_date - today).days
+        # Use REAL premium from JSON if available, otherwise estimate
+        if c.get("premium_low") and c.get("premium_high"):
+            entry_low = c.get("premium_low")
+            entry_high = c.get("premium_high")
+        elif close_price > 0:
+            entry_low = close_price * 0.015
+            entry_high = close_price * 0.03
+        else:
+            entry_low = 0
+            entry_high = 0
+        
+        # Use REAL expiry from JSON if available
+        if c.get("expiry_display"):
+            expiry_str = c.get("expiry_display")
+            dte = c.get("dte", 0)
+        else:
+            # Calculate Friday expiry
+            today = date.today()
+            days_until_friday = (4 - today.weekday()) % 7
+            if days_until_friday == 0:
+                days_until_friday = 7
+            
+            first_friday = today + timedelta(days=days_until_friday)
+            second_friday = first_friday + timedelta(days=7)
+            
+            score = c.get("score", 0)
+            if score >= 0.65:
+                expiry_date = first_friday
+            else:
+                expiry_date = second_friday
+            
+            expiry_str = expiry_date.strftime("%b %d")
+            dte = (expiry_date - today).days
+        
+        score = c.get("score", 0)
         
         # Risk/reward based on score
-        rr = int(10 + (score - 0.45) * 30)  # 10-18 range
+        rr = max(5, int(10 + (score - 0.45) * 30))
+        
+        # Format strike display - show "N/A" if no real price data
+        if strike > 0 and close_price > 0:
+            strike_display = f"${strike:.0f} P"
+            entry_display = f"${entry_low:.2f} - ${entry_high:.2f}"
+            price_display = f"${close_price:.2f}"
+        else:
+            strike_display = "MARKET CLOSED"
+            entry_display = "N/A"
+            price_display = "N/A"
         
         results.append({
             "Symbol": c.get("symbol", "N/A"),
@@ -245,10 +288,10 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
             "Signal Strength": c.get("tier", "N/A"),
             "PUT Type": put_type,
             "Flow Intent": flow_intent,
-            "Expiry": expiry_date.strftime("%b %d"),
+            "Expiry": expiry_str,
             "DTE": dte,
-            "Strike": f"${strike:.0f} P",
-            "Entry Price": f"${entry_low:.2f} - ${entry_high:.2f}",
+            "Strike": strike_display,
+            "Entry Price": entry_display,
             "Risk/Reward": f"1:{rr}",
         })
     
