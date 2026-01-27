@@ -180,9 +180,19 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
     """
     Format validated candidates for display in the dashboard table.
     Uses REAL data from JSON (close, strike, premium) - NO HARDCODED VALUES.
+    
+    FILTERING RULES:
+    - Only show candidates with score > 0 (have actual signals)
+    - Sort by score descending (best candidates first)
     """
+    # Filter: Only include candidates with score > 0
+    filtered_candidates = [c for c in candidates if c.get("score", 0) > 0]
+    
+    # Sort by score descending
+    filtered_candidates.sort(key=lambda x: x.get("score", 0), reverse=True)
+    
     results = []
-    for c in candidates:
+    for c in filtered_candidates:
         # Determine PUT type based on engine
         if engine_type == "gamma_drain":
             put_type = "GAMMA DRAIN"
@@ -556,14 +566,20 @@ def render_engine_tab(engine, engine_name, engine_key, engine_type, results_key)
         if validated_candidates:
             validated_results = format_validated_candidates(validated_candidates, engine_type)
     
-    # Show data source info with candidate count
+    # Show data source info with candidate count (only non-zero scores)
     if validated_data:
         analysis_date = validated_data.get("analysis_date", "N/A")
         next_week = validated_data.get("next_week_start", "N/A")
+        # Count candidates with actual signals (score > 0)
+        active_count = len(validated_results)
+        total_scanned = len(validated_candidates)
         if is_market_open():
             st.success(f"🟢 **Live Scanning** | Auto-refreshes every 30 minutes | {len(EngineConfig.get_all_tickers())} tickers")
         else:
-            st.info(f"📊 **{len(validated_results)} Candidates** from {analysis_date} | Week of {next_week} | Next live scan when market opens")
+            if active_count > 0:
+                st.info(f"📊 **{active_count} Active Signals** (from {total_scanned} scanned) | Week of {next_week} | Next live scan when market opens")
+            else:
+                st.warning(f"⚠️ **No Active Signals** (scanned {total_scanned} tickers) | Week of {next_week} | Next live scan when market opens")
     
     # Auto-scan logic - ALWAYS runs every 30 minutes (market open or closed)
     should_scan = should_auto_scan(engine_key) or st.session_state.get(f"force_refresh_{engine_key}", False)
