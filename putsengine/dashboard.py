@@ -537,9 +537,10 @@ def render_engine_tab(engine, engine_name, engine_key, engine_type, results_key)
     # Check if we have live results
     live_results = st.session_state.get(results_key, [])
     
-    # Load validated candidates (from Friday analysis)
+    # Load validated candidates (from Friday analysis) - ALWAYS load from JSON
     validated_data = load_validated_candidates()
     validated_results = []
+    validated_candidates = []  # Initialize to empty list
     
     if validated_data:
         # Map engine key to JSON field
@@ -550,17 +551,19 @@ def render_engine_tab(engine, engine_name, engine_key, engine_type, results_key)
         }
         json_key = engine_map.get(engine_key, engine_key)
         validated_candidates = validated_data.get(json_key, [])
+        
+        # Format ALL candidates (not just those with high scores)
         if validated_candidates:
             validated_results = format_validated_candidates(validated_candidates, engine_type)
     
-    # Show data source info
+    # Show data source info with candidate count
     if validated_data:
         analysis_date = validated_data.get("analysis_date", "N/A")
         next_week = validated_data.get("next_week_start", "N/A")
         if is_market_open():
             st.success(f"🟢 **Live Scanning** | Auto-refreshes every 30 minutes | {len(EngineConfig.get_all_tickers())} tickers")
         else:
-            st.info(f"📊 **Validated Candidates** from {analysis_date} | Week of {next_week} | Next live scan when market opens")
+            st.info(f"📊 **{len(validated_results)} Candidates** from {analysis_date} | Week of {next_week} | Next live scan when market opens")
     
     # Auto-scan logic - ALWAYS runs every 30 minutes (market open or closed)
     should_scan = should_auto_scan(engine_key) or st.session_state.get(f"force_refresh_{engine_key}", False)
@@ -584,12 +587,16 @@ def render_engine_tab(engine, engine_name, engine_key, engine_type, results_key)
                     st.error(f"Scan error: {e}")
                     progress.empty()
         else:
-            # Market closed - just refresh the validated data display
+            # Market closed - use validated data from JSON
             st.session_state[f"last_scan_{engine_key}"] = datetime.now()
-            st.session_state[results_key] = validated_results
+            # Store validated results in session state
+            if validated_results:
+                st.session_state[results_key] = validated_results
+                live_results = validated_results  # Update live_results for immediate display
     
-    # Display results - prefer live, fallback to validated
-    display_results = live_results if live_results else validated_results
+    # Display results - ALWAYS use validated_results (pre-loaded from JSON)
+    # This ensures data displays even when market is closed or API calls fail
+    display_results = validated_results
     
     if display_results:
         table_title = f"{engine_name} PUT Candidates"

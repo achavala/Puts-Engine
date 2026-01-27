@@ -1,11 +1,189 @@
 {
   "gamma_drain": [],
-  "distribution": [],
-  "liquidity": [],
-  "last_scan": "2026-01-26T14:40:08.360673-05:00",
-  "scan_type": "monday_scan",
+  "distribution": [
+    {
+      "symbol": "PL",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "engine_type": "distribution_trap",
+      "current_price": 25.87,
+      "expiry": "Feb 06",
+      "dte": 11,
+      "signals": [
+        "gap_down_no_recovery",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "scan_time": "17:14 ET",
+      "scan_type": "dashboard_update"
+    },
+    {
+      "symbol": "CRSP",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "engine_type": "distribution_trap",
+      "current_price": 54.65,
+      "expiry": "Feb 06",
+      "dte": 11,
+      "signals": [
+        "gap_down_no_recovery",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "scan_time": "17:14 ET",
+      "scan_type": "dashboard_update"
+    },
+    {
+      "symbol": "BE",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "engine_type": "distribution_trap",
+      "current_price": 139.62,
+      "expiry": "Feb 06",
+      "dte": 11,
+      "signals": [
+        "gap_down_no_recovery",
+        "multi_day_weakness"
+      ],
+      "signal_count": 2,
+      "scan_time": "17:14 ET",
+      "scan_type": "dashboard_update"
+    },
+    {
+      "symbol": "OKLO",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "engine_type": "distribution_trap",
+      "current_price": 82.31,
+      "expiry": "Feb 06",
+      "dte": 11,
+      "signals": [
+        "gap_down_no_recovery",
+        "multi_day_weakness"
+      ],
+      "signal_count": 2,
+      "scan_time": "17:14 ET",
+      "scan_type": "dashboard_update"
+    },
+    {
+      "symbol": "TLN",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "engine_type": "distribution_trap",
+      "current_price": 350.41,
+      "expiry": "Feb 06",
+      "dte": 11,
+      "signals": [
+        "gap_down_no_recovery",
+        "multi_day_weakness"
+      ],
+      "signal_count": 2,
+      "scan_time": "17:14 ET",
+      "scan_type": "dashboard_update"
+    },
+    {
+      "symbol": "CRDO",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "engine_type": "distribution_trap",
+      "current_price": 128.02,
+      "expiry": "Feb 06",
+      "dte": 11,
+      "signals": [
+        "gap_down_no_recovery",
+        "multi_day_weakness"
+      ],
+      "signal_count": 2,
+      "scan_time": "17:14 ET",
+      "scan_type": "dashboard_update"
+    },
+    {
+      "symbol": "BLDP",
+      "score": 0.25,
+      "tier": "\ud83d\udcca WATCHING",
+      "engine_type": "distribution_trap",
+      "current_price": 2.56,
+      "expiry": "Feb 06",
+      "dte": 11,
+      "signals": [
+        "vwap_loss",
+        "gap_down_no_recovery"
+      ],
+      "signal_count": 2,
+      "scan_time": "17:14 ET",
+      "scan_type": "dashboard_update"
+    }
+  ],
+  "liquidity": [
+    {
+      "symbol": "QCOM",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "engine_type": "snapback",
+      "current_price": 154.52,
+      "expiry": "Feb 06",
+      "dte": 11,
+      "signals": [
+        "multi_day_weakness",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "scan_time": "17:14 ET",
+      "scan_type": "dashboard_update"
+    },
+    {
+      "symbol": "IWM",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "engine_type": "snapback",
+      "current_price": 263.98,
+      "expiry": "Feb 06",
+      "dte": 11,
+      "signals": [
+        "multi_day_weakness",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "scan_time": "17:14 ET",
+      "scan_type": "dashboard_update"
+    },
+    {
+      "symbol": "DKNG",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "engine_type": "snapback",
+      "current_price": 30.58,
+      "expiry": "Feb 06",
+      "dte": 11,
+      "signals": [
+        "vwap_loss",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "scan_time": "17:14 ET",
+      "scan_type": "dashboard_update"
+    },
+    {
+      "symbol": "BAC",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "engine_type": "snapback",
+      "current_price": 52.02,
+      "expiry": "Feb 06",
+      "dte": 11,
+      "signals": [
+        "vwap_loss",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "scan_time": "17:14 ET",
+      "scan_type": "dashboard_update"
+    }
+  ],
+  "last_scan": "2026-01-26T17:14:52.841567-05:00",
+  "scan_type": "dashboard_update",
   "market_regime": "bearish_neutral",
   "tickers_scanned": 163,
   "errors": 0,
-  "total_candidates": 0
+  "total_candidates": 11
 }
