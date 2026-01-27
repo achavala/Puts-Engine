@@ -3,6 +3,15 @@ Unusual Whales API Client for options flow data.
 Provides institutional flow detection, dark pool data, and options analytics.
 
 API Documentation: https://api.unusualwhales.com/docs
+
+BUDGET STRATEGY (6,000 calls/day):
+├── Pre-Market (4:00-9:30 AM):     300 calls  (5%)  - Index GEX only
+├── Opening Range (9:30-10:30 AM): 1,500 calls (25%) - Full scan top 50
+├── Mid-Morning (10:30-12:00 PM):  1,200 calls (20%) - Active signals only
+├── Midday (12:00-2:00 PM):         600 calls (10%) - Maintenance scan
+├── Afternoon (2:00-3:30 PM):      1,500 calls (25%) - Full scan top 50
+├── Close (3:30-4:00 PM):           600 calls (10%) - Final confirmation
+└── After Hours:                    300 calls  (5%)  - Summary only
 """
 
 import asyncio
@@ -13,14 +22,19 @@ from loguru import logger
 
 from putsengine.config import Settings
 from putsengine.models import OptionsFlow, DarkPoolPrint, GEXData
+from putsengine.api_budget import get_budget_manager, TickerPriority
 
 
 class UnusualWhalesClient:
     """
-    Client for Unusual Whales API.
+    Client for Unusual Whales API with Smart Budget Management.
 
-    Rate limit: 5,000 calls/day, ~2 requests/second
-    Strategy: Use surgical queries only after Alpaca pre-filtering.
+    Rate limit: 6,000 calls/day, ~2 requests/second
+    Strategy: 
+    - Tiered scanning (P1/P2/P3 tickers get different allocations)
+    - Time-window budgets (critical windows get more calls)
+    - Cooldowns per ticker (prevent redundant calls)
+    - Skip UW for low-score tickers (use Alpaca only)
 
     API Base: https://api.unusualwhales.com
     Docs: https://api.unusualwhales.com/docs
@@ -28,8 +42,8 @@ class UnusualWhalesClient:
 
     BASE_URL = "https://api.unusualwhales.com"
     
-    # Rate limiting: reduced for parallel scanning with external semaphore
-    MIN_REQUEST_INTERVAL = 0.15  # 150ms between requests (semaphore limits concurrency)
+    # Rate limiting: increased interval to prevent 429s
+    MIN_REQUEST_INTERVAL = 0.5  # 500ms between requests (2 req/sec max)
 
     def __init__(self, settings: Settings):
         self.settings = settings
@@ -40,6 +54,9 @@ class UnusualWhalesClient:
         self._calls_reset_date = date.today()
         self._last_request_time = 0.0  # For rate limiting
         self._rate_limit_lock: Optional[asyncio.Lock] = None  # Lazy init for thread-safe rate limiting
+        
+        # Budget manager for smart API allocation
+        self._budget_manager = get_budget_manager()
 
     @property
     def _headers(self) -> Dict[str, str]:
@@ -56,6 +73,41 @@ class UnusualWhalesClient:
             self._calls_today = 0
             self._calls_reset_date = date.today()
         return self.daily_limit - self._calls_today
+    
+    def should_skip_uw(self, symbol: str, score: float = 0) -> bool:
+        """
+        Check if we should skip UW API calls for this ticker.
+        
+        Use this to fall back to Alpaca-only scanning for low-priority tickers.
+        """
+        if self._budget_manager:
+            return self._budget_manager.skip_uw_use_alpaca_only(symbol, score)
+        return False
+    
+    def can_call_for_symbol(self, symbol: str, score: float = 0, is_dui: bool = False) -> bool:
+        """
+        Check if we can make UW API calls for this symbol right now.
+        
+        Considers: daily budget, window budget, ticker cooldown, daily max.
+        """
+        if self._budget_manager:
+            return self._budget_manager.can_call_uw(symbol, score=score, is_dui=is_dui)
+        return self.remaining_calls > 0
+    
+    def get_budget_status(self) -> Dict:
+        """Get current API budget status."""
+        if self._budget_manager:
+            return self._budget_manager.get_status()
+        return {
+            "daily_used": self._calls_today,
+            "daily_limit": self.daily_limit,
+            "daily_remaining": self.remaining_calls,
+        }
+    
+    def update_ticker_priority(self, symbol: str, score: float, is_dui: bool = False):
+        """Update ticker priority based on new score (affects future API allocation)."""
+        if self._budget_manager:
+            self._budget_manager.update_ticker_priority(symbol, score, is_dui)
 
     async def _get_session(self) -> aiohttp.ClientSession:
         """Get or create aiohttp session."""
@@ -85,9 +137,25 @@ class UnusualWhalesClient:
     async def _request(
         self,
         endpoint: str,
-        params: Optional[Dict] = None
+        params: Optional[Dict] = None,
+        symbol: str = None,
+        priority: TickerPriority = None
     ) -> Dict[str, Any]:
-        """Make HTTP request to Unusual Whales API."""
+        """
+        Make HTTP request to Unusual Whales API with budget management.
+        
+        Args:
+            endpoint: API endpoint
+            params: Query parameters
+            symbol: Ticker symbol (for budget tracking)
+            priority: Ticker priority (P1/P2/P3)
+        """
+        # Check budget manager first (if symbol provided)
+        if symbol and self._budget_manager:
+            if not self._budget_manager.can_call_uw(symbol, priority):
+                logger.debug(f"UW API call skipped for {symbol} - budget/cooldown")
+                return {}
+        
         # Check daily limit
         if self.remaining_calls <= 0:
             logger.error("Unusual Whales daily API limit reached!")
@@ -102,13 +170,17 @@ class UnusualWhalesClient:
         try:
             async with session.get(url, params=params) as response:
                 self._calls_today += 1
+                
+                # Record call in budget manager
+                if symbol and self._budget_manager:
+                    self._budget_manager.record_call(symbol)
 
                 if response.status == 200:
                     return await response.json()
                 elif response.status == 429:
                     # Rate limited - wait longer and retry once
-                    logger.debug("UW rate limit - waiting 2s before retry")
-                    await asyncio.sleep(2.0)
+                    logger.debug("UW rate limit - waiting 3s before retry")
+                    await asyncio.sleep(3.0)
                     self._last_request_time = 0  # Reset to allow immediate retry
                     return {}
                 elif response.status == 401:
@@ -130,7 +202,8 @@ class UnusualWhalesClient:
     async def get_flow_recent(
         self,
         symbol: str,
-        limit: int = 50
+        limit: int = 50,
+        priority: TickerPriority = None
     ) -> List[OptionsFlow]:
         """
         Get recent options flow for a symbol.
@@ -139,7 +212,7 @@ class UnusualWhalesClient:
         endpoint = f"/api/stock/{symbol}/flow-recent"
         params = {"limit": limit}
 
-        result = await self._request(endpoint, params)
+        result = await self._request(endpoint, params, symbol=symbol, priority=priority)
         flows = []
 
         # Handle both list responses and dict with "data" key
@@ -172,7 +245,7 @@ class UnusualWhalesClient:
         endpoint = f"/api/stock/{symbol}/flow-alerts"
         params = {"limit": limit}
 
-        result = await self._request(endpoint, params)
+        result = await self._request(endpoint, params, symbol=symbol)
         flows = []
 
         # Handle both list responses and dict with "data" key
@@ -289,7 +362,7 @@ class UnusualWhalesClient:
         endpoint = f"/api/darkpool/{symbol}"
         params = {"limit": limit}
 
-        result = await self._request(endpoint, params)
+        result = await self._request(endpoint, params, symbol=symbol)
         prints = []
 
         # Handle both list responses and dict with "data" key

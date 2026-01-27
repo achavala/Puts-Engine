@@ -21,7 +21,7 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from putsengine.config import Settings, EngineConfig, get_settings
+from putsengine.config import Settings, EngineConfig, get_settings, DynamicUniverseManager
 from putsengine.engine import PutsEngine
 from putsengine.models import PutCandidate, MarketRegimeData, BlockReason
 
@@ -184,6 +184,9 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
     FILTERING RULES:
     - Only show candidates with score > 0 (have actual signals)
     - Sort by score descending (best candidates first)
+    
+    ARCHITECT-4 ADDITION:
+    - Shows DUI badge for dynamically injected tickers (from Distribution/Liquidity engines)
     """
     # Filter: Only include candidates with score > 0
     filtered_candidates = [c for c in candidates if c.get("score", 0) > 0]
@@ -191,18 +194,41 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
     # Sort by score descending
     filtered_candidates.sort(key=lambda x: x.get("score", 0), reverse=True)
     
+    # Get DUI manager for badge display
+    try:
+        dui_manager = DynamicUniverseManager()
+        dynamic_details = dui_manager.get_dynamic_details()
+    except Exception:
+        dynamic_details = {}
+    
     results = []
     for c in filtered_candidates:
+        symbol = c.get("symbol", "N/A")
+        
+        # Check if this symbol is dynamically injected (DUI)
+        dui_info = dynamic_details.get(symbol)
+        dui_badge = ""
+        if dui_info:
+            # Calculate TTL remaining
+            try:
+                from datetime import datetime
+                expires = datetime.strptime(dui_info.get('expires_date', ''), '%Y-%m-%d').date()
+                today = date.today()
+                ttl_days = (expires - today).days
+                dui_badge = f" 🧲 DUI ({ttl_days}d)"
+            except:
+                dui_badge = " 🧲 DUI"
+        
         # Determine PUT type based on engine
         if engine_type == "gamma_drain":
             put_type = "GAMMA DRAIN"
-            signal_type = "🔥 Gamma Drain Signal"
+            signal_type = "🔥 Gamma Drain Signal" + dui_badge
         elif engine_type == "distribution":
             put_type = "DISTRIBUTION TRAP"
-            signal_type = "📉 Distribution Signal"
+            signal_type = "📉 Distribution Signal" + dui_badge
         else:
             put_type = "LIQUIDITY VACUUM"
-            signal_type = "💧 Liquidity Signal"
+            signal_type = "💧 Liquidity Signal" + dui_badge
         
         # Determine flow intent from signals
         signals = c.get("signals", [])

@@ -153,9 +153,25 @@ class EngineConfig:
             "SQ", "PYPL", "AFRM", "UPST", "SOFI", "HOOD", "NU", "BILL", "FOUR",
             "LMND", "ROOT", "HIPO"  # InsurTech - high beta, move with fintech
         ],
-        # Healthcare (5)
+        # Healthcare & Insurance (18) - EXPANDED to include large-cap names
+        # UNH MISS ANALYSIS: Previously only had telehealth plays, missing $400B+ names
         "healthcare": [
-            "HIMS", "TDOC", "OSCR", "AMWL", "TEM"
+            # Telehealth / Digital Health (original)
+            "HIMS", "TDOC", "OSCR", "AMWL", "TEM",
+            # Managed Care / Health Insurance - CRITICAL ADDITIONS
+            "UNH",   # UnitedHealth - $400B+ - CEO murder + DOJ investigation
+            "HUM",   # Humana - Medicare Advantage
+            "CI",    # Cigna - Insurance
+            "ELV",   # Elevance Health (fmr Anthem) - Insurance
+            "CVS",   # CVS Health - Pharmacy + Insurance
+            "CNC",   # Centene - Medicaid managed care
+            "MOH",   # Molina Healthcare - Medicaid
+            # Big Pharma - High volume, event-driven
+            "PFE",   # Pfizer - Pharma
+            "JNJ",   # Johnson & Johnson - Pharma/Medical devices
+            "MRK",   # Merck - Pharma
+            "LLY",   # Eli Lilly - Pharma (GLP-1 drugs)
+            "ABBV",  # AbbVie - Pharma
         ],
         # Industrials (9)
         "industrials": [
@@ -299,6 +315,246 @@ class EngineConfig:
     SECTOR_VELOCITY_BOOST_MIN = 0.05
     SECTOR_VELOCITY_BOOST_MAX = 0.10
     SECTOR_PEER_MIN_SCORE = 0.30  # Peer must have this score to count
+
+    # ============================================================================
+    # ARCHITECT-4 ADDITION: DYNAMIC UNIVERSE INJECTION (DUI)
+    # ============================================================================
+    # 
+    # PURPOSE: Catch moves like PL, CRSP, UUUU that aren't in static universe
+    # but show structural signals (distribution/liquidity) FIRST.
+    #
+    # KEY PRINCIPLE: Dynamic candidates are NOT "top movers" - they are
+    # STRUCTURE-VALIDATED names that Engine 2/3 discovered.
+    #
+    # PIPELINE:
+    #   STATIC_CORE_UNIVERSE
+    #           │
+    #           ▼
+    #   ENGINE 2: DISTRIBUTION  ──┐
+    #   ENGINE 3: LIQUIDITY     ──┤
+    #           │                 │
+    #           ▼                 ▼
+    #   DYNAMIC UNIVERSE INJECTION (DUI)  ← Promotes E2/E3 hits
+    #           │
+    #           ▼
+    #   ENGINE 1: GAMMA DRAIN (CONFIRMATION)
+    #           │
+    #           ▼
+    #   FINAL CANDIDATES
+    #
+    # RULES:
+    # 1. Only Distribution/Liquidity Engine hits can be promoted (NOT momentum)
+    # 2. Minimum score >= 0.30 to promote
+    # 3. TTL = 3 trading days (auto-expire if no Gamma confirmation)
+    # 4. Must be below VWAP for promotion
+    
+    # DUI Configuration
+    DUI_MIN_SCORE_FOR_PROMOTION = 0.30  # Minimum score to promote to dynamic set
+    DUI_TTL_TRADING_DAYS = 3  # Auto-expire after 3 days without confirmation
+    DUI_REQUIRE_BELOW_VWAP = True  # Must be below VWAP to promote
+    
+    # Maximum dynamic universe size (prevent bloat)
+    DUI_MAX_DYNAMIC_SET_SIZE = 50
+    
+    # File to persist dynamic universe across restarts
+    DUI_PERSISTENCE_FILE = "dynamic_universe.json"
+
+
+# ============================================================================
+# DYNAMIC UNIVERSE MANAGER
+# ============================================================================
+class DynamicUniverseManager:
+    """
+    Manages the Dynamic Structural Set (DUI).
+    
+    This is NOT a momentum scanner. It promotes tickers that:
+    1. Have structural signals from Distribution/Liquidity engines
+    2. Meet minimum score threshold (0.30)
+    3. Are below VWAP (optional but recommended)
+    
+    Tickers expire automatically after TTL if not confirmed by Gamma Drain.
+    """
+    
+    _instance = None
+    _dynamic_set: dict = {}  # {symbol: {score, source, added_date, expires_date}}
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._load_persisted()
+        return cls._instance
+    
+    def _load_persisted(self):
+        """Load persisted dynamic universe from file."""
+        import json
+        from pathlib import Path
+        from datetime import datetime
+        
+        persistence_file = Path(EngineConfig.DUI_PERSISTENCE_FILE)
+        if persistence_file.exists():
+            try:
+                with open(persistence_file, 'r') as f:
+                    data = json.load(f)
+                    # Filter out expired entries
+                    today = datetime.now().date().isoformat()
+                    self._dynamic_set = {
+                        symbol: info 
+                        for symbol, info in data.items()
+                        if info.get('expires_date', '') >= today
+                    }
+            except Exception:
+                self._dynamic_set = {}
+        else:
+            self._dynamic_set = {}
+    
+    def _persist(self):
+        """Persist dynamic universe to file."""
+        import json
+        from pathlib import Path
+        
+        persistence_file = Path(EngineConfig.DUI_PERSISTENCE_FILE)
+        with open(persistence_file, 'w') as f:
+            json.dump(self._dynamic_set, f, indent=2)
+    
+    def promote_from_distribution(self, symbol: str, score: float, signals: list = None):
+        """
+        Promote a symbol from Distribution Engine hit.
+        
+        Args:
+            symbol: Ticker symbol
+            score: Distribution score (must be >= 0.30)
+            signals: List of signals detected
+        """
+        self._promote(symbol, score, "distribution", signals or [])
+    
+    def promote_from_liquidity(self, symbol: str, score: float, signals: list = None):
+        """
+        Promote a symbol from Liquidity Engine hit.
+        
+        Args:
+            symbol: Ticker symbol
+            score: Liquidity score (must be >= 0.30)
+            signals: List of signals detected
+        """
+        self._promote(symbol, score, "liquidity", signals or [])
+    
+    def _promote(self, symbol: str, score: float, source: str, signals: list):
+        """Internal promotion logic with debug logging."""
+        from datetime import datetime, timedelta
+        
+        # Check minimum score
+        if score < EngineConfig.DUI_MIN_SCORE_FOR_PROMOTION:
+            return
+        
+        # Check max size
+        if len(self._dynamic_set) >= EngineConfig.DUI_MAX_DYNAMIC_SET_SIZE:
+            # Remove lowest score to make room
+            if symbol not in self._dynamic_set:
+                lowest = min(self._dynamic_set.items(), key=lambda x: x[1].get('score', 0))
+                if lowest[1].get('score', 0) < score:
+                    del self._dynamic_set[lowest[0]]
+                    self._log_promotion(f"DUI: Removed {lowest[0]} (score {lowest[1].get('score', 0):.2f}) to make room")
+                else:
+                    return  # Don't add if lower than all existing
+        
+        # Calculate expiry (TTL in trading days ≈ calendar days + weekends)
+        today = datetime.now().date()
+        # Rough estimate: 3 trading days ≈ 5 calendar days
+        expires = today + timedelta(days=EngineConfig.DUI_TTL_TRADING_DAYS + 2)
+        
+        # Check if new or update
+        is_new = symbol not in self._dynamic_set
+        
+        # Add or update
+        self._dynamic_set[symbol] = {
+            'score': score,
+            'source': source,
+            'signals': signals,
+            'added_date': today.isoformat(),
+            'expires_date': expires.isoformat()
+        }
+        
+        # Log promotion event
+        action = "PROMOTED" if is_new else "UPDATED"
+        signals_str = ', '.join(signals[:3]) if signals else 'none'
+        self._log_promotion(
+            f"DUI: {action} {symbol} | Source: {source} | Score: {score:.2f} | "
+            f"Signals: {signals_str} | Expires: {expires.isoformat()}"
+        )
+        
+        self._persist()
+    
+    def _log_promotion(self, message: str):
+        """Log promotion events to file for debug/audit."""
+        from datetime import datetime
+        from pathlib import Path
+        
+        log_dir = Path("logs")
+        log_dir.mkdir(exist_ok=True)
+        log_file = log_dir / "dui_promotions.log"
+        
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open(log_file, 'a') as f:
+            f.write(f"[{timestamp}] {message}\n")
+    
+    def get_dynamic_set(self) -> set:
+        """Get current dynamic structural set."""
+        self._cleanup_expired()
+        return set(self._dynamic_set.keys())
+    
+    def get_dynamic_details(self) -> dict:
+        """Get full details of dynamic set."""
+        self._cleanup_expired()
+        return dict(self._dynamic_set)
+    
+    def get_final_scan_universe(self) -> set:
+        """
+        Get the final scan universe combining:
+        - Static Core Universe (always-on)
+        - Dynamic Structural Set (promoted from E2/E3 hits)
+        
+        This is what Engine 1 (Gamma Drain) should scan.
+        """
+        static_universe = set(EngineConfig.get_all_tickers())
+        dynamic_universe = self.get_dynamic_set()
+        return static_universe.union(dynamic_universe)
+    
+    def _cleanup_expired(self):
+        """Remove expired entries."""
+        from datetime import datetime
+        
+        today = datetime.now().date().isoformat()
+        expired = [
+            symbol for symbol, info in self._dynamic_set.items()
+            if info.get('expires_date', '') < today
+        ]
+        
+        for symbol in expired:
+            del self._dynamic_set[symbol]
+        
+        if expired:
+            self._persist()
+    
+    def remove(self, symbol: str):
+        """Manually remove a symbol from dynamic set."""
+        if symbol in self._dynamic_set:
+            del self._dynamic_set[symbol]
+            self._persist()
+    
+    def clear(self):
+        """Clear entire dynamic set."""
+        self._dynamic_set = {}
+        self._persist()
+    
+    def is_dynamic(self, symbol: str) -> bool:
+        """Check if symbol is in dynamic set."""
+        return symbol in self._dynamic_set
+    
+    def get_promotion_source(self, symbol: str) -> str:
+        """Get the source that promoted this symbol."""
+        if symbol in self._dynamic_set:
+            return self._dynamic_set[symbol].get('source', 'unknown')
+        return None
 
 
 def get_settings() -> Settings:
