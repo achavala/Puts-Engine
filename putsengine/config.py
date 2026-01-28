@@ -97,102 +97,152 @@ class EngineConfig:
     # Market Regime Gates
     INDEX_SYMBOLS = ["SPY", "QQQ", "IWM"]
 
-    # Universe by Sector
+    # Universe by Sector - EXPANDED Jan 2026 to catch more moves
+    # Previous misses: NET, MP, USAR, LAC, CVNA, UNH
     UNIVERSE_SECTORS = {
         # Mega Cap Tech (15)
         "mega_cap_tech": [
             "AAPL", "MSFT", "GOOGL", "GOOG", "AMZN", "META", "NVDA", "TSLA",
             "AMD", "INTC", "AVGO", "ORCL", "CRM", "ADBE", "NFLX"
         ],
+        # Cloud / SaaS - HIGH PRIORITY (NEW SECTOR - missed NET)
+        "cloud_saas": [
+            "NET",    # Cloudflare - CRITICAL - missed 10% drop
+            "CRWD",   # CrowdStrike
+            "ZS",     # Zscaler
+            "DDOG",   # Datadog
+            "MDB",    # MongoDB
+            "SNOW",   # Snowflake
+            "PANW",   # Palo Alto Networks
+            "FTNT",   # Fortinet
+            "OKTA",   # Okta
+            "NOW",    # ServiceNow
+            "WDAY",   # Workday
+            "TEAM",   # Atlassian
+            "HUBS",   # HubSpot
+            "TWLO",   # Twilio
+            "ZM",     # Zoom
+            "DOCU",   # DocuSign
+        ],
         # High Vol Tech (15)
         "high_vol_tech": [
-            "SMCI", "PLTR", "SNOW", "COIN", "HOOD", "SOFI", "PATH", "MSTR",
+            "SMCI", "PLTR", "COIN", "HOOD", "SOFI", "PATH", "MSTR",
             "UPST", "AFRM", "RBLX", "DKNG", "RIVN", "LCID", "NIO"
         ],
-        # Space & Aerospace (14) - Added eVTOL names
+        # Materials / Mining / Rare Earth - NEW SECTOR (missed MP, USAR, LAC)
+        "materials_mining": [
+            "MP",     # MP Materials - CRITICAL - missed 10%+ AH drop
+            "USAR",   # USA Rare Earth - CRITICAL - missed 17%+ drop
+            "LAC",    # Lithium Americas - CRITICAL - missed 13% drop
+            "ALB",    # Albemarle - Lithium
+            "SQM",    # Sociedad Quimica - Lithium
+            "LTHM",   # Livent - Lithium
+            "FCX",    # Freeport McMoRan - Copper
+            "NEM",    # Newmont Mining - Gold
+            "GOLD",   # Barrick Gold
+            "AA",     # Alcoa - Aluminum
+            "X",      # US Steel
+            "NUE",    # Nucor Steel
+            "CLF",    # Cleveland Cliffs - Iron ore
+            "VALE",   # Vale - Iron ore/Nickel
+            "RIO",    # Rio Tinto
+            "BHP",    # BHP Group
+        ],
+        # Auto / Used Cars / EV - NEW SECTOR (missed CVNA)
+        "auto_retail": [
+            "CVNA",   # Carvana - CRITICAL - missed 14% drop
+            "KMX",    # CarMax
+            "AN",     # AutoNation
+            "PAG",    # Penske Auto
+            "LAD",    # Lithia Motors
+            "CPRT",   # Copart - Auto auctions
+            "IAA",    # IAA Inc
+            "VRM",    # Vroom (if still trading)
+            "LOTZ",   # CarLotz
+        ],
+        # Space & Aerospace (15) - Added eVTOL names
         "space_aerospace": [
             "RKLB", "ASTS", "SPCE", "PL", "RDW", "LUNR", "BA", "LMT", "RTX", "NOC",
-            "ACHR", "JOBY", "LILM", "EVTL"  # eVTOL - often move together with space
+            "ACHR", "JOBY", "LILM", "EVTL", "GE"
         ],
-        # Nuclear & Energy (12) - Added UUUU, DNN
+        # Nuclear & Energy (14) - Added more uranium
         "nuclear_energy": [
             "OKLO", "SMR", "CCJ", "LEU", "NNE", "CEG", "VST", "NRG", "FSLR", "ENPH",
-            "UUUU", "DNN"  # Uranium plays - CRITICAL for sector moves
+            "UUUU", "DNN", "UEC", "URG"
         ],
         # Quantum Computing (4)
         "quantum": [
             "IONQ", "RGTI", "QBTS", "QUBT"
         ],
-        # AI & Data Centers (12)
+        # AI & Data Centers (15)
         "ai_datacenters": [
             "IREN", "NBIS", "APLD", "CLSK", "HUT", "MARA", "RIOT", "CIFR",
-            "APP", "AI", "BBAI", "SOUN"
+            "APP", "AI", "BBAI", "SOUN", "PLTR", "PATH", "AISP"
         ],
-        # Biotech (10)
+        # Biotech (12)
         "biotech": [
             "MRNA", "BNTX", "NVAX", "VRTX", "REGN", "ILMN", "CRSP", "EDIT",
-            "NTLA", "BEAM"
+            "NTLA", "BEAM", "EXAS", "ISRG"
         ],
         # Crypto Related (10)
         "crypto": [
             "MSTR", "COIN", "MARA", "RIOT", "HUT", "CLSK", "CIFR", "GLXY",
             "BITF", "WULF"
         ],
-        # Semiconductors (20)
+        # Semiconductors (22)
         "semiconductors": [
             "NVDA", "AMD", "INTC", "MU", "AVGO", "QCOM", "TSM", "ASML", "AMAT",
             "LRCX", "KLAC", "MRVL", "ON", "SWKS", "STX", "WDC", "CRDO", "ALAB",
-            "RMBS", "CLS"
+            "RMBS", "CLS", "ARM", "WOLF"
         ],
         # Meme Stocks (6)
         "meme": [
             "GME", "AMC", "BBBY", "BB", "KOSS", "CLOV"
         ],
-        # Fintech & InsurTech (12) - Added LMND, ROOT, HIPO
+        # Fintech & InsurTech (12)
         "fintech": [
             "SQ", "PYPL", "AFRM", "UPST", "SOFI", "HOOD", "NU", "BILL", "FOUR",
-            "LMND", "ROOT", "HIPO"  # InsurTech - high beta, move with fintech
+            "LMND", "ROOT", "HIPO"
         ],
-        # Healthcare & Insurance (18) - EXPANDED to include large-cap names
-        # UNH MISS ANALYSIS: Previously only had telehealth plays, missing $400B+ names
+        # Healthcare & Insurance (18)
         "healthcare": [
-            # Telehealth / Digital Health (original)
             "HIMS", "TDOC", "OSCR", "AMWL", "TEM",
-            # Managed Care / Health Insurance - CRITICAL ADDITIONS
-            "UNH",   # UnitedHealth - $400B+ - CEO murder + DOJ investigation
-            "HUM",   # Humana - Medicare Advantage
-            "CI",    # Cigna - Insurance
-            "ELV",   # Elevance Health (fmr Anthem) - Insurance
-            "CVS",   # CVS Health - Pharmacy + Insurance
-            "CNC",   # Centene - Medicaid managed care
-            "MOH",   # Molina Healthcare - Medicaid
-            # Big Pharma - High volume, event-driven
-            "PFE",   # Pfizer - Pharma
-            "JNJ",   # Johnson & Johnson - Pharma/Medical devices
-            "MRK",   # Merck - Pharma
-            "LLY",   # Eli Lilly - Pharma (GLP-1 drugs)
-            "ABBV",  # AbbVie - Pharma
+            "UNH", "HUM", "CI", "ELV", "CVS", "CNC", "MOH",
+            "PFE", "JNJ", "MRK", "LLY", "ABBV",
         ],
-        # Industrials (9)
+        # Industrials / Clean Energy (12)
         "industrials": [
-            "INOD", "BE", "PLUG", "FCEL", "BLDP", "TLN", "GEV", "AMSC", "LTBR"
+            "INOD", "BE", "PLUG", "FCEL", "BLDP", "TLN", "GEV", "AMSC", "LTBR",
+            "CAT", "DE", "CMI"
         ],
-        # Major ETFs (10)
+        # Major ETFs (12)
         "etfs": [
-            "SPY", "QQQ", "IWM", "DIA", "TQQQ", "SQQQ", "ARKK", "XLF", "XLE", "XLK"
+            "SPY", "QQQ", "IWM", "DIA", "TQQQ", "SQQQ", "ARKK", "XLF", "XLE", "XLK",
+            "XLB", "XLI"
         ],
-        # Financials (9)
+        # Financials (12)
         "financials": [
-            "JPM", "BAC", "GS", "MS", "V", "MA", "AXP", "C", "WFC"
+            "JPM", "BAC", "GS", "MS", "V", "MA", "AXP", "C", "WFC", "BRK.B",
+            "SCHW", "USB"
         ],
-        # Consumer (10)
+        # Consumer / Retail (15)
         "consumer": [
-            "DIS", "NFLX", "SBUX", "NKE", "MCD", "TGT", "WMT", "COST", "HD", "LOW"
+            "DIS", "NFLX", "SBUX", "NKE", "MCD", "TGT", "WMT", "COST", "HD", "LOW",
+            "AMZN", "BABA", "JD", "PDD", "EBAY"
         ],
-        # Telecom & Wireless (6) - Added ONDS
+        # Telecom & Wireless (6)
         "telecom": [
-            "T", "VZ", "TMUS", "CMCSA",
-            "ONDS", "GSAT"  # Wireless/satellite
+            "T", "VZ", "TMUS", "CMCSA", "ONDS", "GSAT"
+        ],
+        # Travel / Airlines / Leisure (12) - NEW SECTOR
+        "travel": [
+            "DAL", "UAL", "AAL", "LUV", "JBLU",
+            "CCL", "RCL", "NCLH",
+            "MAR", "HLT", "ABNB", "BKNG"
+        ],
+        # China ADRs (10) - NEW SECTOR - volatile on tariff news
+        "china_adr": [
+            "BABA", "JD", "PDD", "BIDU", "NIO", "XPEV", "LI", "BILI", "TME", "IQ"
         ],
     }
 
@@ -280,9 +330,17 @@ class EngineConfig:
         # Quantum computing - correlated
         "quantum": ["IONQ", "RGTI", "QBTS", "QUBT"],
         # Nuclear / Uranium - correlated
-        "nuclear": ["UUUU", "CCJ", "LEU", "DNN", "SMR", "OKLO"],
+        "nuclear": ["UUUU", "CCJ", "LEU", "DNN", "SMR", "OKLO", "UEC", "URG"],
         # Meme stocks - sentiment driven
         "meme": ["GME", "AMC", "BBBY", "BB", "KOSS", "CLOV"],
+        # Rare Earth / Materials - move together on China news
+        "rare_earth": ["MP", "USAR", "LAC", "ALB", "LTHM", "SQM"],
+        # Cloud/Cybersecurity - correlated
+        "cloud_security": ["NET", "CRWD", "ZS", "PANW", "FTNT", "OKTA"],
+        # China ADRs - move together on tariff/policy news
+        "china_adr": ["BABA", "JD", "PDD", "BIDU", "NIO", "XPEV", "LI"],
+        # Used car / Auto retail - correlated
+        "auto_retail": ["CVNA", "KMX", "AN", "VRM"],
     }
     
     # Flatten all high-beta tickers for quick lookup
