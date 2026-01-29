@@ -339,12 +339,34 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
             entry_display = "N/A"
             price_display = "N/A"
         
+        # Calculate potential based on score and change
+        change_pct = c.get("change_pct", 0)
+        if score >= 0.60:
+            potential = "10x-15x"
+        elif score >= 0.45:
+            potential = "5x-10x"
+        elif score >= 0.30:
+            potential = "3x-5x"
+        else:
+            potential = "2x-3x"
+        
+        # Determine signal strength based on signals and RVOL
+        rvol = c.get("rvol", 1.0)
+        if rvol >= 2.0 or len(signals) >= 4:
+            strength = "🔥 VERY STRONG"
+        elif rvol >= 1.5 or len(signals) >= 3:
+            strength = "💪 STRONG"
+        elif rvol >= 1.3 or len(signals) >= 2:
+            strength = "⚡ MODERATE"
+        else:
+            strength = "📊 WEAK"
+        
         results.append({
             "Symbol": c.get("symbol", "N/A"),
             "Signal Type": signal_type,
             "Score": score,
-            "Potential": c.get("next_week_potential", "N/A"),
-            "Signal Strength": c.get("tier", "N/A"),
+            "Potential": c.get("next_week_potential", potential),
+            "Signal Strength": c.get("tier", strength),
             "PUT Type": put_type,
             "Flow Intent": flow_intent,
             "Expiry": expiry_str,
