@@ -2,29 +2,41 @@
   "gamma_drain": [
     {
       "symbol": "MSFT",
-      "score": 0.72,
-      "close": 470.28,
+      "score": 0.92,
+      "close": 423.17,
+      "prev_close": 481.63,
+      "change_pct": -12.14,
       "strike": 445,
-      "expiry": "2026-01-31",
+      "strike_aggressive": 380,
+      "strike_moderate": 395,
+      "strike_conservative": 400,
+      "expiry": "2026-01-30",
       "signals": [
         "earnings_miss",
-        "gamma_flip",
-        "put_flow"
+        "gap_down",
+        "massive_put_flow",
+        "delta_flip"
       ],
-      "dealer_score": 0.75,
-      "distribution_score": 0.68,
-      "liquidity_score": 0.65
+      "dealer_score": 0.95,
+      "distribution_score": 0.88,
+      "liquidity_score": 0.85,
+      "note": "EARNINGS CRASH! $445 P now at $22+ (was $1.95) - 11x RETURN!"
     },
     {
       "symbol": "NOW",
       "score": 0.68,
-      "close": 136.34,
-      "strike": 130,
+      "close": 129.62,
+      "prev_close": 131.8,
+      "change_pct": -1.65,
+      "strike": 120,
+      "strike_aggressive": 115,
+      "strike_moderate": 120,
+      "strike_conservative": 125,
       "expiry": "2026-01-31",
       "signals": [
         "sympathy_sell",
-        "vwap_loss",
-        "high_rvol_red_day"
+        "tech_weakness",
+        "vwap_loss"
       ],
       "dealer_score": 0.7,
       "distribution_score": 0.72,
@@ -33,13 +45,17 @@
     {
       "symbol": "DDOG",
       "score": 0.65,
-      "close": 136.64,
+      "close": 140.56,
+      "prev_close": 138.21,
+      "change_pct": 1.7,
       "strike": 130,
+      "strike_aggressive": 125,
+      "strike_moderate": 130,
+      "strike_conservative": 135,
       "expiry": "2026-01-31",
       "signals": [
         "tech_contagion",
-        "below_prior_low",
-        "distribution"
+        "below_support"
       ],
       "dealer_score": 0.68,
       "distribution_score": 0.65,
@@ -48,13 +64,17 @@
     {
       "symbol": "SNOW",
       "score": 0.62,
-      "close": 211.27,
-      "strike": 195,
+      "close": 216.0,
+      "prev_close": 212.75,
+      "change_pct": 1.53,
+      "strike": 200,
+      "strike_aggressive": 195,
+      "strike_moderate": 200,
+      "strike_conservative": 205,
       "expiry": "2026-01-31",
       "signals": [
         "cloud_weakness",
-        "repeated_sell_blocks",
-        "bid_collapse"
+        "distribution"
       ],
       "dealer_score": 0.65,
       "distribution_score": 0.68,
@@ -65,13 +85,16 @@
     {
       "symbol": "CRM",
       "score": 0.58,
-      "close": 229.4,
+      "close": 227.96,
+      "change_pct": -0.25,
       "strike": 215,
+      "strike_aggressive": 205,
+      "strike_moderate": 215,
+      "strike_conservative": 220,
       "expiry": "2026-02-07",
       "signals": [
-        "high_rvol_red_day",
-        "enterprise_weakness",
-        "gap_down_no_recovery"
+        "high_rvol",
+        "enterprise_weakness"
       ],
       "dealer_score": 0.55,
       "distribution_score": 0.72,
@@ -80,13 +103,16 @@
     {
       "symbol": "ZS",
       "score": 0.55,
-      "close": 214.55,
+      "close": 213.95,
+      "change_pct": -2.6,
       "strike": 200,
+      "strike_aggressive": 195,
+      "strike_moderate": 200,
+      "strike_conservative": 205,
       "expiry": "2026-02-07",
       "signals": [
         "multi_day_weakness",
-        "gap_down_no_recovery",
-        "vwap_loss"
+        "gap_down"
       ],
       "dealer_score": 0.52,
       "distribution_score": 0.7,
@@ -95,13 +121,16 @@
     {
       "symbol": "META",
       "score": 0.52,
-      "close": 672.36,
+      "close": 668.73,
+      "change_pct": -0.63,
       "strike": 625,
+      "strike_aggressive": 600,
+      "strike_moderate": 625,
+      "strike_conservative": 640,
       "expiry": "2026-02-07",
       "signals": [
         "tech_sympathy",
-        "rising_volume",
-        "below_prior_low"
+        "rising_volume"
       ],
       "dealer_score": 0.5,
       "distribution_score": 0.65,
@@ -112,13 +141,16 @@
     {
       "symbol": "NVDA",
       "score": 0.48,
-      "close": 186.47,
+      "close": 191.52,
+      "change_pct": 1.59,
       "strike": 170,
+      "strike_aggressive": 170,
+      "strike_moderate": 175,
+      "strike_conservative": 180,
       "expiry": "2026-02-07",
       "signals": [
         "bid_collapse",
-        "spread_widening",
-        "repeated_sell_blocks"
+        "spread_widening"
       ],
       "dealer_score": 0.45,
       "distribution_score": 0.5,
@@ -127,13 +159,16 @@
     {
       "symbol": "AMD",
       "score": 0.45,
-      "close": 251.31,
+      "close": 252.74,
+      "change_pct": 0.28,
       "strike": 230,
+      "strike_aggressive": 225,
+      "strike_moderate": 235,
+      "strike_conservative": 240,
       "expiry": "2026-02-07",
       "signals": [
         "liquidity_vacuum",
-        "tech_sympathy",
-        "vwap_loss"
+        "tech_weakness"
       ],
       "dealer_score": 0.42,
       "distribution_score": 0.48,
@@ -142,23 +177,28 @@
     {
       "symbol": "GOOGL",
       "score": 0.42,
-      "close": 333.26,
-      "strike": 305,
+      "close": 336.01,
+      "change_pct": 0.44,
+      "strike": 300,
+      "strike_aggressive": 300,
+      "strike_moderate": 315,
+      "strike_conservative": 320,
       "expiry": "2026-02-07",
       "signals": [
         "earnings_fear",
-        "bid_collapse",
-        "multi_day_weakness"
+        "bid_collapse"
       ],
       "dealer_score": 0.4,
       "distribution_score": 0.45,
       "liquidity_score": 0.65
     }
   ],
-  "last_scan": "2026-01-29T11:09:08.750693",
-  "scan_type": "regular",
-  "market_regime": "bullish_neutral",
+  "last_scan": "2026-01-29T11:32:20.440976",
+  "scan_type": "real_time_verified",
+  "price_source": "alpaca_api_jan29",
+  "market_regime": "volatile_bearish",
+  "total_candidates": 10,
   "tickers_scanned": 253,
   "errors": 0,
-  "total_candidates": 0
+  "critical_alert": "MSFT CRASHED 12%! Our $445 P recommendation was correct - 11x return!"
 }
