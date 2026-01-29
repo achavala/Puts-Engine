@@ -203,96 +203,86 @@ OKLO gapped up 10.7% but only scored 0.30.
 
 ---
 
-## 🛠️ RECOMMENDED FIXES
+## 🛠️ ARCHITECT-4 VALIDATED FIXES
 
-### Fix 1: Lower Score Threshold for Key Signals
+### Core Principle: Permission > Prediction
+
+Lead signals (MDW, exhaustion, gap-reversal) are **DISCOVERY ONLY**.
+They inject into DUI as WATCHING, NOT direct trades.
+
+### Fix 1: Lead Signals → DUI Injection (NOT Score Boost)
 
 ```python
-# In scoring module
-SIGNAL_OVERRIDE_THRESHOLD = {
-    "vwap_loss": 0.15,  # Was requiring 0.25+
-    "is_post_earnings_negative": 0.15,
-    "multi_day_weakness": 0.20,
-    "gap_up_reversal": 0.20,
+# Lead signals contribute LOWER scores - they're awareness, not permission
+# These cap at WATCHING level (0.30) without confirmation
+LEAD_SIGNALS = {
+    "multi_day_weakness": 0.10,    # REDUCED - discovery only
+    "exhaustion_move": 0.10,       # REDUCED - discovery only
+    "gap_up_reversal": 0.12,       # REDUCED - discovery only
 }
+
+# If lead-only (no confirmation), cap at WATCHING
+if has_lead_signal and not has_confirmation_signal:
+    score = min(score, 0.30)  # Cannot trigger trades alone
 ```
 
-### Fix 2: Enhanced Multi-Day Weakness Detector
+### Fix 2: Trade Class Determination
+
+```python
+# Lead signals alone → WATCHING/DUI injection only
+# Lead + Confirmation → Class B (small, 1-2 contracts)
+# Lead + Confirmation + Gamma → Class A (full size)
+
+signal.signals["_has_lead_signal"] = has_lead_signal
+signal.signals["_has_confirmation_signal"] = has_confirmation_signal
+signal.signals["_lead_only"] = has_lead_signal and not has_confirmation_signal
+```
+
+### Fix 3: Enhanced Detection (Still Discovery)
 
 ```python
 def detect_multi_day_weakness(bars):
     """Detect 3+ days of consecutive decline."""
-    if len(bars) < 4:
-        return False, 0
-    
-    closes = [b.close for b in bars[-4:]]
-    
-    # Check for consecutive lower closes
-    consecutive_down = all(closes[i] < closes[i-1] for i in range(1, len(closes)))
-    
-    # Check for significant decline
-    total_decline = (closes[-1] - closes[0]) / closes[0]
-    
-    if consecutive_down and total_decline < -0.03:  # 3% decline
-        return True, abs(total_decline) * 10  # Score boost
-    
-    return False, 0
+    # NEW: Also catches 3%+ decline over 4 days (NOW, TEAM pattern)
+    if decline_pct < -0.03:
+        return True  # But only contributes 0.10 to score!
 ```
 
-### Fix 3: Parabolic Move / Exhaustion Detector
+### Fix 4: Earnings Contagion as WEATHER (Not Signal)
 
 ```python
-def detect_exhaustion(bars):
-    """Detect parabolic moves that are likely to reverse."""
-    if len(bars) < 4:
-        return False, 0
-    
-    first_close = bars[-4].close
-    last_close = bars[-1].close
-    gain_4d = (last_close - first_close) / first_close
-    
-    # Flag >8% gain in 4 days as exhaustion
-    if gain_4d > 0.08:
-        return True, min(gain_4d * 5, 0.40)  # Max 0.40 boost
-    
-    return False, 0
-```
+# This is NOT a trading signal. This is WEATHER.
+# It creates AWARENESS, not trades.
 
-### Fix 4: Earnings Contagion Alert System
-
-```python
-EARNINGS_SYMPATHY_MAP = {
-    "MSFT": ["NOW", "TEAM", "TWLO", "WDAY", "CRM", "SNOW", "DDOG"],
-    "AAPL": ["QCOM", "TSM", "AVGO", "SWKS"],
-    "NVDA": ["AMD", "MU", "MRVL", "SMCI", "ARM"],
-    "GOOGL": ["META", "SNAP", "PINS", "TTD"],
-}
-
-async def check_earnings_contagion(symbol, drop_pct):
-    """Alert sympathy names when mega-cap crashes."""
-    if symbol in EARNINGS_SYMPATHY_MAP and drop_pct < -5:
-        sympathy_names = EARNINGS_SYMPATHY_MAP[symbol]
-        return {
-            "alert": "EARNINGS_CONTAGION",
-            "trigger": symbol,
-            "drop": drop_pct,
-            "at_risk": sympathy_names,
-            "action": "Consider puts on sympathy names"
-        }
+class EarningsContagionAlert:
+    """
+    When mega-cap earnings trigger sector-wide liquidation:
+    - DETECT the trigger (MSFT -12%)
+    - ALERT on sympathy names
+    - INJECT into DUI as WATCHING (0.25-0.30)
+    - NEVER boost scores directly
+    
+    Max trade class without Gamma: CLASS B (1-2 contracts)
+    """
 ```
 
 ---
 
-## 📋 ACTION ITEMS
+## 📋 ACTION ITEMS (ARCHITECT-4 VALIDATED)
 
-| Priority | Task | Impact |
-|----------|------|--------|
-| P1 | Lower score threshold to 0.15 for VWAP loss | Would have caught MSTR |
-| P1 | Fix multi-day weakness detector | Would have caught NOW, TEAM |
-| P1 | Add exhaustion/parabolic detector | Would have caught CLS, OKLO |
-| P1 | Add earnings contagion system | Would alert on sympathy plays |
-| P2 | Add NOK, BMNR to universe | Expand coverage |
-| P2 | Add pre-earnings expected move | Better earnings handling |
+| Priority | Task | Approach | Impact |
+|----------|------|----------|--------|
+| ✅ P1 | Add MDW as lead signal | Discovery only, DUI injection | Awareness for NOW, TEAM |
+| ✅ P1 | Add exhaustion detector | Discovery only, DUI injection | Awareness for CLS, OKLO |
+| ✅ P1 | Add gap-up reversal | Discovery only, capped score | Awareness for FSLR |
+| ✅ P1 | Earnings contagion alert | WEATHER, not signal | Sympathy awareness |
+| ✅ P2 | Add NOK, BMNR to universe | Expand coverage | Universe gap fixed |
+| ⏳ P2 | Integrate contagion into scheduler | DUI injection on alert | Auto-watch sympathy names |
+
+### Key Constraint (NEVER VIOLATE):
+- Lead signals NEVER create Class A trades
+- Lead signals + Liquidity → Class B (small)
+- Lead signals + Gamma → Class A (full)
 
 ---
 
