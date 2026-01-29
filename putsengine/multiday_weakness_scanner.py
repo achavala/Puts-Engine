@@ -71,7 +71,13 @@ class WeaknessReport:
     
     @property
     def is_actionable(self) -> bool:
-        return self.total_score >= 0.30 and self.signal_count >= 2
+        # P3 TUNING: Lower threshold for "accelerating" weakness
+        # 2 days weak + volume spike = high risk
+        # Original: 0.30 and 2 signals
+        # New: 0.20 and 2 signals OR 0.15 and 3+ signals
+        if self.signal_count >= 3:
+            return self.total_score >= 0.15  # Lower threshold for 3+ patterns
+        return self.total_score >= 0.20 and self.signal_count >= 2  # Slightly lower for 2 patterns
 
 
 class MultiDayWeaknessScanner:

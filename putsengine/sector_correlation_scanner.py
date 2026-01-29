@@ -64,6 +64,12 @@ CORRELATED_SECTORS = {
         "keywords": ["cybersecurity", "cloud", "breach", "hack"],
         "correlation_strength": 0.70,
     },
+    "cloud_saas": {
+        "leaders": ["MSFT", "NOW"],  # Largest caps, move first
+        "followers": ["TEAM", "WDAY", "TWLO", "CRM", "SNOW", "DDOG"],
+        "keywords": ["enterprise software", "saas", "cloud", "subscription"],
+        "correlation_strength": 0.85,  # High correlation - earnings contagion
+    },
     "nuclear_uranium": {
         "leaders": ["CCJ", "UUUU"],
         "followers": ["LEU", "DNN", "UEC", "URG", "SMR", "OKLO"],
