@@ -5,11 +5,11 @@
       "score": 0.65,
       "tier": "\ud83d\udcaa STRONG",
       "engine_type": "gamma_drain",
-      "current_price": 113.71,
-      "close": 113.71,
-      "change_pct": -12.27,
-      "volume": 43103773.0,
-      "rvol": 1.7,
+      "current_price": 114.17,
+      "close": 114.17,
+      "change_pct": -11.92,
+      "volume": 46133445.0,
+      "rvol": 1.75,
       "signals": [
         "high_rvol_red_day",
         "gap_down",
@@ -20,20 +20,20 @@
       "signal_count": 5,
       "expiry": "Jan 30",
       "dte": 1,
-      "scan_time": "14:52 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194025"
+      "timestamp": "2026-01-29T15:24:07.474452"
     },
     {
       "symbol": "MSFT",
       "score": 0.55,
       "tier": "\ud83d\udcaa STRONG",
       "engine_type": "gamma_drain",
-      "current_price": 423.76,
-      "close": 423.76,
-      "change_pct": -12.02,
-      "volume": 95946009.0,
-      "rvol": 1.78,
+      "current_price": 425.93,
+      "close": 425.93,
+      "change_pct": -11.56,
+      "volume": 100566518.0,
+      "rvol": 1.81,
       "signals": [
         "high_rvol_red_day",
         "gap_down",
@@ -43,20 +43,20 @@
       "signal_count": 4,
       "expiry": "Jan 30",
       "dte": 1,
-      "scan_time": "14:52 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.193982"
+      "timestamp": "2026-01-29T15:24:07.474424"
     },
     {
       "symbol": "TEAM",
       "score": 0.55,
       "tier": "\ud83d\udcaa STRONG",
       "engine_type": "gamma_drain",
-      "current_price": 118.35,
-      "close": 118.35,
-      "change_pct": -12.18,
-      "volume": 7116719.0,
-      "rvol": 1.53,
+      "current_price": 119.16,
+      "close": 119.16,
+      "change_pct": -11.58,
+      "volume": 7540378.0,
+      "rvol": 1.58,
       "signals": [
         "high_rvol_red_day",
         "gap_down",
@@ -66,20 +66,20 @@
       "signal_count": 4,
       "expiry": "Jan 30",
       "dte": 1,
-      "scan_time": "14:52 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194059"
+      "timestamp": "2026-01-29T15:24:07.474471"
     },
     {
       "symbol": "WDAY",
       "score": 0.55,
       "tier": "\ud83d\udcaa STRONG",
       "engine_type": "gamma_drain",
-      "current_price": 172.78,
-      "close": 172.78,
-      "change_pct": -8.64,
-      "volume": 7467761.0,
-      "rvol": 1.62,
+      "current_price": 173.31,
+      "close": 173.31,
+      "change_pct": -8.36,
+      "volume": 8172479.0,
+      "rvol": 1.69,
       "signals": [
         "high_rvol_red_day",
         "gap_down",
@@ -89,20 +89,20 @@
       "signal_count": 4,
       "expiry": "Jan 30",
       "dte": 1,
-      "scan_time": "14:52 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194114"
+      "timestamp": "2026-01-29T15:24:07.474506"
     },
     {
       "symbol": "CLS",
       "score": 0.55,
       "tier": "\ud83d\udcaa STRONG",
       "engine_type": "gamma_drain",
-      "current_price": 293.07,
-      "close": 293.07,
-      "change_pct": -15.11,
-      "volume": 7078478.0,
-      "rvol": 1.34,
+      "current_price": 295.6,
+      "close": 295.6,
+      "change_pct": -14.38,
+      "volume": 7616943.0,
+      "rvol": 1.4,
       "signals": [
         "high_rvol_red_day",
         "gap_down",
@@ -112,87 +112,20 @@
       "signal_count": 4,
       "expiry": "Jan 30",
       "dte": 1,
-      "scan_time": "14:52 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194139"
-    },
-    {
-      "symbol": "MSTR",
-      "score": 0.55,
-      "tier": "\ud83d\udcaa STRONG",
-      "engine_type": "gamma_drain",
-      "current_price": 141.03,
-      "close": 141.03,
-      "change_pct": -10.99,
-      "volume": 24506513.0,
-      "rvol": 1.4,
-      "signals": [
-        "high_rvol_red_day",
-        "gap_down",
-        "multi_day_weakness",
-        "vwap_loss"
-      ],
-      "signal_count": 4,
-      "expiry": "Jan 30",
-      "dte": 1,
-      "scan_time": "14:52 ET",
-      "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194219"
-    },
-    {
-      "symbol": "FSLR",
-      "score": 0.45,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "gamma_drain",
-      "current_price": 221.49,
-      "close": 221.49,
-      "change_pct": -11.19,
-      "volume": 3975187.0,
-      "rvol": 1.43,
-      "signals": [
-        "high_rvol_red_day",
-        "gap_down",
-        "vwap_loss"
-      ],
-      "signal_count": 3,
-      "expiry": "Jan 30",
-      "dte": 1,
-      "scan_time": "14:52 ET",
-      "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194164"
-    },
-    {
-      "symbol": "SNOW",
-      "score": 0.45,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "gamma_drain",
-      "current_price": 197.29,
-      "close": 197.29,
-      "change_pct": -8.66,
-      "volume": 6002778.0,
-      "rvol": 1.32,
-      "signals": [
-        "high_rvol_red_day",
-        "gap_down",
-        "vwap_loss"
-      ],
-      "signal_count": 3,
-      "expiry": "Jan 30",
-      "dte": 1,
-      "scan_time": "14:52 ET",
-      "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194547"
+      "timestamp": "2026-01-29T15:24:07.474523"
     },
     {
       "symbol": "TWLO",
       "score": 0.35,
       "tier": "\ud83d\udfe1 CLASS B",
       "engine_type": "gamma_drain",
-      "current_price": 121.83,
-      "close": 121.83,
-      "change_pct": -10.33,
-      "volume": 2027760.0,
-      "rvol": 1.0,
+      "current_price": 122.82,
+      "close": 122.82,
+      "change_pct": -9.6,
+      "volume": 2389177.0,
+      "rvol": 1.12,
       "signals": [
         "gap_down",
         "earnings_contagion",
@@ -201,138 +134,9 @@
       "signal_count": 3,
       "expiry": "Jan 30",
       "dte": 1,
-      "scan_time": "14:52 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194085"
-    },
-    {
-      "symbol": "CRM",
-      "score": 0.35,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "gamma_drain",
-      "current_price": 211.44,
-      "close": 211.44,
-      "change_pct": -7.25,
-      "volume": 13681776.0,
-      "rvol": 1.28,
-      "signals": [
-        "gap_down",
-        "multi_day_weakness",
-        "vwap_loss"
-      ],
-      "signal_count": 3,
-      "expiry": "Jan 30",
-      "dte": 1,
-      "scan_time": "14:52 ET",
-      "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194478"
-    },
-    {
-      "symbol": "ZS",
-      "score": 0.35,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "gamma_drain",
-      "current_price": 199.16,
-      "close": 199.16,
-      "change_pct": -6.91,
-      "volume": 1760592.0,
-      "rvol": 0.8,
-      "signals": [
-        "gap_down",
-        "multi_day_weakness",
-        "vwap_loss"
-      ],
-      "signal_count": 3,
-      "expiry": "Jan 30",
-      "dte": 1,
-      "scan_time": "14:52 ET",
-      "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194581"
-    },
-    {
-      "symbol": "COIN",
-      "score": 0.35,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "gamma_drain",
-      "current_price": 196.86,
-      "close": 196.86,
-      "change_pct": -6.0,
-      "volume": 11195441.0,
-      "rvol": 1.21,
-      "signals": [
-        "gap_down",
-        "multi_day_weakness",
-        "vwap_loss"
-      ],
-      "signal_count": 3,
-      "expiry": "Jan 30",
-      "dte": 1,
-      "scan_time": "14:52 ET",
-      "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194659"
-    },
-    {
-      "symbol": "OKLO",
-      "score": 0.25,
-      "tier": "\ud83d\udcca WATCHING",
-      "engine_type": "gamma_drain",
-      "current_price": 85.39,
-      "close": 85.39,
-      "change_pct": -9.53,
-      "volume": 11082205.0,
-      "rvol": 0.87,
-      "signals": [
-        "gap_down",
-        "vwap_loss"
-      ],
-      "signal_count": 2,
-      "expiry": "Jan 30",
-      "dte": 1,
-      "scan_time": "14:52 ET",
-      "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194188"
-    },
-    {
-      "symbol": "AI",
-      "score": 0.25,
-      "tier": "\ud83d\udcca WATCHING",
-      "engine_type": "gamma_drain",
-      "current_price": 12.12,
-      "close": 12.12,
-      "change_pct": -7.65,
-      "volume": 7944020.0,
-      "rvol": 0.76,
-      "signals": [
-        "gap_down",
-        "vwap_loss"
-      ],
-      "signal_count": 2,
-      "expiry": "Jan 30",
-      "dte": 1,
-      "scan_time": "14:52 ET",
-      "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194315"
-    },
-    {
-      "symbol": "DDOG",
-      "score": 0.25,
-      "tier": "\ud83d\udcca WATCHING",
-      "engine_type": "gamma_drain",
-      "current_price": 127.17,
-      "close": 127.17,
-      "change_pct": -9.53,
-      "volume": 6099507.0,
-      "rvol": 0.99,
-      "signals": [
-        "gap_down",
-        "vwap_loss"
-      ],
-      "signal_count": 2,
-      "expiry": "Jan 30",
-      "dte": 1,
-      "scan_time": "14:52 ET",
-      "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:52:49.194517"
+      "timestamp": "2026-01-29T15:24:07.474489"
     }
   ],
   "distribution": [
@@ -353,9 +157,9 @@
       "signal_count": 2,
       "expiry": "Feb 07",
       "dte": 9,
-      "scan_time": "14:53 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:53:40.189644"
+      "timestamp": "2026-01-29T15:24:06.619400"
     },
     {
       "symbol": "ZS",
@@ -374,9 +178,9 @@
       "signal_count": 2,
       "expiry": "Feb 07",
       "dte": 9,
-      "scan_time": "14:53 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:53:40.189649"
+      "timestamp": "2026-01-29T15:24:06.619405"
     },
     {
       "symbol": "FSLR",
@@ -395,9 +199,9 @@
       "signal_count": 2,
       "expiry": "Feb 07",
       "dte": 9,
-      "scan_time": "14:53 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:53:40.189652"
+      "timestamp": "2026-01-29T15:24:06.619408"
     }
   ],
   "liquidity": [
@@ -418,9 +222,9 @@
       "signal_count": 2,
       "expiry": "Feb 07",
       "dte": 9,
-      "scan_time": "14:53 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:53:40.189655"
+      "timestamp": "2026-01-29T15:24:06.619412"
     },
     {
       "symbol": "ARKK",
@@ -439,9 +243,9 @@
       "signal_count": 2,
       "expiry": "Feb 07",
       "dte": 9,
-      "scan_time": "14:53 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:53:40.189657"
+      "timestamp": "2026-01-29T15:24:06.619414"
     },
     {
       "symbol": "CRSP",
@@ -459,17 +263,15 @@
       "signal_count": 1,
       "expiry": "Feb 07",
       "dte": 9,
-      "scan_time": "14:53 ET",
+      "scan_time": "15:24 ET",
       "scan_type": "real_time",
-      "timestamp": "2026-01-29T14:53:40.189660"
+      "timestamp": "2026-01-29T15:24:06.619417"
     }
   ],
-  "last_scan": "2026-01-29T14:52:49.194731",
-  "scan_type": "real_time",
-  "market_regime": "bearish_contagion",
-  "tickers_scanned": 35,
+  "last_scan": "2026-01-29T15:00:00.102682-05:00",
+  "scan_type": "regular",
+  "market_regime": "bullish_neutral",
+  "tickers_scanned": 253,
   "errors": 0,
-  "total_candidates": 21,
-  "analysis_date": "2026-01-29 14:52",
-  "next_week_start": "2026-02-02"
+  "total_candidates": 12
 }

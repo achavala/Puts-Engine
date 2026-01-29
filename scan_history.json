@@ -377,50 +377,6 @@
       "market_regime": "bearish"
     },
     {
-      "timestamp": "2026-01-27T15:01:32.969137-05:00",
-      "gamma_drain": [],
-      "distribution": [
-        {
-          "symbol": "HUM",
-          "score": 0.55,
-          "signals": [
-            "high_rvol_red_day"
-          ]
-        },
-        {
-          "symbol": "ASML",
-          "score": 0.45,
-          "signals": [
-            "failed_breakout"
-          ]
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "HUM",
-          "score": 0.4,
-          "signals": [
-            "liquidity_vacuum"
-          ]
-        },
-        {
-          "symbol": "IWM",
-          "score": 0.35,
-          "signals": [
-            "gap_down"
-          ]
-        },
-        {
-          "symbol": "OKLO",
-          "score": 0.3,
-          "signals": [
-            "liquidity_vacuum"
-          ]
-        }
-      ],
-      "market_regime": "neutral"
-    },
-    {
       "timestamp": "2026-01-29T11:32:20.440976",
       "gamma_drain": [
         {
@@ -837,7 +793,210 @@
       "distribution": [],
       "liquidity": [],
       "market_regime": "bullish_neutral"
+    },
+    {
+      "timestamp": "2026-01-29T14:52:49.194731",
+      "gamma_drain": [
+        {
+          "symbol": "NOW",
+          "score": 0.65,
+          "signals": [
+            "high_rvol_red_day",
+            "gap_down",
+            "multi_day_weakness",
+            "earnings_contagion",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "score": 0.55,
+          "signals": [
+            "high_rvol_red_day",
+            "gap_down",
+            "earnings_contagion",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "TEAM",
+          "score": 0.55,
+          "signals": [
+            "high_rvol_red_day",
+            "gap_down",
+            "earnings_contagion",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "WDAY",
+          "score": 0.55,
+          "signals": [
+            "high_rvol_red_day",
+            "gap_down",
+            "earnings_contagion",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.55,
+          "signals": [
+            "high_rvol_red_day",
+            "gap_down",
+            "earnings_contagion",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.55,
+          "signals": [
+            "high_rvol_red_day",
+            "gap_down",
+            "multi_day_weakness",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.45,
+          "signals": [
+            "high_rvol_red_day",
+            "gap_down",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "SNOW",
+          "score": 0.45,
+          "signals": [
+            "high_rvol_red_day",
+            "gap_down",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "TWLO",
+          "score": 0.35,
+          "signals": [
+            "gap_down",
+            "earnings_contagion",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "CRM",
+          "score": 0.35,
+          "signals": [
+            "gap_down",
+            "multi_day_weakness",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "ZS",
+          "score": 0.35,
+          "signals": [
+            "gap_down",
+            "multi_day_weakness",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "COIN",
+          "score": 0.35,
+          "signals": [
+            "gap_down",
+            "multi_day_weakness",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "OKLO",
+          "score": 0.25,
+          "signals": [
+            "gap_down",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "AI",
+          "score": 0.25,
+          "signals": [
+            "gap_down",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "DDOG",
+          "score": 0.25,
+          "signals": [
+            "gap_down",
+            "vwap_loss"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "CRM",
+          "score": 0.35,
+          "signals": [
+            "high_rvol_red_day",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "ZS",
+          "score": 0.32,
+          "signals": [
+            "high_rvol_red_day",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.3,
+          "signals": [
+            "high_rvol_red_day",
+            "vwap_loss"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BIDU",
+          "score": 0.28,
+          "signals": [
+            "vwap_loss",
+            "liquidity_vacuum"
+          ]
+        },
+        {
+          "symbol": "ARKK",
+          "score": 0.26,
+          "signals": [
+            "vwap_loss",
+            "liquidity_vacuum"
+          ]
+        },
+        {
+          "symbol": "CRSP",
+          "score": 0.25,
+          "signals": [
+            "vwap_loss"
+          ]
+        }
+      ],
+      "market_regime": "bearish_contagion"
+    },
+    {
+      "timestamp": "2026-01-29T15:00:00.102682-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
     }
   ],
-  "last_cleanup": "2026-01-29T14:29:47.170730-05:00"
+  "last_cleanup": "2026-01-29T15:21:51.157869-05:00"
 }
