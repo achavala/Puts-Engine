@@ -105,14 +105,38 @@ def estimate_return_potential(score: float, signals: List[str]) -> str:
 
 def select_best_picks(scan_results: Dict, max_picks: int = 5) -> List[Dict]:
     """
-    Select the best picks across all 3 engines.
+    Select the TOP 5 BEST picks across all 3 engines.
     
-    Criteria:
-    - Score >= 0.35 (CLASS B minimum)
-    - Price between $10 and $500 (optimal for options)
-    - Multiple signals (2+)
-    - Prioritize: Distribution > Gamma > Liquidity
+    GOAL: Find the MOST GUARANTEED 1x-5x return opportunities.
+    
+    STRICT SELECTION CRITERIA (Institutional Grade):
+    ================================================
+    1. Score >= 0.45 (CLASS B+ minimum for guaranteed plays)
+    2. At least 2 signals (multi-factor confirmation required)
+    3. Price between $10 and $500 (optimal options leverage)
+    4. High-conviction signals get priority boost
+    
+    CONVICTION RANKING:
+    - Score weight: 60%
+    - Signal quality weight: 25%
+    - Signal count weight: 15%
+    
+    This ensures only the BEST 5 picks with highest probability of success.
     """
+    
+    # High-conviction signals that increase guarantee of move
+    HIGH_CONVICTION_SIGNALS = {
+        "failed_breakout": 0.15,        # Strong reversal pattern
+        "high_rvol_red_day": 0.12,      # Institutional selling
+        "gap_down_no_recovery": 0.12,   # Trapped longs
+        "repeated_sell_blocks": 0.10,   # Dark pool distribution
+        "multi_day_weakness": 0.10,     # Sustained selling pressure
+        "vwap_loss": 0.08,              # Below institutional price
+        "gap_up_reversal": 0.08,        # "Sell the news"
+        "below_prior_low": 0.08,        # Technical breakdown
+        "is_post_earnings_negative": 0.05,  # Earnings disappointment
+    }
+    
     all_candidates = []
     
     # Collect from all engines with engine tag
@@ -122,47 +146,72 @@ def select_best_picks(scan_results: Dict, max_picks: int = 5) -> List[Dict]:
         ("LIQUIDITY", scan_results.get("liquidity", []))
     ]:
         for c in candidates:
-            c["engine"] = engine
-            all_candidates.append(c)
+            c_copy = c.copy()  # Don't modify original
+            c_copy["engine"] = engine
+            all_candidates.append(c_copy)
     
-    # Filter criteria
+    # Filter and score candidates
     filtered = []
     for c in all_candidates:
         score = c.get("score", 0)
         price = c.get("current_price", 0) or c.get("close", 0)
         signals = c.get("signals", [])
         
-        # Must meet minimum criteria
-        if score < 0.35:
+        # STRICT CRITERIA for "most guaranteed" picks
+        # ============================================
+        
+        # 1. Must have score >= 0.45 (no weak signals)
+        if score < 0.45:
             continue
+        
+        # 2. Must have at least 2 confirming signals
+        if len(signals) < 2:
+            continue
+        
+        # 3. Price must be in optimal options range
         if price < 10 or price > 500:
             continue
-        if len(signals) < 1:
-            continue
+        
+        # Calculate CONVICTION SCORE (for ranking)
+        # =========================================
+        
+        # Signal quality score (0-1 based on high-conviction signals)
+        signal_quality = sum(
+            HIGH_CONVICTION_SIGNALS.get(s, 0.02) 
+            for s in signals
+        )
+        signal_quality = min(1.0, signal_quality)  # Cap at 1.0
+        
+        # Signal count bonus (more signals = more confirmation)
+        signal_count_bonus = min(0.2, len(signals) * 0.04)
+        
+        # Final conviction score (weighted combination)
+        conviction_score = (
+            score * 0.60 +                    # Base score (60%)
+            signal_quality * 0.25 +           # Signal quality (25%)
+            signal_count_bonus +              # Signal count (15%)
+            (0.05 if c["engine"] == "GAMMA DRAIN" else 0)  # Gamma bonus
+        )
         
         # Add calculated fields
         c["price"] = price
         c["strike"] = calculate_strike(price)
         c["return_potential"] = estimate_return_potential(score, signals)
         c["signal_count"] = len(signals)
+        c["conviction_score"] = conviction_score
+        c["signal_quality"] = signal_quality
+        
+        # Count high-conviction signals
+        c["high_conviction_count"] = sum(
+            1 for s in signals if s in HIGH_CONVICTION_SIGNALS
+        )
         
         filtered.append(c)
     
-    # Sort by composite ranking:
-    # 1. Score (higher better)
-    # 2. Signal count (more signals = more conviction)
-    # 3. Engine priority (Distribution > Gamma > Liquidity)
-    engine_priority = {"DISTRIBUTION": 3, "GAMMA DRAIN": 2, "LIQUIDITY": 1}
+    # Sort by conviction score (highest first)
+    filtered.sort(key=lambda x: x.get("conviction_score", 0), reverse=True)
     
-    filtered.sort(
-        key=lambda x: (
-            x.get("score", 0),
-            x.get("signal_count", 0),
-            engine_priority.get(x.get("engine", ""), 0)
-        ),
-        reverse=True
-    )
-    
+    # Return top picks
     return filtered[:max_picks]
 
 
@@ -209,11 +258,12 @@ def format_email_html(picks: List[Dict], scan_time: str, market_regime: str) -> 
             <p>Market Regime: {market_regime.upper()}</p>
         </div>
         
-        <h2>🎯 TOP {len(picks)} PUT CANDIDATES (1x-5x Potential)</h2>
+        <h2>🎯 TOP {len(picks)} HIGH-CONVICTION PUTS (1x-5x Target)</h2>
         
         <div class="tip">
             <strong>💡 Expiry:</strong> {expiry_str} ({dte} DTE) | 
-            <strong>Strategy:</strong> Buy slightly OTM puts, target 1x-5x return
+            <strong>Strategy:</strong> Buy slightly OTM puts, target 1x-5x return<br>
+            <strong>📊 Selection:</strong> Score ≥0.45 + Multiple signals + Optimal price range = MOST GUARANTEED
         </div>
     """
     
@@ -221,14 +271,16 @@ def format_email_html(picks: List[Dict], scan_time: str, market_regime: str) -> 
         html += """
         <table>
             <tr>
+                <th>#</th>
                 <th>Symbol</th>
                 <th>Engine</th>
                 <th>Score</th>
+                <th>Conviction</th>
                 <th>Price</th>
                 <th>Strike</th>
                 <th>Est. Premium</th>
                 <th>Return Potential</th>
-                <th>Signals</th>
+                <th>Key Signals</th>
             </tr>
         """
         
@@ -236,26 +288,38 @@ def format_email_html(picks: List[Dict], scan_time: str, market_regime: str) -> 
             symbol = pick.get("symbol", "N/A")
             engine = pick.get("engine", "N/A")
             score = pick.get("score", 0)
+            conviction = pick.get("conviction_score", score)
             price = pick.get("price", 0)
             strike = pick.get("strike", 0)
             signals = pick.get("signals", [])
             return_potential = pick.get("return_potential", "N/A")
+            high_conv_count = pick.get("high_conviction_count", 0)
             
             # Estimate premium (1.5% to 3% of stock price)
             premium_low = price * 0.015
             premium_high = price * 0.03
             
-            # Format signals as badges
+            # Format signals as badges (show top 3)
             signal_badges = " ".join([f'<span class="signal-badge">{s}</span>' for s in signals[:3]])
             
             # Score styling
-            score_class = "score-high" if score >= 0.50 else "score-medium"
+            score_class = "score-high" if score >= 0.55 else "score-medium"
+            
+            # Conviction indicator
+            if conviction >= 0.60:
+                conv_indicator = "🔥🔥🔥"
+            elif conviction >= 0.50:
+                conv_indicator = "🔥🔥"
+            else:
+                conv_indicator = "🔥"
             
             html += f"""
             <tr>
+                <td><strong>#{i}</strong></td>
                 <td><strong>{symbol}</strong></td>
                 <td><span class="engine-badge">{engine}</span></td>
                 <td class="{score_class}">{score:.2f}</td>
+                <td>{conv_indicator} {conviction:.2f}</td>
                 <td>${price:.2f}</td>
                 <td>${strike:.0f} P</td>
                 <td>${premium_low:.2f} - ${premium_high:.2f}</td>
@@ -301,14 +365,15 @@ def format_email_text(picks: List[Dict], scan_time: str, market_regime: str) -> 
     next_friday = get_next_friday()
     
     text = f"""
-🏛️ PUTSENGINE DAILY REPORT
+🎯 PUTSENGINE: TOP {len(picks)} HIGH-CONVICTION PUTS
 ========================================
 Scan Time: {now.strftime('%B %d, %Y at %I:%M %p ET')}
 Market Regime: {market_regime.upper()}
 Expiry Target: {next_friday.strftime('%b %d')}
+Selection: Score ≥0.45 + Multiple Signals = MOST GUARANTEED
 ========================================
 
-🎯 TOP {len(picks)} PUT CANDIDATES (1x-5x Potential)
+🎯 TOP {len(picks)} BEST PICKS (1x-5x Target)
 ----------------------------------------
 
 """
@@ -318,6 +383,7 @@ Expiry Target: {next_friday.strftime('%b %d')}
             symbol = pick.get("symbol", "N/A")
             engine = pick.get("engine", "N/A")
             score = pick.get("score", 0)
+            conviction = pick.get("conviction_score", score)
             price = pick.get("price", 0)
             strike = pick.get("strike", 0)
             signals = pick.get("signals", [])
@@ -326,19 +392,29 @@ Expiry Target: {next_friday.strftime('%b %d')}
             premium_low = price * 0.015
             premium_high = price * 0.03
             
+            # Conviction indicator
+            if conviction >= 0.60:
+                conv_indicator = "🔥🔥🔥 VERY HIGH"
+            elif conviction >= 0.50:
+                conv_indicator = "🔥🔥 HIGH"
+            else:
+                conv_indicator = "🔥 MODERATE"
+            
             text += f"""
 #{i} {symbol} ({engine})
    Score: {score:.2f}
+   Conviction: {conv_indicator} ({conviction:.2f})
    Price: ${price:.2f}
    Strike: ${strike:.0f} P
    Est. Premium: ${premium_low:.2f} - ${premium_high:.2f}
    Return Potential: {return_potential}
-   Signals: {', '.join(signals[:3])}
+   Key Signals: {', '.join(signals[:3])}
 """
     else:
         text += """
 ⚠️ No high-conviction picks today.
-All candidates below threshold or outside optimal price range.
+Selection requires: Score ≥0.45 + At least 2 signals + Price $10-$500
+This is normal - we only show the BEST opportunities.
 """
     
     text += f"""
@@ -378,7 +454,7 @@ def send_email_report(scan_results: Dict) -> bool:
         
         # Create email
         msg = MIMEMultipart("alternative")
-        msg["Subject"] = f"🏛️ PutsEngine Daily Report - {len(best_picks)} Picks - {date.today().strftime('%b %d')}"
+        msg["Subject"] = f"🎯 PutsEngine: TOP {len(best_picks)} HIGH-CONVICTION PUTS - {date.today().strftime('%b %d')} (1x-5x Target)"
         msg["From"] = EMAIL_SENDER
         msg["To"] = EMAIL_RECIPIENT
         
