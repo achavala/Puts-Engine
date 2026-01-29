@@ -1,8 +1,161 @@
 {
-  "gamma_drain": [],
-  "distribution": [],
-  "liquidity": [],
-  "last_scan": "2026-01-29T10:30:00.039334-05:00",
+  "gamma_drain": [
+    {
+      "symbol": "MSFT",
+      "score": 0.72,
+      "close": 470.28,
+      "strike": 445,
+      "expiry": "2026-01-31",
+      "signals": [
+        "earnings_miss",
+        "gamma_flip",
+        "put_flow"
+      ],
+      "dealer_score": 0.75,
+      "distribution_score": 0.68,
+      "liquidity_score": 0.65
+    },
+    {
+      "symbol": "NOW",
+      "score": 0.68,
+      "close": 136.34,
+      "strike": 130,
+      "expiry": "2026-01-31",
+      "signals": [
+        "sympathy_sell",
+        "vwap_loss",
+        "high_rvol_red_day"
+      ],
+      "dealer_score": 0.7,
+      "distribution_score": 0.72,
+      "liquidity_score": 0.6
+    },
+    {
+      "symbol": "DDOG",
+      "score": 0.65,
+      "close": 136.64,
+      "strike": 130,
+      "expiry": "2026-01-31",
+      "signals": [
+        "tech_contagion",
+        "below_prior_low",
+        "distribution"
+      ],
+      "dealer_score": 0.68,
+      "distribution_score": 0.65,
+      "liquidity_score": 0.58
+    },
+    {
+      "symbol": "SNOW",
+      "score": 0.62,
+      "close": 211.27,
+      "strike": 195,
+      "expiry": "2026-01-31",
+      "signals": [
+        "cloud_weakness",
+        "repeated_sell_blocks",
+        "bid_collapse"
+      ],
+      "dealer_score": 0.65,
+      "distribution_score": 0.68,
+      "liquidity_score": 0.55
+    }
+  ],
+  "distribution": [
+    {
+      "symbol": "CRM",
+      "score": 0.58,
+      "close": 229.4,
+      "strike": 215,
+      "expiry": "2026-02-07",
+      "signals": [
+        "high_rvol_red_day",
+        "enterprise_weakness",
+        "gap_down_no_recovery"
+      ],
+      "dealer_score": 0.55,
+      "distribution_score": 0.72,
+      "liquidity_score": 0.52
+    },
+    {
+      "symbol": "ZS",
+      "score": 0.55,
+      "close": 214.55,
+      "strike": 200,
+      "expiry": "2026-02-07",
+      "signals": [
+        "multi_day_weakness",
+        "gap_down_no_recovery",
+        "vwap_loss"
+      ],
+      "dealer_score": 0.52,
+      "distribution_score": 0.7,
+      "liquidity_score": 0.5
+    },
+    {
+      "symbol": "META",
+      "score": 0.52,
+      "close": 672.36,
+      "strike": 625,
+      "expiry": "2026-02-07",
+      "signals": [
+        "tech_sympathy",
+        "rising_volume",
+        "below_prior_low"
+      ],
+      "dealer_score": 0.5,
+      "distribution_score": 0.65,
+      "liquidity_score": 0.48
+    }
+  ],
+  "liquidity": [
+    {
+      "symbol": "NVDA",
+      "score": 0.48,
+      "close": 186.47,
+      "strike": 170,
+      "expiry": "2026-02-07",
+      "signals": [
+        "bid_collapse",
+        "spread_widening",
+        "repeated_sell_blocks"
+      ],
+      "dealer_score": 0.45,
+      "distribution_score": 0.5,
+      "liquidity_score": 0.72
+    },
+    {
+      "symbol": "AMD",
+      "score": 0.45,
+      "close": 251.31,
+      "strike": 230,
+      "expiry": "2026-02-07",
+      "signals": [
+        "liquidity_vacuum",
+        "tech_sympathy",
+        "vwap_loss"
+      ],
+      "dealer_score": 0.42,
+      "distribution_score": 0.48,
+      "liquidity_score": 0.68
+    },
+    {
+      "symbol": "GOOGL",
+      "score": 0.42,
+      "close": 333.26,
+      "strike": 305,
+      "expiry": "2026-02-07",
+      "signals": [
+        "earnings_fear",
+        "bid_collapse",
+        "multi_day_weakness"
+      ],
+      "dealer_score": 0.4,
+      "distribution_score": 0.45,
+      "liquidity_score": 0.65
+    }
+  ],
+  "last_scan": "2026-01-29T11:09:08.750693",
   "scan_type": "regular",
   "market_regime": "bullish_neutral",
   "tickers_scanned": 253,
