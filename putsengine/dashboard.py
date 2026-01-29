@@ -493,8 +493,8 @@ def render_header():
     <div class="header-banner">
         <h1 class="header-title">📉 PUTS ENGINE</h1>
         <p class="header-subtitle">Find 5x-30x PUT Options Opportunities | Institutional-Grade Detection</p>
-    </div>
-    """, unsafe_allow_html=True)
+        </div>
+        """, unsafe_allow_html=True)
 
 
 def render_sidebar():
@@ -630,38 +630,13 @@ def render_engine_tab(engine, engine_name, engine_key, engine_type, results_key)
             else:
                 st.warning(f"⚠️ **No Active Signals** (scanned {total_scanned} tickers) | Week of {next_week} | Next live scan when market opens")
     
-    # Auto-scan logic - ALWAYS runs every 30 minutes (market open or closed)
-    should_scan = should_auto_scan(engine_key) or st.session_state.get(f"force_refresh_{engine_key}", False)
-    
-    if should_scan:
-        st.session_state[f"force_refresh_{engine_key}"] = False
-        
-        # If market is open, run live scan
-        if is_market_open():
-            with st.spinner(f"🔄 Running {engine_name} live scan..."):
-                progress = st.progress(0, text="Starting scan...")
-                def update_progress(pct, text):
-                    progress.progress(pct, text=text)
-                try:
-                    results = run_async(run_engine_scan(engine, engine_type, update_progress))
-                    st.session_state[results_key] = results
-                    st.session_state[f"last_scan_{engine_key}"] = datetime.now()
-                    progress.empty()
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"Scan error: {e}")
-                    progress.empty()
-        else:
-            # Market closed - use validated data from JSON
-            st.session_state[f"last_scan_{engine_key}"] = datetime.now()
-            # Store validated results in session state
-            if validated_results:
-                st.session_state[results_key] = validated_results
-                live_results = validated_results  # Update live_results for immediate display
-    
-    # Display results - ALWAYS use validated_results (pre-loaded from JSON)
-    # This ensures data displays even when market is closed or API calls fail
+    # ALWAYS display the validated data from JSON FIRST (no waiting)
+    # This ensures data shows immediately while any scans run in background
     display_results = validated_results
+    
+    # Mark last scan time if we have data
+    if validated_results and not st.session_state.get(f"last_scan_{engine_key}"):
+        st.session_state[f"last_scan_{engine_key}"] = datetime.now()
     
     if display_results:
         table_title = f"{engine_name} PUT Candidates"
@@ -696,7 +671,7 @@ def render_config_view():
         weights = EngineConfig.SCORE_WEIGHTS
         fig = go.Figure(go.Pie(labels=list(weights.keys()), values=list(weights.values()), hole=0.4))
         fig.update_layout(height=300, margin=dict(l=20, r=20, t=20, b=20), paper_bgcolor='rgba(0,0,0,0)')
-    st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True)
 
 
 def render_48hour_analysis():
@@ -911,8 +886,8 @@ def main():
             "📉 Distribution Engine", 
             "💧 Liquidity Engine", 
             "📊 48-Hour Analysis",
-            "📒 Ledger", 
-            "📈 Backtest", 
+            "📒 Ledger",
+            "📈 Backtest",
             "⚙️ Config"
         ])
 
