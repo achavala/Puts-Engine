@@ -192,6 +192,10 @@ class GapScanner:
         Check if a symbol has a significant gap.
         
         Returns gap info dict or None if no significant gap.
+        
+        ARCHITECT-4 CONSTRAINT for gap-up reversals:
+        - Gap up >= 5% AND RVOL(open) >= 1.3
+        - Without RVOL confirmation, gap-up reversals are noise
         """
         try:
             # Get latest bar (may be pre-market or regular hours)
@@ -200,8 +204,9 @@ class GapScanner:
                 return None
             
             current_price = bar.close
+            current_volume = bar.volume if hasattr(bar, 'volume') else 0
             
-            # Get prior day's close
+            # Get prior day's close and volume data
             prior_close = await self._get_prior_close(symbol)
             if not prior_close or prior_close <= 0:
                 return None
@@ -209,14 +214,32 @@ class GapScanner:
             # Calculate gap percentage
             gap_pct = (current_price - prior_close) / prior_close
             
+            # Calculate RVOL for gap-up reversal validation
+            rvol = 1.0  # Default
+            try:
+                # Get 20-day average volume for RVOL calculation
+                bars_history = await self.alpaca_client.get_daily_bars(symbol, limit=21)
+                if bars_history and len(bars_history) >= 20 and current_volume > 0:
+                    avg_volume = sum(b.volume for b in bars_history[-20:]) / 20
+                    if avg_volume > 0:
+                        rvol = current_volume / avg_volume
+            except Exception:
+                pass  # Use default rvol of 1.0
+            
+            # ARCHITECT-4: Gap-up reversal requires RVOL >= 1.3
+            # This filters out low-volume gap-ups which are noise
+            is_gap_down = gap_pct <= -abs(self.GAP_WATCH_THRESHOLD)
+            is_gap_up_reversal = gap_pct >= self.GAP_UP_REVERSAL_THRESHOLD and rvol >= 1.3
+            
             # Only return if gap is significant
-            if abs(gap_pct) >= self.GAP_WATCH_THRESHOLD or gap_pct >= self.GAP_UP_REVERSAL_THRESHOLD:
+            if is_gap_down or is_gap_up_reversal:
                 return {
                     "symbol": symbol,
                     "gap_pct": gap_pct,
                     "prior_close": prior_close,
                     "current_price": current_price,
                     "gap_amount": current_price - prior_close,
+                    "rvol": rvol,  # Include RVOL for tracking
                     "scan_time": datetime.now().isoformat(),
                 }
             

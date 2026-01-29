@@ -46,6 +46,12 @@ from putsengine.afterhours_scanner import run_afterhours_scan, AfterHoursScanner
 from putsengine.earnings_calendar import run_earnings_check, EarningsCalendar
 from putsengine.precatalyst_scanner import run_precatalyst_scan, PreCatalystScanner
 
+# ARCHITECT-4: Lead/Discovery Scanners (inject into DUI, NOT trade directly)
+# These detect moves 1-2 days BEFORE they happen
+from putsengine.gap_scanner import run_premarket_gap_scan, GapScanner
+from putsengine.sector_correlation_scanner import run_sector_correlation_scan, SectorCorrelationScanner
+from putsengine.multiday_weakness_scanner import run_multiday_weakness_scan, MultiDayWeaknessScanner
+
 
 # Constants
 EST = pytz.timezone('US/Eastern')
@@ -301,7 +307,85 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        logger.info("All scheduled jobs configured (including AH, Earnings, Pre-Catalyst)")
+        # ============================================================================
+        # ARCHITECT-4 LEAD/DISCOVERY SCANNERS
+        # These detect moves 1-2 days BEFORE they happen via DUI injection
+        # MP → USAR → LAC cascade would have been caught by these
+        # ============================================================================
+        
+        # PRE-MARKET GAP SCANNER (would have caught UNH -20% pre-market)
+        # Scans 800+ tickers for significant pre-market gaps
+        self.scheduler.add_job(
+            self._run_premarket_gap_scan_wrapper,
+            CronTrigger(hour=4, minute=0, timezone=EST),
+            id="gap_scan_4am",
+            name="Pre-Market Gap Scan (4:00 AM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_premarket_gap_scan_wrapper,
+            CronTrigger(hour=6, minute=0, timezone=EST),
+            id="gap_scan_6am",
+            name="Pre-Market Gap Scan (6:00 AM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_premarket_gap_scan_wrapper,
+            CronTrigger(hour=8, minute=0, timezone=EST),
+            id="gap_scan_8am",
+            name="Pre-Market Gap Scan (8:00 AM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_premarket_gap_scan_wrapper,
+            CronTrigger(hour=9, minute=15, timezone=EST),
+            id="gap_scan_915am",
+            name="Pre-Market Gap Scan (9:15 AM ET) - Final Pre-Market",
+            replace_existing=True
+        )
+        
+        # MULTI-DAY WEAKNESS SCANNER (would have caught MP/JOBY patterns)
+        # Detects 8 weakness patterns over 2-5 days
+        # Run at end of day to prepare for next day's trading
+        self.scheduler.add_job(
+            self._run_multiday_weakness_scan_wrapper,
+            CronTrigger(hour=17, minute=0, timezone=EST),
+            id="multiday_weakness_5pm",
+            name="Multi-Day Weakness Scan (5:00 PM ET)",
+            replace_existing=True
+        )
+        
+        # Also run in the morning to catch overnight developments
+        self.scheduler.add_job(
+            self._run_multiday_weakness_scan_wrapper,
+            CronTrigger(hour=7, minute=30, timezone=EST),
+            id="multiday_weakness_730am",
+            name="Multi-Day Weakness Scan (7:30 AM ET)",
+            replace_existing=True
+        )
+        
+        # SECTOR CORRELATION SCANNER (would have caught MP → USAR → LAC cascade)
+        # Run after regular scans to detect sector-wide weakness
+        self.scheduler.add_job(
+            self._run_sector_correlation_scan_wrapper,
+            CronTrigger(hour=11, minute=0, timezone=EST),
+            id="sector_correlation_11am",
+            name="Sector Correlation Scan (11:00 AM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_sector_correlation_scan_wrapper,
+            CronTrigger(hour=14, minute=0, timezone=EST),
+            id="sector_correlation_2pm",
+            name="Sector Correlation Scan (2:00 PM ET)",
+            replace_existing=True
+        )
+        
+        logger.info("All scheduled jobs configured (including Lead/Discovery scanners)")
     
     def _run_scan_wrapper(self, scan_type: str):
         """Wrapper to run async scan in scheduler context."""
@@ -318,6 +402,18 @@ class PutsEngineScheduler:
     def _run_precatalyst_scan_wrapper(self):
         """Wrapper to run pre-catalyst scan in scheduler context."""
         asyncio.create_task(self.run_precatalyst_scan())
+    
+    def _run_premarket_gap_scan_wrapper(self):
+        """Wrapper to run pre-market gap scan in scheduler context."""
+        asyncio.create_task(self.run_premarket_gap_scan())
+    
+    def _run_multiday_weakness_scan_wrapper(self):
+        """Wrapper to run multi-day weakness scan in scheduler context."""
+        asyncio.create_task(self.run_multiday_weakness_scan())
+    
+    def _run_sector_correlation_scan_wrapper(self):
+        """Wrapper to run sector correlation scan in scheduler context."""
+        asyncio.create_task(self.run_sector_correlation_scan())
     
     async def run_scan(self, scan_type: str = "manual"):
         """
@@ -670,6 +766,216 @@ class PutsEngineScheduler:
             
         except Exception as e:
             logger.error(f"Pre-catalyst scan error: {e}")
+            return {}
+    
+    # ==========================================================================
+    # ARCHITECT-4 LEAD/DISCOVERY SCANNERS
+    # These detect moves 1-2 days BEFORE they happen
+    # They inject into DUI for confirmation, NOT direct trades
+    # ==========================================================================
+    
+    async def run_premarket_gap_scan(self):
+        """
+        Run pre-market gap scan to detect significant price gaps.
+        
+        This would have caught UNH (-20% pre-market) immediately.
+        
+        ARCHITECT-4 RULE:
+        - Gap down >= 5%: WATCHING
+        - Gap down >= 8%: CLASS B candidate
+        - Gap down >= 12%: CRITICAL (immediate attention)
+        - Gap up >= 5% WITH RVOL >= 1.3: Potential reversal
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("PRE-MARKET GAP SCAN (Lead/Discovery)")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Scanning 800+ tickers for significant gaps...")
+        logger.info("=" * 60)
+        
+        try:
+            await self._init_clients()
+            
+            # Run pre-market gap scan
+            results = await run_premarket_gap_scan(self._alpaca)
+            
+            # Log results
+            summary = results.get("summary", {})
+            logger.info(f"Pre-Market Gap Scan Complete:")
+            logger.info(f"  Critical gaps (>=12%): {summary.get('critical_count', 0)}")
+            logger.info(f"  Class B gaps (>=8%): {summary.get('class_b_count', 0)}")
+            logger.info(f"  Watching gaps (>=5%): {summary.get('watching_count', 0)}")
+            logger.info(f"  Gap up reversals: {summary.get('gap_up_count', 0)}")
+            logger.info(f"  Injected to DUI: {summary.get('injected_to_dui', 0)}")
+            
+            # Log critical gaps
+            for gap in results.get("critical", []):
+                logger.warning(
+                    f"  🔴 CRITICAL GAP: {gap['symbol']} {gap['gap_pct']*100:+.1f}% | "
+                    f"${gap['prior_close']:.2f} → ${gap['current_price']:.2f}"
+                )
+            
+            # Log Class B gaps
+            for gap in results.get("class_b", []):
+                logger.info(
+                    f"  🟡 CLASS B GAP: {gap['symbol']} {gap['gap_pct']*100:+.1f}% | "
+                    f"${gap['prior_close']:.2f} → ${gap['current_price']:.2f}"
+                )
+            
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Pre-market gap scan error: {e}")
+            return {}
+    
+    async def run_multiday_weakness_scan(self):
+        """
+        Run multi-day weakness scan to detect deteriorating patterns.
+        
+        PATTERNS DETECTED (2-5 days):
+        1. Lower highs (3-day) - Distribution
+        2. Breaking 5-day low - Support failure
+        3. Weak closes (2+ days) - Seller control
+        4. Rising volume on red - Institution exit
+        5. Lower lows + highs (3-day) - Downtrend
+        6. Failed VWAP reclaim - Rejection
+        7. Below all MAs - Bearish alignment
+        8. Bearish engulfing - Reversal signal
+        
+        This would have caught MP, USAR, LAC, JOBY on Jan 26-27.
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("MULTI-DAY WEAKNESS SCAN (Lead/Discovery)")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Detecting weakness patterns 1-2 days before major moves...")
+        logger.info("=" * 60)
+        
+        try:
+            await self._init_clients()
+            
+            # Get all tickers to scan
+            symbols = list(EngineConfig.get_all_tickers())
+            
+            # Run multi-day weakness scan
+            results = await run_multiday_weakness_scan(self._alpaca, symbols)
+            
+            # Log results
+            actionable = results.get("actionable", {})
+            logger.info(f"Multi-Day Weakness Scan Complete:")
+            logger.info(f"  Symbols scanned: {results.get('symbols_scanned', 0)}")
+            logger.info(f"  Actionable signals: {results.get('actionable_count', 0)}")
+            
+            # Inject actionable into DUI
+            from putsengine.config import DynamicUniverseManager
+            dui = DynamicUniverseManager()
+            injected = 0
+            
+            for symbol, report in actionable.items():
+                # Get pattern names for signals
+                pattern_signals = [p.pattern_name for p in report.patterns]
+                
+                # Inject into DUI
+                dui.promote_from_liquidity(
+                    symbol=symbol,
+                    score=min(0.50, report.total_score),  # Cap at 0.50 for lead signals
+                    signals=pattern_signals
+                )
+                injected += 1
+                
+                logger.info(
+                    f"  📉 WEAKNESS: {symbol} | Score: {report.total_score:.2f} | "
+                    f"Patterns: {report.signal_count} | {report.recommendation}"
+                )
+            
+            logger.info(f"  Injected to DUI: {injected}")
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Multi-day weakness scan error: {e}")
+            return {}
+    
+    async def run_sector_correlation_scan(self):
+        """
+        Run sector correlation scan to detect sector-wide weakness cascades.
+        
+        INSTITUTIONAL LOGIC:
+        - High-beta sectors move TOGETHER
+        - One weak name = entire sector at risk
+        - Smart money exits leaders FIRST, then cascades to smaller names
+        
+        SECTORS TRACKED:
+        - rare_earth: MP, USAR, LAC, ALB, LTHM, SQM
+        - evtol: JOBY, ACHR, LILM, EVTL
+        - crypto_miners: RIOT, MARA, CIFR, CLSK
+        - cloud_security: NET, CRWD, ZS, PANW
+        - nuclear_uranium: CCJ, UUUU, LEU, DNN
+        - china_adr: BABA, JD, PDD, NIO
+        - travel_airlines: DAL, UAL, AAL, CCL
+        
+        This would have caught MP → USAR → LAC cascade on Jan 28.
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("SECTOR CORRELATION SCAN (Lead/Discovery)")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Detecting sector-wide weakness cascades...")
+        logger.info("=" * 60)
+        
+        try:
+            # Get current DUI contents as candidates
+            from putsengine.config import DynamicUniverseManager
+            dui = DynamicUniverseManager()
+            
+            # Get all current candidates from DUI
+            dui_contents = dui.get_dynamic_details()
+            
+            # Convert to format expected by sector correlation scanner
+            candidates = {}
+            for symbol, info in dui_contents.items():
+                candidates[symbol] = {
+                    "score": info.get("score", 0),
+                    "signals": info.get("signals", [])
+                }
+            
+            # Also include recent scan results if available
+            if hasattr(self, 'latest_results'):
+                for engine_key in ["gamma_drain", "distribution", "liquidity"]:
+                    for candidate in self.latest_results.get(engine_key, []):
+                        symbol = candidate.get("symbol")
+                        if symbol and symbol not in candidates:
+                            candidates[symbol] = {
+                                "score": candidate.get("score", 0),
+                                "signals": candidate.get("signals", [])
+                            }
+            
+            # Run sector correlation scan
+            results = await run_sector_correlation_scan(candidates)
+            
+            # Log results
+            alerts = results.get("alerts", [])
+            logger.info(f"Sector Correlation Scan Complete:")
+            logger.info(f"  Sector alerts: {len(alerts)}")
+            logger.info(f"  Peers injected to DUI: {results.get('injected_count', 0)}")
+            
+            # Log each alert
+            for alert in alerts:
+                logger.warning(
+                    f"  🔗 SECTOR CASCADE: {alert.sector.upper()} | "
+                    f"Leader: {alert.leader_symbol} (score {alert.leader_score:.2f}) | "
+                    f"Affected: {', '.join(alert.affected_peers)}"
+                )
+            
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Sector correlation scan error: {e}")
             return {}
     
     def get_scheduled_jobs(self) -> List[Dict]:
