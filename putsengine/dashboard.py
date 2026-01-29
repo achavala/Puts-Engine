@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from putsengine.config import Settings, EngineConfig, get_settings, DynamicUniverseManager
 from putsengine.engine import PutsEngine
 from putsengine.models import PutCandidate, MarketRegimeData, BlockReason
+from putsengine.scan_history import get_48hour_frequency_analysis, initialize_history_from_current_scan, add_scan_to_history
 
 st.set_page_config(page_title="PutsEngine", page_icon="📉", layout="wide", initial_sidebar_state="expanded")
 
@@ -698,6 +699,177 @@ def render_config_view():
     st.plotly_chart(fig, use_container_width=True)
 
 
+def render_48hour_analysis():
+    """
+    Render 48-Hour Frequency Analysis across all 3 engines.
+    Shows symbols appearing in 2+ engines with highest conviction.
+    """
+    st.markdown("""
+    <div class="section-header">📊 48-Hour Frequency Analysis (All Engines)</div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    Shows how many times each symbol appeared across ALL scans in the last 48 hours.
+    **Multi-Engine symbols** (appearing in 2+ engines) have highest conviction.
+    """)
+    
+    # Initialize history if needed
+    try:
+        initialize_history_from_current_scan()
+    except:
+        pass
+    
+    # Get frequency analysis
+    try:
+        analysis = get_48hour_frequency_analysis()
+    except Exception as e:
+        st.error(f"Error loading analysis: {e}")
+        return
+    
+    # Summary metrics
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric("📊 Unique Symbols", analysis.get("unique_symbols", 0))
+    
+    with col2:
+        st.metric("📈 Total Appearances", analysis.get("total_appearances", 0))
+    
+    with col3:
+        st.metric("🔥 Multi-Engine", analysis.get("multi_engine_count", 0))
+    
+    with col4:
+        top_symbol = analysis.get("top_symbol")
+        if top_symbol:
+            st.metric("🏆 Top Symbol", f"{top_symbol['symbol']} ({top_symbol['total_appearances']})")
+        else:
+            st.metric("🏆 Top Symbol", "N/A")
+    
+    st.divider()
+    
+    # Multi-Engine Symbols Table (2+ engines)
+    st.markdown("### 🔥 Multi-Engine Symbols (2+ Engines)")
+    st.markdown("*These symbols appeared in at least 2 different engines - highest conviction picks*")
+    
+    multi_engine = analysis.get("multi_engine_symbols", [])
+    
+    if multi_engine:
+        # Create DataFrame for display
+        df_data = []
+        for i, symbol_data in enumerate(multi_engine, 1):
+            # Engine badges
+            engines = []
+            if symbol_data["gamma_drain_count"] > 0:
+                engines.append(f"🔥 {symbol_data['gamma_drain_count']}")
+            if symbol_data["distribution_count"] > 0:
+                engines.append(f"📉 {symbol_data['distribution_count']}")
+            if symbol_data["liquidity_count"] > 0:
+                engines.append(f"💧 {symbol_data['liquidity_count']}")
+            
+            # Calculate overall score
+            avg_score = max(
+                symbol_data["gamma_drain_avg_score"],
+                symbol_data["distribution_avg_score"],
+                symbol_data["liquidity_avg_score"]
+            )
+            
+            df_data.append({
+                "Rank": i,
+                "Symbol": symbol_data["symbol"],
+                "Total": symbol_data["total_appearances"],
+                "🔥 Gamma": symbol_data["gamma_drain_count"],
+                "📉 Distribution": symbol_data["distribution_count"],
+                "💧 Liquidity": symbol_data["liquidity_count"],
+                "Engines": symbol_data["engines_count"],
+                "Avg Score": f"{avg_score:.2f}",
+                "Engine Breakdown": " | ".join(engines)
+            })
+        
+        df = pd.DataFrame(df_data)
+        
+        # Style the dataframe
+        st.dataframe(
+            df,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "Rank": st.column_config.NumberColumn("Rank", width="small"),
+                "Symbol": st.column_config.TextColumn("Symbol", width="medium"),
+                "Total": st.column_config.NumberColumn("Total", width="small"),
+                "🔥 Gamma": st.column_config.NumberColumn("🔥 Gamma", width="small"),
+                "📉 Distribution": st.column_config.NumberColumn("📉 Dist", width="small"),
+                "💧 Liquidity": st.column_config.NumberColumn("💧 Liq", width="small"),
+                "Engines": st.column_config.NumberColumn("Engines", width="small"),
+                "Avg Score": st.column_config.TextColumn("Score", width="small"),
+            }
+        )
+        
+        # Top 3 Multi-Engine cards
+        if len(multi_engine) >= 3:
+            st.markdown("### 🏆 Top 3 Multi-Engine Picks")
+            top3_cols = st.columns(3)
+            colors = ["#FFD700", "#C0C0C0", "#CD7F32"]  # Gold, Silver, Bronze
+            
+            for i, (col, symbol_data) in enumerate(zip(top3_cols, multi_engine[:3])):
+                with col:
+                    st.markdown(f"""
+                    <div style="
+                        background: linear-gradient(135deg, {colors[i]}22, {colors[i]}44);
+                        border: 2px solid {colors[i]};
+                        border-radius: 10px;
+                        padding: 15px;
+                        text-align: center;
+                    ">
+                        <h2 style="margin: 0; color: {colors[i]};">#{i+1}</h2>
+                        <h1 style="margin: 5px 0; color: white;">{symbol_data['symbol']}</h1>
+                        <p style="margin: 5px 0; color: #aaa;">{symbol_data['total_appearances']} appearances</p>
+                        <p style="margin: 5px 0; color: #4ecdc4;">{symbol_data['engines_count']} engines</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+    else:
+        st.warning("No multi-engine symbols found yet. Run more scans to build history.")
+    
+    st.divider()
+    
+    # All Symbols Table
+    with st.expander("📋 View All Symbols (Click to expand)", expanded=False):
+        all_symbols = analysis.get("all_symbols", [])
+        
+        if all_symbols:
+            df_all = []
+            for i, s in enumerate(all_symbols[:50], 1):  # Limit to top 50
+                df_all.append({
+                    "Rank": i,
+                    "Symbol": s["symbol"],
+                    "Total": s["total_appearances"],
+                    "🔥 Gamma": s["gamma_drain_count"],
+                    "📉 Dist": s["distribution_count"],
+                    "💧 Liq": s["liquidity_count"],
+                    "Engines": s["engines_count"]
+                })
+            
+            st.dataframe(pd.DataFrame(df_all), use_container_width=True, hide_index=True)
+        else:
+            st.info("No symbols in history yet.")
+    
+    # Engine Totals
+    st.divider()
+    st.markdown("### 📊 Engine Breakdown")
+    
+    engine_totals = analysis.get("engine_totals", {})
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.metric("🔥 Gamma Drain", engine_totals.get("gamma_drain", 0))
+    with col2:
+        st.metric("📉 Distribution", engine_totals.get("distribution", 0))
+    with col3:
+        st.metric("💧 Liquidity", engine_totals.get("liquidity", 0))
+    
+    # Info about scan history
+    st.caption(f"📅 Analyzing last {analysis.get('history_hours', 48)} hours | Total scans in history: {analysis.get('total_scans', 0)}")
+
+
 def render_ledger_view():
     st.markdown("### 📒 Trade Ledger")
     trades = st.session_state.get("trade_history", [])
@@ -734,7 +906,15 @@ def main():
     secs_to_refresh = max(0, int(time_to_refresh % 60))
 
     if "Dashboard" in page or "Puts Scanner" in page:
-        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["🔥 Gamma Drain Engine", "📉 Distribution Engine", "💧 Liquidity Engine", "📒 Ledger", "📈 Backtest", "⚙️ Config"])
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+            "🔥 Gamma Drain Engine", 
+            "📉 Distribution Engine", 
+            "💧 Liquidity Engine", 
+            "📊 48-Hour Analysis",
+            "📒 Ledger", 
+            "📈 Backtest", 
+            "⚙️ Config"
+        ])
 
         with tab1:
             render_engine_tab(engine, "Gamma Drain", "gamma_drain", "gamma_drain", "gamma_drain_results")
@@ -764,12 +944,15 @@ def main():
                 pass
 
         with tab4:
-            render_ledger_view()
+            render_48hour_analysis()
 
         with tab5:
-            render_backtest_view()
+            render_ledger_view()
 
         with tab6:
+            render_backtest_view()
+
+        with tab7:
             render_config_view()
 
     elif "Trade History" in page:

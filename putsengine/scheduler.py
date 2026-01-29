@@ -653,11 +653,16 @@ class PutsEngineScheduler:
             return EngineType.SNAPBACK  # Maps to Liquidity in UI
     
     def _save_results(self):
-        """Save scan results to JSON file."""
+        """Save scan results to JSON file and history."""
         try:
             with open(RESULTS_FILE, 'w') as f:
                 json.dump(self.latest_results, f, indent=2, default=str)
             logger.info(f"Results saved to {RESULTS_FILE}")
+            
+            # Also save to 48-hour history for frequency analysis
+            from putsengine.scan_history import add_scan_to_history
+            add_scan_to_history(self.latest_results)
+            
         except Exception as e:
             logger.error(f"Error saving results: {e}")
     
