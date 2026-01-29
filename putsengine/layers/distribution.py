@@ -125,7 +125,6 @@ class DistributionLayer:
         # *** CRITICAL FIX: Store signals BEFORE score calculation ***
         # Store all signals in dict for easy access (needed for score calculation)
         gap_up_reversal = pv_signals.get("gap_up_reversal", False)
-        exhaustion_move = pv_signals.get("exhaustion_move", False)  # NEW: Blow-off top
         
         signal.signals = {
             # Price-Volume Signals
@@ -136,9 +135,8 @@ class DistributionLayer:
             # Enhanced price-volume signals (stored early above)
             "high_rvol_red_day": high_rvol_red_day,
             "gap_down_no_recovery": gap_down_no_recovery,
-            "gap_up_reversal": gap_up_reversal,  # Distribution trap
+            "gap_up_reversal": gap_up_reversal,  # NEW: Distribution trap
             "multi_day_weakness": multi_day_weakness,
-            "exhaustion_move": exhaustion_move,  # NEW: Blow-off top (catches CLS)
             # Options Flow Signals
             "call_selling_at_bid": signal.call_selling_at_bid,
             "put_buying_at_ask": signal.put_buying_at_ask,
@@ -196,8 +194,7 @@ class DistributionLayer:
             "high_rvol_red_day": False,
             "gap_down_no_recovery": False,
             "gap_up_reversal": False,  # NEW: Distribution trap pattern
-            "multi_day_weakness": False,
-            "exhaustion_move": False  # NEW: Blow-off top / parabolic reversal
+            "multi_day_weakness": False
         }
 
         try:
@@ -247,9 +244,6 @@ class DistributionLayer:
 
             # 8. Multi-day price weakness (3+ consecutive red days or lower closes)
             signals["multi_day_weakness"] = self._detect_multi_day_weakness(daily_bars)
-
-            # 9. Exhaustion/blow-off top (catches CLS-type moves)
-            signals["exhaustion_move"] = self._detect_exhaustion_move(daily_bars)
 
         except Exception as e:
             logger.error(f"Error in price-volume analysis for {symbol}: {e}")
@@ -408,85 +402,27 @@ class DistributionLayer:
         """
         Detect multi-day price weakness pattern.
         
-        ENHANCED DETECTION (Post Jan 29 Crash Analysis):
-        - NOW was down 5% over 4 days before crash
-        - TEAM was down 3.3% before crash
-        
-        Must catch:
-        - 3+ consecutive lower closes
-        - 3%+ decline over 4 days
-        - 3 red days in last 3 sessions
+        3+ consecutive lower closes or red days indicates
+        sustained selling pressure - often precedes larger move.
         """
         if len(bars) < 5:
             return False
 
         recent = bars[-5:]
         
-        # Count consecutive lower closes from most recent
+        # Count consecutive lower closes
         lower_closes = 0
-        for i in range(len(recent) - 1, 0, -1):
+        for i in range(1, len(recent)):
             if recent[i].close < recent[i-1].close:
                 lower_closes += 1
             else:
-                break
+                break  # Reset count if we get an up close
         
         # Count red days (close < open)
         red_days = sum(1 for b in recent[-3:] if b.close < b.open)
         
-        # NEW: Calculate total decline over 4 days
-        if len(bars) >= 4:
-            first_close = bars[-4].close
-            last_close = bars[-1].close
-            decline_pct = (last_close - first_close) / first_close if first_close > 0 else 0
-        else:
-            decline_pct = 0
-        
         # 3+ consecutive lower closes OR 3 red days in last 3 = weakness
-        # NEW: OR 3%+ decline over 4 days (catches NOW, TEAM)
-        if lower_closes >= 3 or red_days >= 3:
-            return True
-        
-        if decline_pct < -0.03:  # 3% decline
-            logger.info(f"MULTI-DAY WEAKNESS: {decline_pct*100:.1f}% decline over 4 days")
-            return True
-        
-        return False
-    
-    def _detect_exhaustion_move(self, bars: List[PriceBar]) -> bool:
-        """
-        Detect parabolic/exhaustion moves likely to reverse.
-        
-        POST-MORTEM FIX (Jan 29 Crash):
-        CLS was up 12% in 4 days then crashed 16%.
-        
-        This catches "blow-off top" patterns:
-        - Stock up >8% in 4 days = exhaustion
-        - RSI likely overbought
-        - High probability of reversal
-        """
-        if len(bars) < 5:
-            return False
-        
-        # Calculate gain over last 4 days
-        first_close = bars[-5].close
-        last_close = bars[-1].close
-        gain_4d = (last_close - first_close) / first_close if first_close > 0 else 0
-        
-        # Flag >8% gain in 4 days as exhaustion
-        if gain_4d > 0.08:
-            logger.info(f"EXHAUSTION MOVE: +{gain_4d*100:.1f}% in 4 days - reversal likely")
-            return True
-        
-        # Also flag >5% single day gain (parabolic move)
-        if len(bars) >= 2:
-            single_day_gain = (bars[-1].close - bars[-2].close) / bars[-2].close if bars[-2].close > 0 else 0
-            if single_day_gain > 0.05:
-                # Check if followed by any red - reversal starting
-                if bars[-1].close < bars[-1].open:  # Red candle after gap up
-                    logger.info(f"PARABOLIC REVERSAL: +{single_day_gain*100:.1f}% day closing red")
-                    return True
-        
-        return False
+        return lower_closes >= 3 or red_days >= 3
 
     def _detect_flat_price_rising_volume(self, bars: List[PriceBar]) -> bool:
         """
@@ -934,99 +870,71 @@ class DistributionLayer:
         """
         Calculate composite distribution score.
         
-        ARCHITECT-4 REFACTOR: Proper Permission > Prediction Architecture
+        CRITICAL FIX: Previous version was too restrictive!
+        We were missing trades because the minimum requirement check
+        didn't count dark pool and options signals.
         
-        LEAD SIGNALS (Discovery Only - DUI injection, NOT direct trades):
-        - Multi-day weakness → WATCHING (0.25-0.30)
-        - Exhaustion/Blow-off → WATCHING (0.25-0.30)
-        - Gap-up reversal → WATCHING (0.25-0.30)
+        INSTITUTIONAL-GRADE SCORING for -3% to -15% moves:
+        - Every signal contributes to score
+        - No artificial minimum requirement (signals ARE the evidence)
+        - Dark pool blocks are strong institutional signal
         
-        CONFIRMATION SIGNALS (Allow trades):
-        - High RVOL red day (institutional selling)
-        - Gap down no recovery (trapped longs)
-        - Options flow (put buying, call selling)
-        - Dark pool blocks
-        
-        RULE: Lead signals NEVER create Class A trades.
-              Lead signals + Liquidity → Class B (small)
-              Lead signals + Gamma → Class A (full)
+        Scoring:
+        - Strong signals: 0.15-0.20 each
+        - Medium signals: 0.10 each
+        - Weak signals: 0.05 each
         """
         score = 0.0
         
-        # Track signal types for trade classification
-        has_lead_signal = False
-        has_confirmation_signal = False
-        
-        # === LEAD SIGNALS (DISCOVERY ONLY - cap contribution) ===
-        # These inject into DUI as WATCHING, not direct trades
-        multi_day = signal.signals.get("multi_day_weakness", False)
-        exhaustion = signal.signals.get("exhaustion_move", False)
-        gap_up_reversal = signal.signals.get("gap_up_reversal", False)
-        
-        # Lead signals contribute LOWER scores - they're awareness, not permission
-        if multi_day:
-            score += 0.10  # REDUCED from 0.15 - discovery only
-            has_lead_signal = True
-            logger.info(f"{signal.symbol}: LEAD SIGNAL - multi-day weakness (discovery +0.10)")
-        
-        if exhaustion:
-            score += 0.10  # REDUCED from 0.20 - discovery only
-            has_lead_signal = True
-            logger.info(f"{signal.symbol}: LEAD SIGNAL - exhaustion/blow-off (discovery +0.10)")
-        
-        if gap_up_reversal:
-            score += 0.12  # REDUCED from 0.25 - discovery only
-            has_lead_signal = True
-            logger.info(f"{signal.symbol}: LEAD SIGNAL - gap-up reversal (discovery +0.12)")
-        
-        # === CONFIRMATION SIGNALS (These allow trades) ===
+        # === ENHANCED PRICE-VOLUME SIGNALS (highest value) ===
         high_rvol = signal.signals.get("high_rvol_red_day", False)
         gap_down = signal.signals.get("gap_down_no_recovery", False)
+        gap_up_reversal = signal.signals.get("gap_up_reversal", False)  # NEW
+        multi_day = signal.signals.get("multi_day_weakness", False)
         
-        # HIGH RVOL red day = REAL institutional selling (CONFIRMATION)
+        # HIGH RVOL red day is the STRONGEST bearish signal
         if high_rvol:
             score += 0.20
-            has_confirmation_signal = True
-            logger.info(f"{signal.symbol}: CONFIRMATION - HIGH RVOL RED DAY (+0.20)")
+            logger.info(f"{signal.symbol}: HIGH RVOL RED DAY - strong bearish signal (+0.20)")
         
-        # Gap down without recovery = trapped longs (CONFIRMATION)
+        # Gap down without recovery = trapped longs (STRONG)
         if gap_down:
             score += 0.15
-            has_confirmation_signal = True
         
-        # === STANDARD PRICE-VOLUME SIGNALS (CONFIRMATION - 0.10 each) ===
+        # Gap UP reversal = distribution trap (CRITICAL - caught UUUU!)
+        # This is when institutions sell into gap-up strength
+        if gap_up_reversal:
+            score += 0.25  # HIGHEST score - this is the clearest distribution pattern
+            logger.info(f"{signal.symbol}: GAP UP REVERSAL - distribution trap (+0.25)")
+        
+        # Multi-day weakness = sustained pressure (STRONG)
+        if multi_day:
+            score += 0.15
+        
+        # === STANDARD PRICE-VOLUME SIGNALS (0.10 each) ===
         if signal.flat_price_rising_volume:
             score += 0.10
-            has_confirmation_signal = True
         if signal.failed_breakout:
             score += 0.10
-            has_confirmation_signal = True
         if signal.lower_highs_flat_rsi:
             score += 0.10
-            has_confirmation_signal = True
         if signal.vwap_loss:
-            score += 0.10  # VWAP loss is important confirmation!
-            has_confirmation_signal = True
+            score += 0.10  # VWAP loss is important!
         
-        # === OPTIONS FLOW SIGNALS (CONFIRMATION - 0.08-0.12 each) ===
+        # === OPTIONS FLOW SIGNALS (0.08-0.12 each) ===
         if signal.put_buying_at_ask:
             score += 0.12  # Aggressive put buying
-            has_confirmation_signal = True
         if signal.call_selling_at_bid:
             score += 0.10  # Call selling
-            has_confirmation_signal = True
         if signal.rising_put_oi:
             score += 0.08
-            has_confirmation_signal = True
         if signal.skew_steepening:
             score += 0.08
-            has_confirmation_signal = True
         
-        # === DARK POOL (CRITICAL - institutional selling = STRONG CONFIRMATION) ===
+        # === DARK POOL (CRITICAL - institutional selling) ===
         # Repeated sell blocks means big money is distributing!
         if signal.repeated_sell_blocks:
-            score += 0.15  # Strong confirmation signal
-            has_confirmation_signal = True
+            score += 0.15  # Increased from 0.10 - this is strong evidence!
         
         # === INSIDER/CONGRESS SIGNALS (from signals dict) ===
         if signal.signals.get("c_level_selling", False):
@@ -1090,32 +998,9 @@ class DistributionLayer:
                 score -= 0.05
                 logger.debug(f"{signal.symbol}: Pre-earnings penalty applied (no distribution signals)")
         
-        # ============================================================================
-        # ARCHITECT-4: TRADE CLASS DETERMINATION
-        # ============================================================================
-        # Lead signals alone → WATCHING/DUI injection only
-        # Lead + Confirmation → Class B (small, 1-2 contracts)
-        # Lead + Confirmation + Gamma → Class A (full size)
-        #
-        # This metadata is stored in signal.signals for downstream use
-        
-        signal.signals["_has_lead_signal"] = has_lead_signal
-        signal.signals["_has_confirmation_signal"] = has_confirmation_signal
-        signal.signals["_lead_only"] = has_lead_signal and not has_confirmation_signal
-        
-        # ARCHITECT-4 RULE: Lead-signal-only scores are capped at WATCHING level
-        # They can only become tradeable with Gamma/Liquidity confirmation
-        if has_lead_signal and not has_confirmation_signal:
-            # Cap score at 0.30 (WATCHING level) - cannot trigger trades alone
-            score = min(score, 0.30)
-            logger.info(
-                f"{signal.symbol}: LEAD-ONLY signal - capped at WATCHING ({score:.2f}). "
-                f"Requires Gamma/Liquidity for trade permission."
-            )
-        
         # Log what contributed
         if score > 0:
-            active = [k for k, v in signal.signals.items() if v and not k.startswith("_")]
+            active = [k for k, v in signal.signals.items() if v]
             logger.debug(f"{signal.symbol}: Distribution score {score:.2f} from signals: {active}")
         
         return min(max(score, 0.0), 1.0)  # Clamp between 0 and 1

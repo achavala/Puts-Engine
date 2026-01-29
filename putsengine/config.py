@@ -184,10 +184,10 @@ class EngineConfig:
             "MRNA", "BNTX", "NVAX", "VRTX", "REGN", "ILMN", "CRSP", "EDIT",
             "NTLA", "BEAM", "EXAS", "ISRG"
         ],
-        # Crypto Related (11) - Added BMNR
+        # Crypto Related (10)
         "crypto": [
             "MSTR", "COIN", "MARA", "RIOT", "HUT", "CLSK", "CIFR", "GLXY",
-            "BITF", "WULF", "BMNR"
+            "BITF", "WULF"
         ],
         # Semiconductors (22)
         "semiconductors": [
@@ -230,9 +230,9 @@ class EngineConfig:
             "DIS", "NFLX", "SBUX", "NKE", "MCD", "TGT", "WMT", "COST", "HD", "LOW",
             "AMZN", "BABA", "JD", "PDD", "EBAY"
         ],
-        # Telecom & Wireless (7) - Added NOK
+        # Telecom & Wireless (6)
         "telecom": [
-            "T", "VZ", "TMUS", "CMCSA", "ONDS", "GSAT", "NOK"
+            "T", "VZ", "TMUS", "CMCSA", "ONDS", "GSAT"
         ],
         # Travel / Airlines / Leisure (12) - NEW SECTOR
         "travel": [
@@ -320,7 +320,7 @@ class EngineConfig:
     
     HIGH_BETA_GROUPS = {
         # Crypto miners - move together with Bitcoin
-        "crypto_miners": ["RIOT", "MARA", "CIFR", "CLSK", "HUT", "BITF", "WULF", "BMNR"],
+        "crypto_miners": ["RIOT", "MARA", "CIFR", "CLSK", "HUT", "BITF", "WULF"],
         # eVTOL / Aviation - move together
         "evtol": ["ACHR", "JOBY", "LILM", "EVTL"],
         # Clean energy - correlated

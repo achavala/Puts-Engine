@@ -80,25 +80,6 @@ if refresh_count > st.session_state.auto_refresh_count:
     st.session_state["force_refresh_gamma_drain"] = True
     st.session_state["force_refresh_distribution"] = True
     st.session_state["force_refresh_liquidity"] = True
-    
-    # CRITICAL: Reload data from file on auto-refresh to get latest results
-    # But preserve cached data if file is empty
-    try:
-        scheduled_path = Path(__file__).parent.parent / "scheduled_scan_results.json"
-        if scheduled_path.exists():
-            with open(scheduled_path, "r") as f:
-                new_data = json.load(f)
-            # Only update cache if new data has candidates
-            has_candidates = (
-                len(new_data.get("gamma_drain", [])) > 0 or
-                len(new_data.get("distribution", [])) > 0 or
-                len(new_data.get("liquidity", [])) > 0
-            )
-            if has_candidates:
-                st.session_state["cached_scan_data"] = new_data
-                st.session_state["cached_scan_timestamp"] = datetime.now()
-    except Exception:
-        pass  # Keep existing cached data if file read fails
 
 st.markdown("""
 <head>
@@ -183,13 +164,9 @@ def load_validated_candidates():
     """
     Load validated candidates from scheduled scan results.
     
-    CRITICAL: Always return data if available, even if slightly stale.
-    This ensures the dashboard always displays candidates.
-    
     Priority order:
-    1. scheduled_scan_results.json (with candidates)
-    2. Cached in session state (persists across refreshes)
-    3. dashboard_candidates.json (fallback)
+    1. scheduled_scan_results.json (fresh scan data)
+    2. dashboard_candidates.json (fallback for historical analysis)
     """
     # First try scheduled scan results (FRESH DATA)
     scheduled_path = Path(__file__).parent.parent / "scheduled_scan_results.json"
@@ -197,75 +174,28 @@ def load_validated_candidates():
         try:
             with open(scheduled_path, "r") as f:
                 data = json.load(f)
-            
-            # CRITICAL FIX: Always return data if it has candidates, even if stale
-            # This ensures data persists across auto-refreshes
-            has_candidates = (
-                len(data.get("gamma_drain", [])) > 0 or
-                len(data.get("distribution", [])) > 0 or
-                len(data.get("liquidity", [])) > 0
-            )
-            
-            if has_candidates:
+            # Check if data is recent (within last 24 hours)
+            last_scan = data.get("last_scan", "")
+            if last_scan:
                 # Add metadata for display
-                last_scan = data.get("last_scan", "")
-                if last_scan:
-                    data["data_source"] = "SCHEDULED_SCAN"
-                    data["analysis_date"] = last_scan[:10] if len(last_scan) >= 10 else datetime.now().strftime("%Y-%m-%d")
-                    data["next_week_start"] = last_scan[:10] if len(last_scan) >= 10 else datetime.now().strftime("%Y-%m-%d")
-                
-                # Cache in session state for persistence across refreshes
-                if "cached_scan_data" not in st.session_state or has_candidates:
-                    st.session_state["cached_scan_data"] = data
-                    st.session_state["cached_scan_timestamp"] = datetime.now()
-                
+                data["data_source"] = "SCHEDULED_SCAN"
+                data["analysis_date"] = last_scan[:10]  # Extract date portion
+                data["next_week_start"] = last_scan[:10]
                 return data
-            else:
-                # No candidates in file, try cached data
-                if "cached_scan_data" in st.session_state:
-                    cached = st.session_state["cached_scan_data"]
-                    # Use cached data if it has candidates and is less than 2 hours old
-                    cached_time = st.session_state.get("cached_scan_timestamp", datetime.now())
-                    age_hours = (datetime.now() - cached_time).total_seconds() / 3600
-                    
-                    has_cached_candidates = (
-                        len(cached.get("gamma_drain", [])) > 0 or
-                        len(cached.get("distribution", [])) > 0 or
-                        len(cached.get("liquidity", [])) > 0
-                    )
-                    
-                    if has_cached_candidates and age_hours < 2:
-                        return cached
-        except Exception as e:
-            # If file read fails, try cached data
-            if "cached_scan_data" in st.session_state:
-                return st.session_state["cached_scan_data"]
-    
-    # Try cached data from session state (persists across refreshes)
-    if "cached_scan_data" in st.session_state:
-        cached = st.session_state["cached_scan_data"]
-        has_cached_candidates = (
-            len(cached.get("gamma_drain", [])) > 0 or
-            len(cached.get("distribution", [])) > 0 or
-            len(cached.get("liquidity", [])) > 0
-        )
-        if has_cached_candidates:
-            return cached
-    
-    # Fallback to dashboard_candidates.json
-    json_path = Path(__file__).parent.parent / "dashboard_candidates.json"
-    if json_path.exists():
-        try:
-            with open(json_path, "r") as f:
-                data = json.load(f)
-            # Cache it
-            st.session_state["cached_scan_data"] = data
-            st.session_state["cached_scan_timestamp"] = datetime.now()
-            return data
         except Exception:
             pass
     
-    return None
+    # Fallback to dashboard_candidates.json
+    json_path = Path(__file__).parent.parent / "dashboard_candidates.json"
+    if not json_path.exists():
+        return None
+    
+    try:
+        with open(json_path, "r") as f:
+            data = json.load(f)
+        return data
+    except Exception as e:
+        return None
 
 
 def format_validated_candidates(candidates: List[Dict], engine_type: str) -> List[Dict]:
@@ -409,34 +339,12 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
             entry_display = "N/A"
             price_display = "N/A"
         
-        # Calculate potential based on score and change
-        change_pct = c.get("change_pct", 0)
-        if score >= 0.60:
-            potential = "10x-15x"
-        elif score >= 0.45:
-            potential = "5x-10x"
-        elif score >= 0.30:
-            potential = "3x-5x"
-        else:
-            potential = "2x-3x"
-        
-        # Determine signal strength based on signals and RVOL
-        rvol = c.get("rvol", 1.0)
-        if rvol >= 2.0 or len(signals) >= 4:
-            strength = "🔥 VERY STRONG"
-        elif rvol >= 1.5 or len(signals) >= 3:
-            strength = "💪 STRONG"
-        elif rvol >= 1.3 or len(signals) >= 2:
-            strength = "⚡ MODERATE"
-        else:
-            strength = "📊 WEAK"
-        
         results.append({
             "Symbol": c.get("symbol", "N/A"),
             "Signal Type": signal_type,
             "Score": score,
-            "Potential": c.get("next_week_potential", potential),
-            "Signal Strength": c.get("tier", strength),
+            "Potential": c.get("next_week_potential", "N/A"),
+            "Signal Strength": c.get("tier", "N/A"),
             "PUT Type": put_type,
             "Flow Intent": flow_intent,
             "Expiry": expiry_str,
@@ -722,36 +630,21 @@ def render_engine_tab(engine, engine_name, engine_key, engine_type, results_key)
             else:
                 st.warning(f"⚠️ **No Active Signals** (scanned {total_scanned} tickers) | Week of {next_week} | Next live scan when market opens")
     
-    # CRITICAL FIX: ALWAYS display data if available, even if from cache
-    # This ensures data persists across auto-refreshes
+    # ALWAYS display the validated data from JSON FIRST (no waiting)
+    # This ensures data shows immediately while any scans run in background
     display_results = validated_results
     
-    # If no validated results but we have cached data, try to use it
-    if not display_results and validated_data:
-        # Try to format cached candidates
-        cached_candidates = validated_data.get(json_key, [])
-        if cached_candidates:
-            display_results = format_validated_candidates(cached_candidates, engine_type)
-    
     # Mark last scan time if we have data
-    if display_results and not st.session_state.get(f"last_scan_{engine_key}"):
+    if validated_results and not st.session_state.get(f"last_scan_{engine_key}"):
         st.session_state[f"last_scan_{engine_key}"] = datetime.now()
     
-    # Update last scan time whenever we have data
-    if display_results:
-        st.session_state[f"last_scan_{engine_key}"] = datetime.now()
-    
-    # ALWAYS render table - even if empty, it shows the structure
     if display_results:
         table_title = f"{engine_name} PUT Candidates"
         if not is_market_open() and validated_results:
             table_title += " (Validated - Next Week Projection)"
         render_puts_table(display_results, table_title)
     else:
-        # Show empty table but with message about auto-refresh
         render_puts_table([], f"{engine_name} PUT Candidates")
-        if validated_data:
-            st.info(f"📊 Data loaded but no candidates found. Auto-refresh will update every 30 minutes.")
     
     # Last update timestamp
     last_scan = st.session_state.get(f"last_scan_{engine_key}")
@@ -1035,12 +928,6 @@ def main():
         st.session_state["force_refresh_gamma_drain"] = True
         st.session_state["force_refresh_distribution"] = True
         st.session_state["force_refresh_liquidity"] = True
-        
-        # CRITICAL: Cache initial data on first load to ensure it persists
-        initial_data = load_validated_candidates()
-        if initial_data:
-            st.session_state["cached_scan_data"] = initial_data
-            st.session_state["cached_scan_timestamp"] = datetime.now()
     
     # Show auto-refresh status
     refresh_count = st.session_state.get("auto_refresh_count", 0)
