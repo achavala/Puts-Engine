@@ -161,9 +161,30 @@ def get_next_scan_time():
 
 def load_validated_candidates():
     """
-    Load validated candidates from Friday analysis.
-    These are pre-analyzed using real data for next week.
+    Load validated candidates from scheduled scan results.
+    
+    Priority order:
+    1. scheduled_scan_results.json (fresh scan data)
+    2. dashboard_candidates.json (fallback for historical analysis)
     """
+    # First try scheduled scan results (FRESH DATA)
+    scheduled_path = Path(__file__).parent.parent / "scheduled_scan_results.json"
+    if scheduled_path.exists():
+        try:
+            with open(scheduled_path, "r") as f:
+                data = json.load(f)
+            # Check if data is recent (within last 24 hours)
+            last_scan = data.get("last_scan", "")
+            if last_scan:
+                # Add metadata for display
+                data["data_source"] = "SCHEDULED_SCAN"
+                data["analysis_date"] = last_scan[:10]  # Extract date portion
+                data["next_week_start"] = last_scan[:10]
+                return data
+        except Exception:
+            pass
+    
+    # Fallback to dashboard_candidates.json
     json_path = Path(__file__).parent.parent / "dashboard_candidates.json"
     if not json_path.exists():
         return None
@@ -248,7 +269,8 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
             flow_intent = "BEARISH FLOW"
         
         # Use REAL price data from JSON if available
-        close_price = c.get("close", 0)
+        # Support both "close" (old format) and "current_price" (scheduled scan format)
+        close_price = c.get("close", 0) or c.get("current_price", 0)
         
         # Use REAL strike from JSON if available, otherwise calculate
         if c.get("strike") and c.get("strike") > 0:

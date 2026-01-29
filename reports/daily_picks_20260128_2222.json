@@ -1,0 +1,113 @@
+{
+  "scan_time": "2026-01-28T19:58:56.010297-05:00",
+  "market_regime": "bearish_neutral",
+  "picks": [
+    {
+      "symbol": "SBUX",
+      "score": 0.7,
+      "tier": "\ud83c\udfdb\ufe0f CLASS A",
+      "engine_type": "distribution_trap",
+      "current_price": 95.16,
+      "expiry": "Jan 30",
+      "dte": 2,
+      "signals": [
+        "failed_breakout",
+        "high_rvol_red_day",
+        "gap_up_reversal",
+        "multi_day_weakness"
+      ],
+      "signal_count": 4,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup",
+      "engine": "DISTRIBUTION",
+      "price": 95.16,
+      "strike": 85.0,
+      "return_potential": "3x-5x (HIGH CONVICTION)"
+    },
+    {
+      "symbol": "RDW",
+      "score": 0.65,
+      "tier": "\ud83d\udcaa STRONG",
+      "engine_type": "distribution_trap",
+      "current_price": 13.29,
+      "expiry": "Jan 30",
+      "dte": 2,
+      "signals": [
+        "failed_breakout",
+        "high_rvol_red_day",
+        "gap_down_no_recovery",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 4,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup",
+      "engine": "DISTRIBUTION",
+      "price": 13.29,
+      "strike": 12,
+      "return_potential": "2x-3x (STRONG)"
+    },
+    {
+      "symbol": "AI",
+      "score": 0.65,
+      "tier": "\ud83d\udcaa STRONG",
+      "engine_type": "distribution_trap",
+      "current_price": 13.13,
+      "expiry": "Jan 30",
+      "dte": 2,
+      "signals": [
+        "high_rvol_red_day",
+        "gap_up_reversal",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 3,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup",
+      "engine": "DISTRIBUTION",
+      "price": 13.13,
+      "strike": 12,
+      "return_potential": "1.5x-2.5x (MODERATE)"
+    },
+    {
+      "symbol": "HUM",
+      "score": 0.55,
+      "tier": "\ud83d\udc40 MONITORING",
+      "engine_type": "distribution_trap",
+      "current_price": 194.01,
+      "expiry": "Jan 30",
+      "dte": 2,
+      "signals": [
+        "high_rvol_red_day",
+        "multi_day_weakness",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 3,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup",
+      "engine": "DISTRIBUTION",
+      "price": 194.01,
+      "strike": 175.0,
+      "return_potential": "2x-3x (STRONG)"
+    },
+    {
+      "symbol": "USAR",
+      "score": 0.45,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "engine_type": "distribution_trap",
+      "current_price": 25.18,
+      "expiry": "Feb 06",
+      "dte": 9,
+      "signals": [
+        "failed_breakout",
+        "high_rvol_red_day",
+        "multi_day_weakness"
+      ],
+      "signal_count": 3,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup",
+      "engine": "DISTRIBUTION",
+      "price": 25.18,
+      "strike": 23,
+      "return_potential": "1.5x-2x (CLASS B)"
+    }
+  ]
+}

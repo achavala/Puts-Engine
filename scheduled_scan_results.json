@@ -16,8 +16,25 @@
         "multi_day_weakness"
       ],
       "signal_count": 4,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
+    },
+    {
+      "symbol": "AI",
+      "score": 0.65,
+      "tier": "\ud83d\udcaa STRONG",
+      "engine_type": "distribution_trap",
+      "current_price": 13.13,
+      "expiry": "Jan 30",
+      "dte": 2,
+      "signals": [
+        "high_rvol_red_day",
+        "gap_up_reversal",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 3,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "RDW",
@@ -34,25 +51,8 @@
         "is_post_earnings_negative"
       ],
       "signal_count": 4,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
-    },
-    {
-      "symbol": "AI",
-      "score": 0.65,
-      "tier": "\ud83d\udcaa STRONG",
-      "engine_type": "distribution_trap",
-      "current_price": 13.13,
-      "expiry": "Jan 30",
-      "dte": 2,
-      "signals": [
-        "high_rvol_red_day",
-        "gap_up_reversal",
-        "is_post_earnings_negative"
-      ],
-      "signal_count": 3,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "HUM",
@@ -68,8 +68,8 @@
         "is_post_earnings_negative"
       ],
       "signal_count": 3,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "ASML",
@@ -86,8 +86,8 @@
         "is_pre_earnings"
       ],
       "signal_count": 4,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "USAR",
@@ -103,24 +103,8 @@
         "multi_day_weakness"
       ],
       "signal_count": 3,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
-    },
-    {
-      "symbol": "ROOT",
-      "score": 0.35,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "distribution_trap",
-      "current_price": 65.79,
-      "expiry": "Feb 06",
-      "dte": 9,
-      "signals": [
-        "high_rvol_red_day",
-        "gap_down_no_recovery"
-      ],
-      "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "AFRM",
@@ -135,8 +119,24 @@
         "multi_day_weakness"
       ],
       "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
+    },
+    {
+      "symbol": "ROOT",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "engine_type": "distribution_trap",
+      "current_price": 65.79,
+      "expiry": "Feb 06",
+      "dte": 9,
+      "signals": [
+        "high_rvol_red_day",
+        "gap_down_no_recovery"
+      ],
+      "signal_count": 2,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "FOUR",
@@ -151,40 +151,8 @@
         "multi_day_weakness"
       ],
       "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
-    },
-    {
-      "symbol": "NET",
-      "score": 0.3,
-      "tier": "\ud83d\udcca WATCHING",
-      "engine_type": "distribution_trap",
-      "current_price": 184.88,
-      "expiry": "Feb 06",
-      "dte": 9,
-      "signals": [
-        "failed_breakout",
-        "high_rvol_red_day"
-      ],
-      "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
-    },
-    {
-      "symbol": "LLY",
-      "score": 0.3,
-      "tier": "\ud83d\udcca WATCHING",
-      "engine_type": "distribution_trap",
-      "current_price": 1023.8,
-      "expiry": "Feb 06",
-      "dte": 9,
-      "signals": [
-        "gap_down_no_recovery",
-        "multi_day_weakness"
-      ],
-      "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "ALB",
@@ -199,8 +167,40 @@
         "high_rvol_red_day"
       ],
       "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
+    },
+    {
+      "symbol": "NET",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "engine_type": "distribution_trap",
+      "current_price": 184.88,
+      "expiry": "Feb 06",
+      "dte": 9,
+      "signals": [
+        "failed_breakout",
+        "high_rvol_red_day"
+      ],
+      "signal_count": 2,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
+    },
+    {
+      "symbol": "LLY",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "engine_type": "distribution_trap",
+      "current_price": 1023.8,
+      "expiry": "Feb 06",
+      "dte": 9,
+      "signals": [
+        "gap_down_no_recovery",
+        "multi_day_weakness"
+      ],
+      "signal_count": 2,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "LUV",
@@ -214,8 +214,8 @@
         "gap_up_reversal"
       ],
       "signal_count": 1,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "NTLA",
@@ -230,17 +230,17 @@
         "multi_day_weakness"
       ],
       "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     }
   ],
   "liquidity": [
     {
-      "symbol": "CRM",
+      "symbol": "BIDU",
       "score": 0.35,
       "tier": "\ud83d\udfe1 CLASS B",
       "engine_type": "snapback",
-      "current_price": 227.96,
+      "current_price": 157.67,
       "expiry": "Feb 06",
       "dte": 9,
       "signals": [
@@ -248,24 +248,8 @@
         "is_post_earnings_negative"
       ],
       "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
-    },
-    {
-      "symbol": "CRSP",
-      "score": 0.35,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "snapback",
-      "current_price": 53.69,
-      "expiry": "Feb 06",
-      "dte": 9,
-      "signals": [
-        "multi_day_weakness",
-        "is_post_earnings_negative"
-      ],
-      "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "ARKK",
@@ -280,8 +264,40 @@
         "is_post_earnings_negative"
       ],
       "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
+    },
+    {
+      "symbol": "CRSP",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "engine_type": "snapback",
+      "current_price": 53.69,
+      "expiry": "Feb 06",
+      "dte": 9,
+      "signals": [
+        "multi_day_weakness",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
+    },
+    {
+      "symbol": "CRM",
+      "score": 0.35,
+      "tier": "\ud83d\udfe1 CLASS B",
+      "engine_type": "snapback",
+      "current_price": 227.96,
+      "expiry": "Feb 06",
+      "dte": 9,
+      "signals": [
+        "multi_day_weakness",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "QCOM",
@@ -296,24 +312,56 @@
         "is_post_earnings_negative"
       ],
       "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
-      "symbol": "BIDU",
-      "score": 0.35,
-      "tier": "\ud83d\udfe1 CLASS B",
+      "symbol": "ONDS",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
       "engine_type": "snapback",
-      "current_price": 157.67,
+      "current_price": 12.27,
       "expiry": "Feb 06",
       "dte": 9,
       "signals": [
-        "multi_day_weakness",
+        "vwap_loss",
         "is_post_earnings_negative"
       ],
       "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
+    },
+    {
+      "symbol": "IWM",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "engine_type": "snapback",
+      "current_price": 263.3,
+      "expiry": "Feb 06",
+      "dte": 9,
+      "signals": [
+        "vwap_loss",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
+    },
+    {
+      "symbol": "IONQ",
+      "score": 0.3,
+      "tier": "\ud83d\udcca WATCHING",
+      "engine_type": "snapback",
+      "current_price": 45.8,
+      "expiry": "Feb 06",
+      "dte": 9,
+      "signals": [
+        "vwap_loss",
+        "is_post_earnings_negative"
+      ],
+      "signal_count": 2,
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "DIS",
@@ -329,40 +377,8 @@
         "is_post_earnings_negative"
       ],
       "signal_count": 3,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
-    },
-    {
-      "symbol": "IONQ",
-      "score": 0.3,
-      "tier": "\ud83d\udcca WATCHING",
-      "engine_type": "snapback",
-      "current_price": 45.8,
-      "expiry": "Feb 06",
-      "dte": 9,
-      "signals": [
-        "vwap_loss",
-        "is_post_earnings_negative"
-      ],
-      "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
-    },
-    {
-      "symbol": "ONDS",
-      "score": 0.3,
-      "tier": "\ud83d\udcca WATCHING",
-      "engine_type": "snapback",
-      "current_price": 12.27,
-      "expiry": "Feb 06",
-      "dte": 9,
-      "signals": [
-        "vwap_loss",
-        "is_post_earnings_negative"
-      ],
-      "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     },
     {
       "symbol": "NVDA",
@@ -377,46 +393,14 @@
         "is_post_earnings_negative"
       ],
       "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
-    },
-    {
-      "symbol": "IWM",
-      "score": 0.3,
-      "tier": "\ud83d\udcca WATCHING",
-      "engine_type": "snapback",
-      "current_price": 263.3,
-      "expiry": "Feb 06",
-      "dte": 9,
-      "signals": [
-        "vwap_loss",
-        "is_post_earnings_negative"
-      ],
-      "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
-    },
-    {
-      "symbol": "AMC",
-      "score": 0.25,
-      "tier": "\ud83d\udcca WATCHING",
-      "engine_type": "snapback",
-      "current_price": 1.43,
-      "expiry": "Feb 06",
-      "dte": 9,
-      "signals": [
-        "vwap_loss",
-        "multi_day_weakness"
-      ],
-      "signal_count": 2,
-      "scan_time": "19:41 ET",
-      "scan_type": "manual_test"
+      "scan_time": "19:58 ET",
+      "scan_type": "startup"
     }
   ],
-  "last_scan": "2026-01-28T19:41:57.292873-05:00",
-  "scan_type": "manual_test",
+  "last_scan": "2026-01-28T19:58:56.010297-05:00",
+  "scan_type": "startup",
   "market_regime": "bearish_neutral",
   "tickers_scanned": 253,
   "errors": 0,
-  "total_candidates": 25
+  "total_candidates": 24
 }

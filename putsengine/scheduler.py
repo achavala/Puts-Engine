@@ -52,6 +52,9 @@ from putsengine.gap_scanner import run_premarket_gap_scan, GapScanner
 from putsengine.sector_correlation_scanner import run_sector_correlation_scan, SectorCorrelationScanner
 from putsengine.multiday_weakness_scanner import run_multiday_weakness_scan, MultiDayWeaknessScanner
 
+# Email Reporter for daily 3 PM scan
+from putsengine.email_reporter import run_daily_report_scan, send_email_report, save_report_to_file
+
 
 # Constants
 EST = pytz.timezone('US/Eastern')
@@ -385,7 +388,19 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        logger.info("All scheduled jobs configured (including Lead/Discovery scanners)")
+        # ============================================================================
+        # DAILY REPORT SCAN (3 PM EST) - Email with best picks
+        # Scans all 3 engines and sends email with top 5 picks (1x-5x potential)
+        # ============================================================================
+        self.scheduler.add_job(
+            self._run_daily_report_scan_wrapper,
+            CronTrigger(hour=15, minute=0, timezone=EST),
+            id="daily_report_3pm",
+            name="📧 Daily Report Scan (3:00 PM ET) - Email",
+            replace_existing=True
+        )
+        
+        logger.info("All scheduled jobs configured (including Lead/Discovery scanners + Daily Email Report)")
     
     def _run_scan_wrapper(self, scan_type: str):
         """Wrapper to run async scan in scheduler context."""
@@ -444,6 +459,14 @@ class PutsEngineScheduler:
             asyncio.ensure_future(self.run_sector_correlation_scan(), loop=loop)
         except RuntimeError:
             asyncio.run(self.run_sector_correlation_scan())
+    
+    def _run_daily_report_scan_wrapper(self):
+        """Wrapper to run daily report scan (3 PM EST) with email."""
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_daily_report_scan(), loop=loop)
+        except RuntimeError:
+            asyncio.run(self.run_daily_report_scan())
     
     async def run_scan(self, scan_type: str = "manual"):
         """
@@ -1006,6 +1029,64 @@ class PutsEngineScheduler:
             
         except Exception as e:
             logger.error(f"Sector correlation scan error: {e}")
+            return {}
+    
+    async def run_daily_report_scan(self):
+        """
+        Run the daily 3 PM EST scan and send email report.
+        
+        This is the main daily report that:
+        1. Scans all 253 tickers across all 3 engines
+        2. Selects top 5 picks with 1x-5x return potential
+        3. Saves HTML report to reports/ folder
+        4. Sends email with picks (if configured)
+        
+        EMAIL SETUP:
+        Set these environment variables:
+        - PUTSENGINE_EMAIL_SENDER: Your Gmail address
+        - PUTSENGINE_EMAIL_PASSWORD: Gmail app password (not regular password)
+        - PUTSENGINE_EMAIL_RECIPIENT: Where to send reports
+        
+        To generate Gmail app password:
+        1. Go to myaccount.google.com/security
+        2. Enable 2-Step Verification
+        3. Go to App passwords
+        4. Generate password for "Mail" app
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("📧 DAILY REPORT SCAN (3 PM EST)")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Scanning all engines for best 1x-5x picks...")
+        logger.info("=" * 60)
+        
+        try:
+            # Run full scan
+            await self.run_scan("daily_report")
+            
+            # Get results
+            results = self.latest_results
+            
+            # Save report to file (always works)
+            report_path = save_report_to_file(results)
+            logger.info(f"📄 Report saved: {report_path}")
+            
+            # Send email (if configured)
+            email_sent = send_email_report(results)
+            
+            if email_sent:
+                logger.info("📧 Email sent successfully!")
+            else:
+                logger.warning("📧 Email not sent - check PUTSENGINE_EMAIL_* environment variables")
+            
+            logger.info("=" * 60)
+            logger.info("DAILY REPORT COMPLETE")
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Daily report scan error: {e}")
             return {}
     
     def get_scheduled_jobs(self) -> List[Dict]:
