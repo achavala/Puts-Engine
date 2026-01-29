@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from putsengine.config import Settings, EngineConfig, get_settings, DynamicUniverseManager
 from putsengine.engine import PutsEngine
 from putsengine.models import PutCandidate, MarketRegimeData, BlockReason
-from putsengine.scan_history import get_48hour_frequency_analysis, initialize_history_from_current_scan, add_scan_to_history
+from putsengine.scan_history import get_48hour_frequency_analysis, initialize_history_from_current_scan, add_scan_to_history, load_scan_history
 
 st.set_page_config(page_title="PutsEngine", page_icon="📉", layout="wide", initial_sidebar_state="expanded")
 
@@ -687,6 +687,63 @@ def render_48hour_analysis():
     Shows how many times each symbol appeared across ALL scans in the last 48 hours.
     **Multi-Engine symbols** (appearing in 2+ engines) have highest conviction.
     """)
+    
+    # Add refresh button and auto-sync with current scan
+    col_refresh1, col_refresh2, col_refresh3 = st.columns([1, 1, 2])
+    
+    with col_refresh1:
+        if st.button("🔄 Refresh History", key="refresh_48hr_btn"):
+            # Add current scan to history
+            try:
+                results_file = Path(__file__).parent.parent / "scheduled_scan_results.json"
+                if results_file.exists():
+                    with open(results_file, 'r') as f:
+                        current_results = json.load(f)
+                    add_scan_to_history(current_results)
+                    st.success("History updated!")
+                    st.rerun()
+            except Exception as e:
+                st.error(f"Error updating: {e}")
+    
+    with col_refresh2:
+        # Show last update time from history
+        try:
+            history = load_scan_history()
+            if history.get("scans"):
+                last_scan = history["scans"][-1].get("timestamp", "Unknown")
+                st.caption(f"Last scan: {last_scan[:19] if isinstance(last_scan, str) else last_scan}")
+        except:
+            pass
+    
+    # Auto-sync: Add current scan to history on page load (if not recently added)
+    try:
+        results_file = Path(__file__).parent.parent / "scheduled_scan_results.json"
+        if results_file.exists():
+            with open(results_file, 'r') as f:
+                current_results = json.load(f)
+            
+            # Check if we need to add this scan (avoid duplicates)
+            history = load_scan_history()
+            current_timestamp = current_results.get("last_scan", "")
+            
+            # Only add if timestamp is different from the last scan in history
+            if history.get("scans"):
+                last_history_timestamp = history["scans"][-1].get("timestamp", "")
+                # Simple check: if timestamps differ by more than 60 seconds, add new scan
+                if current_timestamp and current_timestamp != last_history_timestamp:
+                    try:
+                        current_dt = datetime.fromisoformat(current_timestamp.replace("Z", "+00:00"))
+                        last_dt = datetime.fromisoformat(last_history_timestamp.replace("Z", "+00:00"))
+                        if abs((current_dt - last_dt).total_seconds()) > 60:
+                            add_scan_to_history(current_results)
+                    except:
+                        # If timestamp parsing fails, still try to add
+                        add_scan_to_history(current_results)
+            else:
+                # History is empty, add current scan
+                add_scan_to_history(current_results)
+    except Exception as e:
+        logger.debug(f"Auto-sync error: {e}")
     
     # Initialize history if needed
     try:

@@ -419,7 +419,100 @@
         }
       ],
       "market_regime": "neutral"
+    },
+    {
+      "timestamp": "2026-01-29T11:32:20.440976",
+      "gamma_drain": [
+        {
+          "symbol": "MSFT",
+          "score": 0.92,
+          "signals": [
+            "earnings_miss",
+            "gap_down",
+            "massive_put_flow",
+            "delta_flip"
+          ]
+        },
+        {
+          "symbol": "NOW",
+          "score": 0.68,
+          "signals": [
+            "sympathy_sell",
+            "tech_weakness",
+            "vwap_loss"
+          ]
+        },
+        {
+          "symbol": "DDOG",
+          "score": 0.65,
+          "signals": [
+            "tech_contagion",
+            "below_support"
+          ]
+        },
+        {
+          "symbol": "SNOW",
+          "score": 0.62,
+          "signals": [
+            "cloud_weakness",
+            "distribution"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "CRM",
+          "score": 0.58,
+          "signals": [
+            "high_rvol",
+            "enterprise_weakness"
+          ]
+        },
+        {
+          "symbol": "ZS",
+          "score": 0.55,
+          "signals": [
+            "multi_day_weakness",
+            "gap_down"
+          ]
+        },
+        {
+          "symbol": "META",
+          "score": 0.52,
+          "signals": [
+            "tech_sympathy",
+            "rising_volume"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "NVDA",
+          "score": 0.48,
+          "signals": [
+            "bid_collapse",
+            "spread_widening"
+          ]
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.45,
+          "signals": [
+            "liquidity_vacuum",
+            "tech_weakness"
+          ]
+        },
+        {
+          "symbol": "GOOGL",
+          "score": 0.42,
+          "signals": [
+            "earnings_fear",
+            "bid_collapse"
+          ]
+        }
+      ],
+      "market_regime": "volatile_bearish"
     }
   ],
-  "last_cleanup": "2026-01-28T23:01:32.971604-05:00"
+  "last_cleanup": "2026-01-29T11:36:21.380648-05:00"
 }
