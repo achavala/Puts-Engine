@@ -41,6 +41,11 @@ from putsengine.layers.acceleration import AccelerationWindowLayer
 from putsengine.scoring.scorer import PutScorer
 from putsengine.models import PutCandidate, EngineType
 
+# New scanners for after-hours, earnings, and pre-catalyst detection
+from putsengine.afterhours_scanner import run_afterhours_scan, AfterHoursScanner
+from putsengine.earnings_calendar import run_earnings_check, EarningsCalendar
+from putsengine.precatalyst_scanner import run_precatalyst_scan, PreCatalystScanner
+
 
 # Constants
 EST = pytz.timezone('US/Eastern')
@@ -240,11 +245,79 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        logger.info("All scheduled jobs configured")
+        # ============================================================================
+        # NEW SCANNERS: After-Hours, Earnings Calendar, Pre-Catalyst
+        # These would have caught MP (-10.68% AH), USAR (-13.31% AH), JOBY (-11.48% AH)
+        # ============================================================================
+        
+        # After-Hours Scans (4:30 PM, 6:00 PM, 8:00 PM)
+        self.scheduler.add_job(
+            self._run_afterhours_scan_wrapper,
+            CronTrigger(hour=16, minute=30, timezone=EST),
+            id="afterhours_1",
+            name="After-Hours Scan #1 (4:30 PM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_afterhours_scan_wrapper,
+            CronTrigger(hour=18, minute=0, timezone=EST),
+            id="afterhours_2",
+            name="After-Hours Scan #2 (6:00 PM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_afterhours_scan_wrapper,
+            CronTrigger(hour=20, minute=0, timezone=EST),
+            id="afterhours_3",
+            name="After-Hours Scan #3 (8:00 PM ET)",
+            replace_existing=True
+        )
+        
+        # Earnings Calendar Check (7:00 AM and 3:00 PM)
+        self.scheduler.add_job(
+            self._run_earnings_check_wrapper,
+            CronTrigger(hour=7, minute=0, timezone=EST),
+            id="earnings_morning",
+            name="Earnings Calendar Check (7:00 AM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_earnings_check_wrapper,
+            CronTrigger(hour=15, minute=0, timezone=EST),
+            id="earnings_afternoon",
+            name="Earnings AMC Alert (3:00 PM ET)",
+            replace_existing=True
+        )
+        
+        # Pre-Catalyst Scanner (6:00 PM - detect smart money positioning)
+        self.scheduler.add_job(
+            self._run_precatalyst_scan_wrapper,
+            CronTrigger(hour=18, minute=0, timezone=EST),
+            id="precatalyst",
+            name="Pre-Catalyst Distribution Scan (6:00 PM ET)",
+            replace_existing=True
+        )
+        
+        logger.info("All scheduled jobs configured (including AH, Earnings, Pre-Catalyst)")
     
     def _run_scan_wrapper(self, scan_type: str):
         """Wrapper to run async scan in scheduler context."""
         asyncio.create_task(self.run_scan(scan_type))
+    
+    def _run_afterhours_scan_wrapper(self):
+        """Wrapper to run after-hours scan in scheduler context."""
+        asyncio.create_task(self.run_afterhours_scan())
+    
+    def _run_earnings_check_wrapper(self):
+        """Wrapper to run earnings calendar check in scheduler context."""
+        asyncio.create_task(self.run_earnings_check())
+    
+    def _run_precatalyst_scan_wrapper(self):
+        """Wrapper to run pre-catalyst scan in scheduler context."""
+        asyncio.create_task(self.run_precatalyst_scan())
     
     async def run_scan(self, scan_type: str = "manual"):
         """
@@ -448,6 +521,156 @@ class PutsEngineScheduler:
         except Exception as e:
             logger.error(f"Error loading results: {e}")
         return self.latest_results
+    
+    # ==========================================================================
+    # NEW SCANNER METHODS: After-Hours, Earnings, Pre-Catalyst
+    # These would have caught MP, USAR, LAC, JOBY moves
+    # ==========================================================================
+    
+    async def run_afterhours_scan(self):
+        """
+        Run after-hours scan to detect moves happening after 4 PM ET.
+        
+        This would have caught:
+        - MP: -10.68% AH
+        - USAR: -13.31% AH
+        - LAC: -8.74% AH
+        - JOBY: -11.48% AH
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("AFTER-HOURS SCAN")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("=" * 60)
+        
+        try:
+            await self._init_clients()
+            
+            # Get universe
+            universe = set(EngineConfig.get_all_tickers())
+            
+            # Run after-hours scan
+            results = await run_afterhours_scan(self._alpaca, universe)
+            
+            # Log results
+            summary = results.get("summary", {})
+            logger.info(f"After-Hours Scan Complete:")
+            logger.info(f"  Critical alerts (>5% down): {summary.get('critical_count', 0)}")
+            logger.info(f"  High alerts (>3% down): {summary.get('high_count', 0)}")
+            logger.info(f"  Watching alerts (>2% down): {summary.get('watching_count', 0)}")
+            logger.info(f"  Injected to DUI: {summary.get('injected_to_dui', 0)}")
+            
+            # Log critical alerts
+            for alert in results.get("critical", []):
+                logger.warning(
+                    f"  🔴 CRITICAL: {alert.symbol} {alert.ah_change_pct:+.2f}% | "
+                    f"Close: ${alert.close_price:.2f} -> AH: ${alert.ah_price:.2f}"
+                )
+            
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"After-hours scan error: {e}")
+            return {}
+    
+    async def run_earnings_check(self):
+        """
+        Run earnings calendar check to flag tickers reporting today.
+        
+        Identifies:
+        - BMO (Before Market Open) - gap risk at open
+        - AMC (After Market Close) - AH scan priority
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("EARNINGS CALENDAR CHECK")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("=" * 60)
+        
+        try:
+            await self._init_clients()
+            
+            # Get universe
+            universe = set(EngineConfig.get_all_tickers())
+            
+            # Run earnings check
+            results = await run_earnings_check(self._uw, universe)
+            
+            # Log results
+            logger.info(f"Earnings Calendar Check Complete:")
+            logger.info(f"  BMO tickers: {results.get('bmo_count', 0)}")
+            logger.info(f"  AMC tickers: {results.get('amc_count', 0)}")
+            
+            if results.get("bmo_tickers"):
+                logger.info(f"  BMO: {', '.join(results['bmo_tickers'])}")
+            if results.get("amc_tickers"):
+                logger.warning(f"  AMC (watch for AH moves): {', '.join(results['amc_tickers'])}")
+            
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Earnings check error: {e}")
+            return {}
+    
+    async def run_precatalyst_scan(self):
+        """
+        Run pre-catalyst scan to detect smart money positioning.
+        
+        Detects 24-72 hours BEFORE moves:
+        - Dark pool selling surge
+        - Put OI accumulation
+        - Call selling at bid (hedging)
+        - IV term structure inversion
+        - Price-volume divergence (distribution)
+        
+        This would have caught UNH the day before the 20% drop.
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("PRE-CATALYST DISTRIBUTION SCAN")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Detecting smart money positioning 24-72 hours before moves...")
+        logger.info("=" * 60)
+        
+        try:
+            await self._init_clients()
+            
+            # Run pre-catalyst scan
+            results = await run_precatalyst_scan(self._uw, self._alpaca)
+            
+            # Log results
+            summary = results.get("summary", {})
+            logger.info(f"Pre-Catalyst Scan Complete:")
+            logger.info(f"  Critical alerts (4+ signals): {summary.get('critical_count', 0)}")
+            logger.info(f"  High alerts (3 signals): {summary.get('high_count', 0)}")
+            logger.info(f"  Medium alerts (2 signals): {summary.get('medium_count', 0)}")
+            logger.info(f"  Injected to DUI: {summary.get('injected_to_dui', 0)}")
+            
+            # Log critical alerts
+            for alert in results.get("critical", []):
+                logger.warning(
+                    f"  🔴 CRITICAL PRE-CATALYST: {alert.symbol} | "
+                    f"Score: {alert.score:.2f} | Signals: {alert.signal_count}"
+                )
+            
+            # Log high alerts
+            for alert in results.get("high", []):
+                logger.info(
+                    f"  🟡 HIGH PRE-CATALYST: {alert.symbol} | "
+                    f"Score: {alert.score:.2f} | Signals: {alert.signal_count}"
+                )
+            
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Pre-catalyst scan error: {e}")
+            return {}
     
     def get_scheduled_jobs(self) -> List[Dict]:
         """Get list of all scheduled jobs."""

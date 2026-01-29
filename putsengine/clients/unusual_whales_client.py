@@ -693,3 +693,94 @@ class UnusualWhalesClient:
         elif isinstance(result, dict):
             return result.get("data", [])
         return []
+    
+    async def get_earnings_calendar(
+        self,
+        start_date: str = None,
+        end_date: str = None,
+        limit: int = 100
+    ) -> List[Dict[str, Any]]:
+        """
+        Get earnings calendar for upcoming/recent earnings.
+        Endpoint: /api/earnings-calendar
+        
+        Args:
+            start_date: Start date (YYYY-MM-DD)
+            end_date: End date (YYYY-MM-DD)
+            limit: Maximum results
+            
+        Returns:
+            List of earnings events with ticker, date, timing (BMO/AMC)
+        """
+        endpoint = "/api/earnings/calendar"
+        params = {"limit": limit}
+        if start_date:
+            params["start_date"] = start_date
+        if end_date:
+            params["end_date"] = end_date
+        
+        result = await self._request(endpoint, params)
+        
+        if isinstance(result, list):
+            return result
+        elif isinstance(result, dict):
+            return result.get("data", [])
+        return []
+    
+    async def get_global_flow_alerts(self, limit: int = 100) -> List[Dict[str, Any]]:
+        """
+        Get market-wide flow alerts (sweeps, blocks, unusual activity).
+        Endpoint: /api/option-trades/flow-alerts
+        
+        This detects large put flow across entire market.
+        
+        Args:
+            limit: Maximum alerts to return
+            
+        Returns:
+            List of flow alerts with ticker, premium, type
+        """
+        endpoint = "/api/option-trades/flow-alerts"
+        params = {"limit": limit}
+        
+        result = await self._request(endpoint, params)
+        
+        if isinstance(result, list):
+            return result
+        elif isinstance(result, dict):
+            return result.get("data", [])
+        return []
+    
+    async def get_oi_change(self, symbol: str) -> Dict[str, Any]:
+        """
+        Get open interest change data for a symbol.
+        Endpoint: /api/stock/{symbol}/oi-change
+        
+        Used for detecting put OI accumulation (smart money positioning).
+        
+        Returns:
+            Dict with put_oi_change, call_oi_change, etc.
+        """
+        endpoint = f"/api/stock/{symbol}/oi-change"
+        result = await self._request(endpoint, symbol=symbol)
+        
+        if isinstance(result, dict):
+            return result
+        return {}
+    
+    async def get_iv_term_structure(self, symbol: str) -> Dict[str, Any]:
+        """
+        Get IV term structure for a symbol.
+        Endpoint: /api/stock/{symbol}/volatility/term-structure
+        
+        Used for detecting IV inversion (near-term > far-term = hedging).
+        
+        Returns:
+            Dict with 7_day, 30_day, 60_day IV values
+        """
+        endpoint = f"/api/stock/{symbol}/volatility/term-structure"
+        result = await self._request(endpoint, symbol=symbol)
+        
+        if isinstance(result, dict):
+            return result
+        return {}
