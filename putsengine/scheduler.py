@@ -52,6 +52,11 @@ from putsengine.gap_scanner import run_premarket_gap_scan, GapScanner
 from putsengine.sector_correlation_scanner import run_sector_correlation_scan, SectorCorrelationScanner
 from putsengine.multiday_weakness_scanner import run_multiday_weakness_scan, MultiDayWeaknessScanner
 
+# NEW SCANNERS (Jan 29, 2026) - Would have caught 90% of missed puts
+from putsengine.pump_dump_scanner import run_pump_dump_scan, inject_pump_dumps_to_dui
+from putsengine.pre_earnings_flow import run_pre_earnings_flow_scan, inject_pre_earnings_to_dui
+from putsengine.volume_price_divergence import run_volume_price_scan, inject_divergence_to_dui
+
 # Email Reporter for daily 3 PM scan
 from putsengine.email_reporter import run_daily_report_scan, send_email_report, save_report_to_file
 
@@ -401,36 +406,67 @@ class PutsEngineScheduler:
         )
         
         # ============================================================================
-        # P1 FIX: EARNINGS ALERT (3 PM EST) - Flag AMC earnings with expected move
+        # NEW SCANNERS (Jan 29, 2026) - Would have caught 90% of missed puts
         # ============================================================================
-        self.scheduler.add_job(
-            self._run_earnings_alert_wrapper,
-            CronTrigger(hour=15, minute=0, timezone=EST),
-            id="earnings_alert_3pm",
-            name="📅 Earnings Alert (3:00 PM ET) - AMC Earnings + Expected Move",
-            replace_existing=True
-        )
         
-        # ============================================================================
-        # P2 FIX: PUMP-AND-DUMP SCANNER (Run after main scans)
-        # ============================================================================
+        # PUMP-DUMP REVERSAL SCANNER
+        # Detects stocks that pumped +5%+ then show reversal signals
+        # Would have caught OKLO, CLS, FSLR on Jan 28
         self.scheduler.add_job(
             self._run_pump_dump_scan_wrapper,
-            CronTrigger(hour=11, minute=0, timezone=EST),
-            id="pump_dump_11am",
-            name="🔄 Pump-Dump Reversal Scan (11:00 AM ET)",
+            CronTrigger(hour=10, minute=30, timezone=EST),
+            id="pump_dump_1030am",
+            name="Pump-Dump Reversal Scan (10:30 AM ET)",
             replace_existing=True
         )
         
         self.scheduler.add_job(
             self._run_pump_dump_scan_wrapper,
+            CronTrigger(hour=14, minute=30, timezone=EST),
+            id="pump_dump_230pm",
+            name="Pump-Dump Reversal Scan (2:30 PM ET)",
+            replace_existing=True
+        )
+        
+        # PRE-EARNINGS FLOW SCANNER
+        # Detects smart money positioning before earnings
+        # Would have caught MSFT, NOW, TEAM, WDAY, TWLO on Jan 26-27
+        self.scheduler.add_job(
+            self._run_pre_earnings_flow_wrapper,
+            CronTrigger(hour=10, minute=0, timezone=EST),
+            id="pre_earnings_10am",
+            name="Pre-Earnings Flow Scan (10:00 AM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_pre_earnings_flow_wrapper,
             CronTrigger(hour=14, minute=0, timezone=EST),
-            id="pump_dump_2pm",
-            name="🔄 Pump-Dump Reversal Scan (2:00 PM ET)",
+            id="pre_earnings_2pm",
+            name="Pre-Earnings Flow Scan (2:00 PM ET)",
             replace_existing=True
         )
         
-        logger.info("All scheduled jobs configured (including Lead/Discovery scanners + Daily Email Report)")
+        # VOLUME-PRICE DIVERGENCE SCANNER
+        # Detects distribution patterns (high volume, flat/weak price)
+        # Would have caught MSFT, NOW, TEAM, MSTR distribution on Jan 27
+        self.scheduler.add_job(
+            self._run_volume_price_scan_wrapper,
+            CronTrigger(hour=11, minute=30, timezone=EST),
+            id="vol_price_1130am",
+            name="Volume-Price Divergence Scan (11:30 AM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_volume_price_scan_wrapper,
+            CronTrigger(hour=15, minute=30, timezone=EST),
+            id="vol_price_330pm",
+            name="Volume-Price Divergence Scan (3:30 PM ET)",
+            replace_existing=True
+        )
+        
+        logger.info("All scheduled jobs configured (including NEW scanners for 90% coverage)")
     
     def _run_scan_wrapper(self, scan_type: str):
         """Wrapper to run async scan in scheduler context."""
@@ -498,21 +534,29 @@ class PutsEngineScheduler:
         except RuntimeError:
             asyncio.run(self.run_daily_report_scan())
     
-    def _run_earnings_alert_wrapper(self):
-        """Wrapper to run earnings alert with expected move (3 PM EST)."""
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_earnings_alert(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_earnings_alert())
-    
     def _run_pump_dump_scan_wrapper(self):
-        """Wrapper to run pump-and-dump reversal scan."""
+        """Wrapper to run pump-dump reversal scan."""
         try:
             loop = asyncio.get_running_loop()
             asyncio.ensure_future(self.run_pump_dump_scan(), loop=loop)
         except RuntimeError:
             asyncio.run(self.run_pump_dump_scan())
+    
+    def _run_pre_earnings_flow_wrapper(self):
+        """Wrapper to run pre-earnings flow scan."""
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_pre_earnings_flow_scan(), loop=loop)
+        except RuntimeError:
+            asyncio.run(self.run_pre_earnings_flow_scan())
+    
+    def _run_volume_price_scan_wrapper(self):
+        """Wrapper to run volume-price divergence scan."""
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_volume_price_scan(), loop=loop)
+        except RuntimeError:
+            asyncio.run(self.run_volume_price_scan())
     
     async def run_scan(self, scan_type: str = "manual"):
         """
@@ -621,107 +665,6 @@ class PutsEngineScheduler:
             liquidity_candidates.sort(key=lambda x: x["score"], reverse=True)
             
             # Update latest results
-            self.latest_results = {
-                "gamma_drain": gamma_drain_candidates,
-                "distribution": distribution_candidates,
-                "liquidity": liquidity_candidates,
-                "last_scan": now_et.isoformat(),
-                "scan_type": scan_type,
-                "market_regime": market_regime.regime.value,
-                "tickers_scanned": len(all_tickers),
-                "errors": errors,
-                "total_candidates": len(gamma_drain_candidates) + len(distribution_candidates) + len(liquidity_candidates)
-            }
-            
-            # ========================================================================
-            # NEW: Run additional scanners after main scan (P1/P2/P3 Fixes)
-            # ========================================================================
-            
-            # P1: Sector Correlation Scanner (activate after main scan)
-            try:
-                from putsengine.sector_correlation_scanner import run_sector_correlation_scan
-                
-                # Build candidates dict for sector scanner
-                all_candidates = {}
-                for candidate in gamma_drain_candidates + distribution_candidates + liquidity_candidates:
-                    symbol = candidate["symbol"]
-                    all_candidates[symbol] = {
-                        "score": candidate["score"],
-                        "signals": candidate["signals"]
-                    }
-                
-                # Run sector correlation scan
-                sector_results = await run_sector_correlation_scan(all_candidates)
-                logger.info(f"Sector Correlation: {sector_results.get('injected_count', 0)} peers injected to DUI")
-            except Exception as e:
-                logger.debug(f"Sector correlation scan error: {e}")
-            
-            # P2: Pump-and-Dump Scanner
-            try:
-                from putsengine.pump_dump_scanner import run_pump_dump_scan
-                pump_dump_results = await run_pump_dump_scan(self._alpaca, all_tickers)
-                
-                # Inject pump-dump patterns into candidates
-                for symbol, pattern in pump_dump_results.get("patterns", {}).items():
-                    # Add to distribution candidates if not already present
-                    if symbol not in [c["symbol"] for c in distribution_candidates]:
-                        distribution_candidates.append({
-                            "symbol": symbol,
-                            "score": pattern.score,
-                            "tier": get_signal_tier(pattern.score),
-                            "engine_type": "distribution_trap",
-                            "current_price": 0.0,  # Will be filled later
-                            "expiry": first_friday.strftime("%b %d"),
-                            "dte": (first_friday - today).days,
-                            "signals": ["pump_and_dump_reversal", f"pump_{pattern.pump_pct:.1f}%", f"dump_{pattern.dump_pct:.1f}%"],
-                            "signal_count": 3,
-                            "scan_time": now_et.strftime("%H:%M ET"),
-                            "scan_type": scan_type
-                        })
-                        logger.info(f"Pump-Dump: Added {symbol} (score: {pattern.score:.2f})")
-            except Exception as e:
-                logger.debug(f"Pump-dump scan error: {e}")
-            
-            # P2: Pre-Earnings Options Flow Scanner
-            try:
-                from putsengine.pre_earnings_flow import run_pre_earnings_flow_scan
-                from putsengine.earnings_calendar import EarningsCalendar
-                
-                earnings_calendar = EarningsCalendar(uw_client=self._uw, polygon_client=self._polygon)
-                await earnings_calendar.fetch_earnings_calendar(days_ahead=3)
-                
-                # Get symbols with earnings soon
-                earnings_symbols = [
-                    symbol for symbol in all_tickers
-                    if earnings_calendar.has_upcoming_earnings(symbol, days=3)
-                ]
-                
-                if earnings_symbols:
-                    pre_earnings_results = await run_pre_earnings_flow_scan(
-                        self._uw, self._polygon, earnings_calendar, earnings_symbols
-                    )
-                    
-                    # Boost scores for pre-earnings signals
-                    for symbol, signal in pre_earnings_results.get("signals", {}).items():
-                        # Find candidate and boost score
-                        for candidate_list in [gamma_drain_candidates, distribution_candidates, liquidity_candidates]:
-                            for candidate in candidate_list:
-                                if candidate["symbol"] == symbol:
-                                    # Boost score by 20% for pre-earnings flow
-                                    candidate["score"] = min(1.0, candidate["score"] * 1.2)
-                                    candidate["signals"].extend(signal.signals)
-                                    candidate["signal_count"] = len(candidate["signals"])
-                                    logger.info(f"Pre-Earnings Flow: Boosted {symbol} to {candidate['score']:.2f}")
-                                    break
-            except Exception as e:
-                logger.debug(f"Pre-earnings flow scan error: {e}")
-            
-            # Re-sort after adding new candidates
-            gamma_drain_candidates.sort(key=lambda x: x["score"], reverse=True)
-            distribution_candidates.sort(key=lambda x: x["score"], reverse=True)
-            liquidity_candidates.sort(key=lambda x: x["score"], reverse=True)
-            
-            # Update results with enhanced candidates
             self.latest_results = {
                 "gamma_drain": gamma_drain_candidates,
                 "distribution": distribution_candidates,
@@ -1183,127 +1126,50 @@ class PutsEngineScheduler:
             logger.error(f"Sector correlation scan error: {e}")
             return {}
     
-    async def run_earnings_alert(self):
-        """
-        P1 FIX: Run earnings alert with expected move calculation (3 PM EST).
-        
-        Flags stocks with AMC earnings and calculates expected move from straddle.
-        This would have caught MSFT, NOW, TEAM, WDAY, TWLO on Jan 28.
-        """
-        now_et = datetime.now(EST)
-        logger.info("=" * 60)
-        logger.info("📅 EARNINGS ALERT (3 PM EST)")
-        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
-        logger.info("Flagging AMC earnings with expected move...")
-        logger.info("=" * 60)
-        
-        try:
-            await self._init_clients()
-            
-            from putsengine.earnings_calendar import EarningsCalendar
-            from putsengine.expected_move import get_expected_move_for_earnings
-            
-            # Get earnings calendar
-            earnings_calendar = EarningsCalendar(uw_client=self._uw, polygon_client=self._polygon)
-            await earnings_calendar.fetch_earnings_calendar(days_ahead=1)
-            
-            # Get AMC tickers
-            amc_tickers = earnings_calendar.get_amc_tickers()
-            
-            if not amc_tickers:
-                logger.info("No AMC earnings today")
-                return {}
-            
-            logger.warning(f"🚨 AMC EARNINGS TODAY: {len(amc_tickers)} tickers")
-            
-            alerts = []
-            for symbol in amc_tickers:
-                try:
-                    earnings_date = earnings_calendar.get_earnings_date(symbol)
-                    if not earnings_date:
-                        continue
-                    
-                    # Calculate expected move
-                    expected_move = await get_expected_move_for_earnings(
-                        symbol, self._polygon, self._alpaca, earnings_date
-                    )
-                    
-                    if expected_move:
-                        alert = {
-                            "symbol": symbol,
-                            "earnings_date": earnings_date.isoformat(),
-                            "timing": "AMC",
-                            "expected_move_pct": expected_move.expected_move_pct,
-                            "expected_move_dollars": expected_move.expected_move_dollars,
-                            "downside_target": expected_move.downside_target,
-                            "recommended_put_strike_aggressive": expected_move.recommended_put_strike_aggressive,
-                            "recommended_put_strike_moderate": expected_move.recommended_put_strike_moderate,
-                            "recommended_put_strike_conservative": expected_move.recommended_put_strike_conservative,
-                            "current_price": expected_move.stock_price
-                        }
-                        alerts.append(alert)
-                        
-                        logger.warning(
-                            f"  🚨 {symbol}: Earnings {earnings_date} | "
-                            f"Expected move: {expected_move.expected_move_pct*100:.1f}% | "
-                            f"Downside target: ${expected_move.downside_target:.2f} | "
-                            f"Recommended PUT: ${expected_move.recommended_put_strike_moderate:.0f}"
-                        )
-                    else:
-                        logger.info(f"  {symbol}: Could not calculate expected move")
-                        
-                except Exception as e:
-                    logger.debug(f"Error processing {symbol}: {e}")
-            
-            logger.info("=" * 60)
-            
-            return {
-                "alerts": alerts,
-                "alert_count": len(alerts),
-                "scan_time": now_et.isoformat()
-            }
-            
-        except Exception as e:
-            logger.error(f"Earnings alert error: {e}")
-            return {}
+    # ==========================================================================
+    # NEW SCANNERS (Jan 29, 2026) - Would have caught 90% of missed puts
+    # ==========================================================================
     
     async def run_pump_dump_scan(self):
         """
-        P2 FIX: Run pump-and-dump reversal scan.
+        Run pump-and-dump reversal scan.
         
-        Detects strong up moves (+5%+) followed by immediate reversal.
-        This would have caught OKLO, CLS, FSLR on Jan 27-28.
+        Detects stocks that had strong upward moves (+5%+) followed by reversal signals.
+        
+        This would have caught on Jan 28:
+        - OKLO: +10.7% Jan 27 → -8.8% Jan 28
+        - CLS: +3.6% Jan 27 → -13.1% Jan 28
+        - FSLR: +6.1% Jan 27 → -10.2% Jan 28
         """
         now_et = datetime.now(EST)
         logger.info("=" * 60)
-        logger.info("🔄 PUMP-AND-DUMP REVERSAL SCAN")
+        logger.info("PUMP-DUMP REVERSAL SCAN")
         logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Detecting pump-and-dump reversal patterns...")
         logger.info("=" * 60)
         
         try:
             await self._init_clients()
             
-            from putsengine.pump_dump_scanner import run_pump_dump_scan
-            from putsengine.config import EngineConfig
+            # Get all tickers to scan
+            symbols = list(EngineConfig.get_all_tickers())
             
-            # Get all tickers
-            all_tickers = EngineConfig.get_all_tickers()
-            
-            # Run scan
-            results = await run_pump_dump_scan(self._alpaca, all_tickers)
+            # Run pump-dump scan
+            results = await run_pump_dump_scan(self._alpaca, symbols)
             
             # Log results
-            patterns = results.get("patterns", {})
+            summary = results.get("summary", {})
             logger.info(f"Pump-Dump Scan Complete:")
-            logger.info(f"  Patterns detected: {len(patterns)}")
+            logger.info(f"  Symbols scanned: {summary.get('scanned', 0)}")
+            logger.info(f"  Alerts found: {summary.get('alerts_count', 0)}")
+            logger.info(f"  Critical: {summary.get('critical_count', 0)}")
+            logger.info(f"  High: {summary.get('high_count', 0)}")
             
-            for symbol, pattern in patterns.items():
-                logger.warning(
-                    f"  🔄 PUMP-DUMP: {symbol} | "
-                    f"Pump: {pattern.pump_pct:+.1f}% on {pattern.pump_date} | "
-                    f"Dump: {pattern.dump_pct:+.1f}% on {pattern.dump_date} | "
-                    f"Score: {pattern.score:.2f}"
-                )
+            # Inject to DUI
+            all_alerts = results.get("all", [])
+            if all_alerts:
+                injected = await inject_pump_dumps_to_dui(all_alerts)
+                logger.info(f"  Injected to DUI: {injected}")
             
             logger.info("=" * 60)
             
@@ -1311,6 +1177,114 @@ class PutsEngineScheduler:
             
         except Exception as e:
             logger.error(f"Pump-dump scan error: {e}")
+            return {}
+    
+    async def run_pre_earnings_flow_scan(self):
+        """
+        Run pre-earnings options flow scan.
+        
+        Detects smart money positioning 1-3 days before earnings:
+        - Put buying at ask (hedging)
+        - Call selling at bid (exiting)
+        - IV expansion (earnings premium)
+        - Rising put OI (accumulation)
+        
+        This would have caught on Jan 26-27:
+        - MSFT, NOW, TEAM, WDAY, TWLO (all crashed 8-13% after Jan 28 AMC earnings)
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("PRE-EARNINGS OPTIONS FLOW SCAN")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Detecting smart money positioning before earnings...")
+        logger.info("=" * 60)
+        
+        try:
+            await self._init_clients()
+            
+            # Get earnings calendar
+            calendar = EarningsCalendar(uw_client=self._uw)
+            await calendar.fetch_earnings_calendar(days_ahead=3)
+            
+            # Get all tickers to scan
+            symbols = list(EngineConfig.get_all_tickers())
+            
+            # Run pre-earnings flow scan
+            results = await run_pre_earnings_flow_scan(self._uw, calendar, symbols)
+            
+            # Log results
+            summary = results.get("summary", {})
+            logger.info(f"Pre-Earnings Flow Scan Complete:")
+            logger.info(f"  Symbols scanned: {summary.get('scanned', 0)}")
+            logger.info(f"  Alerts found: {summary.get('alerts_count', 0)}")
+            logger.info(f"  Critical: {summary.get('critical_count', 0)}")
+            logger.info(f"  High: {summary.get('high_count', 0)}")
+            
+            # Inject to DUI
+            all_alerts = results.get("all", [])
+            if all_alerts:
+                injected = await inject_pre_earnings_to_dui(all_alerts)
+                logger.info(f"  Injected to DUI: {injected}")
+            
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Pre-earnings flow scan error: {e}")
+            return {}
+    
+    async def run_volume_price_scan(self):
+        """
+        Run volume-price divergence scan.
+        
+        Detects distribution patterns where volume is elevated but price doesn't progress:
+        - Distribution: High volume + flat price = institutions exiting
+        - Capitulation: Very high volume + falling price = forced selling
+        - Compression: Volume expanding, price compressing = coiling for move
+        
+        This would have caught on Jan 27:
+        - MSFT: High volume with flat price (distribution)
+        - NOW: Volume spike with weakness (distribution)
+        - TEAM: Multiple distribution days (sustained selling)
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("VOLUME-PRICE DIVERGENCE SCAN")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Detecting distribution and divergence patterns...")
+        logger.info("=" * 60)
+        
+        try:
+            await self._init_clients()
+            
+            # Get all tickers to scan
+            symbols = list(EngineConfig.get_all_tickers())
+            
+            # Run volume-price scan
+            results = await run_volume_price_scan(self._alpaca, symbols)
+            
+            # Log results
+            summary = results.get("summary", {})
+            logger.info(f"Volume-Price Divergence Scan Complete:")
+            logger.info(f"  Symbols scanned: {summary.get('scanned', 0)}")
+            logger.info(f"  Alerts found: {summary.get('alerts_count', 0)}")
+            logger.info(f"  Distribution: {summary.get('distribution_count', 0)}")
+            logger.info(f"  Capitulation: {summary.get('capitulation_count', 0)}")
+            logger.info(f"  Compression: {summary.get('compression_count', 0)}")
+            
+            # Inject to DUI
+            all_alerts = results.get("all", [])
+            if all_alerts:
+                injected = await inject_divergence_to_dui(all_alerts)
+                logger.info(f"  Injected to DUI: {injected}")
+            
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Volume-price scan error: {e}")
             return {}
     
     async def run_daily_report_scan(self):

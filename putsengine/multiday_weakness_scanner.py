@@ -71,13 +71,9 @@ class WeaknessReport:
     
     @property
     def is_actionable(self) -> bool:
-        # P3 TUNING: Lower threshold for "accelerating" weakness
-        # 2 days weak + volume spike = high risk
-        # Original: 0.30 and 2 signals
-        # New: 0.20 and 2 signals OR 0.15 and 3+ signals
-        if self.signal_count >= 3:
-            return self.total_score >= 0.15  # Lower threshold for 3+ patterns
-        return self.total_score >= 0.20 and self.signal_count >= 2  # Slightly lower for 2 patterns
+        # TUNED: Lowered threshold from 3 patterns to 2 patterns
+        # Also lowered score threshold from 0.30 to 0.25
+        return self.total_score >= 0.25 and self.signal_count >= 2
 
 
 class MultiDayWeaknessScanner:
@@ -87,19 +83,25 @@ class MultiDayWeaknessScanner:
     INSTITUTIONAL LOGIC:
     - Single-day signals are noise
     - Multi-day patterns are conviction
-    - Accumulation of 3+ patterns = high probability setup
+    - Accumulation of 2+ patterns = actionable setup (TUNED from 3+)
+    
+    TUNING (Jan 29, 2026):
+    - Lowered actionable threshold from 3 patterns to 2
+    - Increased pattern weights for early detection
+    - Added "accelerating weakness" bonus for consecutive weak days
     """
     
-    # Pattern weights for scoring
+    # Pattern weights for scoring (TUNED - increased weights)
     PATTERN_WEIGHTS = {
-        "lower_highs_3day": 0.15,
-        "break_5day_low": 0.20,
-        "weak_closes_2day": 0.10,
-        "rising_volume_red": 0.15,
-        "lower_lows_highs_3day": 0.20,
-        "failed_vwap_reclaim": 0.15,
-        "below_all_mas": 0.10,
-        "bearish_engulfing": 0.10,
+        "lower_highs_3day": 0.18,      # Increased from 0.15
+        "break_5day_low": 0.22,        # Increased from 0.20
+        "weak_closes_2day": 0.15,      # Increased from 0.10
+        "rising_volume_red": 0.20,     # Increased from 0.15
+        "lower_lows_highs_3day": 0.22, # Increased from 0.20
+        "failed_vwap_reclaim": 0.18,   # Increased from 0.15
+        "below_all_mas": 0.15,         # Increased from 0.10
+        "bearish_engulfing": 0.15,     # Increased from 0.10
+        "accelerating_weakness": 0.20, # NEW pattern
     }
     
     def __init__(self, alpaca_client):
@@ -256,18 +258,50 @@ class MultiDayWeaknessScanner:
                             description="Bearish engulfing pattern - strong reversal signal"
                         ))
         
+        # 9. ACCELERATING WEAKNESS (NEW - would have caught MSTR, NOW)
+        # 2+ consecutive weak days with increasing volume
+        if len(bars) >= 3:
+            weak_days = 0
+            vol_increasing = True
+            
+            for i in range(-3, 0):
+                bar = bars[i]
+                prev_bar = bars[i-1] if i > -len(bars) else None
+                
+                # Check if day is weak (close < open or close < prior close)
+                is_weak = bar.close < bar.open or (prev_bar and bar.close < prev_bar.close)
+                
+                if is_weak:
+                    weak_days += 1
+                else:
+                    weak_days = 0  # Reset if we see a strong day
+                
+                # Check volume increasing
+                if prev_bar and bar.volume < prev_bar.volume * 0.9:
+                    vol_increasing = False
+            
+            if weak_days >= 2 and vol_increasing:
+                patterns.append(WeaknessPattern(
+                    pattern_name="accelerating_weakness",
+                    days_detected=weak_days,
+                    confidence=0.85,
+                    description=f"{weak_days} consecutive weak days with rising volume - accelerating selling"
+                ))
+        
         # Calculate total score
         total_score = sum(
             self.PATTERN_WEIGHTS.get(p.pattern_name, 0.10) * p.confidence
             for p in patterns
         )
         
-        # Determine recommendation
-        if total_score >= 0.50 and len(patterns) >= 3:
+        # Determine recommendation (TUNED - lower thresholds for earlier detection)
+        if total_score >= 0.45 and len(patterns) >= 3:
             recommendation = "STRONG SELL SIGNAL - Multiple weakness patterns"
-        elif total_score >= 0.35 and len(patterns) >= 2:
+        elif total_score >= 0.30 and len(patterns) >= 2:
             recommendation = "MODERATE SELL SIGNAL - Watch for continuation"
-        elif total_score >= 0.20:
+        elif total_score >= 0.25 and len(patterns) >= 2:
+            recommendation = "ACTIONABLE - Early weakness detected"
+        elif total_score >= 0.15:
             recommendation = "CAUTION - Early weakness signs"
         else:
             recommendation = "NO ACTIONABLE PATTERN"

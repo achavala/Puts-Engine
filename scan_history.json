@@ -996,7 +996,666 @@
       "distribution": [],
       "liquidity": [],
       "market_regime": "bullish_neutral"
+    },
+    {
+      "timestamp": "2026-01-29T16:00:00.055575-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
+    },
+    {
+      "timestamp": "2026-01-29T16:26:41.587823-05:00",
+      "gamma_drain": [],
+      "distribution": [
+        {
+          "symbol": "CRWD",
+          "score": 0.7,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "CRM",
+          "score": 0.7,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "AI",
+          "score": 0.7,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "PANW",
+          "score": 0.7,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "BILL",
+          "score": 0.6,
+          "signals": [
+            "volume_price_divergence",
+            "vwap_loss",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.6,
+          "signals": [
+            "volume_price_divergence",
+            "vwap_loss",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "NEM",
+          "score": 0.55,
+          "signals": [
+            "volume_price_divergence",
+            "failed_breakout",
+            "high_rvol_red_day",
+            "gap_up_reversal"
+          ]
+        },
+        {
+          "symbol": "GOLD",
+          "score": 0.55,
+          "signals": [
+            "volume_price_divergence",
+            "failed_breakout",
+            "high_rvol_red_day",
+            "gap_up_reversal"
+          ]
+        },
+        {
+          "symbol": "BHP",
+          "score": 0.55,
+          "signals": [
+            "volume_price_divergence",
+            "failed_breakout",
+            "high_rvol_red_day",
+            "gap_up_reversal"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.55,
+          "signals": [
+            "volume_price_divergence",
+            "failed_breakout",
+            "high_rvol_red_day",
+            "gap_up_reversal"
+          ]
+        },
+        {
+          "symbol": "AFRM",
+          "score": 0.55,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.55,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "FCX",
+          "score": 0.55,
+          "signals": [
+            "volume_price_divergence",
+            "failed_breakout",
+            "high_rvol_red_day",
+            "gap_up_reversal"
+          ]
+        },
+        {
+          "symbol": "MDB",
+          "score": 0.5,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "TEAM",
+          "score": 0.5,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "COIN",
+          "score": 0.5,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "ZS",
+          "score": 0.5,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "JOBY",
+          "score": 0.5,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "SBUX",
+          "score": 0.5,
+          "signals": [
+            "failed_breakout",
+            "gap_up_reversal",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "NOW",
+          "score": 0.5,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "WDAY",
+          "score": 0.5,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "UPST",
+          "score": 0.5,
+          "signals": [
+            "gap_down_no_recovery",
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "HUBS",
+          "score": 0.5,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.5,
+          "signals": [
+            "high_rvol_red_day",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "NET",
+          "score": 0.45,
+          "signals": [
+            "failed_breakout",
+            "high_rvol_red_day",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "MSFT",
+          "score": 0.45,
+          "signals": [
+            "volume_price_divergence",
+            "vwap_loss",
+            "high_rvol_red_day",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "SOFI",
+          "score": 0.4,
+          "signals": [
+            "volume_price_divergence",
+            "gap_up_reversal",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "AN",
+          "score": 0.35,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "SNOW",
+          "score": 0.35,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.35,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.35,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "UUUU",
+          "score": 0.35,
+          "signals": [
+            "high_rvol_red_day",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "RIOT",
+          "score": 0.35,
+          "signals": [
+            "gap_down_no_recovery",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "QUBT",
+          "score": 0.35,
+          "signals": [
+            "gap_down_no_recovery",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "DDOG",
+          "score": 0.35,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "MP",
+          "score": 0.35,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "MRVL",
+          "score": 0.35,
+          "signals": [
+            "gap_down_no_recovery",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "TWLO",
+          "score": 0.35,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "ROOT",
+          "score": 0.3,
+          "signals": [
+            "volume_price_divergence",
+            "vwap_loss",
+            "high_rvol_red_day"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.3,
+          "signals": [
+            "volume_price_divergence",
+            "high_rvol_red_day",
+            "multi_day_weakness",
+            "is_pre_earnings"
+          ]
+        },
+        {
+          "symbol": "LMT",
+          "score": 0.3,
+          "signals": [
+            "failed_breakout",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "VALE",
+          "score": 0.3,
+          "signals": [
+            "volume_price_divergence",
+            "failed_breakout",
+            "high_rvol_red_day"
+          ]
+        },
+        {
+          "symbol": "CMCSA",
+          "score": 0.3,
+          "signals": [
+            "failed_breakout",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "SQM",
+          "score": 0.3,
+          "signals": [
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "ADBE",
+          "score": 0.3,
+          "signals": [
+            "volume_price_divergence",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "BILI",
+          "score": 0.3,
+          "signals": [
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "STX",
+          "score": 0.3,
+          "signals": [
+            "volume_price_divergence",
+            "failed_breakout",
+            "high_rvol_red_day"
+          ]
+        },
+        {
+          "symbol": "ONDS",
+          "score": 0.25,
+          "signals": [
+            "vwap_loss",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "BA",
+          "score": 0.25,
+          "signals": [
+            "failed_breakout",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.25,
+          "signals": [
+            "vwap_loss",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "BITF",
+          "score": 0.25,
+          "signals": [
+            "vwap_loss",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "ON",
+          "score": 0.25,
+          "signals": [
+            "failed_breakout",
+            "gap_down_no_recovery"
+          ]
+        },
+        {
+          "symbol": "ZM",
+          "score": 0.25,
+          "signals": [
+            "failed_breakout",
+            "gap_down_no_recovery"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "CRSP",
+          "score": 0.45,
+          "signals": [
+            "vwap_loss",
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "ORCL",
+          "score": 0.4,
+          "signals": [
+            "volume_price_divergence",
+            "vwap_loss",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "PATH",
+          "score": 0.4,
+          "signals": [
+            "vwap_loss",
+            "gap_down_no_recovery",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "DKNG",
+          "score": 0.35,
+          "signals": [
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "PDD",
+          "score": 0.35,
+          "signals": [
+            "volume_price_divergence",
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "BABA",
+          "score": 0.35,
+          "signals": [
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "ARKK",
+          "score": 0.35,
+          "signals": [
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "BIDU",
+          "score": 0.35,
+          "signals": [
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "QCOM",
+          "score": 0.35,
+          "signals": [
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "AXP",
+          "score": 0.35,
+          "signals": [
+            "flat_price_rising_volume",
+            "volume_price_divergence",
+            "vwap_loss",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "HUM",
+          "score": 0.35,
+          "signals": [
+            "multi_day_weakness",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "VRTX",
+          "score": 0.3,
+          "signals": [
+            "vwap_loss",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "JNJ",
+          "score": 0.3,
+          "signals": [
+            "vwap_loss",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "UNH",
+          "score": 0.3,
+          "signals": [
+            "vwap_loss",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "PL",
+          "score": 0.3,
+          "signals": [
+            "vwap_loss",
+            "is_post_earnings_negative"
+          ]
+        },
+        {
+          "symbol": "HD",
+          "score": 0.25,
+          "signals": [
+            "vwap_loss",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "CLOV",
+          "score": 0.25,
+          "signals": [
+            "vwap_loss",
+            "multi_day_weakness"
+          ]
+        },
+        {
+          "symbol": "RIVN",
+          "score": 0.25,
+          "signals": [
+            "vwap_loss",
+            "multi_day_weakness"
+          ]
+        }
+      ],
+      "market_regime": "bearish_neutral"
     }
   ],
-  "last_cleanup": "2026-01-29T15:21:51.157869-05:00"
+  "last_cleanup": "2026-01-29T16:36:59.113200-05:00"
 }

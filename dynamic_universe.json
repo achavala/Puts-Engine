@@ -70,14 +70,15 @@
     "expires_date": "2026-01-31"
   },
   "OKLO": {
-    "score": 0.3,
-    "source": "liquidity",
+    "score": 0.304,
+    "source": "distribution",
     "signals": [
-      "gap_down_no_recovery",
-      "multi_day_weakness"
+      "sector_correlation",
+      "leader_UUUU_weak",
+      "sector_nuclear_uranium"
     ],
-    "added_date": "2026-01-26",
-    "expires_date": "2026-01-31"
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
   },
   "TLN": {
     "score": 0.3,
@@ -88,5 +89,357 @@
     ],
     "added_date": "2026-01-26",
     "expires_date": "2026-01-31"
+  },
+  "ZS": {
+    "score": 0.322,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_NET_weak",
+      "sector_cloud_security"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "PANW": {
+    "score": 0.322,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_NET_weak",
+      "sector_cloud_security"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "FTNT": {
+    "score": 0.322,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_NET_weak",
+      "sector_cloud_security"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "OKTA": {
+    "score": 0.322,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_NET_weak",
+      "sector_cloud_security"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "ACHR": {
+    "score": 0.4000000000000001,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_JOBY_weak",
+      "sector_evtol"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "LILM": {
+    "score": 0.4000000000000001,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_JOBY_weak",
+      "sector_evtol"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "EVTL": {
+    "score": 0.4000000000000001,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_JOBY_weak",
+      "sector_evtol"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "TEAM": {
+    "score": 0.39100000000000007,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_MSFT_weak",
+      "sector_cloud_saas"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "WDAY": {
+    "score": 0.39100000000000007,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_MSFT_weak",
+      "sector_cloud_saas"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "TWLO": {
+    "score": 0.39100000000000007,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_MSFT_weak",
+      "sector_cloud_saas"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "CRM": {
+    "score": 0.39100000000000007,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_MSFT_weak",
+      "sector_cloud_saas"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "SNOW": {
+    "score": 0.39100000000000007,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_MSFT_weak",
+      "sector_cloud_saas"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "DDOG": {
+    "score": 0.39100000000000007,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_MSFT_weak",
+      "sector_cloud_saas"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "LEU": {
+    "score": 0.304,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_UUUU_weak",
+      "sector_nuclear_uranium"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "DNN": {
+    "score": 0.304,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_UUUU_weak",
+      "sector_nuclear_uranium"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "UEC": {
+    "score": 0.304,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_UUUU_weak",
+      "sector_nuclear_uranium"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "URG": {
+    "score": 0.304,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_UUUU_weak",
+      "sector_nuclear_uranium"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "SMR": {
+    "score": 0.304,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_UUUU_weak",
+      "sector_nuclear_uranium"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "CIFR": {
+    "score": 0.342,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_RIOT_weak",
+      "sector_crypto_miners"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "CLSK": {
+    "score": 0.342,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_RIOT_weak",
+      "sector_crypto_miners"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "HUT": {
+    "score": 0.342,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_RIOT_weak",
+      "sector_crypto_miners"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "BITF": {
+    "score": 0.342,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_RIOT_weak",
+      "sector_crypto_miners"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "WULF": {
+    "score": 0.342,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_RIOT_weak",
+      "sector_crypto_miners"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "USAR": {
+    "score": 0.323,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_MP_weak",
+      "sector_rare_earth"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "LAC": {
+    "score": 0.323,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_MP_weak",
+      "sector_rare_earth"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "LTHM": {
+    "score": 0.323,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_MP_weak",
+      "sector_rare_earth"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "SQM": {
+    "score": 0.323,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_MP_weak",
+      "sector_rare_earth"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "BIDU": {
+    "score": 0.323,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_BABA_weak",
+      "sector_china_adr"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "NIO": {
+    "score": 0.323,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_BABA_weak",
+      "sector_china_adr"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "XPEV": {
+    "score": 0.323,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_BABA_weak",
+      "sector_china_adr"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "LI": {
+    "score": 0.323,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_BABA_weak",
+      "sector_china_adr"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
+  },
+  "BILI": {
+    "score": 0.323,
+    "source": "distribution",
+    "signals": [
+      "sector_correlation",
+      "leader_BABA_weak",
+      "sector_china_adr"
+    ],
+    "added_date": "2026-01-29",
+    "expires_date": "2026-02-03"
   }
 }

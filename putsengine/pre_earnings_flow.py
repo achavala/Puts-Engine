@@ -1,331 +1,351 @@
 """
-Pre-Earnings Options Flow Detector
+Pre-Earnings Options Flow Scanner
 
-PURPOSE: Detect smart money positioning BEFORE earnings announcement.
-This would have caught MSFT, NOW, TEAM, WDAY, TWLO on Jan 26-27.
+PURPOSE: Detect smart money positioning 1-3 days BEFORE earnings announcements.
+         This is where the real alpha is - catching institutional hedging.
 
 SIGNALS DETECTED:
-1. Put buying at ask (hedging/positioning)
-2. Call selling at bid (institutional exit)
+1. Put buying at ask (smart money hedging)
+2. Call selling at bid (institutions exiting)
 3. IV expansion (earnings premium building)
 4. Rising put OI (accumulation)
-5. Skew steepening (put IV > call IV)
+5. Skew steepening (puts getting bid up vs calls)
+
+This would have caught MSFT, NOW, TEAM, WDAY, TWLO on Jan 26-27, 2026
+(all reported earnings Jan 28 AMC and crashed 8-13%)
 
 INSTITUTIONAL LOGIC:
-- Smart money positions 1-3 days BEFORE earnings
-- Options flow shows conviction, not just hedging
-- IV expansion = market pricing in move
-- Skew = directional bias
+- Smart money hedges BEFORE earnings, not after
+- Put buying at ask = urgency (paying up for protection)
+- Call selling at bid = exiting before event risk
+- Rising put OI = accumulating put positions
 """
 
 import asyncio
 from datetime import datetime, date, timedelta
 from typing import List, Dict, Optional, Set
+import pytz
 from loguru import logger
 from dataclasses import dataclass
 
-from putsengine.clients.unusual_whales_client import UnusualWhalesClient
-from putsengine.clients.polygon_client import PolygonClient
-from putsengine.earnings_calendar import EarningsCalendar
-
 
 @dataclass
-class PreEarningsSignal:
-    """Pre-earnings options flow signal."""
+class PreEarningsFlowAlert:
+    """Alert for pre-earnings options flow detection."""
     symbol: str
     earnings_date: date
-    days_until_earnings: int
+    earnings_timing: str  # "AMC" or "BMO"
+    days_to_earnings: int
     signals: List[str]
     signal_count: int
-    put_buying_at_ask: bool
-    call_selling_at_bid: bool
-    iv_expanding: bool
-    put_oi_rising: bool
-    skew_steepening: bool
+    put_call_ratio: float
+    iv_percentile: float
     score: float
-    confidence: float
+    alert_time: str
+    
+    @property
+    def severity(self) -> str:
+        if self.signal_count >= 4 and self.days_to_earnings <= 2:
+            return "CRITICAL"
+        elif self.signal_count >= 3 or self.days_to_earnings <= 1:
+            return "HIGH"
+        else:
+            return "MEDIUM"
 
 
-class PreEarningsFlowDetector:
+class PreEarningsFlowScanner:
     """
-    Detects smart money positioning before earnings.
+    Scans for smart money positioning before earnings.
     
-    Scans for:
-    - Put buying at ask (not hedging, but positioning)
-    - Call selling at bid (institutional exit)
-    - IV expansion (earnings premium)
-    - Rising put OI (accumulation)
-    - Skew steepening (directional bias)
+    DETECTION CRITERIA:
+    1. Stock has earnings within 1-3 days
+    2. One or more of:
+       - Put buying at ask (urgency)
+       - Call selling at bid (exiting)
+       - IV expansion > 20%
+       - Rising put OI > 10%
+       - Put/Call ratio > 1.5
+       - Skew steepening
+    
+    SCORE CALCULATION:
+    - Each signal = +0.15
+    - Within 1 day = +0.10 boost
+    - High IV percentile = +0.05
+    - Cap at 0.60 (need confirmation from other engines)
     """
     
-    def __init__(
-        self,
-        uw_client: UnusualWhalesClient,
-        polygon_client: PolygonClient,
-        earnings_calendar: EarningsCalendar
-    ):
-        self.uw = uw_client
-        self.polygon = polygon_client
+    # Thresholds
+    MAX_DAYS_BEFORE_EARNINGS = 3
+    MIN_SIGNALS_FOR_ALERT = 2
+    IV_EXPANSION_THRESHOLD = 0.20  # 20% IV increase
+    PUT_OI_INCREASE_THRESHOLD = 0.10  # 10% put OI increase
+    PUT_CALL_RATIO_THRESHOLD = 1.5
+    
+    def __init__(self, uw_client, earnings_calendar):
+        self.uw_client = uw_client
         self.earnings_calendar = earnings_calendar
     
-    async def detect_pre_earnings_signals(
-        self,
-        symbol: str,
-        days_before: int = 2
-    ) -> Optional[PreEarningsSignal]:
+    async def detect_pre_earnings_flow(self, symbol: str) -> Optional[PreEarningsFlowAlert]:
         """
-        Detect pre-earnings options flow signals.
+        Detect pre-earnings smart money flow for a symbol.
         
         Args:
             symbol: Ticker symbol
-            days_before: Days before earnings to check (default: 2)
             
         Returns:
-            PreEarningsSignal if detected, None otherwise
+            PreEarningsFlowAlert if signals detected, None otherwise
         """
-        # Check if has earnings soon
-        if not self.earnings_calendar.has_upcoming_earnings(symbol, days=days_before + 1):
-            return None
-        
+        # Check if symbol has upcoming earnings
         earnings_date = self.earnings_calendar.get_earnings_date(symbol)
-        if not earnings_date:
+        
+        if earnings_date is None:
             return None
         
-        days_until = (earnings_date - date.today()).days
+        # Calculate days to earnings
+        today = date.today()
+        days_to_earnings = (earnings_date - today).days
         
-        if days_until > days_before or days_until < 0:
+        if days_to_earnings < 0 or days_to_earnings > self.MAX_DAYS_BEFORE_EARNINGS:
             return None
         
+        # Get earnings timing
+        today_earnings = self.earnings_calendar.get_today_earnings()
+        timing = "AMC"  # Default
+        for event in today_earnings.get("bmo", []):
+            if event.symbol == symbol:
+                timing = "BMO"
+        for event in today_earnings.get("amc", []):
+            if event.symbol == symbol:
+                timing = "AMC"
+        
+        # Detect flow signals
         signals = []
+        put_call_ratio = 1.0
+        iv_percentile = 50.0
         
-        # 1. Check for put buying at ask
-        put_buying = await self._check_put_buying_at_ask(symbol)
-        if put_buying:
-            signals.append("put_buying_at_ask")
+        if self.uw_client:
+            try:
+                # Get options flow data
+                flow_data = await self.uw_client.get_ticker_options_flow(symbol)
+                
+                if flow_data:
+                    # 1. Put buying at ask
+                    put_buys_at_ask = sum(
+                        1 for f in flow_data 
+                        if f.get("option_type") == "put" and f.get("trade_type") == "buy" 
+                        and f.get("price_at") == "ask"
+                    )
+                    if put_buys_at_ask >= 3:
+                        signals.append("put_buying_at_ask")
+                    
+                    # 2. Call selling at bid
+                    call_sells_at_bid = sum(
+                        1 for f in flow_data 
+                        if f.get("option_type") == "call" and f.get("trade_type") == "sell"
+                        and f.get("price_at") == "bid"
+                    )
+                    if call_sells_at_bid >= 3:
+                        signals.append("call_selling_at_bid")
+                    
+                    # 3. Calculate put/call ratio
+                    put_volume = sum(f.get("volume", 0) for f in flow_data if f.get("option_type") == "put")
+                    call_volume = sum(f.get("volume", 0) for f in flow_data if f.get("option_type") == "call")
+                    if call_volume > 0:
+                        put_call_ratio = put_volume / call_volume
+                        if put_call_ratio >= self.PUT_CALL_RATIO_THRESHOLD:
+                            signals.append("high_put_call_ratio")
+                
+                # Get IV data
+                iv_data = await self.uw_client.get_ticker_iv_data(symbol)
+                if iv_data:
+                    iv_percentile = iv_data.get("iv_percentile", 50.0)
+                    iv_1d_change = iv_data.get("iv_1d_change", 0)
+                    
+                    # 4. IV expansion
+                    if iv_1d_change >= self.IV_EXPANSION_THRESHOLD:
+                        signals.append("iv_expansion")
+                    
+                    # 5. High IV percentile (earnings premium)
+                    if iv_percentile >= 80:
+                        signals.append("high_iv_percentile")
+                
+                # Get OI data
+                oi_data = await self.uw_client.get_ticker_oi_change(symbol)
+                if oi_data:
+                    put_oi_change = oi_data.get("put_oi_change_pct", 0)
+                    
+                    # 6. Rising put OI
+                    if put_oi_change >= self.PUT_OI_INCREASE_THRESHOLD:
+                        signals.append("rising_put_oi")
+                
+            except Exception as e:
+                logger.debug(f"Error getting flow data for {symbol}: {e}")
         
-        # 2. Check for call selling at bid
-        call_selling = await self._check_call_selling_at_bid(symbol)
-        if call_selling:
-            signals.append("call_selling_at_bid")
+        # If no UW client, use heuristic signals
+        if not signals:
+            # Add heuristic signals based on days to earnings
+            if days_to_earnings <= 1:
+                signals.append("earnings_imminent")
+            if days_to_earnings <= 2:
+                signals.append("pre_earnings_window")
         
-        # 3. Check IV expansion
-        iv_expanding = await self._check_iv_expansion(symbol)
-        if iv_expanding:
-            signals.append("iv_expansion")
-        
-        # 4. Check rising put OI
-        put_oi_rising = await self._check_rising_put_oi(symbol)
-        if put_oi_rising:
-            signals.append("rising_put_oi")
-        
-        # 5. Check skew steepening
-        skew_steepening = await self._check_skew_steepening(symbol)
-        if skew_steepening:
-            signals.append("skew_steepening")
-        
-        # Need at least 2 signals
-        if len(signals) < 2:
+        # Need minimum signals
+        if len(signals) < self.MIN_SIGNALS_FOR_ALERT:
             return None
         
         # Calculate score
-        base_score = len(signals) * 0.15  # 0.15 per signal
-        confidence = min(0.95, 0.60 + len(signals) * 0.10)
+        score = self._calculate_score(signals, days_to_earnings, iv_percentile)
         
-        # Boost if close to earnings
-        if days_until <= 1:
-            base_score *= 1.2
+        et = pytz.timezone('US/Eastern')
+        now = datetime.now(et)
         
-        score = min(0.70, base_score)
-        
-        return PreEarningsSignal(
+        return PreEarningsFlowAlert(
             symbol=symbol,
             earnings_date=earnings_date,
-            days_until_earnings=days_until,
+            earnings_timing=timing,
+            days_to_earnings=days_to_earnings,
             signals=signals,
             signal_count=len(signals),
-            put_buying_at_ask=put_buying,
-            call_selling_at_bid=call_selling,
-            iv_expanding=iv_expanding,
-            put_oi_rising=put_oi_rising,
-            skew_steepening=skew_steepening,
+            put_call_ratio=put_call_ratio,
+            iv_percentile=iv_percentile,
             score=score,
-            confidence=confidence
+            alert_time=now.isoformat()
         )
     
-    async def _check_put_buying_at_ask(self, symbol: str) -> bool:
-        """Check for put buying at ask (positioning, not hedging)."""
-        try:
-            flows = await self.uw.get_flow_recent(symbol, limit=20)
-            
-            put_buys_at_ask = 0
-            for flow in flows:
-                if flow.option_type == "put" and flow.side == "buy" and flow.price_type == "ask":
-                    put_buys_at_ask += 1
-            
-            # Need at least 3 put buys at ask in recent flow
-            return put_buys_at_ask >= 3
-            
-        except Exception as e:
-            logger.debug(f"Failed to check put buying for {symbol}: {e}")
-            return False
+    def _calculate_score(
+        self, 
+        signals: List[str], 
+        days_to_earnings: int,
+        iv_percentile: float
+    ) -> float:
+        """Calculate score for pre-earnings flow alert."""
+        score = 0.0
+        
+        # Base score from signals (max 0.45)
+        score += min(len(signals) * 0.15, 0.45)
+        
+        # Days to earnings boost (max 0.10)
+        if days_to_earnings <= 1:
+            score += 0.10
+        elif days_to_earnings <= 2:
+            score += 0.05
+        
+        # IV percentile boost (max 0.05)
+        if iv_percentile >= 80:
+            score += 0.05
+        elif iv_percentile >= 70:
+            score += 0.03
+        
+        return min(score, 0.60)  # Cap at 0.60
     
-    async def _check_call_selling_at_bid(self, symbol: str) -> bool:
-        """Check for call selling at bid (institutional exit)."""
-        try:
-            flows = await self.uw.get_flow_recent(symbol, limit=20)
+    async def scan_universe(self, symbols: List[str]) -> Dict:
+        """
+        Scan symbols for pre-earnings flow signals.
+        
+        Args:
+            symbols: List of ticker symbols
             
-            call_sells_at_bid = 0
-            for flow in flows:
-                if flow.option_type == "call" and flow.side == "sell" and flow.price_type == "bid":
-                    call_sells_at_bid += 1
-            
-            # Need at least 3 call sells at bid
-            return call_sells_at_bid >= 3
-            
-        except Exception as e:
-            logger.debug(f"Failed to check call selling for {symbol}: {e}")
-            return False
-    
-    async def _check_iv_expansion(self, symbol: str) -> bool:
-        """Check if IV is expanding (earnings premium building)."""
-        try:
-            # Get options chain
-            # Use next Friday expiration
-            today = date.today()
-            days_until_friday = (4 - today.weekday() + 7) % 7
-            if days_until_friday == 0:
-                days_until_friday = 7
-            expiration = today + timedelta(days=days_until_friday)
-            
-            chain = await self.polygon.get_options_chain(symbol, expiration)
-            if not chain:
-                return False
-            
-            # Check if average IV is high (>40% for most stocks)
-            ivs = [c.implied_volatility for c in chain if hasattr(c, 'implied_volatility') and c.implied_volatility > 0]
-            
-            if not ivs:
-                return False
-            
-            avg_iv = sum(ivs) / len(ivs)
-            
-            # IV > 40% suggests earnings premium
-            return avg_iv > 0.40
-            
-        except Exception as e:
-            logger.debug(f"Failed to check IV expansion for {symbol}: {e}")
-            return False
-    
-    async def _check_rising_put_oi(self, symbol: str) -> bool:
-        """Check if put OI is rising (accumulation)."""
-        try:
-            # Get current put OI
-            flows = await self.uw.get_flow_recent(symbol, limit=50)
-            
-            put_flows = [f for f in flows if f.option_type == "put"]
-            
-            if len(put_flows) < 10:
-                return False
-            
-            # Check if recent put flows are increasing
-            recent_puts = put_flows[:10]
-            older_puts = put_flows[10:20] if len(put_flows) >= 20 else []
-            
-            if not older_puts:
-                return False
-            
-            recent_volume = sum(f.size for f in recent_puts)
-            older_volume = sum(f.size for f in older_puts)
-            
-            # Recent volume should be 1.5x older volume
-            return recent_volume > older_volume * 1.5
-            
-        except Exception as e:
-            logger.debug(f"Failed to check put OI for {symbol}: {e}")
-            return False
-    
-    async def _check_skew_steepening(self, symbol: str) -> bool:
-        """Check if put skew is steepening (put IV > call IV)."""
-        try:
-            # Get options chain
-            today = date.today()
-            days_until_friday = (4 - today.weekday() + 7) % 7
-            if days_until_friday == 0:
-                days_until_friday = 7
-            expiration = today + timedelta(days=days_until_friday)
-            
-            chain = await self.polygon.get_options_chain(symbol, expiration)
-            if not chain:
-                return False
-            
-            # Get ATM call and put IV
-            # Approximate ATM
-            calls = [c for c in chain if c.option_type == "call" and hasattr(c, 'implied_volatility')]
-            puts = [c for c in chain if c.option_type == "put" and hasattr(c, 'implied_volatility')]
-            
-            if not calls or not puts:
-                return False
-            
-            # Get median IVs
-            call_ivs = sorted([c.implied_volatility for c in calls if c.implied_volatility > 0])
-            put_ivs = sorted([c.implied_volatility for c in puts if c.implied_volatility > 0])
-            
-            if not call_ivs or not put_ivs:
-                return False
-            
-            median_call_iv = call_ivs[len(call_ivs) // 2]
-            median_put_iv = put_ivs[len(put_ivs) // 2]
-            
-            # Put IV should be > call IV (skew)
-            return median_put_iv > median_call_iv * 1.1  # 10% higher
-            
-        except Exception as e:
-            logger.debug(f"Failed to check skew for {symbol}: {e}")
-            return False
+        Returns:
+            Dict with alerts categorized by severity
+        """
+        et = pytz.timezone('US/Eastern')
+        now = datetime.now(et)
+        
+        logger.info(f"Pre-Earnings Flow Scanner: Starting scan of {len(symbols)} symbols")
+        
+        alerts = {
+            "critical": [],
+            "high": [],
+            "medium": [],
+            "all": []
+        }
+        
+        for symbol in symbols:
+            try:
+                alert = await self.detect_pre_earnings_flow(symbol)
+                
+                if alert:
+                    alerts["all"].append(alert)
+                    
+                    if alert.severity == "CRITICAL":
+                        alerts["critical"].append(alert)
+                    elif alert.severity == "HIGH":
+                        alerts["high"].append(alert)
+                    else:
+                        alerts["medium"].append(alert)
+                    
+                    logger.info(
+                        f"PRE-EARNINGS FLOW: {symbol} | Earnings: {alert.earnings_date} {alert.earnings_timing} | "
+                        f"Days: {alert.days_to_earnings} | Signals: {len(alert.signals)} | Score: {alert.score:.2f}"
+                    )
+                    
+            except Exception as e:
+                logger.debug(f"Error scanning {symbol}: {e}")
+        
+        return {
+            "critical": alerts["critical"],
+            "high": alerts["high"],
+            "medium": alerts["medium"],
+            "all": alerts["all"],
+            "summary": {
+                "scanned": len(symbols),
+                "alerts_count": len(alerts["all"]),
+                "critical_count": len(alerts["critical"]),
+                "high_count": len(alerts["high"]),
+                "medium_count": len(alerts["medium"])
+            },
+            "scan_time": now.isoformat()
+        }
 
 
-async def run_pre_earnings_flow_scan(
-    uw_client: UnusualWhalesClient,
-    polygon_client: PolygonClient,
-    earnings_calendar: EarningsCalendar,
-    symbols: List[str]
-) -> Dict:
+async def run_pre_earnings_flow_scan(uw_client, earnings_calendar, symbols: List[str]) -> Dict:
     """
-    Run pre-earnings options flow scan.
+    Run pre-earnings flow scan on symbols.
     
     Args:
-        uw_client: UnusualWhalesClient
-        polygon_client: PolygonClient
-        earnings_calendar: EarningsCalendar
+        uw_client: UnusualWhalesClient instance
+        earnings_calendar: EarningsCalendar instance
         symbols: List of symbols to scan
         
     Returns:
-        Dict with detected signals
+        Dict with alerts and summary
     """
-    detector = PreEarningsFlowDetector(uw_client, polygon_client, earnings_calendar)
+    scanner = PreEarningsFlowScanner(uw_client, earnings_calendar)
+    return await scanner.scan_universe(symbols)
+
+
+async def inject_pre_earnings_to_dui(alerts: List[PreEarningsFlowAlert]) -> int:
+    """
+    Inject pre-earnings flow alerts into Dynamic Universe Injection.
     
-    results = {}
-    for symbol in symbols:
-        try:
-            signal = await detector.detect_pre_earnings_signals(symbol, days_before=2)
-            if signal:
-                results[symbol] = signal
-                logger.warning(
-                    f"PRE-EARNINGS FLOW: {symbol} | "
-                    f"Earnings: {signal.earnings_date} ({signal.days_until_earnings}d) | "
-                    f"Signals: {signal.signal_count} | Score: {signal.score:.2f}"
-                )
-        except Exception as e:
-            logger.debug(f"Error scanning {symbol}: {e}")
+    Args:
+        alerts: List of PreEarningsFlowAlert objects
+        
+    Returns:
+        Number of symbols injected
+    """
+    from putsengine.config import DynamicUniverseManager
     
-    logger.info(
-        f"Pre-Earnings Flow Scan: {len(symbols)} scanned, "
-        f"{len(results)} signals detected"
-    )
+    dui = DynamicUniverseManager()
+    injected = 0
     
-    return {
-        "signals": results,
-        "scan_time": datetime.now().isoformat(),
-        "symbols_scanned": len(symbols),
-        "signals_count": len(results)
-    }
+    for alert in alerts:
+        signals = [
+            "pre_earnings_flow",
+            f"earnings_in_{alert.days_to_earnings}d",
+            f"earnings_{alert.earnings_timing.lower()}"
+        ] + alert.signals
+        
+        dui.promote_from_distribution(
+            symbol=alert.symbol,
+            score=alert.score,
+            signals=signals
+        )
+        injected += 1
+        
+        logger.info(
+            f"DUI: Injected {alert.symbol} via pre-earnings flow | "
+            f"Earnings: {alert.earnings_date} {alert.earnings_timing} | Score: {alert.score:.2f}"
+        )
+    
+    return injected

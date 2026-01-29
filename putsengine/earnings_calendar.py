@@ -50,6 +50,8 @@ class EarningsEvent:
     revenue_estimate: Optional[float] = None
     previous_eps: Optional[float] = None
     market_cap: Optional[float] = None
+    expected_move_pct: Optional[float] = None  # Expected % move from straddle
+    current_iv: Optional[float] = None  # Current implied volatility
     
     @property
     def is_today(self) -> bool:
@@ -62,6 +64,10 @@ class EarningsEvent:
     @property
     def is_before_open(self) -> bool:
         return self.timing == EarningsTiming.BMO
+    
+    @property
+    def days_until(self) -> int:
+        return (self.report_date - date.today()).days
 
 
 class EarningsCalendar:
@@ -267,6 +273,96 @@ class EarningsCalendar:
         if symbol in self._cache:
             return self._cache[symbol].report_date
         return None
+    
+    async def calculate_expected_move(self, symbol: str, uw_client=None) -> Optional[float]:
+        """
+        Calculate expected move from ATM straddle price.
+        
+        The expected move formula:
+        Expected Move = ATM Straddle Price / Stock Price * 100
+        
+        This gives the % move the market is pricing in.
+        Historically, stocks move MORE than expected ~30% of the time.
+        
+        Args:
+            symbol: Ticker symbol
+            uw_client: Optional UnusualWhalesClient for options data
+            
+        Returns:
+            Expected move as percentage (e.g., 8.5 means ±8.5%)
+        """
+        try:
+            if uw_client is None:
+                uw_client = self.uw_client
+            
+            if uw_client is None:
+                return None
+            
+            # Get options chain for nearest expiry
+            chain = await uw_client.get_options_chain(symbol)
+            
+            if not chain:
+                return None
+            
+            # Get current stock price
+            stock_price = chain.get("underlying_price", 0)
+            if stock_price <= 0:
+                return None
+            
+            # Find ATM options
+            atm_strike = round(stock_price)  # Nearest whole number strike
+            
+            # Get ATM call and put prices
+            atm_call_price = 0
+            atm_put_price = 0
+            
+            for option in chain.get("options", []):
+                strike = option.get("strike", 0)
+                if abs(strike - atm_strike) <= 1:  # Within $1 of ATM
+                    if option.get("option_type") == "call":
+                        atm_call_price = option.get("ask", 0) or option.get("last_price", 0)
+                    elif option.get("option_type") == "put":
+                        atm_put_price = option.get("ask", 0) or option.get("last_price", 0)
+            
+            # Calculate straddle price
+            straddle_price = atm_call_price + atm_put_price
+            
+            if straddle_price <= 0:
+                return None
+            
+            # Expected move = straddle / stock price * 100
+            expected_move = (straddle_price / stock_price) * 100
+            
+            logger.info(f"Expected move for {symbol}: ±{expected_move:.1f}% (straddle ${straddle_price:.2f})")
+            
+            return round(expected_move, 2)
+            
+        except Exception as e:
+            logger.debug(f"Error calculating expected move for {symbol}: {e}")
+            return None
+    
+    async def get_earnings_with_expected_moves(self, universe: Set[str] = None) -> Dict:
+        """
+        Get today's earnings with expected moves calculated.
+        
+        Returns:
+            Dict with BMO and AMC lists including expected moves
+        """
+        today_earnings = self.get_today_earnings(universe)
+        
+        result = {
+            "bmo": [],
+            "amc": []
+        }
+        
+        for key in ["bmo", "amc"]:
+            for event in today_earnings[key]:
+                # Calculate expected move
+                expected_move = await self.calculate_expected_move(event.symbol)
+                event.expected_move_pct = expected_move
+                result[key].append(event)
+        
+        return result
 
 
 async def run_earnings_check(uw_client, universe: Set[str] = None) -> Dict:

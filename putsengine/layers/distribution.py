@@ -108,59 +108,27 @@ class DistributionLayer:
         congress_result = await self._analyze_congress_activity(symbol)
         congress_boost = congress_result.get("boost", 0.0)
         
-        # F. Earnings Proximity Check (ENHANCED with Expected Move)
-        # NEW: Check earnings calendar for upcoming earnings
-        from putsengine.earnings_calendar import EarningsCalendar
-        from putsengine.expected_move import get_expected_move_for_earnings
-        
-        earnings_calendar = EarningsCalendar(uw_client=self.unusual_whales, polygon_client=self.polygon)
-        has_earnings_soon = earnings_calendar.has_upcoming_earnings(symbol, days=3)
-        earnings_date = earnings_calendar.get_earnings_date(symbol) if has_earnings_soon else None
-        
-        # Legacy earnings check (fallback)
+        # F. Earnings Proximity Check (per Final Architect Report)
+        # "Never buy puts BEFORE earnings"
+        # "Buy 1 day AFTER earnings only if gap down + VWAP reclaim fails"
         earnings_data = await self.polygon.check_earnings_proximity(symbol)
         is_pre_earnings = earnings_data.get("is_pre_earnings", False)
         is_post_earnings = earnings_data.get("is_post_earnings", False)
         guidance_sentiment = earnings_data.get("guidance_sentiment", "neutral")
         
-        # Earnings boost calculation
-        earnings_boost = 0.0
-        expected_move_pct = None
-        
-        if has_earnings_soon and earnings_date:
-            # Calculate expected move from straddle
-            try:
-                expected_move = await get_expected_move_for_earnings(
-                    symbol, self.polygon, self.alpaca, earnings_date
-                )
-                if expected_move:
-                    expected_move_pct = expected_move.expected_move_pct
-                    # Boost score based on expected move (higher move = higher risk)
-                    earnings_boost = min(0.30, expected_move_pct * 2.0)  # Cap at 0.30
-                    logger.info(
-                        f"{symbol}: Earnings on {earnings_date} | "
-                        f"Expected move: {expected_move_pct*100:.1f}% | "
-                        f"Boost: +{earnings_boost:.2f}"
-                    )
-            except Exception as e:
-                logger.debug(f"Failed to calculate expected move for {symbol}: {e}")
-        
         # Post-earnings with negative guidance = valid put opportunity
+        earnings_boost = 0.0
         if is_post_earnings and guidance_sentiment == "negative":
-            earnings_boost = max(earnings_boost, 0.10)
+            earnings_boost = 0.10
             logger.info(f"{symbol}: Post-earnings with negative guidance - boost +0.10")
 
         # *** CRITICAL FIX: Store signals BEFORE score calculation ***
         # Store all signals in dict for easy access (needed for score calculation)
         gap_up_reversal = pv_signals.get("gap_up_reversal", False)
         
-        # Get volume-price divergence signal
-        volume_price_divergence = pv_signals.get("volume_price_divergence", False)
-        
         signal.signals = {
             # Price-Volume Signals
             "flat_price_rising_volume": signal.flat_price_rising_volume,
-            "volume_price_divergence": volume_price_divergence,  # NEW: P3 Enhancement
             "failed_breakout": signal.failed_breakout,
             "lower_highs_flat_rsi": signal.lower_highs_flat_rsi,
             "vwap_loss": signal.vwap_loss,
@@ -246,14 +214,8 @@ class DistributionLayer:
                 limit=2000
             )
 
-            # 1. Flat price + rising volume (ENHANCED)
+            # 1. Flat price + rising volume
             signals["flat_price_rising_volume"] = self._detect_flat_price_rising_volume(
-                daily_bars
-            )
-            
-            # 1b. Volume-Price Divergence (ENHANCED - P3 Fix)
-            # High volume + flat/weak price = institutional exit
-            signals["volume_price_divergence"] = self._detect_volume_price_divergence(
                 daily_bars
             )
 
@@ -484,55 +446,6 @@ class DistributionLayer:
 
         # Flat price (< 2% range) + rising volume (> 20% increase)
         return price_range < 0.02 and vol_trend > 0.20
-
-    def _detect_volume_price_divergence(self, bars: List[PriceBar]) -> bool:
-        """
-        ENHANCED: Detect volume-price divergence (P3 Fix).
-        
-        Pattern: High volume + flat/weak price = institutional exit
-        
-        This catches distribution patterns where:
-        - Volume spikes (1.3x+ average)
-        - Price is flat (< 1% change) or weak (< 0%)
-        - Indicates sellers meeting buyers without price response
-        
-        This would have caught MSFT, NOW, TEAM on Jan 27.
-        """
-        if len(bars) < 10:
-            return False
-        
-        # Get last 3 days
-        recent = bars[-3:]
-        today = bars[-1]
-        
-        # Calculate average volume (exclude today)
-        avg_volume = np.mean([b.volume for b in bars[-11:-1]])
-        if avg_volume == 0:
-            return False
-        
-        # Check volume spike
-        volume_ratio = today.volume / avg_volume
-        if volume_ratio < 1.3:  # Need 30% volume increase
-            return False
-        
-        # Check price action
-        price_change = (today.close - today.open) / today.open if today.open > 0 else 0
-        price_change_3day = (today.close - recent[0].close) / recent[0].close if recent[0].close > 0 else 0
-        
-        # Pattern: High volume + flat/weak price
-        # Flat: < 1% change
-        # Weak: negative change
-        is_flat = abs(price_change) < 0.01
-        is_weak = price_change < 0 or price_change_3day < 0
-        
-        if (is_flat or is_weak) and volume_ratio >= 1.3:
-            logger.info(
-                f"VOLUME-PRICE DIVERGENCE: Volume={volume_ratio:.1f}x, "
-                f"Price change={price_change*100:.1f}% (flat={is_flat}, weak={is_weak})"
-            )
-            return True
-        
-        return False
 
     def _detect_failed_breakout(self, bars: List[PriceBar]) -> bool:
         """
