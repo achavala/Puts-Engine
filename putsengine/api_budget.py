@@ -83,7 +83,7 @@ WINDOW_BUDGETS: Dict[TimeWindow, APIBudget] = {
     TimeWindow.MIDDAY: APIBudget(TimeWindow.MIDDAY, 600, 0.80, 0.20, 0.00),  # Skip P3 midday
     TimeWindow.AFTERNOON: APIBudget(TimeWindow.AFTERNOON, 1500),
     TimeWindow.CLOSE: APIBudget(TimeWindow.CLOSE, 600),
-    TimeWindow.AFTER_HOURS: APIBudget(TimeWindow.AFTER_HOURS, 300, 1.0, 0.0, 0.0),  # P1 only
+    TimeWindow.AFTER_HOURS: APIBudget(TimeWindow.AFTER_HOURS, 600, 0.50, 0.30, 0.20),  # Allow P2/P3 for manual scans
 }
 
 

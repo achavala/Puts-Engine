@@ -389,31 +389,61 @@ class PutsEngineScheduler:
     
     def _run_scan_wrapper(self, scan_type: str):
         """Wrapper to run async scan in scheduler context."""
-        asyncio.create_task(self.run_scan(scan_type))
+        # Get or create event loop and run the coroutine
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_scan(scan_type), loop=loop)
+        except RuntimeError:
+            # No running loop - create a new one
+            asyncio.run(self.run_scan(scan_type))
     
     def _run_afterhours_scan_wrapper(self):
         """Wrapper to run after-hours scan in scheduler context."""
-        asyncio.create_task(self.run_afterhours_scan())
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_afterhours_scan(), loop=loop)
+        except RuntimeError:
+            asyncio.run(self.run_afterhours_scan())
     
     def _run_earnings_check_wrapper(self):
         """Wrapper to run earnings calendar check in scheduler context."""
-        asyncio.create_task(self.run_earnings_check())
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_earnings_check(), loop=loop)
+        except RuntimeError:
+            asyncio.run(self.run_earnings_check())
     
     def _run_precatalyst_scan_wrapper(self):
         """Wrapper to run pre-catalyst scan in scheduler context."""
-        asyncio.create_task(self.run_precatalyst_scan())
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_precatalyst_scan(), loop=loop)
+        except RuntimeError:
+            asyncio.run(self.run_precatalyst_scan())
     
     def _run_premarket_gap_scan_wrapper(self):
         """Wrapper to run pre-market gap scan in scheduler context."""
-        asyncio.create_task(self.run_premarket_gap_scan())
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_premarket_gap_scan(), loop=loop)
+        except RuntimeError:
+            asyncio.run(self.run_premarket_gap_scan())
     
     def _run_multiday_weakness_scan_wrapper(self):
         """Wrapper to run multi-day weakness scan in scheduler context."""
-        asyncio.create_task(self.run_multiday_weakness_scan())
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_multiday_weakness_scan(), loop=loop)
+        except RuntimeError:
+            asyncio.run(self.run_multiday_weakness_scan())
     
     def _run_sector_correlation_scan_wrapper(self):
         """Wrapper to run sector correlation scan in scheduler context."""
-        asyncio.create_task(self.run_sector_correlation_scan())
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_sector_correlation_scan(), loop=loop)
+        except RuntimeError:
+            asyncio.run(self.run_sector_correlation_scan())
     
     async def run_scan(self, scan_type: str = "manual"):
         """
