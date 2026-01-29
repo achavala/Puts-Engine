@@ -816,7 +816,28 @@
         }
       ],
       "market_regime": "bearish_contagion"
+    },
+    {
+      "timestamp": "2026-01-29T13:00:00.027333-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
+    },
+    {
+      "timestamp": "2026-01-29T13:30:00.091903-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
+    },
+    {
+      "timestamp": "2026-01-29T14:00:00.337433-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
     }
   ],
-  "last_cleanup": "2026-01-29T12:54:10.336277-05:00"
+  "last_cleanup": "2026-01-29T14:29:47.170730-05:00"
 }
