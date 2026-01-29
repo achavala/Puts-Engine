@@ -125,6 +125,7 @@ class DistributionLayer:
         # *** CRITICAL FIX: Store signals BEFORE score calculation ***
         # Store all signals in dict for easy access (needed for score calculation)
         gap_up_reversal = pv_signals.get("gap_up_reversal", False)
+        exhaustion_move = pv_signals.get("exhaustion_move", False)  # NEW: Blow-off top
         
         signal.signals = {
             # Price-Volume Signals
@@ -135,8 +136,9 @@ class DistributionLayer:
             # Enhanced price-volume signals (stored early above)
             "high_rvol_red_day": high_rvol_red_day,
             "gap_down_no_recovery": gap_down_no_recovery,
-            "gap_up_reversal": gap_up_reversal,  # NEW: Distribution trap
+            "gap_up_reversal": gap_up_reversal,  # Distribution trap
             "multi_day_weakness": multi_day_weakness,
+            "exhaustion_move": exhaustion_move,  # NEW: Blow-off top (catches CLS)
             # Options Flow Signals
             "call_selling_at_bid": signal.call_selling_at_bid,
             "put_buying_at_ask": signal.put_buying_at_ask,
@@ -194,7 +196,8 @@ class DistributionLayer:
             "high_rvol_red_day": False,
             "gap_down_no_recovery": False,
             "gap_up_reversal": False,  # NEW: Distribution trap pattern
-            "multi_day_weakness": False
+            "multi_day_weakness": False,
+            "exhaustion_move": False  # NEW: Blow-off top / parabolic reversal
         }
 
         try:
@@ -244,6 +247,9 @@ class DistributionLayer:
 
             # 8. Multi-day price weakness (3+ consecutive red days or lower closes)
             signals["multi_day_weakness"] = self._detect_multi_day_weakness(daily_bars)
+
+            # 9. Exhaustion/blow-off top (catches CLS-type moves)
+            signals["exhaustion_move"] = self._detect_exhaustion_move(daily_bars)
 
         except Exception as e:
             logger.error(f"Error in price-volume analysis for {symbol}: {e}")
@@ -402,27 +408,85 @@ class DistributionLayer:
         """
         Detect multi-day price weakness pattern.
         
-        3+ consecutive lower closes or red days indicates
-        sustained selling pressure - often precedes larger move.
+        ENHANCED DETECTION (Post Jan 29 Crash Analysis):
+        - NOW was down 5% over 4 days before crash
+        - TEAM was down 3.3% before crash
+        
+        Must catch:
+        - 3+ consecutive lower closes
+        - 3%+ decline over 4 days
+        - 3 red days in last 3 sessions
         """
         if len(bars) < 5:
             return False
 
         recent = bars[-5:]
         
-        # Count consecutive lower closes
+        # Count consecutive lower closes from most recent
         lower_closes = 0
-        for i in range(1, len(recent)):
+        for i in range(len(recent) - 1, 0, -1):
             if recent[i].close < recent[i-1].close:
                 lower_closes += 1
             else:
-                break  # Reset count if we get an up close
+                break
         
         # Count red days (close < open)
         red_days = sum(1 for b in recent[-3:] if b.close < b.open)
         
+        # NEW: Calculate total decline over 4 days
+        if len(bars) >= 4:
+            first_close = bars[-4].close
+            last_close = bars[-1].close
+            decline_pct = (last_close - first_close) / first_close if first_close > 0 else 0
+        else:
+            decline_pct = 0
+        
         # 3+ consecutive lower closes OR 3 red days in last 3 = weakness
-        return lower_closes >= 3 or red_days >= 3
+        # NEW: OR 3%+ decline over 4 days (catches NOW, TEAM)
+        if lower_closes >= 3 or red_days >= 3:
+            return True
+        
+        if decline_pct < -0.03:  # 3% decline
+            logger.info(f"MULTI-DAY WEAKNESS: {decline_pct*100:.1f}% decline over 4 days")
+            return True
+        
+        return False
+    
+    def _detect_exhaustion_move(self, bars: List[PriceBar]) -> bool:
+        """
+        Detect parabolic/exhaustion moves likely to reverse.
+        
+        POST-MORTEM FIX (Jan 29 Crash):
+        CLS was up 12% in 4 days then crashed 16%.
+        
+        This catches "blow-off top" patterns:
+        - Stock up >8% in 4 days = exhaustion
+        - RSI likely overbought
+        - High probability of reversal
+        """
+        if len(bars) < 5:
+            return False
+        
+        # Calculate gain over last 4 days
+        first_close = bars[-5].close
+        last_close = bars[-1].close
+        gain_4d = (last_close - first_close) / first_close if first_close > 0 else 0
+        
+        # Flag >8% gain in 4 days as exhaustion
+        if gain_4d > 0.08:
+            logger.info(f"EXHAUSTION MOVE: +{gain_4d*100:.1f}% in 4 days - reversal likely")
+            return True
+        
+        # Also flag >5% single day gain (parabolic move)
+        if len(bars) >= 2:
+            single_day_gain = (bars[-1].close - bars[-2].close) / bars[-2].close if bars[-2].close > 0 else 0
+            if single_day_gain > 0.05:
+                # Check if followed by any red - reversal starting
+                if bars[-1].close < bars[-1].open:  # Red candle after gap up
+                    logger.info(f"PARABOLIC REVERSAL: +{single_day_gain*100:.1f}% day closing red")
+                    return True
+        
+        return False
 
     def _detect_flat_price_rising_volume(self, bars: List[PriceBar]) -> bool:
         """
@@ -889,8 +953,9 @@ class DistributionLayer:
         # === ENHANCED PRICE-VOLUME SIGNALS (highest value) ===
         high_rvol = signal.signals.get("high_rvol_red_day", False)
         gap_down = signal.signals.get("gap_down_no_recovery", False)
-        gap_up_reversal = signal.signals.get("gap_up_reversal", False)  # NEW
+        gap_up_reversal = signal.signals.get("gap_up_reversal", False)
         multi_day = signal.signals.get("multi_day_weakness", False)
+        exhaustion = signal.signals.get("exhaustion_move", False)  # NEW: Blow-off top
         
         # HIGH RVOL red day is the STRONGEST bearish signal
         if high_rvol:
@@ -910,6 +975,12 @@ class DistributionLayer:
         # Multi-day weakness = sustained pressure (STRONG)
         if multi_day:
             score += 0.15
+        
+        # EXHAUSTION MOVE = blow-off top (POST-MORTEM FIX - catches CLS!)
+        # Stock up >8% in 4 days = high probability of reversal
+        if exhaustion:
+            score += 0.20
+            logger.info(f"{signal.symbol}: EXHAUSTION MOVE - blow-off top reversal (+0.20)")
         
         # === STANDARD PRICE-VOLUME SIGNALS (0.10 each) ===
         if signal.flat_price_rising_volume:

@@ -512,7 +512,14 @@
         }
       ],
       "market_regime": "volatile_bearish"
+    },
+    {
+      "timestamp": "2026-01-29T12:00:00.103694-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
     }
   ],
-  "last_cleanup": "2026-01-29T11:36:21.380648-05:00"
+  "last_cleanup": "2026-01-29T12:09:50.630464-05:00"
 }
