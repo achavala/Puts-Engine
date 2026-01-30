@@ -6,12 +6,19 @@ Purpose: Integrate pattern scan results into the existing scheduled scan results
 This boosts scores for candidates that match pump-reversal or exhaustion patterns.
 
 Runs AFTER the regular scan to enhance results with pattern detection.
+
+STRIKE/EXPIRY CALCULATION (Institutional-Grade):
+- Uses price tiers for optimal OTM distance
+- Calculates ATR-based expected moves
+- Selects nearest Friday with appropriate DTE
+- Delta targeting: -0.20 to -0.40 based on price tier
 """
 import asyncio
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from pathlib import Path
 import pytz
+import math
 
 from putsengine.clients.alpaca_client import AlpacaClient
 from putsengine.config import EngineConfig, get_settings
@@ -19,6 +26,237 @@ from putsengine.config import EngineConfig, get_settings
 ET = pytz.timezone('US/Eastern')
 SCHEDULED_RESULTS_FILE = Path("scheduled_scan_results.json")
 PATTERN_RESULTS_FILE = Path("pattern_scan_results.json")
+
+
+# ============================================================================
+# INSTITUTIONAL STRIKE PRICE CALCULATION
+# ============================================================================
+
+# Price tier definitions for strike selection
+PRICE_TIERS = {
+    "gamma_sweet": {"range": (0, 30), "pct_otm": (0.10, 0.16), "delta": (-0.30, -0.20), "mult": "4x-8x"},
+    "low_mid":     {"range": (30, 100), "pct_otm": (0.07, 0.12), "delta": (-0.32, -0.22), "mult": "3x-6x"},
+    "mid":         {"range": (100, 300), "pct_otm": (0.04, 0.08), "delta": (-0.35, -0.25), "mult": "2.5x-5x"},
+    "high":        {"range": (300, 500), "dollar_otm": (15, 35), "delta": (-0.40, -0.25), "mult": "2x-4x"},
+    "premium":     {"range": (500, 800), "dollar_otm": (20, 50), "delta": (-0.35, -0.22), "mult": "2x-3x"},
+    "ultra":       {"range": (800, 1200), "dollar_otm": (30, 70), "delta": (-0.30, -0.20), "mult": "1.5x-3x"},
+    "mega":        {"range": (1200, 99999), "dollar_otm": (40, 90), "delta": (-0.25, -0.15), "mult": "1.5x-2.5x"},
+}
+
+# ATR multipliers by tier (institutional approach)
+ATR_MULTIPLIERS = {
+    "gamma_sweet": 1.8,
+    "low_mid": 1.5,
+    "mid": 1.3,
+    "high": 1.2,
+    "premium": 1.1,
+    "ultra": 1.0,
+    "mega": 0.9,
+}
+
+
+def get_price_tier(price: float) -> str:
+    """Get price tier for strike calculation."""
+    for tier, config in PRICE_TIERS.items():
+        low, high = config["range"]
+        if low <= price < high:
+            return tier
+    return "mega"
+
+
+def calculate_optimal_strike(price: float, atr: float = None, gain_pct: float = 0) -> dict:
+    """
+    Calculate optimal PUT strike price using institutional methodology.
+    
+    Args:
+        price: Current stock price
+        atr: 14-day Average True Range (optional)
+        gain_pct: Recent % gain (for aggressive strikes on pumped stocks)
+    
+    Returns:
+        dict with strike, reasoning, delta_target, potential_multiple
+    """
+    tier = get_price_tier(price)
+    config = PRICE_TIERS[tier]
+    
+    # Calculate strike range
+    if "pct_otm" in config:
+        # Percentage-based for cheaper stocks
+        pct_min, pct_max = config["pct_otm"]
+        
+        # More aggressive strike if stock has pumped
+        if gain_pct > 10:
+            pct_min *= 0.7  # Closer to ATM
+            pct_max *= 0.8
+        elif gain_pct > 5:
+            pct_min *= 0.85
+            pct_max *= 0.9
+        
+        strike_low = price * (1 - pct_max)
+        strike_high = price * (1 - pct_min)
+        strike_mid = (strike_low + strike_high) / 2
+        
+        # Round to standard strikes
+        if price < 50:
+            strike = round(strike_mid * 2) / 2  # $0.50 increments
+        else:
+            strike = round(strike_mid)  # $1.00 increments
+        
+        otm_pct = (price - strike) / price * 100
+        reasoning = f"{otm_pct:.1f}% OTM ({tier} tier)"
+        
+    else:
+        # Dollar-based for expensive stocks
+        dollar_min, dollar_max = config["dollar_otm"]
+        
+        # More aggressive if pumped
+        if gain_pct > 10:
+            dollar_min *= 0.6
+            dollar_max *= 0.7
+        elif gain_pct > 5:
+            dollar_min *= 0.8
+            dollar_max *= 0.85
+        
+        # Use ATR if available for institutional approach
+        if atr and atr > 0:
+            k = ATR_MULTIPLIERS.get(tier, 1.2)
+            expected_move = k * atr
+            strike = round(price - expected_move)
+            reasoning = f"${expected_move:.0f} OTM ({k}x ATR)"
+        else:
+            dollar_mid = (dollar_min + dollar_max) / 2
+            strike = round(price - dollar_mid)
+            reasoning = f"${dollar_mid:.0f} OTM ({tier} tier)"
+    
+    # Ensure strike is below current price
+    strike = min(strike, price * 0.98)
+    
+    # Round to standard strike increments
+    if strike < 50:
+        strike = math.floor(strike * 2) / 2  # $0.50
+    elif strike < 200:
+        strike = math.floor(strike)  # $1.00
+    else:
+        strike = math.floor(strike / 5) * 5  # $5.00
+    
+    delta_min, delta_max = config["delta"]
+    
+    return {
+        "strike": strike,
+        "otm_pct": round((price - strike) / price * 100, 1),
+        "reasoning": reasoning,
+        "delta_target": f"{delta_min:.2f} to {delta_max:.2f}",
+        "potential_mult": config["mult"],
+        "tier": tier
+    }
+
+
+def calculate_optimal_expiry(score: float, price: float, gain_pct: float = 0) -> dict:
+    """
+    Calculate optimal expiry date using institutional DTE rules.
+    
+    Args:
+        score: Candidate score (0-1)
+        price: Current stock price
+        gain_pct: Recent % gain
+    
+    Returns:
+        dict with expiry date, DTE, and reasoning
+    """
+    today = date.today()
+    
+    # Find next Fridays
+    days_until_friday = (4 - today.weekday()) % 7
+    if days_until_friday == 0:
+        days_until_friday = 7
+    
+    friday_1 = today + timedelta(days=days_until_friday)
+    friday_2 = friday_1 + timedelta(days=7)
+    friday_3 = friday_2 + timedelta(days=7)
+    
+    dte_1 = (friday_1 - today).days
+    dte_2 = (friday_2 - today).days
+    dte_3 = (friday_3 - today).days
+    
+    # DTE selection based on score and conviction
+    if score >= 0.70:
+        # High conviction: nearest Friday (7-12 DTE)
+        if dte_1 >= 7:
+            expiry = friday_1
+            dte = dte_1
+            reasoning = "High conviction (≥0.70): Nearest Friday for max gamma"
+        else:
+            expiry = friday_2
+            dte = dte_2
+            reasoning = "High conviction (≥0.70): Next Friday (min 7 DTE)"
+    elif score >= 0.50:
+        # Medium conviction: 2nd Friday (12-18 DTE)
+        if dte_1 >= 10:
+            expiry = friday_1
+            dte = dte_1
+            reasoning = "Medium conviction: This Friday (enough time)"
+        else:
+            expiry = friday_2
+            dte = dte_2
+            reasoning = "Medium conviction: 2nd Friday for theta buffer"
+    else:
+        # Lower conviction: 3rd Friday (18-25 DTE)
+        expiry = friday_3
+        dte = dte_3
+        reasoning = "Watch-tier: 3rd Friday for max time value"
+    
+    # Aggressive adjustment for pumped stocks
+    if gain_pct > 15:
+        # Very pumped = could crash fast, use nearer expiry
+        if dte > 14:
+            expiry = friday_2 if dte_2 >= 7 else friday_1
+            dte = (expiry - today).days
+            reasoning += " | Adjusted closer for 15%+ pump"
+    
+    return {
+        "expiry": expiry.strftime("%Y-%m-%d"),
+        "expiry_display": expiry.strftime("%b %d"),
+        "dte": dte,
+        "reasoning": reasoning
+    }
+
+
+def calculate_contract_recommendation(
+    symbol: str,
+    price: float,
+    score: float,
+    gain_pct: float = 0,
+    atr: float = None
+) -> dict:
+    """
+    Generate full contract recommendation for a PUT candidate.
+    
+    Returns institutional-grade strike + expiry with reasoning.
+    """
+    strike_info = calculate_optimal_strike(price, atr, gain_pct)
+    expiry_info = calculate_optimal_expiry(score, price, gain_pct)
+    
+    strike = strike_info["strike"]
+    expiry = expiry_info["expiry"]
+    
+    # Generate contract symbol (OCC format approximation)
+    exp_fmt = datetime.strptime(expiry, "%Y-%m-%d").strftime("%y%m%d")
+    strike_fmt = f"{int(strike * 1000):08d}"
+    contract = f"{symbol}{exp_fmt}P{strike_fmt}"
+    
+    return {
+        "contract_symbol": contract,
+        "strike": strike,
+        "strike_display": f"${strike:.0f}P" if strike >= 10 else f"${strike:.1f}P",
+        "expiry": expiry,
+        "expiry_display": expiry_info["expiry_display"],
+        "dte": expiry_info["dte"],
+        "otm_pct": strike_info["otm_pct"],
+        "delta_target": strike_info["delta_target"],
+        "potential_mult": strike_info["potential_mult"],
+        "reasoning": f"{strike_info['reasoning']} | {expiry_info['reasoning']}",
+        "tier": strike_info["tier"]
+    }
 
 
 async def scan_patterns():
@@ -121,6 +359,30 @@ async def scan_patterns():
                 if prev_bar and curr_bar.close < prev_bar.low:
                     reversal_signals.append("below_prior_low")
                 
+                # Calculate ATR for institutional strike selection
+                atr = None
+                if len(bars) >= 5:
+                    tr_list = []
+                    for i in range(1, min(6, len(bars))):
+                        b = bars[-i]
+                        prev_b = bars[-(i+1)] if i+1 <= len(bars) else b
+                        tr = max(b.high - b.low, abs(b.high - prev_b.close), abs(b.low - prev_b.close))
+                        tr_list.append(tr)
+                    atr = sum(tr_list) / len(tr_list) if tr_list else None
+                
+                # Calculate score for DTE selection
+                score_boost = min(0.20, 0.05 + len(reversal_signals) * 0.04 + max_gain * 0.01)
+                base_score = 0.45 + score_boost
+                
+                # Get institutional contract recommendation
+                contract_rec = calculate_contract_recommendation(
+                    symbol=symbol,
+                    price=current_price,
+                    score=base_score,
+                    gain_pct=total_gain,
+                    atr=atr
+                )
+                
                 results["pump_reversal"].append({
                     "symbol": symbol,
                     "sector": sector,
@@ -131,12 +393,35 @@ async def scan_patterns():
                     "total_gain": round(total_gain, 1),
                     "vol_ratio": round(vol_ratio, 2),
                     "signals": reversal_signals,
-                    "score_boost": min(0.20, 0.05 + len(reversal_signals) * 0.04 + max_gain * 0.01)
+                    "score_boost": score_boost,
+                    # Contract recommendation
+                    "strike": contract_rec["strike"],
+                    "strike_display": contract_rec["strike_display"],
+                    "expiry": contract_rec["expiry"],
+                    "expiry_display": contract_rec["expiry_display"],
+                    "dte": contract_rec["dte"],
+                    "otm_pct": contract_rec["otm_pct"],
+                    "delta_target": contract_rec["delta_target"],
+                    "potential_mult": contract_rec["potential_mult"],
+                    "contract_symbol": contract_rec["contract_symbol"],
+                    "atr": round(atr, 2) if atr else None
                 })
             
             # PATTERN 2: Two-Day Rally
             if day1 > 1.0 and day2 > 1.0:
                 total = day1 + day2
+                score_boost_2 = min(0.15, 0.05 + total * 0.02)
+                base_score_2 = 0.40 + score_boost_2
+                
+                # Contract recommendation for two-day rally
+                contract_rec_2 = calculate_contract_recommendation(
+                    symbol=symbol,
+                    price=current_price,
+                    score=base_score_2,
+                    gain_pct=total,
+                    atr=atr if 'atr' in dir() else None
+                )
+                
                 results["two_day_rally"].append({
                     "symbol": symbol,
                     "sector": sector,
@@ -144,18 +429,48 @@ async def scan_patterns():
                     "day1": round(day1, 1),
                     "day2": round(day2, 1),
                     "total": round(total, 1),
-                    "score_boost": min(0.15, 0.05 + total * 0.02)
+                    "score_boost": score_boost_2,
+                    # Contract recommendation
+                    "strike": contract_rec_2["strike"],
+                    "strike_display": contract_rec_2["strike_display"],
+                    "expiry": contract_rec_2["expiry"],
+                    "expiry_display": contract_rec_2["expiry_display"],
+                    "dte": contract_rec_2["dte"],
+                    "otm_pct": contract_rec_2["otm_pct"],
+                    "delta_target": contract_rec_2["delta_target"],
+                    "potential_mult": contract_rec_2["potential_mult"]
                 })
             
             # PATTERN 3: High Volume Run
             if max_gain >= 5.0 and vol_ratio >= 1.5:
+                score_boost_3 = min(0.15, 0.05 + vol_ratio * 0.03)
+                base_score_3 = 0.42 + score_boost_3
+                
+                # Contract recommendation for high volume run
+                contract_rec_3 = calculate_contract_recommendation(
+                    symbol=symbol,
+                    price=current_price,
+                    score=base_score_3,
+                    gain_pct=max_gain,
+                    atr=atr if 'atr' in dir() else None
+                )
+                
                 results["high_vol_run"].append({
                     "symbol": symbol,
                     "sector": sector,
                     "price": round(current_price, 2),
                     "gain": round(max_gain, 1),
                     "vol_ratio": round(vol_ratio, 2),
-                    "score_boost": min(0.15, 0.05 + vol_ratio * 0.03)
+                    "score_boost": score_boost_3,
+                    # Contract recommendation
+                    "strike": contract_rec_3["strike"],
+                    "strike_display": contract_rec_3["strike_display"],
+                    "expiry": contract_rec_3["expiry"],
+                    "expiry_display": contract_rec_3["expiry_display"],
+                    "dte": contract_rec_3["dte"],
+                    "otm_pct": contract_rec_3["otm_pct"],
+                    "delta_target": contract_rec_3["delta_target"],
+                    "potential_mult": contract_rec_3["potential_mult"]
                 })
                 
         except Exception as e:

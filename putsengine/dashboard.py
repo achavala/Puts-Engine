@@ -1064,19 +1064,20 @@ def render_big_movers_analysis():
                 "⭐": "⭐" if len(p.get("signals", [])) >= 2 else "",
                 "Symbol": p["symbol"],
                 "Price": f"${p.get('price', 0):.2f}",
+                "🎯 Strike": p.get("strike_display", "N/A"),
+                "📅 Expiry": f"{p.get('expiry_display', 'N/A')} ({p.get('dte', 0)}d)",
+                "OTM %": f"{p.get('otm_pct', 0):.1f}%",
                 "Total Gain": f"+{p.get('total_gain', 0):.1f}%",
                 date_1d: f"{p.get('gain_1d', 0):+.1f}%",
                 date_2d: f"{p.get('gain_2d', 0):+.1f}%",
-                date_3d: f"{p.get('gain_3d', 0):+.1f}%",
-                "Vol": f"{p.get('vol_ratio', 1):.1f}x",
                 "Signals": ", ".join(p.get("signals", [])[:2]) or "pumped",
-                "Sector": p.get("sector", "other"),
-                "Potential": "5x-10x" if p.get("score_boost", 0) >= 0.18 else "3x-5x"
+                "Target δ": p.get("delta_target", "-0.30"),
+                "Potential": p.get("potential_mult", "3x-5x")
             }
             for p in pump_reversal[:15]
         ])
-        st.dataframe(df_pump, use_container_width=True, hide_index=True, height=400)
-        st.caption("⭐ = Multiple reversal signals detected (highest conviction)")
+        st.dataframe(df_pump, use_container_width=True, hide_index=True, height=420)
+        st.caption("⭐ = Multiple reversal signals | 🎯 Strike = Optimal OTM strike | δ = Target delta range")
     else:
         st.info("No pump reversal candidates found. Market may be quiet.")
     
@@ -1093,11 +1094,14 @@ def render_big_movers_analysis():
             {
                 "Symbol": p["symbol"],
                 "Price": f"${p.get('price', 0):.2f}",
+                "🎯 Strike": p.get("strike_display", "N/A"),
+                "📅 Expiry": f"{p.get('expiry_display', 'N/A')} ({p.get('dte', 0)}d)",
+                "OTM %": f"{p.get('otm_pct', 0):.1f}%",
                 date_2d: f"+{p.get('day1', 0):.1f}%",  # First pump day
                 date_1d: f"+{p.get('day2', 0):.1f}%",  # Second pump day (yesterday)
                 "Total": f"+{p.get('total', 0):.1f}%",
-                "Sector": p.get("sector", "other"),
-                "Potential": "3x-5x"
+                "Target δ": p.get("delta_target", "-0.30"),
+                "Potential": p.get("potential_mult", "3x-5x")
             }
             for p in two_day_rally[:12]
         ])
@@ -1118,10 +1122,13 @@ def render_big_movers_analysis():
             {
                 "Symbol": p["symbol"],
                 "Price": f"${p.get('price', 0):.2f}",
+                "🎯 Strike": p.get("strike_display", "N/A"),
+                "📅 Expiry": f"{p.get('expiry_display', 'N/A')} ({p.get('dte', 0)}d)",
+                "OTM %": f"{p.get('otm_pct', 0):.1f}%",
                 "Gain": f"+{p.get('gain', 0):.1f}%",
                 "Volume": f"{p.get('vol_ratio', 1):.1f}x avg",
-                "Sector": p.get("sector", "other"),
-                "Potential": "3x-5x"
+                "Target δ": p.get("delta_target", "-0.30"),
+                "Potential": p.get("potential_mult", "3x-5x")
             }
             for p in high_vol_run[:10]
         ])
@@ -1166,7 +1173,7 @@ def render_big_movers_analysis():
     # All Candidates Summary Table
     # =========================================================================
     st.markdown("### 📋 All Future PUT Candidates")
-    st.markdown("*Combined view of all pattern candidates sorted by conviction*")
+    st.markdown("*Combined view of all pattern candidates with institutional strike/expiry recommendations*")
     
     # Combine all candidates
     all_candidates = []
@@ -1176,9 +1183,14 @@ def render_big_movers_analysis():
             "Symbol": p["symbol"],
             "Pattern": "💥 Pump Reversal",
             "Price": p.get("price", 0),
+            "Strike": p.get("strike_display", "N/A"),
+            "Expiry": p.get("expiry_display", "N/A"),
+            "DTE": p.get("dte", 0),
+            "OTM": p.get("otm_pct", 0),
             "Gain/Move": p.get("total_gain", 0),
             "Signals": len(p.get("signals", [])),
-            "Sector": p.get("sector", "other"),
+            "Delta": p.get("delta_target", "-0.30"),
+            "Potential": p.get("potential_mult", "3x-5x"),
             "Score Boost": p.get("score_boost", 0.1)
         })
     
@@ -1187,9 +1199,14 @@ def render_big_movers_analysis():
             "Symbol": p["symbol"],
             "Pattern": "↩️ 2-Day Rally",
             "Price": p.get("price", 0),
+            "Strike": p.get("strike_display", "N/A"),
+            "Expiry": p.get("expiry_display", "N/A"),
+            "DTE": p.get("dte", 0),
+            "OTM": p.get("otm_pct", 0),
             "Gain/Move": p.get("total", 0),
             "Signals": 1,
-            "Sector": p.get("sector", "other"),
+            "Delta": p.get("delta_target", "-0.30"),
+            "Potential": p.get("potential_mult", "3x-5x"),
             "Score Boost": p.get("score_boost", 0.1)
         })
     
@@ -1198,9 +1215,14 @@ def render_big_movers_analysis():
             "Symbol": p["symbol"],
             "Pattern": "📈 High Vol Run",
             "Price": p.get("price", 0),
+            "Strike": p.get("strike_display", "N/A"),
+            "Expiry": p.get("expiry_display", "N/A"),
+            "DTE": p.get("dte", 0),
+            "OTM": p.get("otm_pct", 0),
             "Gain/Move": p.get("gain", 0),
             "Signals": 1,
-            "Sector": p.get("sector", "other"),
+            "Delta": p.get("delta_target", "-0.30"),
+            "Potential": p.get("potential_mult", "3x-5x"),
             "Score Boost": p.get("score_boost", 0.1)
         })
     
@@ -1210,13 +1232,16 @@ def render_big_movers_analysis():
         
         df_all = pd.DataFrame([
             {
+                "⭐": "⭐" if c["Signals"] >= 2 else "",
                 "Symbol": c["Symbol"],
                 "Pattern": c["Pattern"],
                 "Price": f"${c['Price']:.2f}",
+                "🎯 Strike": c["Strike"],
+                "📅 Expiry": f"{c['Expiry']} ({c['DTE']}d)",
+                "OTM %": f"{c['OTM']:.1f}%",
                 "Gain": f"+{c['Gain/Move']:.1f}%",
-                "Signals": c["Signals"],
-                "Sector": c["Sector"],
-                "Boost": f"+{c['Score Boost']:.2f}"
+                "Target δ": c["Delta"],
+                "Potential": c["Potential"]
             }
             for c in all_candidates[:25]
         ])
