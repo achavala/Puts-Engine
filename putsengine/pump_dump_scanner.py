@@ -70,8 +70,8 @@ class PumpDumpScanner:
     - High RVOL on red = distribution, not accumulation
     """
     
-    # Thresholds
-    MIN_PUMP_PCT = 5.0  # Minimum % gain to be considered a "pump"
+    # Thresholds - LOWERED from 5% to 3% to catch more patterns (NET, CLS, etc.)
+    MIN_PUMP_PCT = 3.0  # Minimum % gain to be considered a "pump" (was 5.0)
     MIN_PUMP_DAYS = 1   # Minimum days for pump
     MAX_PUMP_DAYS = 3   # Maximum days for pump (fresh pump)
     MIN_RVOL = 1.3      # Minimum relative volume for confirmation

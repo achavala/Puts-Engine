@@ -1,0 +1,1014 @@
+{
+  "analysis_date": "2026-01-29T23:00:40.661964-05:00",
+  "period": "Jan 26-29, 2026",
+  "big_movers": {
+    "RR": {
+      "jan26": -7.7,
+      "jan27": 44.6,
+      "jan28": -7.8,
+      "jan29": -20.9,
+      "max_down": -20.9
+    },
+    "RDW": {
+      "jan26": -12.5,
+      "jan27": 29.6,
+      "jan28": -6.4,
+      "jan29": -3.6,
+      "max_down": -12.5
+    },
+    "UNH": {
+      "jan26": -1.3,
+      "jan27": -19.6,
+      "jan28": 4.0,
+      "jan29": -0.6,
+      "max_down": -19.6
+    },
+    "STX": {
+      "jan26": 3.5,
+      "jan27": 3.8,
+      "jan28": 19.1,
+      "jan29": 0.8,
+      "max_down": -0.0
+    },
+    "LUV": {
+      "jan26": 0.2,
+      "jan27": -1.6,
+      "jan28": -1.2,
+      "jan29": 18.7,
+      "max_down": -1.6
+    },
+    "RCL": {
+      "jan26": 2.5,
+      "jan27": -0.9,
+      "jan28": 0.4,
+      "jan29": 18.6,
+      "max_down": -0.9
+    },
+    "JOBY": {
+      "jan26": -4.7,
+      "jan27": 1.4,
+      "jan28": -0.7,
+      "jan29": -16.7,
+      "max_down": -16.7
+    },
+    "UUUU": {
+      "jan26": -8.5,
+      "jan27": 3.6,
+      "jan28": 14.7,
+      "jan29": -10.2,
+      "max_down": -10.2
+    },
+    "IREN": {
+      "jan26": -7.6,
+      "jan27": 14.6,
+      "jan28": 4.9,
+      "jan29": -4.9,
+      "max_down": -7.6
+    },
+    "INOD": {
+      "jan26": -0.1,
+      "jan27": -1.3,
+      "jan28": -4.8,
+      "jan29": 14.4,
+      "max_down": -4.8
+    },
+    "APLD": {
+      "jan26": -4.0,
+      "jan27": 14.3,
+      "jan28": -2.7,
+      "jan29": -5.3,
+      "max_down": -5.3
+    },
+    "CIFR": {
+      "jan26": -6.1,
+      "jan27": 13.7,
+      "jan28": 1.2,
+      "jan29": -6.7,
+      "max_down": -6.7
+    },
+    "CLS": {
+      "jan26": 1.7,
+      "jan27": 8.1,
+      "jan28": 3.6,
+      "jan29": -13.1,
+      "max_down": -13.1
+    },
+    "LUNR": {
+      "jan26": -8.0,
+      "jan27": 10.2,
+      "jan28": 12.4,
+      "jan29": -8.0,
+      "max_down": -8.0
+    },
+    "USAR": {
+      "jan26": 7.9,
+      "jan27": -1.4,
+      "jan28": -4.4,
+      "jan29": -12.4,
+      "max_down": -12.4
+    },
+    "LITE": {
+      "jan26": -2.0,
+      "jan27": 11.5,
+      "jan28": 3.9,
+      "jan29": -0.9,
+      "max_down": -2.0
+    },
+    "EOSE": {
+      "jan26": -5.4,
+      "jan27": -7.3,
+      "jan28": 11.1,
+      "jan29": -3.4,
+      "max_down": -7.3
+    },
+    "INTC": {
+      "jan26": -5.7,
+      "jan27": 3.4,
+      "jan28": 11.0,
+      "jan29": -0.2,
+      "max_down": -5.7
+    },
+    "LEU": {
+      "jan26": -4.9,
+      "jan27": 9.8,
+      "jan28": 9.2,
+      "jan29": -10.7,
+      "max_down": -10.7
+    },
+    "CRWV": {
+      "jan26": 5.7,
+      "jan27": 10.7,
+      "jan28": -2.6,
+      "jan29": -6.1,
+      "max_down": -6.1
+    },
+    "WDC": {
+      "jan26": 1.9,
+      "jan27": 4.9,
+      "jan28": 10.7,
+      "jan29": -0.5,
+      "max_down": -0.5
+    },
+    "OKLO": {
+      "jan26": -6.1,
+      "jan27": 3.6,
+      "jan28": 10.7,
+      "jan29": -8.8,
+      "max_down": -8.8
+    },
+    "META": {
+      "jan26": 2.1,
+      "jan27": 0.1,
+      "jan28": -0.6,
+      "jan29": 10.4,
+      "max_down": -0.6
+    },
+    "FCEL": {
+      "jan26": -10.3,
+      "jan27": 5.5,
+      "jan28": 0.4,
+      "jan29": -6.6,
+      "max_down": -10.3
+    },
+    "NCLH": {
+      "jan26": -0.7,
+      "jan27": 0.3,
+      "jan28": -0.3,
+      "jan29": 10.2,
+      "max_down": -0.7
+    },
+    "NET": {
+      "jan26": 9.2,
+      "jan27": 8.8,
+      "jan28": -10.2,
+      "jan29": -2.4,
+      "max_down": -10.2
+    },
+    "FSLR": {
+      "jan26": 0.3,
+      "jan27": -3.3,
+      "jan28": 6.1,
+      "jan29": -10.2,
+      "max_down": -10.2
+    },
+    "MSFT": {
+      "jan26": 0.9,
+      "jan27": 2.2,
+      "jan28": 0.2,
+      "jan29": -10.0,
+      "max_down": -10.0
+    },
+    "TXN": {
+      "jan26": 1.7,
+      "jan27": 0.0,
+      "jan28": 9.9,
+      "jan29": 1.3,
+      "max_down": 0.0
+    },
+    "RGTI": {
+      "jan26": -7.2,
+      "jan27": 2.5,
+      "jan28": -1.3,
+      "jan29": -9.8,
+      "max_down": -9.8
+    },
+    "HUT": {
+      "jan26": -3.1,
+      "jan27": 9.7,
+      "jan28": 4.5,
+      "jan29": -4.8,
+      "max_down": -4.8
+    },
+    "MSTR": {
+      "jan26": -1.6,
+      "jan27": 0.6,
+      "jan28": -1.9,
+      "jan29": -9.6,
+      "max_down": -9.6
+    },
+    "SNDK": {
+      "jan26": -0.6,
+      "jan27": 2.3,
+      "jan28": 9.6,
+      "jan29": 2.2,
+      "max_down": -0.6
+    },
+    "RKLB": {
+      "jan26": -9.5,
+      "jan27": 8.1,
+      "jan28": 1.8,
+      "jan29": -3.3,
+      "max_down": -9.5
+    },
+    "LTBR": {
+      "jan26": -9.3,
+      "jan27": 6.8,
+      "jan28": 4.2,
+      "jan29": -7.0,
+      "max_down": -9.3
+    },
+    "CLSK": {
+      "jan26": -9.3,
+      "jan27": 6.7,
+      "jan28": 1.4,
+      "jan29": -6.4,
+      "max_down": -9.3
+    },
+    "BE": {
+      "jan26": -3.6,
+      "jan27": 9.1,
+      "jan28": 8.6,
+      "jan29": -5.4,
+      "max_down": -5.4
+    },
+    "ASTS": {
+      "jan26": -7.7,
+      "jan27": 6.3,
+      "jan28": 8.9,
+      "jan29": 0.7,
+      "max_down": -7.7
+    },
+    "MP": {
+      "jan26": -8.8,
+      "jan27": 5.2,
+      "jan28": 0.4,
+      "jan29": -7.2,
+      "max_down": -8.8
+    },
+    "UMAC": {
+      "jan26": -8.8,
+      "jan27": 7.0,
+      "jan28": -0.2,
+      "jan29": -6.0,
+      "max_down": -8.8
+    },
+    "QUBT": {
+      "jan26": -5.4,
+      "jan27": 4.3,
+      "jan28": -1.6,
+      "jan29": -8.5,
+      "max_down": -8.5
+    },
+    "PL": {
+      "jan26": -4.0,
+      "jan27": 8.5,
+      "jan28": -0.7,
+      "jan29": -5.5,
+      "max_down": -5.5
+    },
+    "CCL": {
+      "jan26": 0.4,
+      "jan27": 0.1,
+      "jan28": 0.1,
+      "jan29": 8.5,
+      "max_down": 0.0
+    },
+    "COHR": {
+      "jan26": 0.4,
+      "jan27": 8.2,
+      "jan28": 3.3,
+      "jan29": -2.4,
+      "max_down": -2.4
+    },
+    "IONQ": {
+      "jan26": -8.2,
+      "jan27": 4.9,
+      "jan28": 0.7,
+      "jan29": -5.6,
+      "max_down": -8.2
+    },
+    "BBAI": {
+      "jan26": -1.7,
+      "jan27": 7.7,
+      "jan28": -2.4,
+      "jan29": -8.2,
+      "max_down": -8.2
+    },
+    "RIOT": {
+      "jan26": -6.1,
+      "jan27": 8.1,
+      "jan28": 0.0,
+      "jan29": -3.3,
+      "max_down": -6.1
+    },
+    "PLUG": {
+      "jan26": -8.0,
+      "jan27": 4.8,
+      "jan28": 1.7,
+      "jan29": -4.5,
+      "max_down": -8.0
+    },
+    "RCAT": {
+      "jan26": -11.3,
+      "jan27": 10.0,
+      "jan28": 4.5,
+      "jan29": -8.9,
+      "max_down": -11.3
+    },
+    "SNOW": {
+      "jan26": 0.0,
+      "jan27": 0.0,
+      "jan28": 0.0,
+      "jan29": -7.7,
+      "max_down": -7.7
+    },
+    "SWKS": {
+      "jan26": 0.0,
+      "jan27": 0.0,
+      "jan28": 0.0,
+      "jan29": -7.9,
+      "max_down": -7.9
+    },
+    "SERV": {
+      "jan26": 0.0,
+      "jan27": 0.0,
+      "jan28": 0.0,
+      "jan29": -7.8,
+      "max_down": -7.8
+    },
+    "SMR": {
+      "jan26": -5.0,
+      "jan27": 3.0,
+      "jan28": 5.0,
+      "jan29": -7.6,
+      "max_down": -7.6
+    },
+    "NNE": {
+      "jan26": 0.0,
+      "jan27": 0.0,
+      "jan28": 0.0,
+      "jan29": -7.1,
+      "max_down": -7.1
+    },
+    "WULF": {
+      "jan26": -2.3,
+      "jan27": 11.0,
+      "jan28": -1.3,
+      "jan29": -3.8,
+      "max_down": -3.8
+    }
+  },
+  "patterns": {
+    "pump_dump": [
+      {
+        "symbol": "RR",
+        "pump_day": "Jan 27",
+        "pump_pct": 44.6,
+        "dump_pct": -20.9,
+        "sector": "defense"
+      },
+      {
+        "symbol": "RDW",
+        "pump_day": "Jan 27",
+        "pump_pct": 29.6,
+        "dump_pct": -6.4,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "APLD",
+        "pump_day": "Jan 27",
+        "pump_pct": 14.3,
+        "dump_pct": -5.3,
+        "sector": "btc_miners"
+      },
+      {
+        "symbol": "CIFR",
+        "pump_day": "Jan 27",
+        "pump_pct": 13.7,
+        "dump_pct": -6.7,
+        "sector": "crypto"
+      },
+      {
+        "symbol": "CLS",
+        "pump_day": "Jan 27",
+        "pump_pct": 8.1,
+        "dump_pct": -13.1,
+        "sector": "semiconductors"
+      },
+      {
+        "symbol": "LUNR",
+        "pump_day": "Jan 27",
+        "pump_pct": 10.2,
+        "dump_pct": -8.0,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "LEU",
+        "pump_day": "Jan 27",
+        "pump_pct": 9.8,
+        "dump_pct": -10.7,
+        "sector": "uranium_nuclear"
+      },
+      {
+        "symbol": "CRWV",
+        "pump_day": "Jan 27",
+        "pump_pct": 10.7,
+        "dump_pct": -6.1,
+        "sector": "defense"
+      },
+      {
+        "symbol": "FCEL",
+        "pump_day": "Jan 27",
+        "pump_pct": 5.5,
+        "dump_pct": -6.6,
+        "sector": "solar_clean"
+      },
+      {
+        "symbol": "NET",
+        "pump_day": "Jan 27",
+        "pump_pct": 8.8,
+        "dump_pct": -10.2,
+        "sector": "cloud_saas"
+      },
+      {
+        "symbol": "LTBR",
+        "pump_day": "Jan 27",
+        "pump_pct": 6.8,
+        "dump_pct": -7.0,
+        "sector": "industrials"
+      },
+      {
+        "symbol": "CLSK",
+        "pump_day": "Jan 27",
+        "pump_pct": 6.7,
+        "dump_pct": -6.4,
+        "sector": "crypto"
+      },
+      {
+        "symbol": "BE",
+        "pump_day": "Jan 27",
+        "pump_pct": 9.1,
+        "dump_pct": -5.4,
+        "sector": "solar_clean"
+      },
+      {
+        "symbol": "MP",
+        "pump_day": "Jan 27",
+        "pump_pct": 5.2,
+        "dump_pct": -7.2,
+        "sector": "rare_earth"
+      },
+      {
+        "symbol": "UMAC",
+        "pump_day": "Jan 27",
+        "pump_pct": 7.0,
+        "dump_pct": -6.0,
+        "sector": "other"
+      },
+      {
+        "symbol": "PL",
+        "pump_day": "Jan 27",
+        "pump_pct": 8.5,
+        "dump_pct": -5.5,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "BBAI",
+        "pump_day": "Jan 27",
+        "pump_pct": 7.7,
+        "dump_pct": -8.2,
+        "sector": "ai_software"
+      },
+      {
+        "symbol": "RCAT",
+        "pump_day": "Jan 27",
+        "pump_pct": 10.0,
+        "dump_pct": -8.9,
+        "sector": "evtol_space"
+      }
+    ],
+    "reversal_after_pump": [
+      {
+        "symbol": "RR",
+        "pump_days": "Jan 27: +44.6%, Jan 28: -7.8%",
+        "crash_pct": -20.9,
+        "sector": "defense"
+      },
+      {
+        "symbol": "UUUU",
+        "pump_days": "Jan 27: +3.6%, Jan 28: +14.7%",
+        "crash_pct": -10.2,
+        "sector": "uranium_nuclear"
+      },
+      {
+        "symbol": "APLD",
+        "pump_days": "Jan 27: +14.3%, Jan 28: -2.7%",
+        "crash_pct": -5.3,
+        "sector": "btc_miners"
+      },
+      {
+        "symbol": "CIFR",
+        "pump_days": "Jan 27: +13.7%, Jan 28: +1.2%",
+        "crash_pct": -6.7,
+        "sector": "crypto"
+      },
+      {
+        "symbol": "CLS",
+        "pump_days": "Jan 27: +8.1%, Jan 28: +3.6%",
+        "crash_pct": -13.1,
+        "sector": "semiconductors"
+      },
+      {
+        "symbol": "LUNR",
+        "pump_days": "Jan 27: +10.2%, Jan 28: +12.4%",
+        "crash_pct": -8.0,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "LEU",
+        "pump_days": "Jan 27: +9.8%, Jan 28: +9.2%",
+        "crash_pct": -10.7,
+        "sector": "uranium_nuclear"
+      },
+      {
+        "symbol": "CRWV",
+        "pump_days": "Jan 27: +10.7%, Jan 28: -2.6%",
+        "crash_pct": -6.1,
+        "sector": "defense"
+      },
+      {
+        "symbol": "OKLO",
+        "pump_days": "Jan 27: +3.6%, Jan 28: +10.7%",
+        "crash_pct": -8.8,
+        "sector": "uranium_nuclear"
+      },
+      {
+        "symbol": "FCEL",
+        "pump_days": "Jan 27: +5.5%, Jan 28: +0.4%",
+        "crash_pct": -6.6,
+        "sector": "solar_clean"
+      },
+      {
+        "symbol": "FSLR",
+        "pump_days": "Jan 27: -3.3%, Jan 28: +6.1%",
+        "crash_pct": -10.2,
+        "sector": "solar_clean"
+      },
+      {
+        "symbol": "LTBR",
+        "pump_days": "Jan 27: +6.8%, Jan 28: +4.2%",
+        "crash_pct": -7.0,
+        "sector": "industrials"
+      },
+      {
+        "symbol": "CLSK",
+        "pump_days": "Jan 27: +6.7%, Jan 28: +1.4%",
+        "crash_pct": -6.4,
+        "sector": "crypto"
+      },
+      {
+        "symbol": "BE",
+        "pump_days": "Jan 27: +9.1%, Jan 28: +8.6%",
+        "crash_pct": -5.4,
+        "sector": "solar_clean"
+      },
+      {
+        "symbol": "MP",
+        "pump_days": "Jan 27: +5.2%, Jan 28: +0.4%",
+        "crash_pct": -7.2,
+        "sector": "rare_earth"
+      },
+      {
+        "symbol": "UMAC",
+        "pump_days": "Jan 27: +7.0%, Jan 28: -0.2%",
+        "crash_pct": -6.0,
+        "sector": "other"
+      },
+      {
+        "symbol": "QUBT",
+        "pump_days": "Jan 27: +4.3%, Jan 28: -1.6%",
+        "crash_pct": -8.5,
+        "sector": "quantum"
+      },
+      {
+        "symbol": "PL",
+        "pump_days": "Jan 27: +8.5%, Jan 28: -0.7%",
+        "crash_pct": -5.5,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "IONQ",
+        "pump_days": "Jan 27: +4.9%, Jan 28: +0.7%",
+        "crash_pct": -5.6,
+        "sector": "quantum"
+      },
+      {
+        "symbol": "BBAI",
+        "pump_days": "Jan 27: +7.7%, Jan 28: -2.4%",
+        "crash_pct": -8.2,
+        "sector": "ai_software"
+      },
+      {
+        "symbol": "RCAT",
+        "pump_days": "Jan 27: +10.0%, Jan 28: +4.5%",
+        "crash_pct": -8.9,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "SMR",
+        "pump_days": "Jan 27: +3.0%, Jan 28: +5.0%",
+        "crash_pct": -7.6,
+        "sector": "uranium_nuclear"
+      }
+    ],
+    "sudden_crash": [
+      {
+        "symbol": "MSFT",
+        "pre_crash": "Jan 26: +0.9%, Jan 27: +2.2%",
+        "crash_day": "Jan 29",
+        "crash_pct": -10.0,
+        "sector": "tech_mega"
+      },
+      {
+        "symbol": "MSTR",
+        "pre_crash": "Jan 26: -1.6%, Jan 27: +0.6%",
+        "crash_day": "Jan 29",
+        "crash_pct": -9.6,
+        "sector": "crypto"
+      }
+    ],
+    "sector_contagion": [
+      {
+        "sector": "defense",
+        "symbols": [
+          "RR",
+          "CRWV"
+        ],
+        "count": 2
+      },
+      {
+        "sector": "evtol_space",
+        "symbols": [
+          "RDW",
+          "JOBY",
+          "LUNR",
+          "RKLB",
+          "ASTS",
+          "PL",
+          "RCAT"
+        ],
+        "count": 7
+      },
+      {
+        "sector": "uranium_nuclear",
+        "symbols": [
+          "UUUU",
+          "LEU",
+          "OKLO",
+          "SMR",
+          "NNE"
+        ],
+        "count": 5
+      },
+      {
+        "sector": "btc_miners",
+        "symbols": [
+          "IREN",
+          "APLD"
+        ],
+        "count": 2
+      },
+      {
+        "sector": "crypto",
+        "symbols": [
+          "CIFR",
+          "MSTR",
+          "CLSK",
+          "RIOT"
+        ],
+        "count": 4
+      },
+      {
+        "sector": "semiconductors",
+        "symbols": [
+          "CLS",
+          "INTC",
+          "SWKS"
+        ],
+        "count": 3
+      },
+      {
+        "sector": "rare_earth",
+        "symbols": [
+          "USAR",
+          "MP"
+        ],
+        "count": 2
+      },
+      {
+        "sector": "solar_clean",
+        "symbols": [
+          "EOSE",
+          "FCEL",
+          "FSLR",
+          "BE",
+          "PLUG"
+        ],
+        "count": 5
+      },
+      {
+        "sector": "quantum",
+        "symbols": [
+          "RGTI",
+          "QUBT",
+          "IONQ"
+        ],
+        "count": 3
+      },
+      {
+        "sector": "industrials",
+        "symbols": [
+          "LTBR",
+          "SERV"
+        ],
+        "count": 2
+      },
+      {
+        "sector": "ai_software",
+        "symbols": [
+          "BBAI",
+          "SNOW"
+        ],
+        "count": 2
+      }
+    ],
+    "multi_day_decline": [
+      {
+        "symbol": "RR",
+        "down_days": 3,
+        "total_decline": -36.4,
+        "sector": "defense"
+      },
+      {
+        "symbol": "RDW",
+        "down_days": 3,
+        "total_decline": -22.5,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "JOBY",
+        "down_days": 2,
+        "total_decline": -22.1,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "UUUU",
+        "down_days": 2,
+        "total_decline": -18.7,
+        "sector": "uranium_nuclear"
+      },
+      {
+        "symbol": "IREN",
+        "down_days": 2,
+        "total_decline": -12.5,
+        "sector": "btc_miners"
+      },
+      {
+        "symbol": "APLD",
+        "down_days": 2,
+        "total_decline": -12.0,
+        "sector": "btc_miners"
+      },
+      {
+        "symbol": "CIFR",
+        "down_days": 2,
+        "total_decline": -12.8,
+        "sector": "crypto"
+      },
+      {
+        "symbol": "LUNR",
+        "down_days": 2,
+        "total_decline": -16.0,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "USAR",
+        "down_days": 2,
+        "total_decline": -18.200000000000003,
+        "sector": "rare_earth"
+      },
+      {
+        "symbol": "EOSE",
+        "down_days": 3,
+        "total_decline": -16.099999999999998,
+        "sector": "solar_clean"
+      },
+      {
+        "symbol": "LEU",
+        "down_days": 2,
+        "total_decline": -15.6,
+        "sector": "uranium_nuclear"
+      },
+      {
+        "symbol": "OKLO",
+        "down_days": 2,
+        "total_decline": -14.9,
+        "sector": "uranium_nuclear"
+      },
+      {
+        "symbol": "FCEL",
+        "down_days": 2,
+        "total_decline": -16.9,
+        "sector": "solar_clean"
+      },
+      {
+        "symbol": "FSLR",
+        "down_days": 2,
+        "total_decline": -13.5,
+        "sector": "solar_clean"
+      },
+      {
+        "symbol": "RGTI",
+        "down_days": 2,
+        "total_decline": -18.3,
+        "sector": "quantum"
+      },
+      {
+        "symbol": "HUT",
+        "down_days": 2,
+        "total_decline": -7.9,
+        "sector": "crypto"
+      },
+      {
+        "symbol": "RKLB",
+        "down_days": 2,
+        "total_decline": -12.8,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "LTBR",
+        "down_days": 2,
+        "total_decline": -16.3,
+        "sector": "industrials"
+      },
+      {
+        "symbol": "CLSK",
+        "down_days": 2,
+        "total_decline": -15.700000000000001,
+        "sector": "crypto"
+      },
+      {
+        "symbol": "BE",
+        "down_days": 2,
+        "total_decline": -9.0,
+        "sector": "solar_clean"
+      },
+      {
+        "symbol": "MP",
+        "down_days": 2,
+        "total_decline": -16.0,
+        "sector": "rare_earth"
+      },
+      {
+        "symbol": "UMAC",
+        "down_days": 2,
+        "total_decline": -15.0,
+        "sector": "other"
+      },
+      {
+        "symbol": "QUBT",
+        "down_days": 2,
+        "total_decline": -15.5,
+        "sector": "quantum"
+      },
+      {
+        "symbol": "PL",
+        "down_days": 2,
+        "total_decline": -10.2,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "IONQ",
+        "down_days": 2,
+        "total_decline": -13.799999999999999,
+        "sector": "quantum"
+      },
+      {
+        "symbol": "RIOT",
+        "down_days": 2,
+        "total_decline": -9.399999999999999,
+        "sector": "crypto"
+      },
+      {
+        "symbol": "PLUG",
+        "down_days": 2,
+        "total_decline": -12.5,
+        "sector": "solar_clean"
+      },
+      {
+        "symbol": "RCAT",
+        "down_days": 2,
+        "total_decline": -20.200000000000003,
+        "sector": "evtol_space"
+      },
+      {
+        "symbol": "SMR",
+        "down_days": 2,
+        "total_decline": -12.6,
+        "sector": "uranium_nuclear"
+      }
+    ]
+  },
+  "universe_coverage": {
+    "in_universe": [
+      "RR",
+      "RDW",
+      "UNH",
+      "STX",
+      "LUV",
+      "RCL",
+      "JOBY",
+      "UUUU",
+      "IREN",
+      "INOD",
+      "APLD",
+      "CIFR",
+      "CLS",
+      "LUNR",
+      "USAR",
+      "EOSE",
+      "INTC",
+      "LEU",
+      "CRWV",
+      "WDC",
+      "OKLO",
+      "META",
+      "FCEL",
+      "NCLH",
+      "NET",
+      "FSLR",
+      "MSFT",
+      "RGTI",
+      "HUT",
+      "MSTR",
+      "RKLB",
+      "LTBR",
+      "CLSK",
+      "BE",
+      "ASTS",
+      "MP",
+      "QUBT",
+      "PL",
+      "CCL",
+      "IONQ",
+      "BBAI",
+      "RIOT",
+      "PLUG",
+      "RCAT",
+      "SNOW",
+      "SWKS",
+      "SERV",
+      "SMR",
+      "NNE",
+      "WULF"
+    ],
+    "not_in_universe": [
+      "LITE",
+      "TXN",
+      "SNDK",
+      "UMAC",
+      "COHR"
+    ],
+    "coverage_pct": 90.9090909090909
+  }
+}

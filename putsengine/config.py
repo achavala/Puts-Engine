@@ -189,11 +189,11 @@ class EngineConfig:
             "MSTR", "COIN", "MARA", "RIOT", "HUT", "CLSK", "CIFR", "GLXY",
             "BITF", "WULF", "BMNR"
         ],
-        # Semiconductors (22)
+        # Semiconductors (27) - Added TXN, SNDK, LITE, COHR
         "semiconductors": [
             "NVDA", "AMD", "INTC", "MU", "AVGO", "QCOM", "TSM", "ASML", "AMAT",
             "LRCX", "KLAC", "MRVL", "ON", "SWKS", "STX", "WDC", "CRDO", "ALAB",
-            "RMBS", "CLS", "ARM", "WOLF"
+            "RMBS", "CLS", "ARM", "WOLF", "TXN", "SNDK", "LITE", "COHR", "UMAC"
         ],
         # Meme Stocks (6)
         "meme": [
@@ -210,10 +210,18 @@ class EngineConfig:
             "UNH", "HUM", "CI", "ELV", "CVS", "CNC", "MOH",
             "PFE", "JNJ", "MRK", "LLY", "ABBV",
         ],
-        # Industrials / Clean Energy (12)
+        # Industrials / Clean Energy (14) - Added EOSE, SERV
         "industrials": [
             "INOD", "BE", "PLUG", "FCEL", "BLDP", "TLN", "GEV", "AMSC", "LTBR",
-            "CAT", "DE", "CMI"
+            "CAT", "DE", "CMI", "EOSE", "SERV"
+        ],
+        # Defense / Aerospace Volatile (5) - Added RR, RCAT, CRWV
+        "defense_volatile": [
+            "RR",      # Rolls Royce - CRITICAL - had +44.6% then -20.9%
+            "RCAT",    # Red Cat Holdings - drone company
+            "CRWV",    # CrowdStrike variant
+            "KTOS",    # Kratos Defense
+            "PLTR",    # Palantir
         ],
         # Major ETFs (12)
         "etfs": [

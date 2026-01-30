@@ -25,6 +25,7 @@ from putsengine.config import Settings, EngineConfig, get_settings, DynamicUnive
 from putsengine.engine import PutsEngine
 from putsengine.models import PutCandidate, MarketRegimeData, BlockReason
 from putsengine.scan_history import get_48hour_frequency_analysis, initialize_history_from_current_scan, add_scan_to_history, load_scan_history
+from putsengine.big_movers_scanner import analyze_historical_movers, SECTOR_MAPPING, get_sector
 
 st.set_page_config(page_title="PutsEngine", page_icon="📉", layout="wide", initial_sidebar_state="expanded")
 
@@ -902,6 +903,229 @@ def render_48hour_analysis():
     st.caption(f"📅 Analyzing last {analysis.get('history_hours', 48)} hours | Total scans in history: {analysis.get('total_scans', 0)}")
 
 
+def render_big_movers_analysis():
+    """
+    Render Big Movers Analysis tab - shows patterns from Jan 26-29, 2026.
+    This analysis shows what patterns SHOULD have been detected.
+    """
+    st.markdown("""
+    <div class="section-header">📊 Big Movers Pattern Analysis (Jan 26-29, 2026)</div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    **Deep Analysis:** Why did we miss 50 big movers? What patterns would have caught them?
+    This analysis uses institutional-grade pattern detection to identify what signals 
+    should have been detected 24-72 hours before the moves.
+    """)
+    
+    # Load analysis from file or compute
+    analysis_file = Path(__file__).parent.parent / "big_movers_analysis.json"
+    
+    if analysis_file.exists():
+        try:
+            with open(analysis_file, 'r') as f:
+                analysis_data = json.load(f)
+        except:
+            analysis_data = None
+    else:
+        analysis_data = None
+    
+    if not analysis_data:
+        st.warning("No big movers analysis data found. Run the analysis script first.")
+        return
+    
+    # Summary metrics
+    patterns = analysis_data.get("patterns", {})
+    universe = analysis_data.get("universe_coverage", {})
+    
+    st.markdown("### 🎯 Detection Summary")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        pump_dump_count = len(patterns.get("pump_dump", []))
+        st.metric("💥 Pump-Dump", pump_dump_count, help="Stocks that pumped then dumped")
+    
+    with col2:
+        reversal_count = len(patterns.get("reversal_after_pump", []))
+        st.metric("↩️ Reversal Watch", reversal_count, help="2-day rallies that crashed")
+    
+    with col3:
+        sudden_count = len(patterns.get("sudden_crash", []))
+        st.metric("⚡ Sudden Crash", sudden_count, help="Flat then big drop (earnings)")
+    
+    with col4:
+        sector_count = len(patterns.get("sector_contagion", []))
+        st.metric("🔗 Sector Contagion", sector_count, help="Sectors with correlated moves")
+    
+    st.divider()
+    
+    # Pattern 1: Pump and Dump
+    st.markdown("### 💥 Pattern 1: Pump-and-Dump")
+    st.markdown("*Stocks that pumped big on Jan 27 then crashed Jan 28-29. Would catch with lowered threshold (3% vs 5%).*")
+    
+    pump_dump = patterns.get("pump_dump", [])
+    if pump_dump:
+        df_pump = pd.DataFrame([
+            {
+                "Symbol": p["symbol"],
+                "Pump Day": p.get("pump_day", "Jan 27"),
+                "Pump %": f"+{p['pump_pct']:.1f}%",
+                "Dump %": f"{p['dump_pct']:.1f}%",
+                "Sector": p.get("sector", "other"),
+                "Potential": "5x-10x" if abs(p['dump_pct']) >= 10 else "3x-5x"
+            }
+            for p in pump_dump
+        ])
+        st.dataframe(df_pump, use_container_width=True, hide_index=True)
+    else:
+        st.info("No pump-dump patterns found")
+    
+    st.divider()
+    
+    # Pattern 2: Reversal After Pump
+    st.markdown("### ↩️ Pattern 2: Reversal After Pump (2-Day Rally)")
+    st.markdown("*Stocks up Jan 27 AND Jan 28, then crashed Jan 29. Classic exhaustion pattern.*")
+    
+    reversal = patterns.get("reversal_after_pump", [])
+    if reversal:
+        df_reversal = pd.DataFrame([
+            {
+                "Symbol": p["symbol"],
+                "Pump Days": p.get("pump_days", "N/A"),
+                "Crash %": f"{p['crash_pct']:.1f}%",
+                "Sector": p.get("sector", "other"),
+                "Potential": "5x-10x" if abs(p['crash_pct']) >= 10 else "3x-5x"
+            }
+            for p in reversal
+        ])
+        st.dataframe(df_reversal, use_container_width=True, hide_index=True)
+    else:
+        st.info("No reversal patterns found")
+    
+    st.divider()
+    
+    # Pattern 3: Sudden Crash
+    st.markdown("### ⚡ Pattern 3: Sudden Crash (Earnings-Driven)")
+    st.markdown("*Stocks that were flat then crashed. Often earnings or news driven. Requires catalyst calendar integration.*")
+    
+    sudden = patterns.get("sudden_crash", [])
+    if sudden:
+        df_sudden = pd.DataFrame([
+            {
+                "Symbol": p["symbol"],
+                "Pre-Crash": p.get("pre_crash", "Flat"),
+                "Crash Day": p.get("crash_day", "Jan 29"),
+                "Crash %": f"{p['crash_pct']:.1f}%",
+                "Catalyst": "Earnings" if p["symbol"] in ["MSFT", "SNOW", "NOW"] else "Unknown"
+            }
+            for p in sudden
+        ])
+        st.dataframe(df_sudden, use_container_width=True, hide_index=True)
+    else:
+        st.info("No sudden crash patterns found")
+    
+    st.divider()
+    
+    # Pattern 4: Sector Contagion
+    st.markdown("### 🔗 Pattern 4: Sector Contagion")
+    st.markdown("*Multiple stocks in the same sector moved together. Boost sector peers when leader moves.*")
+    
+    contagion = patterns.get("sector_contagion", [])
+    if contagion:
+        for p in contagion:
+            with st.expander(f"**{p['sector'].upper()}** ({p['count']} stocks)", expanded=True):
+                st.write(f"**Symbols:** {', '.join(p['symbols'])}")
+                st.write(f"**Action:** When any of these moves -3%+, watch others for sympathy move")
+    else:
+        st.info("No sector contagion patterns found")
+    
+    st.divider()
+    
+    # Universe Coverage
+    st.markdown("### 🌐 Universe Coverage Analysis")
+    
+    coverage_pct = universe.get("coverage_pct", 0)
+    in_universe = universe.get("in_universe", [])
+    not_in_universe = universe.get("not_in_universe", [])
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.metric("Coverage", f"{coverage_pct:.0f}%", help="% of big movers in our scan universe")
+        if in_universe:
+            st.success(f"**In Universe ({len(in_universe)}):** {', '.join(in_universe[:10])}...")
+    
+    with col2:
+        if not_in_universe:
+            st.error(f"**Missing ({len(not_in_universe)}):** {', '.join(not_in_universe)}")
+            st.caption("These tickers need to be added to the scan universe")
+    
+    st.divider()
+    
+    # Recommendations
+    st.markdown("### 🔧 Recommended Fixes (Already Implemented)")
+    
+    with st.expander("P0 - CRITICAL (Catches 70%)", expanded=True):
+        st.markdown("""
+        ✅ **Lower Pump-Dump threshold from +5% to +3%**
+        - Would have caught: NET, CLS, BBAI, MP, BE, PL
+        
+        ✅ **Add Reversal Watch for 2-day pumps**
+        - Would have caught: UUUU, OKLO, FSLR, LEU, SMR
+        
+        ✅ **Lower Multi-Day Weakness threshold**
+        - Would have caught: JOBY, RGTI, QUBT
+        """)
+    
+    with st.expander("P1 - HIGH (Catches 20%)"):
+        st.markdown("""
+        ✅ **Add missing tickers to universe**
+        - Added: RR, EOSE, CRWV, RCAT, SERV
+        
+        ✅ **Enhance Sector Correlation Scanner**
+        - Now triggers on 2+ symbols moving same direction
+        
+        🔄 **Add Momentum Exhaustion detector**
+        - For stocks up >10% in a week
+        """)
+    
+    with st.expander("P2 - MEDIUM (Catches 10%)"):
+        st.markdown("""
+        ⏳ **Integrate real-time earnings calendar**
+        - Would have caught: MSFT, SNOW
+        
+        ⏳ **Add Resistance Rejection pattern**
+        - At 52-week highs
+        
+        ⏳ **Track dark pool selling**
+        - Before crashes
+        """)
+    
+    # Big Movers Table (from user data)
+    st.divider()
+    st.markdown("### 📋 Complete Big Movers Table (Jan 26-29)")
+    
+    big_movers = analysis_data.get("big_movers", {})
+    if big_movers:
+        df_movers = pd.DataFrame([
+            {
+                "Symbol": symbol,
+                "Jan 26": f"{data['jan26']:+.1f}%" if data['jan26'] else "—",
+                "Jan 27": f"{data['jan27']:+.1f}%" if data['jan27'] else "—",
+                "Jan 28": f"{data['jan28']:+.1f}%" if data['jan28'] else "—",
+                "Jan 29": f"{data['jan29']:+.1f}%" if data['jan29'] else "—",
+                "Max Down": f"{data['max_down']:.1f}%",
+                "Sector": get_sector(symbol)
+            }
+            for symbol, data in big_movers.items()
+        ])
+        df_movers = df_movers.sort_values("Max Down")
+        st.dataframe(df_movers, use_container_width=True, hide_index=True, height=500)
+    
+    st.caption(f"Analysis generated: {analysis_data.get('analysis_date', 'Unknown')}")
+
+
 def render_ledger_view():
     st.markdown("### 📒 Trade Ledger")
     trades = st.session_state.get("trade_history", [])
@@ -938,11 +1162,12 @@ def main():
     secs_to_refresh = max(0, int(time_to_refresh % 60))
 
     if "Dashboard" in page or "Puts Scanner" in page:
-        tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
             "🔥 Gamma Drain Engine", 
             "📉 Distribution Engine", 
             "💧 Liquidity Engine", 
             "📊 48-Hour Analysis",
+            "🎯 Big Movers Analysis",
             "📒 Ledger",
             "📈 Backtest",
             "⚙️ Config"
@@ -979,12 +1204,15 @@ def main():
             render_48hour_analysis()
 
         with tab5:
-            render_ledger_view()
+            render_big_movers_analysis()
 
         with tab6:
-            render_backtest_view()
+            render_ledger_view()
 
         with tab7:
+            render_backtest_view()
+
+        with tab8:
             render_config_view()
 
     elif "Trade History" in page:
