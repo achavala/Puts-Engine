@@ -1056,17 +1056,25 @@ def render_big_movers_analysis():
     """
     Render Big Movers Analysis tab - shows FUTURE PUT CANDIDATES organized by pattern type.
     These are REAL-TIME candidates showing the same patterns as big movers from Jan 26-29.
-    Auto-refreshes every 30 minutes.
+    Auto-refreshes every 2 hours.
     """
-    # Auto-refresh every 30 minutes (1800000 ms)
+    # Auto-refresh every 2 hours (7200000 ms)
     from streamlit_autorefresh import st_autorefresh
-    pattern_refresh_count = st_autorefresh(interval=1800000, limit=None, key="pattern_autorefresh")
+    pattern_refresh_count = st_autorefresh(interval=7200000, limit=None, key="pattern_autorefresh")
     
     # Track refresh count in session state
     if "pattern_refresh_count" not in st.session_state:
         st.session_state.pattern_refresh_count = 0
+    
+    # Run pattern scan on auto-refresh or first load if no data
+    pattern_file = Path(__file__).parent.parent / "pattern_scan_results.json"
+    needs_scan = not pattern_file.exists()
+    
     if pattern_refresh_count > st.session_state.pattern_refresh_count:
         st.session_state.pattern_refresh_count = pattern_refresh_count
+        needs_scan = True
+    
+    if needs_scan:
         # Run pattern scan on auto-refresh
         import subprocess
         try:
@@ -1075,7 +1083,7 @@ def render_big_movers_analysis():
                 cwd=str(Path(__file__).parent.parent),
                 capture_output=True,
                 text=True,
-                timeout=120
+                timeout=180
             )
         except:
             pass
@@ -1089,17 +1097,39 @@ def render_big_movers_analysis():
     Use this to identify put opportunities 1-2 days BEFORE the crash.
     """)
     
-    # Load pattern scan results
-    pattern_file = Path(__file__).parent.parent / "pattern_scan_results.json"
+    # Refresh button - always at top
+    col_btn1, col_btn2 = st.columns([1, 4])
+    with col_btn1:
+        refresh_clicked = st.button("🔄 Refresh Pattern Scan", key="refresh_patterns")
     
+    if refresh_clicked:
+        with st.spinner("Running pattern scan... This may take 30-60 seconds."):
+            import subprocess
+            try:
+                result = subprocess.run(
+                    ["python3", "integrate_patterns.py"],
+                    cwd=str(Path(__file__).parent.parent),
+                    capture_output=True,
+                    text=True,
+                    timeout=180
+                )
+                if result.returncode == 0:
+                    st.success("✅ Pattern scan complete!")
+                    time.sleep(1)
+                    st.rerun()
+                else:
+                    st.error(f"Scan failed: {result.stderr[:200]}")
+            except Exception as e:
+                st.error(f"Error running scan: {e}")
+    
+    # Load pattern scan results (always reload fresh)
+    pattern_data = None
     if pattern_file.exists():
         try:
             with open(pattern_file, 'r') as f:
                 pattern_data = json.load(f)
-        except:
-            pattern_data = None
-    else:
-        pattern_data = None
+        except Exception as e:
+            st.error(f"Error loading pattern data: {e}")
     
     # Also load scheduled scan for earnings and sector data
     scheduled_file = Path(__file__).parent.parent / "scheduled_scan_results.json"
@@ -1111,9 +1141,8 @@ def render_big_movers_analysis():
         except:
             pass
     
-    # Refresh button
-    if st.button("🔄 Refresh Pattern Scan", key="refresh_patterns"):
-        st.info("Running pattern scan... This may take 30-60 seconds.")
+    if not pattern_data:
+        st.warning("⚠️ No pattern scan data found. Running initial scan...")
         import subprocess
         try:
             result = subprocess.run(
@@ -1121,19 +1150,23 @@ def render_big_movers_analysis():
                 cwd=str(Path(__file__).parent.parent),
                 capture_output=True,
                 text=True,
-                timeout=120
+                timeout=180
             )
             if result.returncode == 0:
-                st.success("Pattern scan complete! Refresh page to see results.")
-                st.rerun()
+                # Reload the data
+                if pattern_file.exists():
+                    with open(pattern_file, 'r') as f:
+                        pattern_data = json.load(f)
+                    st.success("✅ Pattern scan complete! Displaying results...")
+                else:
+                    st.error("Scan completed but no data file found.")
+                    return
             else:
-                st.error(f"Scan failed: {result.stderr}")
+                st.error(f"Scan failed: {result.stderr[:200]}")
+                return
         except Exception as e:
-            st.error(f"Error running scan: {e}")
-    
-    if not pattern_data:
-        st.warning("No pattern scan data found. Click 'Refresh Pattern Scan' to generate candidates.")
-        return
+            st.error(f"Error running initial scan: {e}")
+            return
     
     # Summary metrics - use correct JSON keys
     pump_reversal = pattern_data.get("pump_reversal", [])
