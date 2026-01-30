@@ -228,6 +228,11 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
     for c in filtered_candidates:
         symbol = c.get("symbol", "N/A")
         
+        # Check if this is a PATTERN-ENHANCED candidate (pump-reversal, exhaustion, etc.)
+        is_pattern_enhanced = c.get("pattern_enhanced", False)
+        pattern_marker = "⭐ " if is_pattern_enhanced else ""
+        pattern_boost = c.get("pattern_boost", 0)
+        
         # Check if this symbol is dynamically injected (DUI)
         dui_info = dynamic_details.get(symbol)
         dui_badge = ""
@@ -242,16 +247,21 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
             except:
                 dui_badge = " 🧲 DUI"
         
+        # Pattern badge
+        pattern_badge = ""
+        if is_pattern_enhanced and pattern_boost > 0:
+            pattern_badge = f" ⭐ PATTERN (+{pattern_boost:.2f})"
+        
         # Determine PUT type based on engine
         if engine_type == "gamma_drain":
             put_type = "GAMMA DRAIN"
-            signal_type = "🔥 Gamma Drain Signal" + dui_badge
+            signal_type = "🔥 Gamma Drain Signal" + dui_badge + pattern_badge
         elif engine_type == "distribution":
             put_type = "DISTRIBUTION TRAP"
-            signal_type = "📉 Distribution Signal" + dui_badge
+            signal_type = "📉 Distribution Signal" + dui_badge + pattern_badge
         else:
             put_type = "LIQUIDITY VACUUM"
-            signal_type = "💧 Liquidity Signal" + dui_badge
+            signal_type = "💧 Liquidity Signal" + dui_badge + pattern_badge
         
         # Determine flow intent from signals
         signals = c.get("signals", [])
@@ -340,8 +350,18 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
             entry_display = "N/A"
             price_display = "N/A"
         
+        # Add pattern marker to symbol if pattern-enhanced
+        symbol_display = pattern_marker + c.get("symbol", "N/A")
+        
+        # Create pattern indicator column
+        if is_pattern_enhanced:
+            pattern_col = f"⭐ +{pattern_boost:.2f}"
+        else:
+            pattern_col = ""
+        
         results.append({
-            "Symbol": c.get("symbol", "N/A"),
+            "Symbol": symbol_display,
+            "Pattern": pattern_col,
             "Signal Type": signal_type,
             "Score": score,
             "Potential": c.get("next_week_potential", "N/A"),
