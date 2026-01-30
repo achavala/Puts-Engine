@@ -4,11 +4,14 @@
       "symbol": "ASTS",
       "current_price": 118.14,
       "close": 118.14,
-      "score": 0.65,
+      "score": 0.85,
       "signals": [
         "exhaustion",
         "topping_tail",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_+0%",
+        "exhaustion",
+        "below_prior_low"
       ],
       "sector": "evtol",
       "pattern_enhanced": true,
@@ -26,12 +29,15 @@
       "symbol": "LUNR",
       "current_price": 20.46,
       "close": 20.46,
-      "score": 0.65,
+      "score": 0.85,
       "signals": [
         "exhaustion",
         "topping_tail",
         "below_prior_low",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_-5%",
+        "exhaustion",
+        "below_prior_low"
       ],
       "sector": "evtol",
       "pattern_enhanced": true,
@@ -49,10 +55,13 @@
       "symbol": "EOSE",
       "current_price": 15.41,
       "close": 15.41,
-      "score": 0.65,
+      "score": 0.85,
       "signals": [
         "exhaustion",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_-2%",
+        "exhaustion",
+        "below_prior_low"
       ],
       "sector": "solar",
       "pattern_enhanced": true,
@@ -70,11 +79,14 @@
       "symbol": "UUUU",
       "current_price": 24.32,
       "close": 24.32,
-      "score": 0.65,
+      "score": 0.85,
       "signals": [
         "exhaustion",
         "topping_tail",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_-6%",
+        "exhaustion",
+        "below_prior_low"
       ],
       "sector": "uranium",
       "pattern_enhanced": true,
@@ -92,11 +104,15 @@
       "symbol": "INOD",
       "current_price": 58.36,
       "close": 58.36,
-      "score": 0.65,
+      "score": 0.85,
       "signals": [
         "exhaustion",
         "below_prior_low",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_-4%",
+        "exhaustion",
+        "high_vol_red",
+        "below_prior_low"
       ],
       "sector": "other",
       "pattern_enhanced": true,
@@ -114,11 +130,15 @@
       "symbol": "LITE",
       "current_price": 409.14,
       "close": 409.14,
-      "score": 0.65,
+      "score": 0.85,
       "signals": [
         "exhaustion",
         "topping_tail",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_+6%",
+        "exhaustion",
+        "topping_tail",
+        "high_vol_red"
       ],
       "sector": "other",
       "pattern_enhanced": true,
@@ -131,6 +151,128 @@
       "otm_pct": 12.0,
       "delta_target": "-0.40 to -0.25",
       "potential_mult": "2x-4x"
+    },
+    {
+      "symbol": "MU",
+      "current_price": 440.67,
+      "close": 440.67,
+      "score": 0.832,
+      "signals": [
+        "exhaustion",
+        "topping_tail",
+        "pump_reversal",
+        "pump_reversal_+2%",
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "semis",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.191,
+      "strike": 410,
+      "strike_display": "$410P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 7.0,
+      "delta_target": "-0.40 to -0.25",
+      "potential_mult": "2x-4x"
+    },
+    {
+      "symbol": "RCAT",
+      "current_price": 14.02,
+      "close": 14.02,
+      "score": 0.8006,
+      "signals": [
+        "exhaustion",
+        "below_prior_low",
+        "pump_reversal",
+        "pump_reversal_-17%",
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "evtol",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.175,
+      "strike": 12.0,
+      "strike_display": "$12P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 14.4,
+      "delta_target": "-0.30 to -0.20",
+      "potential_mult": "4x-8x"
+    },
+    {
+      "symbol": "HUT",
+      "current_price": 58.13,
+      "close": 58.13,
+      "score": 0.7992,
+      "signals": [
+        "exhaustion",
+        "below_prior_low",
+        "pump_reversal",
+        "pump_reversal_-8%",
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "crypto",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.175,
+      "strike": 53,
+      "strike_display": "$53P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 8.8,
+      "delta_target": "-0.32 to -0.22",
+      "potential_mult": "3x-6x"
+    },
+    {
+      "symbol": "NCLH",
+      "current_price": 22.0,
+      "close": 22.0,
+      "score": 0.795,
+      "signals": [
+        "exhaustion",
+        "pump_reversal",
+        "pump_reversal_+6%"
+      ],
+      "sector": "other",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.152,
+      "strike": 19.5,
+      "strike_display": "$20P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 11.3,
+      "delta_target": "-0.30 to -0.20",
+      "potential_mult": "4x-8x"
+    },
+    {
+      "symbol": "CLS",
+      "current_price": 295.98,
+      "close": 295.98,
+      "score": 0.7824,
+      "signals": [
+        "exhaustion",
+        "topping_tail",
+        "pump_reversal",
+        "pump_reversal_-16%",
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "semis",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.166,
+      "strike": 275,
+      "strike_display": "$275P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 7.1,
+      "delta_target": "-0.35 to -0.25",
+      "potential_mult": "2.5x-5x"
     },
     {
       "symbol": "RCL",
@@ -174,49 +316,6 @@
       "otm_pct": 12.9,
       "delta_target": "-0.30 to -0.20",
       "potential_mult": "4x-8x"
-    },
-    {
-      "symbol": "NCLH",
-      "current_price": 22.0,
-      "close": 22.0,
-      "score": 0.6425,
-      "signals": [
-        "exhaustion",
-        "pump_reversal"
-      ],
-      "sector": "other",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.19245310245310257,
-      "strike": 19.5,
-      "strike_display": "$20P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 11.3,
-      "delta_target": "-0.30 to -0.20",
-      "potential_mult": "4x-8x"
-    },
-    {
-      "symbol": "MU",
-      "current_price": 440.67,
-      "close": 440.67,
-      "score": 0.641,
-      "signals": [
-        "exhaustion",
-        "topping_tail",
-        "pump_reversal"
-      ],
-      "sector": "semis",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.19103744149765983,
-      "strike": 410,
-      "strike_display": "$410P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 7.0,
-      "delta_target": "-0.40 to -0.25",
-      "potential_mult": "2x-4x"
     },
     {
       "symbol": "APP",
@@ -285,50 +384,6 @@
       "potential_mult": "3x-6x"
     },
     {
-      "symbol": "RCAT",
-      "current_price": 14.02,
-      "close": 14.02,
-      "score": 0.6253,
-      "signals": [
-        "exhaustion",
-        "below_prior_low",
-        "pump_reversal"
-      ],
-      "sector": "evtol",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.1753095086151882,
-      "strike": 12.0,
-      "strike_display": "$12P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 14.4,
-      "delta_target": "-0.30 to -0.20",
-      "potential_mult": "4x-8x"
-    },
-    {
-      "symbol": "HUT",
-      "current_price": 58.13,
-      "close": 58.13,
-      "score": 0.6246,
-      "signals": [
-        "exhaustion",
-        "below_prior_low",
-        "pump_reversal"
-      ],
-      "sector": "crypto",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.17463130659767126,
-      "strike": 53,
-      "strike_display": "$53P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 8.8,
-      "delta_target": "-0.32 to -0.22",
-      "potential_mult": "3x-6x"
-    },
-    {
       "symbol": "LTBR",
       "current_price": 16.62,
       "close": 16.62,
@@ -349,28 +404,6 @@
       "otm_pct": 12.8,
       "delta_target": "-0.30 to -0.20",
       "potential_mult": "4x-8x"
-    },
-    {
-      "symbol": "CLS",
-      "current_price": 295.98,
-      "close": 295.98,
-      "score": 0.6162,
-      "signals": [
-        "exhaustion",
-        "topping_tail",
-        "pump_reversal"
-      ],
-      "sector": "semis",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.16619773689107664,
-      "strike": 275,
-      "strike_display": "$275P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 7.1,
-      "delta_target": "-0.35 to -0.25",
-      "potential_mult": "2.5x-5x"
     },
     {
       "symbol": "KLAC",
@@ -421,10 +454,13 @@
       "symbol": "INTC",
       "current_price": 48.73,
       "close": 48.73,
-      "score": 0.65,
+      "score": 0.85,
       "signals": [
         "topping_tail",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_+6%",
+        "exhaustion",
+        "below_prior_low"
       ],
       "sector": "semis",
       "pattern_enhanced": true,
@@ -442,10 +478,13 @@
       "symbol": "LUV",
       "current_price": 48.96,
       "close": 48.96,
-      "score": 0.65,
+      "score": 0.85,
       "signals": [
         "topping_tail",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_+16%",
+        "exhaustion",
+        "topping_tail"
       ],
       "sector": "other",
       "pattern_enhanced": true,
@@ -463,14 +502,17 @@
       "symbol": "OKLO",
       "current_price": 86.04,
       "close": 86.04,
-      "score": 0.647,
+      "score": 0.847,
       "signals": [
         "topping_tail",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_-5%",
+        "exhaustion",
+        "below_prior_low"
       ],
       "sector": "uranium",
       "pattern_enhanced": true,
-      "pattern_boost": 0.19695438020405776,
+      "pattern_boost": 0.2,
       "strike": 78,
       "strike_display": "$78P",
       "expiry": "2026-02-13",
@@ -484,14 +526,17 @@
       "symbol": "SMR",
       "current_price": 18.57,
       "close": 18.57,
-      "score": 0.6067,
+      "score": 0.8034,
       "signals": [
         "topping_tail",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_-8%",
+        "exhaustion",
+        "below_prior_low"
       ],
       "sector": "uranium",
       "pattern_enhanced": true,
-      "pattern_boost": 0.15666666666666673,
+      "pattern_boost": 0.197,
       "strike": 16.0,
       "strike_display": "$16P",
       "expiry": "2026-02-13",
@@ -505,14 +550,17 @@
       "symbol": "JBLU",
       "current_price": 4.99,
       "close": 4.99,
-      "score": 0.6055,
+      "score": 0.801,
       "signals": [
         "topping_tail",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_+3%",
+        "exhaustion",
+        "below_prior_low"
       ],
       "sector": "other",
       "pattern_enhanced": true,
-      "pattern_boost": 0.15553911205073986,
+      "pattern_boost": 0.196,
       "strike": 4.5,
       "strike_display": "$4.5P",
       "expiry": "2026-02-13",
@@ -526,14 +574,17 @@
       "symbol": "CCJ",
       "current_price": 127.61,
       "close": 127.61,
-      "score": 0.6045,
+      "score": 0.799,
       "signals": [
         "topping_tail",
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_-2%",
+        "exhaustion",
+        "below_prior_low"
       ],
       "sector": "uranium",
       "pattern_enhanced": true,
-      "pattern_boost": 0.15445979201397161,
+      "pattern_boost": 0.194,
       "strike": 120,
       "strike_display": "$120P",
       "expiry": "2026-02-13",
@@ -544,36 +595,42 @@
       "potential_mult": "2.5x-5x"
     },
     {
-      "symbol": "META",
-      "current_price": 721.8,
-      "close": 721.8,
-      "score": 0.604,
+      "symbol": "T",
+      "current_price": 25.75,
+      "close": 25.75,
+      "score": 0.793,
       "signals": [
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_+13%",
+        "two_day_rally_+8%"
       ],
-      "sector": "mega",
+      "sector": "other",
       "pattern_enhanced": true,
-      "pattern_boost": 0.15404797152812036,
-      "strike": 690,
-      "strike_display": "$690P",
+      "pattern_boost": 0.247,
+      "strike": 23.0,
+      "strike_display": "$23P",
       "expiry": "2026-02-13",
       "expiry_display": "Feb 13",
       "dte": 14,
-      "otm_pct": 4.4,
-      "delta_target": "-0.35 to -0.22",
-      "potential_mult": "2x-3x"
+      "otm_pct": 10.7,
+      "delta_target": "-0.30 to -0.20",
+      "potential_mult": "4x-8x"
     },
     {
       "symbol": "LEU",
       "current_price": 301.98,
       "close": 301.98,
-      "score": 0.5917,
+      "score": 0.7917,
       "signals": [
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_-7%",
+        "exhaustion",
+        "topping_tail",
+        "below_prior_low"
       ],
       "sector": "uranium",
       "pattern_enhanced": true,
-      "pattern_boost": 0.14169656420698795,
+      "pattern_boost": 0.2,
       "strike": 260,
       "strike_display": "$260P",
       "expiry": "2026-02-13",
@@ -584,16 +641,62 @@
       "potential_mult": "2x-4x"
     },
     {
+      "symbol": "LMT",
+      "current_price": 630.69,
+      "close": 630.69,
+      "score": 0.7846,
+      "signals": [
+        "pump_reversal",
+        "pump_reversal_+6%",
+        "two_day_rally_+6%"
+      ],
+      "sector": "other",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.242,
+      "strike": 600,
+      "strike_display": "$600P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 4.9,
+      "delta_target": "-0.35 to -0.22",
+      "potential_mult": "2x-3x"
+    },
+    {
+      "symbol": "TMUS",
+      "current_price": 196.68,
+      "close": 196.68,
+      "score": 0.7771,
+      "signals": [
+        "pump_reversal",
+        "pump_reversal_+6%",
+        "two_day_rally_+5%"
+      ],
+      "sector": "other",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.238,
+      "strike": 186,
+      "strike_display": "$186P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 5.4,
+      "delta_target": "-0.35 to -0.25",
+      "potential_mult": "2.5x-5x"
+    },
+    {
       "symbol": "BE",
       "current_price": 158.67,
       "close": 158.67,
-      "score": 0.5859,
+      "score": 0.7618,
       "signals": [
-        "pump_reversal"
+        "pump_reversal",
+        "pump_reversal_-0%",
+        "exhaustion"
       ],
       "sector": "solar",
       "pattern_enhanced": true,
-      "pattern_boost": 0.1358774867047468,
+      "pattern_boost": 0.176,
       "strike": 149,
       "strike_display": "$149P",
       "expiry": "2026-02-13",
@@ -602,6 +705,119 @@
       "otm_pct": 6.1,
       "delta_target": "-0.35 to -0.25",
       "potential_mult": "2.5x-5x"
+    },
+    {
+      "symbol": "META",
+      "current_price": 721.8,
+      "close": 721.8,
+      "score": 0.758,
+      "signals": [
+        "pump_reversal",
+        "pump_reversal_+7%"
+      ],
+      "sector": "mega",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.154,
+      "strike": 690,
+      "strike_display": "$690P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 4.4,
+      "delta_target": "-0.35 to -0.22",
+      "potential_mult": "2x-3x"
+    },
+    {
+      "symbol": "FSLR",
+      "current_price": 231.99,
+      "close": 231.99,
+      "score": 0.7522,
+      "signals": [
+        "pump_reversal",
+        "pump_reversal_-3%",
+        "exhaustion",
+        "topping_tail"
+      ],
+      "sector": "solar",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.191,
+      "strike": 215,
+      "strike_display": "$215P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 7.3,
+      "delta_target": "-0.35 to -0.25",
+      "potential_mult": "2.5x-5x"
+    },
+    {
+      "symbol": "UEC",
+      "current_price": 18.38,
+      "close": 18.38,
+      "score": 0.749,
+      "signals": [
+        "pump_reversal",
+        "pump_reversal_-11%",
+        "exhaustion",
+        "topping_tail",
+        "below_prior_low"
+      ],
+      "sector": "uranium",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "strike": 16.0,
+      "strike_display": "$16P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 12.9,
+      "delta_target": "-0.30 to -0.20",
+      "potential_mult": "4x-8x"
+    },
+    {
+      "symbol": "BILI",
+      "current_price": 34.68,
+      "close": 34.68,
+      "score": 0.7416,
+      "signals": [
+        "topping_tail",
+        "pump_reversal",
+        "pump_reversal_-2%",
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "other",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.166,
+      "strike": 31.5,
+      "strike_display": "$32P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 9.2,
+      "delta_target": "-0.32 to -0.22",
+      "potential_mult": "3x-6x"
+    },
+    {
+      "symbol": "TSLA",
+      "current_price": 434.19,
+      "close": 434.19,
+      "score": 0.6303,
+      "signals": [
+        "pump_reversal",
+        "pump_reversal_+0%"
+      ],
+      "sector": "mega",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.088,
+      "strike": 415,
+      "strike_display": "$415P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14,
+      "otm_pct": 4.4,
+      "delta_target": "-0.40 to -0.25",
+      "potential_mult": "2x-4x"
     },
     {
       "symbol": "CCL",
@@ -666,127 +882,6 @@
       "potential_mult": "2.5x-5x"
     },
     {
-      "symbol": "BILI",
-      "current_price": 34.68,
-      "close": 34.68,
-      "score": 0.5758,
-      "signals": [
-        "topping_tail",
-        "pump_reversal"
-      ],
-      "sector": "other",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.1257554786620531,
-      "strike": 31.5,
-      "strike_display": "$32P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 9.2,
-      "delta_target": "-0.32 to -0.22",
-      "potential_mult": "3x-6x"
-    },
-    {
-      "symbol": "FSLR",
-      "current_price": 231.99,
-      "close": 231.99,
-      "score": 0.5611,
-      "signals": [
-        "pump_reversal"
-      ],
-      "sector": "solar",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.11109338438630073,
-      "strike": 215,
-      "strike_display": "$215P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 7.3,
-      "delta_target": "-0.35 to -0.25",
-      "potential_mult": "2.5x-5x"
-    },
-    {
-      "symbol": "UEC",
-      "current_price": 18.38,
-      "close": 18.38,
-      "score": 0.549,
-      "signals": [
-        "pump_reversal"
-      ],
-      "sector": "uranium",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.0989583333333334,
-      "strike": 16.0,
-      "strike_display": "$16P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 12.9,
-      "delta_target": "-0.30 to -0.20",
-      "potential_mult": "4x-8x"
-    },
-    {
-      "symbol": "T",
-      "current_price": 25.75,
-      "close": 25.75,
-      "score": 0.5465,
-      "signals": [
-        "pump_reversal"
-      ],
-      "sector": "other",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.0965217391304348,
-      "strike": 23.0,
-      "strike_display": "$23P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 10.7,
-      "delta_target": "-0.30 to -0.20",
-      "potential_mult": "4x-8x"
-    },
-    {
-      "symbol": "TSLA",
-      "current_price": 434.19,
-      "close": 434.19,
-      "score": 0.5423,
-      "signals": [
-        "pump_reversal"
-      ],
-      "sector": "mega",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.0923225945842136,
-      "strike": 415,
-      "strike_display": "$415P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 4.4,
-      "delta_target": "-0.40 to -0.25",
-      "potential_mult": "2x-4x"
-    },
-    {
-      "symbol": "LMT",
-      "current_price": 630.69,
-      "close": 630.69,
-      "score": 0.5423,
-      "signals": [
-        "pump_reversal"
-      ],
-      "sector": "other",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.0922589448658061,
-      "strike": 600,
-      "strike_display": "$600P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 4.9,
-      "delta_target": "-0.35 to -0.22",
-      "potential_mult": "2x-3x"
-    },
-    {
       "symbol": "CNC",
       "current_price": 42.92,
       "close": 42.92,
@@ -805,40 +900,41 @@
       "otm_pct": 9.1,
       "delta_target": "-0.32 to -0.22",
       "potential_mult": "3x-6x"
-    },
-    {
-      "symbol": "TMUS",
-      "current_price": 196.68,
-      "close": 196.68,
-      "score": 0.5391,
-      "signals": [
-        "pump_reversal"
-      ],
-      "sector": "other",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.08909551986475067,
-      "strike": 186,
-      "strike_display": "$186P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14,
-      "otm_pct": 5.4,
-      "delta_target": "-0.35 to -0.25",
-      "potential_mult": "2.5x-5x"
     }
   ],
   "liquidity": [
     {
-      "symbol": "LMT",
-      "current_price": 630.69,
-      "close": 630.69,
-      "score": 0.55,
+      "symbol": "T",
+      "current_price": 25.75,
+      "close": 25.75,
+      "score": 0.7965,
       "signals": [
-        "two_day_rally"
+        "two_day_rally",
+        "pump_reversal_+13%",
+        "two_day_rally_+8%"
       ],
       "sector": "other",
       "pattern_enhanced": true,
-      "pattern_boost": 0.15,
+      "pattern_boost": 0.247,
+      "strike": 23.0,
+      "strike_display": "$23P",
+      "expiry": "2026-02-13",
+      "expiry_display": "Feb 13",
+      "dte": 14
+    },
+    {
+      "symbol": "LMT",
+      "current_price": 630.69,
+      "close": 630.69,
+      "score": 0.7923,
+      "signals": [
+        "two_day_rally",
+        "pump_reversal_+6%",
+        "two_day_rally_+6%"
+      ],
+      "sector": "other",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.242,
       "strike": 600,
       "strike_display": "$600P",
       "expiry": "2026-02-13",
@@ -849,38 +945,23 @@
       "symbol": "TMUS",
       "current_price": 196.68,
       "close": 196.68,
-      "score": 0.55,
+      "score": 0.788,
       "signals": [
-        "two_day_rally"
+        "two_day_rally",
+        "pump_reversal_+6%",
+        "two_day_rally_+5%"
       ],
       "sector": "other",
       "pattern_enhanced": true,
-      "pattern_boost": 0.15,
+      "pattern_boost": 0.238,
       "strike": 186,
       "strike_display": "$186P",
       "expiry": "2026-02-13",
       "expiry_display": "Feb 13",
       "dte": 14
-    },
-    {
-      "symbol": "T",
-      "current_price": 25.75,
-      "close": 25.75,
-      "score": 0.55,
-      "signals": [
-        "two_day_rally"
-      ],
-      "sector": "other",
-      "pattern_enhanced": true,
-      "pattern_boost": 0.15,
-      "strike": 23.0,
-      "strike_display": "$23P",
-      "expiry": "2026-02-13",
-      "expiry_display": "Feb 13",
-      "dte": 14
     }
   ],
-  "last_scan": "2026-01-30T12:23:03.168416-05:00",
+  "last_scan": "2026-01-30T15:04:50.895965-05:00",
   "scan_type": "pattern_auto_populated",
   "market_regime": {
     "is_tradeable": true,
@@ -891,5 +972,8 @@
   "total_candidates": 44,
   "data_source": "PATTERN_POPULATED",
   "analysis_date": "2026-01-30",
-  "next_week_start": "2026-01-30"
+  "next_week_start": "2026-01-30",
+  "pattern_integration_time": "2026-01-30T15:12:00.375969-05:00",
+  "pattern_updated_count": 30,
+  "pattern_added_count": 0
 }

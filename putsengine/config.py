@@ -54,12 +54,13 @@ class Settings(BaseSettings):
     #   - Dark pool signal alone
     #   - No VWAP loss / liquidity vacuum
     #
-    class_a_min_score: float = Field(default=0.68, ge=0.50, le=1.0)  # Core threshold
-    class_b_min_score: float = Field(default=0.25, ge=0.15, le=0.50)  # High-beta threshold
-    class_b_max_score: float = Field(default=0.45, ge=0.30, le=0.67)  # Cap for Class B
+    # LOWERED Jan 30 2026 - Was 0.68, missed APP(0.63), ASTS(0.65), IREN(0.63), OKLO(0.64)
+    class_a_min_score: float = Field(default=0.60, ge=0.45, le=1.0)  # Core threshold (was 0.68)
+    class_b_min_score: float = Field(default=0.20, ge=0.10, le=0.50)  # High-beta threshold (was 0.25)
+    class_b_max_score: float = Field(default=0.55, ge=0.30, le=0.67)  # Cap for Class B (was 0.45)
     
-    # Legacy threshold (uses Class A)
-    min_score_threshold: float = Field(default=0.68, ge=0.0, le=1.0)
+    # Legacy threshold (uses Class A) - LOWERED
+    min_score_threshold: float = Field(default=0.60, ge=0.0, le=1.0)  # Was 0.68
     
     max_daily_trades: int = Field(default=5, ge=1, le=10)
     max_daily_class_b_trades: int = Field(default=2, ge=1, le=3)  # Limit Class B
@@ -129,7 +130,7 @@ class EngineConfig:
             "SMCI", "PLTR", "COIN", "HOOD", "SOFI", "PATH", "MSTR",
             "UPST", "AFRM", "RBLX", "DKNG", "RIVN", "LCID", "NIO"
         ],
-        # Materials / Mining / Rare Earth - NEW SECTOR (missed MP, USAR, LAC)
+        # Materials / Mining / Rare Earth - EXPANDED (missed MP, USAR, LAC)
         "materials_mining": [
             "MP",     # MP Materials - CRITICAL - missed 10%+ AH drop
             "USAR",   # USA Rare Earth - CRITICAL - missed 17%+ drop
@@ -147,6 +148,28 @@ class EngineConfig:
             "VALE",   # Vale - Iron ore/Nickel
             "RIO",    # Rio Tinto
             "BHP",    # BHP Group
+        ],
+        # SILVER MINERS - NEW SECTOR Jan 30 (missed AG -15%, CDE -15%, HL -13%)
+        "silver_miners": [
+            "AG",     # First Majestic Silver - MISSED -15.38% Jan 30!
+            "CDE",    # Coeur Mining - MISSED -15.65% Jan 30!
+            "HL",     # Hecla Mining - MISSED -13.07% Jan 30!
+            "PAAS",   # Pan American Silver
+            "MAG",    # MAG Silver
+            "EXK",    # Endeavour Silver
+            "SVM",    # Silvercorp Metals
+            "FSM",    # Fortuna Silver Mines
+            "SILV",   # SilverCrest Metals
+        ],
+        # GAMING - NEW SECTOR Jan 30 (missed U/Unity -23%)
+        "gaming": [
+            "U",      # Unity Software - MISSED -23.26% Jan 30!
+            "EA",     # Electronic Arts
+            "TTWO",   # Take-Two Interactive
+            "ZNGA",   # Zynga (if trading)
+            "SKLZ",   # Skillz
+            "PLTK",   # Playtika
+            "GLBE",   # Global-E Online
         ],
         # Auto / Used Cars / EV - NEW SECTOR (missed CVNA)
         "auto_retail": [
@@ -349,6 +372,12 @@ class EngineConfig:
         "china_adr": ["BABA", "JD", "PDD", "BIDU", "NIO", "XPEV", "LI"],
         # Used car / Auto retail - correlated
         "auto_retail": ["CVNA", "KMX", "AN", "VRM"],
+        # SILVER MINERS - NEW Jan 30 (AG -15%, CDE -15%, HL -13% - all crashed together!)
+        "silver_miners": ["AG", "CDE", "HL", "PAAS", "MAG", "EXK", "SVM", "FSM", "SILV"],
+        # GAMING - NEW Jan 30 (Unity -23% - correlated with RBLX, EA)
+        "gaming": ["U", "RBLX", "EA", "TTWO", "SKLZ", "PLTK"],
+        # AI/Data Center - NEW Jan 30 (APP -15%, NBIS -10%, IREN -9% - all crashed together!)
+        "ai_datacenter": ["APP", "NBIS", "IREN", "AI", "BBAI", "SOUN", "PLTR"],
     }
     
     # Flatten all high-beta tickers for quick lookup

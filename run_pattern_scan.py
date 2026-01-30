@@ -41,18 +41,24 @@ async def scan_for_patterns():
     print(f"Scanning {len(all_tickers)} tickers for patterns...")
     print()
     
-    # Focus on high-beta sectors that showed Jan 26-29 moves
+    # Focus on high-beta sectors that showed Jan 26-30 moves
+    # UPDATED Jan 30: Added silver miners, gaming, AI datacenter after major misses
     priority_sectors = {
         "crypto": ["MSTR", "COIN", "RIOT", "MARA", "HUT", "CLSK", "CIFR", "WULF"],
         "uranium_nuclear": ["UUUU", "LEU", "OKLO", "SMR", "CCJ", "NNE", "UEC"],
         "evtol_space": ["JOBY", "RKLB", "LUNR", "ASTS", "RDW", "RCAT", "PL", "ACHR"],
         "quantum": ["RGTI", "QUBT", "IONQ", "QBTS"],
-        "btc_miners": ["IREN", "APLD", "CIFR", "CLSK", "HUT"],
+        "btc_miners": ["IREN", "APLD", "CIFR", "CLSK", "HUT", "NBIS"],
         "cloud_saas": ["NET", "CRWD", "ZS", "OKTA", "DDOG", "TEAM", "WDAY", "SNOW", "NOW"],
         "solar_clean": ["FSLR", "ENPH", "BE", "PLUG", "FCEL", "EOSE"],
         "rare_earth": ["MP", "USAR", "LAC", "ALB"],
-        "semiconductors": ["CLS", "SWKS", "INTC", "AMD", "NVDA", "MU"],
+        "semiconductors": ["CLS", "SWKS", "INTC", "AMD", "NVDA", "MU", "WDC", "STX"],
         "tech_mega": ["MSFT", "AAPL", "GOOGL", "META", "AMZN", "TSLA"],
+        # NEW Jan 30 - CRITICAL ADDITIONS (missed -15% to -23% moves!)
+        "silver_miners": ["AG", "CDE", "HL", "PAAS", "MAG", "EXK", "SVM", "FSM"],
+        "gaming": ["U", "RBLX", "EA", "TTWO", "SKLZ", "PLTK"],
+        "ai_datacenter": ["APP", "NBIS", "IREN", "AI", "BBAI", "SOUN", "CRWV"],
+        "travel_cruise": ["CCL", "RCL", "NCLH", "LUV", "DAL", "UAL", "AAL"],
     }
     
     # Flatten priority list
