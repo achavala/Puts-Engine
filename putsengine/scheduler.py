@@ -466,7 +466,32 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        logger.info("All scheduled jobs configured (including NEW scanners for 90% coverage)")
+        # =========================================================================
+        # PATTERN SCAN - Every 30 minutes during market hours (9:30 AM - 4:00 PM ET)
+        # =========================================================================
+        for hour in range(9, 16):
+            for minute in [0, 30]:
+                # Skip 9:00 (before market open)
+                if hour == 9 and minute == 0:
+                    continue
+                self.scheduler.add_job(
+                    self._run_pattern_scan_wrapper,
+                    CronTrigger(hour=hour, minute=minute, timezone=EST),
+                    id=f"pattern_scan_{hour}_{minute:02d}",
+                    name=f"Pattern Scan ({hour}:{minute:02d} ET)",
+                    replace_existing=True
+                )
+        
+        # Also run pattern scan at 4:00 PM after market close
+        self.scheduler.add_job(
+            self._run_pattern_scan_wrapper,
+            CronTrigger(hour=16, minute=0, timezone=EST),
+            id="pattern_scan_16_00",
+            name="Pattern Scan (4:00 PM ET - Post Market)",
+            replace_existing=True
+        )
+        
+        logger.info("All scheduled jobs configured (including NEW scanners for 90% coverage + pattern scan every 30 min)")
     
     def _run_scan_wrapper(self, scan_type: str):
         """Wrapper to run async scan in scheduler context."""
@@ -533,6 +558,25 @@ class PutsEngineScheduler:
             asyncio.ensure_future(self.run_daily_report_scan(), loop=loop)
         except RuntimeError:
             asyncio.run(self.run_daily_report_scan())
+    
+    def _run_pattern_scan_wrapper(self):
+        """Wrapper to run pattern scan (pump-reversal, two-day rally, high vol run)."""
+        try:
+            import subprocess
+            from pathlib import Path
+            result = subprocess.run(
+                ["python3", "integrate_patterns.py"],
+                cwd=str(Path(__file__).parent.parent),
+                capture_output=True,
+                text=True,
+                timeout=120
+            )
+            if result.returncode == 0:
+                logger.info("Pattern scan completed successfully")
+            else:
+                logger.error(f"Pattern scan failed: {result.stderr}")
+        except Exception as e:
+            logger.error(f"Pattern scan error: {e}")
     
     def _run_pump_dump_scan_wrapper(self):
         """Wrapper to run pump-dump reversal scan."""

@@ -927,7 +927,30 @@ def render_big_movers_analysis():
     """
     Render Big Movers Analysis tab - shows FUTURE PUT CANDIDATES organized by pattern type.
     These are REAL-TIME candidates showing the same patterns as big movers from Jan 26-29.
+    Auto-refreshes every 30 minutes.
     """
+    # Auto-refresh every 30 minutes (1800000 ms)
+    from streamlit_autorefresh import st_autorefresh
+    pattern_refresh_count = st_autorefresh(interval=1800000, limit=None, key="pattern_autorefresh")
+    
+    # Track refresh count in session state
+    if "pattern_refresh_count" not in st.session_state:
+        st.session_state.pattern_refresh_count = 0
+    if pattern_refresh_count > st.session_state.pattern_refresh_count:
+        st.session_state.pattern_refresh_count = pattern_refresh_count
+        # Run pattern scan on auto-refresh
+        import subprocess
+        try:
+            subprocess.run(
+                ["python3", "integrate_patterns.py"],
+                cwd=str(Path(__file__).parent.parent),
+                capture_output=True,
+                text=True,
+                timeout=120
+            )
+        except:
+            pass
+    
     st.markdown("""
     <div class="section-header">🎯 Future PUT Candidates by Pattern</div>
     """, unsafe_allow_html=True)
@@ -988,6 +1011,25 @@ def render_big_movers_analysis():
     two_day_rally = pattern_data.get("two_day_rally", [])
     high_vol_run = pattern_data.get("high_vol_run", [])
     
+    # Parse scan time and calculate dates for column headers
+    scan_time_raw = pattern_data.get("scan_time", "Unknown")
+    scan_time_display = "Unknown"
+    date_1d = "1D"  # Yesterday
+    date_2d = "2D"  # 2 days ago
+    date_3d = "3D"  # 3 days ago
+    
+    if scan_time_raw != "Unknown":
+        try:
+            from datetime import datetime, timedelta
+            dt = datetime.fromisoformat(scan_time_raw.replace("Z", "+00:00"))
+            scan_time_display = dt.strftime("%Y-%m-%d %H:%M ET")
+            # Calculate actual dates for headers
+            date_1d = (dt - timedelta(days=1)).strftime("%b %d")  # Yesterday
+            date_2d = (dt - timedelta(days=2)).strftime("%b %d")  # 2 days ago
+            date_3d = (dt - timedelta(days=3)).strftime("%b %d")  # 3 days ago
+        except:
+            pass
+    
     st.markdown("### 🎯 Future Candidates Summary")
     
     col1, col2, col3, col4 = st.columns(4)
@@ -1006,15 +1048,7 @@ def render_big_movers_analysis():
         earnings_upcoming = [c for c in scheduled_data.get("distribution", []) if "earnings" in str(c.get("signals", [])).lower()]
         st.metric("⚡ Earnings Watch", len(earnings_upcoming), help="Stocks with earnings upcoming")
     
-    scan_time = pattern_data.get("scan_time", "Unknown")
-    if scan_time != "Unknown":
-        try:
-            from datetime import datetime
-            dt = datetime.fromisoformat(scan_time.replace("Z", "+00:00"))
-            scan_time = dt.strftime("%Y-%m-%d %H:%M ET")
-        except:
-            pass
-    st.caption(f"Last scan: {scan_time}")
+    st.caption(f"Last scan: {scan_time_display} | 🔄 Auto-updates every 30 minutes")
     
     st.divider()
     
@@ -1031,9 +1065,9 @@ def render_big_movers_analysis():
                 "Symbol": p["symbol"],
                 "Price": f"${p.get('price', 0):.2f}",
                 "Total Gain": f"+{p.get('total_gain', 0):.1f}%",
-                "1D": f"{p.get('gain_1d', 0):+.1f}%",
-                "2D": f"{p.get('gain_2d', 0):+.1f}%",
-                "3D": f"{p.get('gain_3d', 0):+.1f}%",
+                date_1d: f"{p.get('gain_1d', 0):+.1f}%",
+                date_2d: f"{p.get('gain_2d', 0):+.1f}%",
+                date_3d: f"{p.get('gain_3d', 0):+.1f}%",
                 "Vol": f"{p.get('vol_ratio', 1):.1f}x",
                 "Signals": ", ".join(p.get("signals", [])[:2]) or "pumped",
                 "Sector": p.get("sector", "other"),
@@ -1059,8 +1093,8 @@ def render_big_movers_analysis():
             {
                 "Symbol": p["symbol"],
                 "Price": f"${p.get('price', 0):.2f}",
-                "Day 1": f"+{p.get('day1', 0):.1f}%",
-                "Day 2": f"+{p.get('day2', 0):.1f}%",
+                date_2d: f"+{p.get('day1', 0):.1f}%",  # First pump day
+                date_1d: f"+{p.get('day2', 0):.1f}%",  # Second pump day (yesterday)
                 "Total": f"+{p.get('total', 0):.1f}%",
                 "Sector": p.get("sector", "other"),
                 "Potential": "3x-5x"
