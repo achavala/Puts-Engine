@@ -1,162 +1,738 @@
 {
-  "gamma_drain": [],
-  "distribution": [
-    {
-      "symbol": "CIFR",
-      "score": 0.55,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "distribution_trap",
-      "current_price": 17.7,
-      "expiry": "TBD",
-      "dte": 7,
-      "signals": [
-        "exhaustion",
-        "below_prior_low",
-        "pump_+8%"
-      ],
-      "pattern_enhanced": true,
-      "pattern_source": "pump_reversal"
-    },
-    {
-      "symbol": "UEC",
-      "score": 0.55,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "distribution_trap",
-      "current_price": 18.6,
-      "expiry": "TBD",
-      "dte": 7,
-      "signals": [
-        "exhaustion",
-        "high_vol_red",
-        "below_prior_low",
-        "pump_+2%"
-      ],
-      "pattern_enhanced": true,
-      "pattern_source": "pump_reversal"
-    },
+  "gamma_drain": [
     {
       "symbol": "EOSE",
-      "score": 0.55,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "distribution_trap",
       "current_price": 16.11,
-      "expiry": "TBD",
-      "dte": 7,
+      "close": 16.11,
+      "score": 0.85,
       "signals": [
         "exhaustion",
         "topping_tail",
-        "pump_+0%"
+        "pump_reversal_+3%",
+        "exhaustion"
       ],
+      "sector": "solar",
+      "pattern": "pump_reversal",
       "pattern_enhanced": true,
-      "pattern_source": "pump_reversal"
+      "pattern_boost": 0.2,
+      "total_gain": 0.4,
+      "vol_ratio": 0.95
+    },
+    {
+      "symbol": "LUNR",
+      "current_price": 20.99,
+      "close": 20.99,
+      "score": 0.85,
+      "signals": [
+        "exhaustion",
+        "pump_reversal_+2%",
+        "exhaustion",
+        "topping_tail",
+        "below_prior_low"
+      ],
+      "sector": "evtol",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": 14.6,
+      "vol_ratio": 1.17
+    },
+    {
+      "symbol": "UUUU",
+      "current_price": 24.88,
+      "close": 24.88,
+      "score": 0.85,
+      "signals": [
+        "exhaustion",
+        "pump_reversal_+2%",
+        "exhaustion",
+        "topping_tail"
+      ],
+      "sector": "uranium",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": 8.0,
+      "vol_ratio": 1.19
+    },
+    {
+      "symbol": "OKLO",
+      "current_price": 86.04,
+      "close": 86.04,
+      "score": 0.847,
+      "signals": [
+        "exhaustion",
+        "high_vol_red",
+        "pump_reversal_+2%",
+        "topping_tail"
+      ],
+      "sector": "uranium",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.197,
+      "total_gain": 5.4,
+      "vol_ratio": 1.3
     },
     {
       "symbol": "RCAT",
+      "current_price": 14.93,
+      "close": 14.93,
+      "score": 0.8253,
+      "signals": [
+        "exhaustion",
+        "below_prior_low",
+        "pump_reversal_-11%",
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "evtol",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.175,
+      "total_gain": 5.6,
+      "vol_ratio": 0.62
+    },
+    {
+      "symbol": "CLS",
+      "current_price": 300.0,
+      "close": 300.0,
+      "score": 0.8162,
+      "signals": [
+        "exhaustion",
+        "high_vol_red",
+        "below_prior_low",
+        "pump_reversal_-11%",
+        "exhaustion",
+        "topping_tail"
+      ],
+      "sector": "semis",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.166,
+      "total_gain": -1.4,
+      "vol_ratio": 2.17
+    },
+    {
+      "symbol": "LEU",
+      "current_price": 301.5,
+      "close": 301.5,
+      "score": 0.7917,
+      "signals": [
+        "exhaustion",
+        "high_vol_red",
+        "below_prior_low",
+        "pump_reversal_-2%"
+      ],
+      "sector": "uranium",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.142,
+      "total_gain": 8.3,
+      "vol_ratio": 1.52
+    },
+    {
+      "symbol": "FSLR",
+      "current_price": 224.01,
+      "close": 224.01,
+      "score": 0.7611,
+      "signals": [
+        "exhaustion",
+        "high_vol_red",
+        "below_prior_low",
+        "pump_reversal_-1%"
+      ],
+      "sector": "solar",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.111,
+      "total_gain": -7.3,
+      "vol_ratio": 2.5
+    },
+    {
+      "symbol": "UEC",
+      "current_price": 18.6,
+      "close": 18.6,
+      "score": 0.749,
+      "signals": [
+        "exhaustion",
+        "high_vol_red",
+        "below_prior_low",
+        "pump_reversal_-4%"
+      ],
+      "sector": "uranium",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.099,
+      "total_gain": 1.9,
+      "vol_ratio": 1.34
+    },
+    {
+      "symbol": "CIFR",
+      "current_price": 17.7,
+      "close": 17.7,
+      "score": 0.65,
+      "signals": [
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "crypto",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": 8.2,
+      "vol_ratio": 1.01
+    },
+    {
+      "symbol": "MP",
+      "current_price": 62.16,
+      "close": 62.16,
+      "score": 0.65,
+      "signals": [
+        "exhaustion",
+        "high_vol_red",
+        "below_prior_low"
+      ],
+      "sector": "rare_earth",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": -1.6,
+      "vol_ratio": 1.55
+    },
+    {
+      "symbol": "NET",
+      "current_price": 180.39,
+      "close": 180.39,
+      "score": 0.65,
+      "signals": [
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "cloud",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": -3.9,
+      "vol_ratio": 0.8
+    },
+    {
+      "symbol": "RKLB",
+      "current_price": 85.68,
+      "close": 85.68,
+      "score": 0.65,
+      "signals": [
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "evtol",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": 6.6,
+      "vol_ratio": 0.72
+    },
+    {
+      "symbol": "RDW",
+      "current_price": 12.81,
+      "close": 12.81,
+      "score": 0.65,
+      "signals": [
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "evtol",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": 19.5,
+      "vol_ratio": 0.72
+    },
+    {
+      "symbol": "PL",
+      "current_price": 26.35,
+      "close": 26.35,
+      "score": 0.65,
+      "signals": [
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "evtol",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": 2.3,
+      "vol_ratio": 0.77
+    },
+    {
+      "symbol": "WOLF",
+      "current_price": 17.33,
+      "close": 17.33,
+      "score": 0.65,
+      "signals": [
+        "exhaustion",
+        "topping_tail",
+        "below_prior_low"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": -0.3,
+      "vol_ratio": 0.74
+    },
+    {
+      "symbol": "LITE",
+      "current_price": 381.44,
+      "close": 381.44,
+      "score": 0.65,
+      "signals": [
+        "exhaustion",
+        "topping_tail"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": 14.4,
+      "vol_ratio": 1.07
+    },
+    {
+      "symbol": "NEM",
+      "current_price": 126.93,
+      "close": 126.93,
+      "score": 0.65,
+      "signals": [
+        "exhaustion",
+        "high_vol_red",
+        "below_prior_low"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": 1.0,
+      "vol_ratio": 1.44
+    },
+    {
+      "symbol": "BBAI",
+      "current_price": 5.52,
+      "close": 5.52,
+      "score": 0.65,
+      "signals": [
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": -2.9,
+      "vol_ratio": 1.28
+    },
+    {
+      "symbol": "BMNR",
+      "current_price": 26.7,
+      "close": 26.7,
+      "score": 0.65,
+      "signals": [
+        "exhaustion",
+        "high_vol_red",
+        "below_prior_low"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": -3.4,
+      "vol_ratio": 1.82
+    }
+  ],
+  "distribution": [
+    {
+      "symbol": "SNDK",
+      "current_price": 539.3,
+      "close": 539.3,
+      "score": 0.886,
+      "signals": [
+        "topping_tail",
+        "pump_reversal_+27%",
+        "exhaustion",
+        "two_day_rally_+17%"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.25,
+      "total_gain": 14.1,
+      "vol_ratio": 1.34
+    },
+    {
+      "symbol": "RCL",
+      "current_price": 345.98,
+      "close": 345.98,
+      "score": 0.85,
+      "signals": [
+        "pump_reversal_+14%",
+        "exhaustion"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": 18.1,
+      "vol_ratio": 2.94
+    },
+    {
+      "symbol": "META",
+      "current_price": 738.31,
+      "close": 738.31,
+      "score": 0.8381,
+      "signals": [
+        "topping_tail",
+        "pump_reversal_+8%",
+        "topping_tail"
+      ],
+      "sector": "mega",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.194,
+      "total_gain": 9.9,
+      "vol_ratio": 3.01
+    },
+    {
+      "symbol": "ASTS",
+      "current_price": 122.09,
+      "close": 122.09,
+      "score": 0.8288,
+      "signals": [
+        "topping_tail",
+        "pump_reversal_+7%",
+        "exhaustion",
+        "topping_tail"
+      ],
+      "sector": "evtol",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.2,
+      "total_gain": 15.9,
+      "vol_ratio": 0.92
+    },
+    {
+      "symbol": "INTC",
+      "current_price": 48.66,
+      "close": 48.66,
+      "score": 0.7708,
+      "signals": [
+        "pump_reversal_+10%"
+      ],
+      "sector": "semis",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.16,
+      "total_gain": 14.2,
+      "vol_ratio": 0.65
+    },
+    {
+      "symbol": "LRCX",
+      "current_price": 248.17,
+      "close": 248.17,
+      "score": 0.7358,
+      "signals": [
+        "pump_reversal_+2%",
+        "exhaustion",
+        "topping_tail"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.166,
+      "total_gain": 11.1,
+      "vol_ratio": 1.39
+    },
+    {
+      "symbol": "MU",
+      "current_price": 435.79,
+      "close": 435.79,
+      "score": 0.7121,
+      "signals": [
+        "pump_reversal_+8%",
+        "topping_tail"
+      ],
+      "sector": "semis",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.151,
+      "total_gain": 11.7,
+      "vol_ratio": 1.17
+    },
+    {
+      "symbol": "BILI",
+      "current_price": 35.44,
+      "close": 35.44,
+      "score": 0.7015,
+      "signals": [
+        "topping_tail",
+        "pump_reversal_+0%",
+        "topping_tail"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.126,
+      "total_gain": 5.7,
+      "vol_ratio": 0.83
+    },
+    {
+      "symbol": "APP",
+      "current_price": 569.24,
+      "close": 569.24,
+      "score": 0.6891,
+      "signals": [
+        "pump_reversal_+0%",
+        "exhaustion"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.14,
+      "total_gain": 6.3,
+      "vol_ratio": 1.03
+    },
+    {
+      "symbol": "ELV",
+      "current_price": 346.98,
+      "close": 346.98,
+      "score": 0.6672,
+      "signals": [
+        "pump_reversal_+7%"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.109,
+      "total_gain": -7.0,
+      "vol_ratio": 0.94
+    },
+    {
+      "symbol": "INOD",
+      "current_price": 63.86,
+      "close": 63.86,
+      "score": 0.6436246418338107,
+      "signals": [],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.19362464183381078,
+      "total_gain": 8.2,
+      "vol_ratio": 4.22
+    },
+    {
+      "symbol": "RIOT",
+      "current_price": 16.97,
+      "close": 16.97,
+      "score": 0.6213308687615526,
+      "signals": [
+        "below_prior_low"
+      ],
+      "sector": "crypto",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.17133086876155268,
+      "total_gain": 4.8,
+      "vol_ratio": 1.04
+    },
+    {
+      "symbol": "WULF",
+      "current_price": 14.54,
+      "close": 14.54,
+      "score": 0.6102248005801307,
+      "signals": [],
+      "sector": "crypto",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.16022480058013067,
+      "total_gain": 5.9,
+      "vol_ratio": 1.08
+    },
+    {
+      "symbol": "VRM",
+      "current_price": 21.5,
+      "close": 21.5,
+      "score": 0.6093911248710011,
+      "signals": [],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.1593911248710011,
+      "total_gain": 9.3,
+      "vol_ratio": 5.91
+    },
+    {
+      "symbol": "NCLH",
+      "current_price": 22.92,
+      "close": 22.92,
+      "score": 0.6024531024531026,
+      "signals": [],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.15245310245310256,
+      "total_gain": 10.2,
+      "vol_ratio": 1.85
+    },
+    {
+      "symbol": "CCL",
+      "current_price": 31.15,
+      "close": 31.15,
+      "score": 0.5846100278551533,
+      "signals": [],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.13461002785515322,
+      "total_gain": 8.6,
+      "vol_ratio": 2.52
+    },
+    {
+      "symbol": "COHR",
+      "current_price": 215.86,
+      "close": 215.86,
+      "score": 0.5821197411003237,
+      "signals": [],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.13211974110032368,
+      "total_gain": 9.2,
+      "vol_ratio": 1.25
+    },
+    {
+      "symbol": "AMAT",
+      "current_price": 341.34,
+      "close": 341.34,
+      "score": 0.5814762411569524,
+      "signals": [
+        "topping_tail"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.13147624115695236,
+      "total_gain": 6.7,
+      "vol_ratio": 1.1
+    },
+    {
+      "symbol": "GEV",
+      "current_price": 717.39,
+      "close": 717.39,
+      "score": 0.5801057072929023,
+      "signals": [
+        "topping_tail"
+      ],
+      "sector": "other",
+      "pattern": "pump_reversal",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.13010570729290236,
+      "total_gain": 7.6,
+      "vol_ratio": 0.97
+    },
+    {
+      "symbol": "WDC",
       "score": 0.55,
       "tier": "\ud83d\udfe1 CLASS B",
       "engine_type": "distribution_trap",
-      "current_price": 14.93,
+      "current_price": 264.44,
       "expiry": "TBD",
       "dte": 7,
       "signals": [
         "exhaustion",
         "below_prior_low",
-        "pump_+6%"
-      ],
-      "pattern_enhanced": true,
-      "pattern_source": "pump_reversal"
-    },
-    {
-      "symbol": "OKLO",
-      "score": 0.55,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "distribution_trap",
-      "current_price": 86.04,
-      "expiry": "TBD",
-      "dte": 7,
-      "signals": [
-        "exhaustion",
-        "high_vol_red",
         "pump_+5%"
       ],
       "pattern_enhanced": true,
       "pattern_source": "pump_reversal"
     },
     {
-      "symbol": "LEU",
-      "score": 0.55,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "distribution_trap",
-      "current_price": 301.5,
-      "expiry": "TBD",
-      "dte": 7,
-      "signals": [
-        "exhaustion",
-        "high_vol_red",
-        "below_prior_low",
-        "pump_+8%"
-      ],
+      "symbol": "KLAC",
+      "current_price": 1684.71,
+      "close": 1684.71,
+      "score": 0.5475039370589035,
+      "signals": [],
+      "sector": "other",
+      "pattern": "pump_reversal",
       "pattern_enhanced": true,
-      "pattern_source": "pump_reversal"
-    },
-    {
-      "symbol": "MP",
-      "score": 0.55,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "distribution_trap",
-      "current_price": 62.16,
-      "expiry": "TBD",
-      "dte": 7,
-      "signals": [
-        "exhaustion",
-        "high_vol_red",
-        "below_prior_low",
-        "pump_-2%"
-      ],
-      "pattern_enhanced": true,
-      "pattern_source": "pump_reversal"
-    },
-    {
-      "symbol": "NET",
-      "score": 0.55,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "distribution_trap",
-      "current_price": 180.39,
-      "expiry": "TBD",
-      "dte": 7,
-      "signals": [
-        "exhaustion",
-        "below_prior_low",
-        "pump_-4%"
-      ],
-      "pattern_enhanced": true,
-      "pattern_source": "pump_reversal"
-    },
-    {
-      "symbol": "RKLB",
-      "score": 0.55,
-      "tier": "\ud83d\udfe1 CLASS B",
-      "engine_type": "distribution_trap",
-      "current_price": 85.68,
-      "expiry": "TBD",
-      "dte": 7,
-      "signals": [
-        "exhaustion",
-        "below_prior_low",
-        "pump_+7%"
-      ],
-      "pattern_enhanced": true,
-      "pattern_source": "pump_reversal"
+      "pattern_boost": 0.09750393705890356,
+      "total_gain": 9.0,
+      "vol_ratio": 1.35
     }
   ],
-  "liquidity": [],
-  "last_scan": "2026-01-30T08:00:00.017475-05:00",
-  "scan_type": "pre_market_3",
-  "market_regime": "bullish_neutral",
-  "tickers_scanned": 253,
-  "errors": 0,
-  "total_candidates": 0,
-  "pattern_integration_time": "2026-01-30T08:51:19.792410-05:00",
-  "pattern_updated_count": 0,
-  "pattern_added_count": 9
+  "liquidity": [
+    {
+      "symbol": "SNDK",
+      "current_price": 539.3,
+      "close": 539.3,
+      "score": 0.8,
+      "signals": [
+        "two_day_rally",
+        "exhaustion",
+        "pump_reversal_+27%",
+        "exhaustion",
+        "two_day_rally_+17%"
+      ],
+      "sector": "other",
+      "pattern": "two_day_rally",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.25,
+      "day1": 2.2,
+      "day2": 9.6,
+      "total": 11.8
+    },
+    {
+      "symbol": "ELV",
+      "current_price": 346.98,
+      "close": 346.98,
+      "score": 0.6586,
+      "signals": [
+        "two_day_rally",
+        "exhaustion",
+        "pump_reversal_+7%"
+      ],
+      "sector": "other",
+      "pattern": "two_day_rally",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.109,
+      "day1": 1.5,
+      "day2": 5.9,
+      "total": 7.4
+    },
+    {
+      "symbol": "AMAT",
+      "current_price": 341.34,
+      "close": 341.34,
+      "score": 0.5015459927882513,
+      "signals": [
+        "two_day_rally",
+        "exhaustion"
+      ],
+      "sector": "other",
+      "pattern": "two_day_rally",
+      "pattern_enhanced": true,
+      "pattern_boost": 0.10154599278825122,
+      "day1": 1.4,
+      "day2": 1.2,
+      "total": 2.6
+    }
+  ],
+  "last_scan": "2026-01-30T10:06:59.881659",
+  "scan_type": "pattern_integrated",
+  "market_regime": {
+    "is_tradeable": true,
+    "regime": "bearish_neutral"
+  },
+  "tickers_scanned": 77,
+  "errors": [],
+  "total_candidates": 77,
+  "pattern_integration_time": "2026-01-30T10:09:19.644748-05:00",
+  "pattern_updated_count": 21,
+  "pattern_added_count": 1
 }

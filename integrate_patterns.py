@@ -171,16 +171,154 @@ async def scan_patterns():
     return results
 
 
+def _populate_from_patterns(pattern_results):
+    """Create scheduled results from pattern data when engines are empty."""
+    gamma_candidates = []
+    distribution_candidates = []
+    liquidity_candidates = []
+    
+    # Pump reversal -> Distribution or Gamma based on signals
+    for pr in pattern_results.get("pump_reversal", []):
+        candidate = {
+            "symbol": pr["symbol"],
+            "score": round(0.45 + pr.get("score_boost", 0.1), 4),
+            "tier": "🟡 CLASS B" if pr.get("score_boost", 0) >= 0.15 else "⚪ WATCH",
+            "engine_type": "gamma_drain" if "exhaustion" in pr.get("signals", []) else "distribution_trap",
+            "current_price": pr.get("price", 0),
+            "close": pr.get("price", 0),
+            "signals": pr.get("signals", []) + [f"pump_{pr.get('total_gain', 0):+.0f}%"],
+            "pattern_enhanced": True,
+            "pattern_boost": pr.get("score_boost", 0.1),
+            "pattern_source": "pump_reversal",
+            "sector": pr.get("sector", "other"),
+            "total_gain": pr.get("total_gain", 0),
+            "gain_1d": pr.get("gain_1d", 0),
+            "gain_2d": pr.get("gain_2d", 0),
+            "gain_3d": pr.get("gain_3d", 0),
+            "vol_ratio": pr.get("vol_ratio", 1.0)
+        }
+        
+        if "exhaustion" in pr.get("signals", []) or "high_vol_red" in pr.get("signals", []):
+            gamma_candidates.append(candidate)
+        else:
+            distribution_candidates.append(candidate)
+    
+    # Two day rally -> Liquidity
+    for pr in pattern_results.get("two_day_rally", []):
+        candidate = {
+            "symbol": pr["symbol"],
+            "score": round(0.40 + pr.get("score_boost", 0.1), 4),
+            "tier": "⚪ WATCH",
+            "engine_type": "liquidity_vacuum",
+            "current_price": pr.get("price", 0),
+            "close": pr.get("price", 0),
+            "signals": ["two_day_rally", "exhaustion_setup"],
+            "pattern_enhanced": True,
+            "pattern_boost": pr.get("score_boost", 0.1),
+            "pattern_source": "two_day_rally",
+            "sector": pr.get("sector", "other"),
+            "day1": pr.get("day1", 0),
+            "day2": pr.get("day2", 0),
+            "total": pr.get("total", 0)
+        }
+        liquidity_candidates.append(candidate)
+    
+    # High vol run -> Gamma Drain
+    for pr in pattern_results.get("high_vol_run", []):
+        candidate = {
+            "symbol": pr["symbol"],
+            "score": round(0.42 + pr.get("score_boost", 0.1), 4),
+            "tier": "⚪ WATCH",
+            "engine_type": "gamma_drain",
+            "current_price": pr.get("price", 0),
+            "close": pr.get("price", 0),
+            "signals": ["high_vol_run", f"vol_{pr.get('vol_ratio', 1):.1f}x"],
+            "pattern_enhanced": True,
+            "pattern_boost": pr.get("score_boost", 0.1),
+            "pattern_source": "high_vol_run",
+            "sector": pr.get("sector", "other"),
+            "gain": pr.get("gain", 0),
+            "vol_ratio": pr.get("vol_ratio", 1.0)
+        }
+        gamma_candidates.append(candidate)
+    
+    # Sort and limit
+    gamma_candidates.sort(key=lambda x: x["score"], reverse=True)
+    distribution_candidates.sort(key=lambda x: x["score"], reverse=True)
+    liquidity_candidates.sort(key=lambda x: x["score"], reverse=True)
+    
+    return {
+        "gamma_drain": gamma_candidates[:20],
+        "distribution": distribution_candidates[:20],
+        "liquidity": liquidity_candidates[:15],
+        "last_scan": datetime.now(ET).isoformat(),
+        "scan_type": "pattern_populated",
+        "market_regime": {"is_tradeable": True, "regime": "pattern_based"},
+        "tickers_scanned": len(pattern_results.get("pump_reversal", [])) + 
+                          len(pattern_results.get("two_day_rally", [])) +
+                          len(pattern_results.get("high_vol_run", [])),
+        "errors": [],
+        "total_candidates": len(gamma_candidates) + len(distribution_candidates) + len(liquidity_candidates)
+    }
+
+
+def _update_scan_history(scheduled):
+    """Update scan history for 48-hour analysis."""
+    history_file = Path("scan_history.json")
+    
+    if history_file.exists():
+        with open(history_file) as f:
+            history = json.load(f)
+    else:
+        history = {"scans": []}
+    
+    # Create history entry
+    entry = {
+        "timestamp": datetime.now(ET).isoformat(),
+        "scan_type": scheduled.get("scan_type", "pattern"),
+        "gamma_drain": [{"symbol": c["symbol"], "score": c["score"]} for c in scheduled.get("gamma_drain", [])],
+        "distribution": [{"symbol": c["symbol"], "score": c["score"]} for c in scheduled.get("distribution", [])],
+        "liquidity": [{"symbol": c["symbol"], "score": c["score"]} for c in scheduled.get("liquidity", [])]
+    }
+    
+    history["scans"].append(entry)
+    history["scans"] = history["scans"][-100:]  # Keep last 100
+    
+    with open(history_file, 'w') as f:
+        json.dump(history, f, indent=2, default=str)
+
+
 def integrate_with_scheduled_results(pattern_results):
-    """Integrate pattern results with scheduled scan results."""
+    """Integrate pattern results with scheduled scan results.
     
-    # Load existing scheduled results
-    if not SCHEDULED_RESULTS_FILE.exists():
-        print("No scheduled scan results found")
-        return
+    If scheduled results are empty, POPULATES from patterns.
+    """
     
-    with open(SCHEDULED_RESULTS_FILE, 'r') as f:
-        scheduled = json.load(f)
+    # Load existing scheduled results or create empty structure
+    if SCHEDULED_RESULTS_FILE.exists():
+        with open(SCHEDULED_RESULTS_FILE, 'r') as f:
+            scheduled = json.load(f)
+    else:
+        scheduled = {"gamma_drain": [], "distribution": [], "liquidity": []}
+    
+    # Check if ALL engines are empty - if so, POPULATE from patterns
+    total_existing = sum(len(scheduled.get(e, [])) for e in ["gamma_drain", "distribution", "liquidity"])
+    
+    if total_existing == 0:
+        print("  [INFO] Scheduled results empty - POPULATING from patterns...")
+        scheduled = _populate_from_patterns(pattern_results)
+        
+        # Save and return early
+        with open(SCHEDULED_RESULTS_FILE, 'w') as f:
+            json.dump(scheduled, f, indent=2, default=str)
+        
+        print(f"  Populated: Gamma={len(scheduled.get('gamma_drain', []))}, " +
+              f"Dist={len(scheduled.get('distribution', []))}, " +
+              f"Liq={len(scheduled.get('liquidity', []))}")
+        
+        # Also update scan history
+        _update_scan_history(scheduled)
+        return scheduled
     
     # Create lookup of pattern symbols and their boosts
     pattern_boosts = {}
@@ -269,6 +407,9 @@ def integrate_with_scheduled_results(pattern_results):
     # Save updated results
     with open(SCHEDULED_RESULTS_FILE, 'w') as f:
         json.dump(scheduled, f, indent=2, default=str)
+    
+    # Update scan history for 48-hour analysis
+    _update_scan_history(scheduled)
     
     print(f"\nIntegration complete:")
     print(f"  Updated {updated_count} existing candidates with pattern boosts")

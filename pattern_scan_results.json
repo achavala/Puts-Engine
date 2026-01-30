@@ -1,334 +1,61 @@
 {
   "pump_reversal": [
     {
-      "symbol": "CIFR",
-      "sector": "crypto",
-      "price": 17.7,
-      "gain_1d": -6.7,
-      "gain_2d": 1.2,
-      "gain_3d": 13.7,
-      "total_gain": 8.2,
-      "vol_ratio": 1.01,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "UEC",
+      "symbol": "UUUU",
       "sector": "uranium",
-      "price": 18.6,
-      "gain_1d": -7.6,
-      "gain_2d": 4.9,
-      "gain_3d": 4.6,
-      "total_gain": 1.9,
-      "vol_ratio": 1.34,
+      "price": 24.32,
+      "gain_1d": -2.3,
+      "gain_2d": -10.2,
+      "gain_3d": 14.7,
+      "total_gain": 2.2,
+      "vol_ratio": 0.13,
       "signals": [
         "exhaustion",
-        "high_vol_red",
-        "below_prior_low"
+        "topping_tail"
       ],
       "score_boost": 0.2
     },
     {
       "symbol": "EOSE",
       "sector": "solar",
-      "price": 16.11,
-      "gain_1d": -3.4,
-      "gain_2d": 11.1,
-      "gain_3d": -7.3,
-      "total_gain": 0.4,
-      "vol_ratio": 0.95,
+      "price": 15.42,
+      "gain_1d": -4.3,
+      "gain_2d": -3.4,
+      "gain_3d": 11.1,
+      "total_gain": 3.4,
+      "vol_ratio": 0.12,
+      "signals": [
+        "exhaustion"
+      ],
+      "score_boost": 0.2
+    },
+    {
+      "symbol": "ASTS",
+      "sector": "evtol",
+      "price": 119.42,
+      "gain_1d": -2.2,
+      "gain_2d": 0.7,
+      "gain_3d": 8.9,
+      "total_gain": 7.4,
+      "vol_ratio": 0.39,
       "signals": [
         "exhaustion",
         "topping_tail"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "RCAT",
-      "sector": "evtol",
-      "price": 14.93,
-      "gain_1d": -8.9,
-      "gain_2d": 4.5,
-      "gain_3d": 10.0,
-      "total_gain": 5.6,
-      "vol_ratio": 0.62,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "OKLO",
-      "sector": "uranium",
-      "price": 86.04,
-      "gain_1d": -8.8,
-      "gain_2d": 10.7,
-      "gain_3d": 3.6,
-      "total_gain": 5.4,
-      "vol_ratio": 1.3,
-      "signals": [
-        "exhaustion",
-        "high_vol_red"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "LEU",
-      "sector": "uranium",
-      "price": 301.5,
-      "gain_1d": -10.7,
-      "gain_2d": 9.2,
-      "gain_3d": 9.8,
-      "total_gain": 8.3,
-      "vol_ratio": 1.52,
-      "signals": [
-        "exhaustion",
-        "high_vol_red",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "MP",
-      "sector": "rare_earth",
-      "price": 62.16,
-      "gain_1d": -7.2,
-      "gain_2d": 0.4,
-      "gain_3d": 5.2,
-      "total_gain": -1.6,
-      "vol_ratio": 1.55,
-      "signals": [
-        "exhaustion",
-        "high_vol_red",
-        "below_prior_low"
       ],
       "score_boost": 0.2
     },
     {
       "symbol": "LUNR",
       "sector": "evtol",
-      "price": 20.99,
-      "gain_1d": -8.0,
-      "gain_2d": 12.4,
-      "gain_3d": 10.2,
-      "total_gain": 14.6,
-      "vol_ratio": 1.17,
-      "signals": [
-        "exhaustion"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "NET",
-      "sector": "cloud",
-      "price": 180.39,
-      "gain_1d": -2.4,
-      "gain_2d": -10.2,
-      "gain_3d": 8.8,
-      "total_gain": -3.9,
-      "vol_ratio": 0.8,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "RKLB",
-      "sector": "evtol",
-      "price": 85.68,
-      "gain_1d": -3.3,
-      "gain_2d": 1.8,
-      "gain_3d": 8.1,
-      "total_gain": 6.6,
-      "vol_ratio": 0.72,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "UUUU",
-      "sector": "uranium",
-      "price": 24.88,
-      "gain_1d": -10.2,
-      "gain_2d": 14.7,
-      "gain_3d": 3.6,
-      "total_gain": 8.0,
-      "vol_ratio": 1.19,
-      "signals": [
-        "exhaustion"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "RDW",
-      "sector": "evtol",
-      "price": 12.81,
-      "gain_1d": -3.6,
-      "gain_2d": -6.4,
-      "gain_3d": 29.6,
-      "total_gain": 19.5,
-      "vol_ratio": 0.72,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "FSLR",
-      "sector": "solar",
-      "price": 224.01,
-      "gain_1d": -10.2,
-      "gain_2d": 6.1,
-      "gain_3d": -3.3,
-      "total_gain": -7.3,
-      "vol_ratio": 2.5,
-      "signals": [
-        "exhaustion",
-        "high_vol_red",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "CLS",
-      "sector": "semis",
-      "price": 300.0,
-      "gain_1d": -13.1,
-      "gain_2d": 3.6,
-      "gain_3d": 8.1,
-      "total_gain": -1.4,
-      "vol_ratio": 2.17,
-      "signals": [
-        "exhaustion",
-        "high_vol_red",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "PL",
-      "sector": "evtol",
-      "price": 26.35,
-      "gain_1d": -5.5,
-      "gain_2d": -0.7,
-      "gain_3d": 8.5,
-      "total_gain": 2.3,
-      "vol_ratio": 0.77,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "RCL",
-      "sector": "other",
-      "price": 345.98,
-      "gain_1d": 18.6,
-      "gain_2d": 0.4,
-      "gain_3d": -0.9,
-      "total_gain": 18.1,
-      "vol_ratio": 2.94,
-      "signals": [],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "WOLF",
-      "sector": "other",
-      "price": 17.33,
-      "gain_1d": -0.7,
-      "gain_2d": -3.0,
-      "gain_3d": 3.4,
-      "total_gain": -0.3,
-      "vol_ratio": 0.74,
+      "price": 20.51,
+      "gain_1d": -2.3,
+      "gain_2d": -8.0,
+      "gain_3d": 12.4,
+      "total_gain": 2.2,
+      "vol_ratio": 0.18,
       "signals": [
         "exhaustion",
         "topping_tail",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "LITE",
-      "sector": "other",
-      "price": 381.44,
-      "gain_1d": -0.9,
-      "gain_2d": 3.9,
-      "gain_3d": 11.5,
-      "total_gain": 14.4,
-      "vol_ratio": 1.07,
-      "signals": [
-        "exhaustion",
-        "topping_tail"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "NEM",
-      "sector": "other",
-      "price": 126.93,
-      "gain_1d": -3.8,
-      "gain_2d": 3.9,
-      "gain_3d": 0.9,
-      "total_gain": 1.0,
-      "vol_ratio": 1.44,
-      "signals": [
-        "exhaustion",
-        "high_vol_red",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "BBAI",
-      "sector": "other",
-      "price": 5.52,
-      "gain_1d": -8.2,
-      "gain_2d": -2.4,
-      "gain_3d": 7.7,
-      "total_gain": -2.9,
-      "vol_ratio": 1.28,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "BMNR",
-      "sector": "other",
-      "price": 26.7,
-      "gain_1d": -9.9,
-      "gain_2d": 1.0,
-      "gain_3d": 5.5,
-      "total_gain": -3.4,
-      "vol_ratio": 1.82,
-      "signals": [
-        "exhaustion",
-        "high_vol_red",
-        "below_prior_low"
-      ],
-      "score_boost": 0.2
-    },
-    {
-      "symbol": "RR",
-      "sector": "other",
-      "price": 4.02,
-      "gain_1d": -20.9,
-      "gain_2d": -7.8,
-      "gain_3d": 44.6,
-      "total_gain": 15.9,
-      "vol_ratio": 1.23,
-      "signals": [
-        "exhaustion",
         "below_prior_low"
       ],
       "score_boost": 0.2
@@ -336,27 +63,24 @@
     {
       "symbol": "STX",
       "sector": "other",
-      "price": 446.57,
-      "gain_1d": 0.8,
-      "gain_2d": 19.1,
-      "gain_3d": 3.8,
-      "total_gain": 23.7,
-      "vol_ratio": 1.38,
-      "signals": [
-        "topping_tail",
-        "high_vol_red"
-      ],
+      "price": 440.8,
+      "gain_1d": -1.3,
+      "gain_2d": 0.8,
+      "gain_3d": 19.1,
+      "total_gain": 18.7,
+      "vol_ratio": 0.22,
+      "signals": [],
       "score_boost": 0.2
     },
     {
-      "symbol": "CRWV",
+      "symbol": "WDC",
       "sector": "other",
-      "price": 99.53,
-      "gain_1d": -6.1,
-      "gain_2d": -2.6,
+      "price": 264.44,
+      "gain_1d": -5.0,
+      "gain_2d": -0.5,
       "gain_3d": 10.7,
-      "total_gain": 2.0,
-      "vol_ratio": 0.88,
+      "total_gain": 5.2,
+      "vol_ratio": 0.52,
       "signals": [
         "exhaustion",
         "below_prior_low"
@@ -364,646 +88,557 @@
       "score_boost": 0.2
     },
     {
-      "symbol": "APLD",
+      "symbol": "SNDK",
       "sector": "other",
-      "price": 38.07,
-      "gain_1d": -5.3,
-      "gain_2d": -2.7,
-      "gain_3d": 14.3,
-      "total_gain": 6.2,
-      "vol_ratio": 0.75,
+      "price": 619.25,
+      "gain_1d": 14.8,
+      "gain_2d": 2.2,
+      "gain_3d": 9.6,
+      "total_gain": 26.6,
+      "vol_ratio": 0.76,
       "signals": [
-        "exhaustion",
-        "below_prior_low"
+        "exhaustion"
       ],
       "score_boost": 0.2
     },
     {
-      "symbol": "NNE",
-      "sector": "uranium",
-      "price": 32.11,
-      "gain_1d": -7.1,
-      "gain_2d": -1.5,
-      "gain_3d": 7.0,
-      "total_gain": -1.6,
-      "vol_ratio": 1.24,
+      "symbol": "RCL",
+      "sector": "other",
+      "price": 328.62,
+      "gain_1d": -5.0,
+      "gain_2d": 18.6,
+      "gain_3d": 0.4,
+      "total_gain": 14.0,
+      "vol_ratio": 0.15,
       "signals": [
-        "exhaustion",
-        "below_prior_low"
+        "exhaustion"
       ],
-      "score_boost": 0.19983836535529123
+      "score_boost": 0.2
     },
     {
-      "symbol": "CLSK",
-      "sector": "crypto",
-      "price": 12.59,
-      "gain_1d": -6.4,
-      "gain_2d": 1.4,
-      "gain_3d": 6.7,
-      "total_gain": 1.6,
-      "vol_ratio": 0.8,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.1967202572347267
-    },
-    {
-      "symbol": "SMR",
+      "symbol": "OKLO",
       "sector": "uranium",
-      "price": 18.92,
-      "gain_1d": -7.6,
-      "gain_2d": 6.7,
-      "gain_3d": 4.3,
-      "total_gain": 3.4,
-      "vol_ratio": 1.05,
+      "price": 86.41,
+      "gain_1d": 0.4,
+      "gain_2d": -8.8,
+      "gain_3d": 10.7,
+      "total_gain": 2.3,
+      "vol_ratio": 0.18,
       "signals": [
-        "exhaustion",
-        "below_prior_low"
+        "topping_tail"
       ],
-      "score_boost": 0.19666666666666674
+      "score_boost": 0.19695438020405776
     },
     {
       "symbol": "META",
       "sector": "mega",
-      "price": 738.31,
-      "gain_1d": 10.4,
-      "gain_2d": -0.6,
-      "gain_3d": 0.1,
-      "total_gain": 9.9,
-      "vol_ratio": 3.01,
+      "price": 726.71,
+      "gain_1d": -1.6,
+      "gain_2d": 10.4,
+      "gain_3d": -0.6,
+      "total_gain": 8.2,
+      "vol_ratio": 0.17,
       "signals": [
         "topping_tail"
       ],
       "score_boost": 0.19404797152812037
     },
     {
-      "symbol": "INOD",
+      "symbol": "TXN",
       "sector": "other",
-      "price": 63.86,
-      "gain_1d": 14.4,
-      "gain_2d": -4.8,
-      "gain_3d": -1.3,
-      "total_gain": 8.2,
-      "vol_ratio": 4.22,
-      "signals": [],
-      "score_boost": 0.19362464183381078
+      "price": 214.09,
+      "gain_1d": -2.2,
+      "gain_2d": 1.3,
+      "gain_3d": 9.9,
+      "total_gain": 9.0,
+      "vol_ratio": 0.09,
+      "signals": [
+        "below_prior_low"
+      ],
+      "score_boost": 0.18937445964501853
+    },
+    {
+      "symbol": "IREN",
+      "sector": "other",
+      "price": 56.03,
+      "gain_1d": -6.4,
+      "gain_2d": -4.9,
+      "gain_3d": 4.9,
+      "total_gain": -6.4,
+      "vol_ratio": 0.2,
+      "signals": [
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "score_boost": 0.17917486247707945
+    },
+    {
+      "symbol": "RCAT",
+      "sector": "evtol",
+      "price": 13.97,
+      "gain_1d": -6.4,
+      "gain_2d": -8.9,
+      "gain_3d": 4.5,
+      "total_gain": -10.8,
+      "vol_ratio": 0.16,
+      "signals": [
+        "exhaustion",
+        "below_prior_low"
+      ],
+      "score_boost": 0.1753095086151882
     },
     {
       "symbol": "HUT",
       "sector": "crypto",
-      "price": 61.53,
-      "gain_1d": -4.8,
-      "gain_2d": 4.5,
-      "gain_3d": 9.7,
-      "total_gain": 9.4,
-      "vol_ratio": 0.99,
+      "price": 58.94,
+      "gain_1d": -4.2,
+      "gain_2d": -4.8,
+      "gain_3d": 4.5,
+      "total_gain": -4.5,
+      "vol_ratio": 0.18,
       "signals": [
-        "exhaustion"
+        "exhaustion",
+        "below_prior_low"
       ],
-      "score_boost": 0.18664834190459306
+      "score_boost": 0.17463130659767126
     },
     {
-      "symbol": "SNDK",
+      "symbol": "HIMS",
       "sector": "other",
-      "price": 539.3,
-      "gain_1d": 2.2,
-      "gain_2d": 9.6,
-      "gain_3d": 2.3,
-      "total_gain": 14.1,
-      "vol_ratio": 1.34,
+      "price": 29.12,
+      "gain_1d": -2.5,
+      "gain_2d": 4.2,
+      "gain_3d": -3.4,
+      "total_gain": -1.7,
+      "vol_ratio": 0.13,
       "signals": [
+        "exhaustion",
         "topping_tail"
       ],
-      "score_boost": 0.1859641069314334
+      "score_boost": 0.1718555981862574
     },
     {
-      "symbol": "FCEL",
-      "sector": "solar",
-      "price": 8.99,
-      "gain_1d": -6.6,
-      "gain_2d": 0.4,
-      "gain_3d": 5.6,
-      "total_gain": -0.7,
-      "vol_ratio": 0.65,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.18558613098514024
-    },
-    {
-      "symbol": "MARA",
-      "sector": "crypto",
-      "price": 9.86,
-      "gain_1d": -4.9,
-      "gain_2d": -1.4,
-      "gain_3d": 5.4,
-      "total_gain": -0.9,
-      "vol_ratio": 0.96,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.18410821643286565
-    },
-    {
-      "symbol": "BE",
-      "sector": "solar",
-      "price": 156.51,
-      "gain_1d": -5.4,
-      "gain_2d": 8.6,
-      "gain_3d": 9.1,
-      "total_gain": 12.3,
-      "vol_ratio": 1.16,
-      "signals": [
-        "exhaustion"
-      ],
-      "score_boost": 0.18088955737000428
-    },
-    {
-      "symbol": "IONQ",
-      "sector": "quantum",
-      "price": 43.24,
-      "gain_1d": -5.6,
-      "gain_2d": 0.7,
-      "gain_3d": 4.9,
-      "total_gain": -0.0,
-      "vol_ratio": 0.96,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.1788817154715242
-    },
-    {
-      "symbol": "ASTS",
-      "sector": "evtol",
-      "price": 122.09,
-      "gain_1d": 0.7,
-      "gain_2d": 8.9,
-      "gain_3d": 6.3,
-      "total_gain": 15.9,
-      "vol_ratio": 0.92,
-      "signals": [
-        "topping_tail"
-      ],
-      "score_boost": 0.17882701634632658
-    },
-    {
-      "symbol": "LAC",
+      "symbol": "USAR",
       "sector": "rare_earth",
-      "price": 5.43,
-      "gain_1d": -9.7,
-      "gain_2d": -4.3,
-      "gain_3d": 4.8,
+      "price": 23.77,
+      "gain_1d": 7.7,
+      "gain_2d": -12.4,
+      "gain_3d": -4.4,
       "total_gain": -9.1,
-      "vol_ratio": 0.7,
+      "vol_ratio": 0.19,
       "signals": [
-        "exhaustion",
-        "below_prior_low"
+        "exhaustion"
       ],
-      "score_boost": 0.17841402337228715
+      "score_boost": 0.16725419120978696
     },
     {
-      "symbol": "PLUG",
-      "sector": "solar",
-      "price": 2.34,
-      "gain_1d": -4.5,
-      "gain_2d": 1.7,
-      "gain_3d": 4.8,
-      "total_gain": 2.0,
-      "vol_ratio": 0.81,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.17782608695652188
-    },
-    {
-      "symbol": "QUBT",
-      "sector": "quantum",
-      "price": 10.18,
-      "gain_1d": -8.5,
-      "gain_2d": -1.6,
-      "gain_3d": 4.3,
-      "total_gain": -5.8,
-      "vol_ratio": 1.19,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.17335793357933585
-    },
-    {
-      "symbol": "RIOT",
-      "sector": "crypto",
-      "price": 16.97,
-      "gain_1d": -3.3,
-      "gain_2d": 0.0,
-      "gain_3d": 8.1,
-      "total_gain": 4.8,
-      "vol_ratio": 1.04,
-      "signals": [
-        "below_prior_low"
-      ],
-      "score_boost": 0.17133086876155268
-    },
-    {
-      "symbol": "QBTS",
-      "sector": "quantum",
-      "price": 23.22,
-      "gain_1d": -7.0,
-      "gain_2d": 1.1,
-      "gain_3d": 4.0,
-      "total_gain": -1.9,
-      "vol_ratio": 0.92,
-      "signals": [
-        "exhaustion",
-        "below_prior_low"
-      ],
-      "score_boost": 0.1695789473684211
-    },
-    {
-      "symbol": "KOSS",
+      "symbol": "ON",
       "sector": "other",
-      "price": 4.49,
-      "gain_1d": 3.2,
-      "gain_2d": -0.9,
-      "gain_3d": -2.4,
-      "total_gain": -0.1,
-      "vol_ratio": 2.65,
+      "price": 61.27,
+      "gain_1d": -1.5,
+      "gain_2d": -4.2,
+      "gain_3d": 3.7,
+      "total_gain": -2.0,
+      "vol_ratio": 0.08,
+      "signals": [
+        "topping_tail",
+        "below_prior_low"
+      ],
+      "score_boost": 0.16672361488104748
+    },
+    {
+      "symbol": "CLS",
+      "sector": "semis",
+      "price": 296.77,
+      "gain_1d": -1.1,
+      "gain_2d": -13.1,
+      "gain_3d": 3.6,
+      "total_gain": -10.6,
+      "vol_ratio": 0.17,
       "signals": [
         "exhaustion",
         "topping_tail"
       ],
-      "score_boost": 0.16218390804597715
+      "score_boost": 0.16619773689107664
+    },
+    {
+      "symbol": "LRCX",
+      "sector": "other",
+      "price": 244.09,
+      "gain_1d": -1.6,
+      "gain_2d": 3.6,
+      "gain_3d": 0.5,
+      "total_gain": 2.4,
+      "vol_ratio": 0.24,
+      "signals": [
+        "exhaustion",
+        "topping_tail"
+      ],
+      "score_boost": 0.16585441188746963
     },
     {
       "symbol": "INTC",
       "sector": "semis",
-      "price": 48.66,
-      "gain_1d": -0.2,
-      "gain_2d": 11.0,
-      "gain_3d": 3.4,
-      "total_gain": 14.2,
-      "vol_ratio": 0.65,
+      "price": 48.36,
+      "gain_1d": -0.6,
+      "gain_2d": -0.2,
+      "gain_3d": 11.0,
+      "total_gain": 10.2,
+      "vol_ratio": 0.13,
       "signals": [],
       "score_boost": 0.16040291372638293
     },
     {
-      "symbol": "WULF",
-      "sector": "crypto",
-      "price": 14.54,
-      "gain_1d": -3.8,
-      "gain_2d": -1.3,
-      "gain_3d": 11.0,
-      "total_gain": 5.9,
-      "vol_ratio": 1.08,
-      "signals": [],
-      "score_boost": 0.16022480058013067
+      "symbol": "SMR",
+      "sector": "uranium",
+      "price": 18.59,
+      "gain_1d": -1.7,
+      "gain_2d": -7.6,
+      "gain_3d": 6.7,
+      "total_gain": -2.7,
+      "vol_ratio": 0.15,
+      "signals": [
+        "topping_tail"
+      ],
+      "score_boost": 0.15666666666666673
     },
     {
-      "symbol": "VRM",
+      "symbol": "JBLU",
       "sector": "other",
-      "price": 21.5,
-      "gain_1d": 10.9,
-      "gain_2d": -1.4,
-      "gain_3d": -0.3,
-      "total_gain": 9.3,
-      "vol_ratio": 5.91,
-      "signals": [],
-      "score_boost": 0.1593911248710011
+      "price": 5.03,
+      "gain_1d": -0.5,
+      "gain_2d": 0.2,
+      "gain_3d": 6.6,
+      "total_gain": 6.3,
+      "vol_ratio": 0.1,
+      "signals": [
+        "topping_tail"
+      ],
+      "score_boost": 0.15553911205073986
     },
     {
       "symbol": "CCJ",
       "sector": "uranium",
-      "price": 133.67,
-      "gain_1d": -0.3,
-      "gain_2d": 6.4,
-      "gain_3d": 3.9,
-      "total_gain": 10.0,
-      "vol_ratio": 1.58,
+      "price": 128.37,
+      "gain_1d": -4.0,
+      "gain_2d": -0.3,
+      "gain_3d": 6.4,
+      "total_gain": 2.2,
+      "vol_ratio": 0.26,
       "signals": [
-        "high_vol_red"
+        "topping_tail"
       ],
       "score_boost": 0.15445979201397161
     },
     {
-      "symbol": "NCLH",
-      "sector": "other",
-      "price": 22.92,
-      "gain_1d": 10.2,
-      "gain_2d": -0.3,
-      "gain_3d": 0.3,
-      "total_gain": 10.2,
-      "vol_ratio": 1.85,
-      "signals": [],
-      "score_boost": 0.15245310245310256
-    },
-    {
-      "symbol": "CCL",
-      "sector": "other",
-      "price": 31.15,
-      "gain_1d": 8.5,
+      "symbol": "MU",
+      "sector": "semis",
+      "price": 442.93,
+      "gain_1d": 1.6,
       "gain_2d": 0.1,
-      "gain_3d": 0.1,
-      "total_gain": 8.6,
-      "vol_ratio": 2.52,
-      "signals": [],
-      "score_boost": 0.13461002785515322
-    },
-    {
-      "symbol": "COHR",
-      "sector": "other",
-      "price": 215.86,
-      "gain_1d": -2.4,
-      "gain_2d": 3.3,
-      "gain_3d": 8.2,
-      "total_gain": 9.2,
-      "vol_ratio": 1.25,
-      "signals": [],
-      "score_boost": 0.13211974110032368
-    },
-    {
-      "symbol": "AMAT",
-      "sector": "other",
-      "price": 341.34,
-      "gain_1d": 1.4,
-      "gain_2d": 1.2,
-      "gain_3d": 4.1,
-      "total_gain": 6.7,
-      "vol_ratio": 1.1,
+      "gain_3d": 6.1,
+      "total_gain": 7.9,
+      "vol_ratio": 0.34,
       "signals": [
         "topping_tail"
       ],
-      "score_boost": 0.13147624115695236
+      "score_boost": 0.15103744149765982
     },
     {
-      "symbol": "GEV",
+      "symbol": "LEU",
+      "sector": "uranium",
+      "price": 300.5,
+      "gain_1d": -0.3,
+      "gain_2d": -10.7,
+      "gain_3d": 9.2,
+      "total_gain": -1.9,
+      "vol_ratio": 0.16,
+      "signals": [],
+      "score_boost": 0.14169656420698795
+    },
+    {
+      "symbol": "APP",
       "sector": "other",
-      "price": 717.39,
-      "gain_1d": 0.8,
-      "gain_2d": 2.7,
-      "gain_3d": 4.0,
-      "total_gain": 7.6,
-      "vol_ratio": 0.97,
+      "price": 544.53,
+      "gain_1d": -4.3,
+      "gain_2d": 5.0,
+      "gain_3d": -0.2,
+      "total_gain": 0.4,
+      "vol_ratio": 0.17,
+      "signals": [
+        "exhaustion"
+      ],
+      "score_boost": 0.1395611770779556
+    },
+    {
+      "symbol": "T",
+      "sector": "other",
+      "price": 25.45,
+      "gain_1d": 1.3,
+      "gain_2d": 4.4,
+      "gain_3d": 4.7,
+      "total_gain": 10.3,
+      "vol_ratio": 0.2,
       "signals": [
         "topping_tail"
       ],
-      "score_boost": 0.13010570729290236
+      "score_boost": 0.1365217391304348
+    },
+    {
+      "symbol": "BE",
+      "sector": "solar",
+      "price": 160.62,
+      "gain_1d": 2.6,
+      "gain_2d": -5.4,
+      "gain_3d": 8.6,
+      "total_gain": 5.8,
+      "vol_ratio": 0.25,
+      "signals": [],
+      "score_boost": 0.1358774867047468
+    },
+    {
+      "symbol": "MA",
+      "sector": "other",
+      "price": 540.51,
+      "gain_1d": -0.6,
+      "gain_2d": 4.3,
+      "gain_3d": 0.2,
+      "total_gain": 3.9,
+      "vol_ratio": 0.11,
+      "signals": [
+        "topping_tail"
+      ],
+      "score_boost": 0.13288700922569385
+    },
+    {
+      "symbol": "NIO",
+      "sector": "other",
+      "price": 4.8,
+      "gain_1d": 0.7,
+      "gain_2d": 3.9,
+      "gain_3d": -1.1,
+      "total_gain": 3.6,
+      "vol_ratio": 0.4,
+      "signals": [
+        "exhaustion"
+      ],
+      "score_boost": 0.12921568627450974
     },
     {
       "symbol": "BILI",
       "sector": "other",
-      "price": 35.44,
-      "gain_1d": -1.3,
-      "gain_2d": 3.6,
-      "gain_3d": 3.4,
-      "total_gain": 5.7,
-      "vol_ratio": 0.83,
+      "price": 34.84,
+      "gain_1d": -1.7,
+      "gain_2d": -1.3,
+      "gain_3d": 3.6,
+      "total_gain": 0.5,
+      "vol_ratio": 0.15,
       "signals": [
         "topping_tail"
       ],
       "score_boost": 0.1257554786620531
     },
     {
-      "symbol": "VST",
+      "symbol": "RMBS",
       "sector": "other",
-      "price": 162.58,
-      "gain_1d": -1.8,
-      "gain_2d": 0.8,
-      "gain_3d": 3.4,
-      "total_gain": 2.4,
-      "vol_ratio": 1.17,
-      "signals": [
-        "exhaustion"
-      ],
-      "score_boost": 0.12431773817769654
+      "price": 123.22,
+      "gain_1d": 1.3,
+      "gain_2d": -2.3,
+      "gain_3d": 7.5,
+      "total_gain": 6.6,
+      "vol_ratio": 0.2,
+      "signals": [],
+      "score_boost": 0.12544723878662178
     },
     {
-      "symbol": "LRCX",
+      "symbol": "VZ",
       "sector": "other",
-      "price": 248.17,
-      "gain_1d": 3.6,
-      "gain_2d": 0.5,
-      "gain_3d": 7.0,
-      "total_gain": 11.1,
-      "vol_ratio": 1.39,
+      "price": 42.8,
+      "gain_1d": 7.5,
+      "gain_2d": 1.0,
+      "gain_3d": 0.2,
+      "total_gain": 8.7,
+      "vol_ratio": 1.18,
       "signals": [],
-      "score_boost": 0.11995109256517254
+      "score_boost": 0.12498116051243405
     },
     {
-      "symbol": "MU",
-      "sector": "semis",
-      "price": 435.79,
-      "gain_1d": 0.1,
-      "gain_2d": 6.1,
-      "gain_3d": 5.4,
-      "total_gain": 11.7,
-      "vol_ratio": 1.17,
+      "symbol": "FSLR",
+      "sector": "solar",
+      "price": 231.69,
+      "gain_1d": 3.4,
+      "gain_2d": -10.2,
+      "gain_3d": 6.1,
+      "total_gain": -0.6,
+      "vol_ratio": 0.17,
       "signals": [],
-      "score_boost": 0.11103744149765982
+      "score_boost": 0.11109338438630073
     },
     {
       "symbol": "ELV",
       "sector": "other",
-      "price": 346.98,
-      "gain_1d": 1.5,
-      "gain_2d": 5.9,
-      "gain_3d": -14.3,
-      "total_gain": -7.0,
-      "vol_ratio": 0.94,
+      "price": 345.23,
+      "gain_1d": -0.5,
+      "gain_2d": 1.5,
+      "gain_3d": 5.9,
+      "total_gain": 6.9,
+      "vol_ratio": 0.08,
       "signals": [],
       "score_boost": 0.10862133036046082
     },
     {
-      "symbol": "APP",
-      "sector": "other",
-      "price": 569.24,
-      "gain_1d": 5.0,
-      "gain_2d": -0.2,
-      "gain_3d": 1.5,
-      "total_gain": 6.3,
-      "vol_ratio": 1.03,
-      "signals": [],
-      "score_boost": 0.09956117707795559
-    },
-    {
-      "symbol": "KLAC",
-      "sector": "other",
-      "price": 1684.71,
-      "gain_1d": 3.5,
-      "gain_2d": 0.7,
-      "gain_3d": 4.8,
-      "total_gain": 9.0,
-      "vol_ratio": 1.35,
-      "signals": [],
-      "score_boost": 0.09750393705890356
-    },
-    {
-      "symbol": "HIMS",
-      "sector": "other",
-      "price": 29.87,
-      "gain_1d": 4.2,
-      "gain_2d": -3.4,
-      "gain_3d": -2.0,
-      "total_gain": -1.2,
-      "vol_ratio": 1.52,
-      "signals": [],
-      "score_boost": 0.09185559818625738
-    },
-    {
-      "symbol": "NRG",
-      "sector": "other",
-      "price": 153.72,
+      "symbol": "UEC",
+      "sector": "uranium",
+      "price": 18.43,
       "gain_1d": -0.9,
-      "gain_2d": -0.6,
-      "gain_3d": 4.1,
-      "total_gain": 2.6,
-      "vol_ratio": 0.9,
+      "gain_2d": -7.6,
+      "gain_3d": 4.9,
+      "total_gain": -3.7,
+      "vol_ratio": 0.16,
       "signals": [],
-      "score_boost": 0.09075235109717858
+      "score_boost": 0.0989583333333334
+    },
+    {
+      "symbol": "RBLX",
+      "sector": "other",
+      "price": 73.21,
+      "gain_1d": -3.3,
+      "gain_2d": 0.6,
+      "gain_3d": 4.3,
+      "total_gain": 1.6,
+      "vol_ratio": 0.08,
+      "signals": [],
+      "score_boost": 0.09338785694482943
+    },
+    {
+      "symbol": "LMT",
+      "sector": "other",
+      "price": 629.89,
+      "gain_1d": 1.2,
+      "gain_2d": 4.2,
+      "gain_3d": 0.4,
+      "total_gain": 5.8,
+      "vol_ratio": 0.23,
+      "signals": [],
+      "score_boost": 0.0922589448658061
     },
     {
       "symbol": "CNC",
       "sector": "other",
-      "price": 43.6,
-      "gain_1d": 4.1,
-      "gain_2d": 0.9,
-      "gain_3d": -10.3,
-      "total_gain": -5.3,
-      "vol_ratio": 1.17,
+      "price": 42.92,
+      "gain_1d": -1.6,
+      "gain_2d": 4.1,
+      "gain_3d": 0.9,
+      "total_gain": 3.4,
+      "vol_ratio": 0.04,
       "signals": [],
       "score_boost": 0.09057279236276858
+    },
+    {
+      "symbol": "NOK",
+      "sector": "other",
+      "price": 6.5,
+      "gain_1d": 3.4,
+      "gain_2d": -7.8,
+      "gain_3d": -1.7,
+      "total_gain": -6.1,
+      "vol_ratio": 0.13,
+      "signals": [],
+      "score_boost": 0.08418124006359298
+    },
+    {
+      "symbol": "CAT",
+      "sector": "other",
+      "price": 668.82,
+      "gain_1d": 0.5,
+      "gain_2d": 3.4,
+      "gain_3d": 0.7,
+      "total_gain": 4.6,
+      "vol_ratio": 0.19,
+      "signals": [],
+      "score_boost": 0.0841375450814576
+    },
+    {
+      "symbol": "KOSS",
+      "sector": "other",
+      "price": 4.54,
+      "gain_1d": 1.0,
+      "gain_2d": 3.2,
+      "gain_3d": -0.9,
+      "total_gain": 3.3,
+      "vol_ratio": 0.09,
+      "signals": [],
+      "score_boost": 0.08218390804597714
+    },
+    {
+      "symbol": "TSLA",
+      "sector": "mega",
+      "price": 429.26,
+      "gain_1d": 3.0,
+      "gain_2d": -3.5,
+      "gain_3d": 0.1,
+      "total_gain": -0.3,
+      "vol_ratio": 0.26,
+      "signals": [],
+      "score_boost": 0.080480362972921
     }
   ],
   "two_day_rally": [
     {
-      "symbol": "ELV",
+      "symbol": "T",
       "sector": "other",
-      "price": 346.98,
-      "day1": 1.5,
-      "day2": 5.9,
-      "total": 7.4,
+      "price": 25.45,
+      "day1": 1.3,
+      "day2": 4.4,
+      "total": 5.7,
       "score_boost": 0.15
     },
     {
       "symbol": "SNDK",
       "sector": "other",
-      "price": 539.3,
-      "day1": 2.2,
-      "day2": 9.6,
-      "total": 11.8,
+      "price": 619.25,
+      "day1": 14.8,
+      "day2": 2.2,
+      "total": 17.0,
       "score_boost": 0.15
     },
     {
-      "symbol": "AMAT",
+      "symbol": "VZ",
       "sector": "other",
-      "price": 341.34,
+      "price": 42.8,
+      "day1": 7.5,
+      "day2": 1.0,
+      "total": 8.5,
+      "score_boost": 0.15
+    },
+    {
+      "symbol": "LMT",
+      "sector": "other",
+      "price": 629.89,
+      "day1": 1.2,
+      "day2": 4.2,
+      "total": 5.4,
+      "score_boost": 0.15
+    },
+    {
+      "symbol": "KOSS",
+      "sector": "other",
+      "price": 4.54,
+      "day1": 1.0,
+      "day2": 3.2,
+      "total": 4.2,
+      "score_boost": 0.13441235952179836
+    },
+    {
+      "symbol": "SQQQ",
+      "sector": "other",
+      "price": 64.78,
       "day1": 1.4,
-      "day2": 1.2,
-      "total": 2.6,
-      "score_boost": 0.10154599278825122
+      "day2": 1.7,
+      "total": 3.1,
+      "score_boost": 0.11289360685143536
     }
   ],
-  "high_vol_run": [
-    {
-      "symbol": "VRM",
-      "sector": "other",
-      "price": 21.5,
-      "gain": 10.9,
-      "vol_ratio": 5.91,
-      "score_boost": 0.15
-    },
-    {
-      "symbol": "INOD",
-      "sector": "other",
-      "price": 63.86,
-      "gain": 14.4,
-      "vol_ratio": 4.22,
-      "score_boost": 0.15
-    },
-    {
-      "symbol": "META",
-      "sector": "mega",
-      "price": 738.31,
-      "gain": 10.4,
-      "vol_ratio": 3.01,
-      "score_boost": 0.1402062827952132
-    },
-    {
-      "symbol": "RCL",
-      "sector": "other",
-      "price": 345.98,
-      "gain": 18.6,
-      "vol_ratio": 2.94,
-      "score_boost": 0.1381996644286349
-    },
-    {
-      "symbol": "CCL",
-      "sector": "other",
-      "price": 31.15,
-      "gain": 8.5,
-      "vol_ratio": 2.52,
-      "score_boost": 0.12564689835041964
-    },
-    {
-      "symbol": "FSLR",
-      "sector": "solar",
-      "price": 224.01,
-      "gain": 6.1,
-      "vol_ratio": 2.5,
-      "score_boost": 0.1248701482666213
-    },
-    {
-      "symbol": "CLS",
-      "sector": "semis",
-      "price": 300.0,
-      "gain": 8.1,
-      "vol_ratio": 2.17,
-      "score_boost": 0.11501372546328341
-    },
-    {
-      "symbol": "NCLH",
-      "sector": "other",
-      "price": 22.92,
-      "gain": 10.2,
-      "vol_ratio": 1.85,
-      "score_boost": 0.10560943850615923
-    },
-    {
-      "symbol": "BMNR",
-      "sector": "other",
-      "price": 26.7,
-      "gain": 5.5,
-      "vol_ratio": 1.82,
-      "score_boost": 0.10472930154384474
-    },
-    {
-      "symbol": "CCJ",
-      "sector": "uranium",
-      "price": 133.67,
-      "gain": 6.4,
-      "vol_ratio": 1.58,
-      "score_boost": 0.09740020389165982
-    },
-    {
-      "symbol": "MP",
-      "sector": "rare_earth",
-      "price": 62.16,
-      "gain": 5.2,
-      "vol_ratio": 1.55,
-      "score_boost": 0.09645142764131857
-    },
-    {
-      "symbol": "LEU",
-      "sector": "uranium",
-      "price": 301.5,
-      "gain": 9.8,
-      "vol_ratio": 1.52,
-      "score_boost": 0.09564135835097842
-    }
-  ],
-  "scan_time": "2026-01-30T08:51:04.637439-05:00"
+  "high_vol_run": [],
+  "scan_time": "2026-01-30T10:09:01.796477-05:00"
 }
