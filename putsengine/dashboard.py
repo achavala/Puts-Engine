@@ -925,225 +925,272 @@ def render_48hour_analysis():
 
 def render_big_movers_analysis():
     """
-    Render Big Movers Analysis tab - shows patterns from Jan 26-29, 2026.
-    This analysis shows what patterns SHOULD have been detected.
+    Render Big Movers Analysis tab - shows FUTURE PUT CANDIDATES organized by pattern type.
+    These are REAL-TIME candidates showing the same patterns as big movers from Jan 26-29.
     """
     st.markdown("""
-    <div class="section-header">📊 Big Movers Pattern Analysis (Jan 26-29, 2026)</div>
+    <div class="section-header">🎯 Future PUT Candidates by Pattern</div>
     """, unsafe_allow_html=True)
     
     st.markdown("""
-    **Deep Analysis:** Why did we miss 50 big movers? What patterns would have caught them?
-    This analysis uses institutional-grade pattern detection to identify what signals 
-    should have been detected 24-72 hours before the moves.
+    **Real-Time Pattern Detection:** These stocks are showing patterns NOW that led to big moves.
+    Use this to identify put opportunities 1-2 days BEFORE the crash.
     """)
     
-    # Load analysis from file or compute
-    analysis_file = Path(__file__).parent.parent / "big_movers_analysis.json"
+    # Load pattern scan results
+    pattern_file = Path(__file__).parent.parent / "pattern_scan_results.json"
     
-    if analysis_file.exists():
+    if pattern_file.exists():
         try:
-            with open(analysis_file, 'r') as f:
-                analysis_data = json.load(f)
+            with open(pattern_file, 'r') as f:
+                pattern_data = json.load(f)
         except:
-            analysis_data = None
+            pattern_data = None
     else:
-        analysis_data = None
+        pattern_data = None
     
-    if not analysis_data:
-        st.warning("No big movers analysis data found. Run the analysis script first.")
+    # Also load scheduled scan for earnings and sector data
+    scheduled_file = Path(__file__).parent.parent / "scheduled_scan_results.json"
+    scheduled_data = {}
+    if scheduled_file.exists():
+        try:
+            with open(scheduled_file, 'r') as f:
+                scheduled_data = json.load(f)
+        except:
+            pass
+    
+    # Refresh button
+    if st.button("🔄 Refresh Pattern Scan", key="refresh_patterns"):
+        st.info("Running pattern scan... This may take 30-60 seconds.")
+        import subprocess
+        try:
+            result = subprocess.run(
+                ["python3", "integrate_patterns.py"],
+                cwd=str(Path(__file__).parent.parent),
+                capture_output=True,
+                text=True,
+                timeout=120
+            )
+            if result.returncode == 0:
+                st.success("Pattern scan complete! Refresh page to see results.")
+                st.rerun()
+            else:
+                st.error(f"Scan failed: {result.stderr}")
+        except Exception as e:
+            st.error(f"Error running scan: {e}")
+    
+    if not pattern_data:
+        st.warning("No pattern scan data found. Click 'Refresh Pattern Scan' to generate candidates.")
         return
     
-    # Summary metrics
-    patterns = analysis_data.get("patterns", {})
-    universe = analysis_data.get("universe_coverage", {})
+    # Summary metrics - use correct JSON keys
+    pump_reversal = pattern_data.get("pump_reversal", [])
+    two_day_rally = pattern_data.get("two_day_rally", [])
+    high_vol_run = pattern_data.get("high_vol_run", [])
     
-    st.markdown("### 🎯 Detection Summary")
+    st.markdown("### 🎯 Future Candidates Summary")
     
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        pump_dump_count = len(patterns.get("pump_dump", []))
-        st.metric("💥 Pump-Dump", pump_dump_count, help="Stocks that pumped then dumped")
+        st.metric("💥 Pump Reversal", len(pump_reversal), help="Pumped stocks - watch for crash")
     
     with col2:
-        reversal_count = len(patterns.get("reversal_after_pump", []))
-        st.metric("↩️ Reversal Watch", reversal_count, help="2-day rallies that crashed")
+        st.metric("↩️ 2-Day Rally", len(two_day_rally), help="Exhaustion pattern candidates")
     
     with col3:
-        sudden_count = len(patterns.get("sudden_crash", []))
-        st.metric("⚡ Sudden Crash", sudden_count, help="Flat then big drop (earnings)")
+        st.metric("📈 High Vol Run", len(high_vol_run), help="Big gains on volume - institutions exiting?")
     
     with col4:
-        sector_count = len(patterns.get("sector_contagion", []))
-        st.metric("🔗 Sector Contagion", sector_count, help="Sectors with correlated moves")
+        # Get earnings candidates from scheduled data
+        earnings_upcoming = [c for c in scheduled_data.get("distribution", []) if "earnings" in str(c.get("signals", [])).lower()]
+        st.metric("⚡ Earnings Watch", len(earnings_upcoming), help="Stocks with earnings upcoming")
+    
+    scan_time = pattern_data.get("scan_time", "Unknown")
+    if scan_time != "Unknown":
+        try:
+            from datetime import datetime
+            dt = datetime.fromisoformat(scan_time.replace("Z", "+00:00"))
+            scan_time = dt.strftime("%Y-%m-%d %H:%M ET")
+        except:
+            pass
+    st.caption(f"Last scan: {scan_time}")
     
     st.divider()
     
-    # Pattern 1: Pump and Dump
-    st.markdown("### 💥 Pattern 1: Pump-and-Dump")
-    st.markdown("*Stocks that pumped big on Jan 27 then crashed Jan 28-29. Would catch with lowered threshold (3% vs 5%).*")
+    # =========================================================================
+    # Pattern 1: Pump Reversal Watch (FUTURE CANDIDATES)
+    # =========================================================================
+    st.markdown("### 💥 Pattern 1: Pump Reversal Watch")
+    st.markdown("*Stocks that pumped +3% in last 1-3 days. HIGH PROBABILITY of reversal crash. These are your primary targets.*")
     
-    pump_dump = patterns.get("pump_dump", [])
-    if pump_dump:
+    if pump_reversal:
         df_pump = pd.DataFrame([
             {
+                "⭐": "⭐" if len(p.get("signals", [])) >= 2 else "",
                 "Symbol": p["symbol"],
-                "Pump Day": p.get("pump_day", "Jan 27"),
-                "Pump %": f"+{p['pump_pct']:.1f}%",
-                "Dump %": f"{p['dump_pct']:.1f}%",
+                "Price": f"${p.get('price', 0):.2f}",
+                "Total Gain": f"+{p.get('total_gain', 0):.1f}%",
+                "1D": f"{p.get('gain_1d', 0):+.1f}%",
+                "2D": f"{p.get('gain_2d', 0):+.1f}%",
+                "3D": f"{p.get('gain_3d', 0):+.1f}%",
+                "Vol": f"{p.get('vol_ratio', 1):.1f}x",
+                "Signals": ", ".join(p.get("signals", [])[:2]) or "pumped",
                 "Sector": p.get("sector", "other"),
-                "Potential": "5x-10x" if abs(p['dump_pct']) >= 10 else "3x-5x"
+                "Potential": "5x-10x" if p.get("score_boost", 0) >= 0.18 else "3x-5x"
             }
-            for p in pump_dump
+            for p in pump_reversal[:15]
         ])
-        st.dataframe(df_pump, use_container_width=True, hide_index=True)
+        st.dataframe(df_pump, use_container_width=True, hide_index=True, height=400)
+        st.caption("⭐ = Multiple reversal signals detected (highest conviction)")
     else:
-        st.info("No pump-dump patterns found")
+        st.info("No pump reversal candidates found. Market may be quiet.")
     
     st.divider()
     
-    # Pattern 2: Reversal After Pump
-    st.markdown("### ↩️ Pattern 2: Reversal After Pump (2-Day Rally)")
-    st.markdown("*Stocks up Jan 27 AND Jan 28, then crashed Jan 29. Classic exhaustion pattern.*")
+    # =========================================================================
+    # Pattern 2: Two-Day Rally (Exhaustion Setup)
+    # =========================================================================
+    st.markdown("### ↩️ Pattern 2: Two-Day Rally (Exhaustion)")
+    st.markdown("*Stocks UP two consecutive days. Classic exhaustion setup - typically crashes on day 3-4.*")
     
-    reversal = patterns.get("reversal_after_pump", [])
-    if reversal:
-        df_reversal = pd.DataFrame([
+    if two_day_rally:
+        df_rally = pd.DataFrame([
             {
                 "Symbol": p["symbol"],
-                "Pump Days": p.get("pump_days", "N/A"),
-                "Crash %": f"{p['crash_pct']:.1f}%",
+                "Price": f"${p.get('price', 0):.2f}",
+                "Day 1": f"+{p.get('day1', 0):.1f}%",
+                "Day 2": f"+{p.get('day2', 0):.1f}%",
+                "Total": f"+{p.get('total', 0):.1f}%",
                 "Sector": p.get("sector", "other"),
-                "Potential": "5x-10x" if abs(p['crash_pct']) >= 10 else "3x-5x"
+                "Potential": "3x-5x"
             }
-            for p in reversal
+            for p in two_day_rally[:12]
         ])
-        st.dataframe(df_reversal, use_container_width=True, hide_index=True)
+        st.dataframe(df_rally, use_container_width=True, hide_index=True, height=350)
     else:
-        st.info("No reversal patterns found")
+        st.info("No two-day rally exhaustion candidates found.")
     
     st.divider()
     
-    # Pattern 3: Sudden Crash
-    st.markdown("### ⚡ Pattern 3: Sudden Crash (Earnings-Driven)")
-    st.markdown("*Stocks that were flat then crashed. Often earnings or news driven. Requires catalyst calendar integration.*")
+    # =========================================================================
+    # Pattern 3: High Volume Run (Institutions Exiting?)
+    # =========================================================================
+    st.markdown("### 📈 Pattern 3: High Volume Run")
+    st.markdown("*Big gains (+5%+) on above-average volume. Often institutions SELLING into strength. Watch for reversal.*")
     
-    sudden = patterns.get("sudden_crash", [])
-    if sudden:
-        df_sudden = pd.DataFrame([
+    if high_vol_run:
+        df_vol = pd.DataFrame([
             {
                 "Symbol": p["symbol"],
-                "Pre-Crash": p.get("pre_crash", "Flat"),
-                "Crash Day": p.get("crash_day", "Jan 29"),
-                "Crash %": f"{p['crash_pct']:.1f}%",
-                "Catalyst": "Earnings" if p["symbol"] in ["MSFT", "SNOW", "NOW"] else "Unknown"
+                "Price": f"${p.get('price', 0):.2f}",
+                "Gain": f"+{p.get('gain', 0):.1f}%",
+                "Volume": f"{p.get('vol_ratio', 1):.1f}x avg",
+                "Sector": p.get("sector", "other"),
+                "Potential": "3x-5x"
             }
-            for p in sudden
+            for p in high_vol_run[:10]
         ])
-        st.dataframe(df_sudden, use_container_width=True, hide_index=True)
+        st.dataframe(df_vol, use_container_width=True, hide_index=True)
     else:
-        st.info("No sudden crash patterns found")
+        st.info("No high volume run candidates found.")
     
     st.divider()
     
-    # Pattern 4: Sector Contagion
-    st.markdown("### 🔗 Pattern 4: Sector Contagion")
-    st.markdown("*Multiple stocks in the same sector moved together. Boost sector peers when leader moves.*")
+    # =========================================================================
+    # Pattern 4: Sector Contagion Watch
+    # =========================================================================
+    st.markdown("### 🔗 Pattern 4: Sector Contagion Watch")
+    st.markdown("*Sectors with multiple stocks showing weakness. When one crashes, others follow.*")
     
-    contagion = patterns.get("sector_contagion", [])
-    if contagion:
-        for p in contagion:
-            with st.expander(f"**{p['sector'].upper()}** ({p['count']} stocks)", expanded=True):
-                st.write(f"**Symbols:** {', '.join(p['symbols'])}")
-                st.write(f"**Action:** When any of these moves -3%+, watch others for sympathy move")
+    # Group pump_reversal candidates by sector
+    sector_groups = {}
+    for p in pump_reversal:
+        sector = p.get("sector", "other")
+        if sector != "other":
+            if sector not in sector_groups:
+                sector_groups[sector] = []
+            sector_groups[sector].append(p)
+    
+    # Filter to sectors with 2+ candidates
+    contagion_sectors = {k: v for k, v in sector_groups.items() if len(v) >= 2}
+    
+    if contagion_sectors:
+        for sector, stocks in sorted(contagion_sectors.items(), key=lambda x: len(x[1]), reverse=True):
+            with st.expander(f"**{sector.upper().replace('_', ' ')}** ({len(stocks)} stocks at risk)", expanded=True):
+                symbols = [s["symbol"] for s in stocks]
+                st.write(f"**At Risk:** {', '.join(symbols)}")
+                avg_gain = sum(s.get("total_gain", 0) for s in stocks) / len(stocks)
+                st.write(f"**Avg Pump:** +{avg_gain:.1f}%")
+                st.write("**Strategy:** If ANY of these drops -3%+, buy puts on ALL of them")
     else:
-        st.info("No sector contagion patterns found")
+        st.info("No sector contagion patterns detected (need 2+ stocks in same sector pumping).")
     
     st.divider()
     
-    # Universe Coverage
-    st.markdown("### 🌐 Universe Coverage Analysis")
+    # =========================================================================
+    # All Candidates Summary Table
+    # =========================================================================
+    st.markdown("### 📋 All Future PUT Candidates")
+    st.markdown("*Combined view of all pattern candidates sorted by conviction*")
     
-    coverage_pct = universe.get("coverage_pct", 0)
-    in_universe = universe.get("in_universe", [])
-    not_in_universe = universe.get("not_in_universe", [])
+    # Combine all candidates
+    all_candidates = []
     
-    col1, col2 = st.columns(2)
+    for p in pump_reversal:
+        all_candidates.append({
+            "Symbol": p["symbol"],
+            "Pattern": "💥 Pump Reversal",
+            "Price": p.get("price", 0),
+            "Gain/Move": p.get("total_gain", 0),
+            "Signals": len(p.get("signals", [])),
+            "Sector": p.get("sector", "other"),
+            "Score Boost": p.get("score_boost", 0.1)
+        })
     
-    with col1:
-        st.metric("Coverage", f"{coverage_pct:.0f}%", help="% of big movers in our scan universe")
-        if in_universe:
-            st.success(f"**In Universe ({len(in_universe)}):** {', '.join(in_universe[:10])}...")
+    for p in two_day_rally:
+        all_candidates.append({
+            "Symbol": p["symbol"],
+            "Pattern": "↩️ 2-Day Rally",
+            "Price": p.get("price", 0),
+            "Gain/Move": p.get("total", 0),
+            "Signals": 1,
+            "Sector": p.get("sector", "other"),
+            "Score Boost": p.get("score_boost", 0.1)
+        })
     
-    with col2:
-        if not_in_universe:
-            st.error(f"**Missing ({len(not_in_universe)}):** {', '.join(not_in_universe)}")
-            st.caption("These tickers need to be added to the scan universe")
+    for p in high_vol_run:
+        all_candidates.append({
+            "Symbol": p["symbol"],
+            "Pattern": "📈 High Vol Run",
+            "Price": p.get("price", 0),
+            "Gain/Move": p.get("gain", 0),
+            "Signals": 1,
+            "Sector": p.get("sector", "other"),
+            "Score Boost": p.get("score_boost", 0.1)
+        })
     
-    st.divider()
-    
-    # Recommendations
-    st.markdown("### 🔧 Recommended Fixes (Already Implemented)")
-    
-    with st.expander("P0 - CRITICAL (Catches 70%)", expanded=True):
-        st.markdown("""
-        ✅ **Lower Pump-Dump threshold from +5% to +3%**
-        - Would have caught: NET, CLS, BBAI, MP, BE, PL
+    if all_candidates:
+        # Sort by score boost (highest conviction first)
+        all_candidates.sort(key=lambda x: x["Score Boost"], reverse=True)
         
-        ✅ **Add Reversal Watch for 2-day pumps**
-        - Would have caught: UUUU, OKLO, FSLR, LEU, SMR
-        
-        ✅ **Lower Multi-Day Weakness threshold**
-        - Would have caught: JOBY, RGTI, QUBT
-        """)
-    
-    with st.expander("P1 - HIGH (Catches 20%)"):
-        st.markdown("""
-        ✅ **Add missing tickers to universe**
-        - Added: RR, EOSE, CRWV, RCAT, SERV
-        
-        ✅ **Enhance Sector Correlation Scanner**
-        - Now triggers on 2+ symbols moving same direction
-        
-        🔄 **Add Momentum Exhaustion detector**
-        - For stocks up >10% in a week
-        """)
-    
-    with st.expander("P2 - MEDIUM (Catches 10%)"):
-        st.markdown("""
-        ⏳ **Integrate real-time earnings calendar**
-        - Would have caught: MSFT, SNOW
-        
-        ⏳ **Add Resistance Rejection pattern**
-        - At 52-week highs
-        
-        ⏳ **Track dark pool selling**
-        - Before crashes
-        """)
-    
-    # Big Movers Table (from user data)
-    st.divider()
-    st.markdown("### 📋 Complete Big Movers Table (Jan 26-29)")
-    
-    big_movers = analysis_data.get("big_movers", {})
-    if big_movers:
-        df_movers = pd.DataFrame([
+        df_all = pd.DataFrame([
             {
-                "Symbol": symbol,
-                "Jan 26": f"{data['jan26']:+.1f}%" if data['jan26'] else "—",
-                "Jan 27": f"{data['jan27']:+.1f}%" if data['jan27'] else "—",
-                "Jan 28": f"{data['jan28']:+.1f}%" if data['jan28'] else "—",
-                "Jan 29": f"{data['jan29']:+.1f}%" if data['jan29'] else "—",
-                "Max Down": f"{data['max_down']:.1f}%",
-                "Sector": get_sector(symbol)
+                "Symbol": c["Symbol"],
+                "Pattern": c["Pattern"],
+                "Price": f"${c['Price']:.2f}",
+                "Gain": f"+{c['Gain/Move']:.1f}%",
+                "Signals": c["Signals"],
+                "Sector": c["Sector"],
+                "Boost": f"+{c['Score Boost']:.2f}"
             }
-            for symbol, data in big_movers.items()
+            for c in all_candidates[:25]
         ])
-        df_movers = df_movers.sort_values("Max Down")
-        st.dataframe(df_movers, use_container_width=True, hide_index=True, height=500)
+        st.dataframe(df_all, use_container_width=True, hide_index=True, height=500)
+    else:
+        st.info("No candidates found. Run pattern scan to populate.")
     
-    st.caption(f"Analysis generated: {analysis_data.get('analysis_date', 'Unknown')}")
+    st.caption(f"Total candidates: {len(all_candidates)} | Last updated: {scan_time}")
 
 
 def render_ledger_view():
