@@ -1378,7 +1378,7 @@ def render_big_movers_analysis():
     else:
         st.info("No candidates found. Run pattern scan to populate.")
     
-    st.caption(f"Total candidates: {len(all_candidates)} | Last updated: {scan_time}")
+    st.caption(f"Total candidates: {len(all_candidates)} | Last updated: {scan_time_display}")
 
 
 def render_ledger_view():
