@@ -166,23 +166,40 @@ def load_validated_candidates():
     Load validated candidates from scheduled scan results.
     
     Priority order:
-    1. scheduled_scan_results.json (fresh scan data)
-    2. dashboard_candidates.json (fallback for historical analysis)
+    1. scheduled_scan_results.json (fresh scan data with candidates)
+    2. If empty, populate from pattern_scan_results.json
+    3. dashboard_candidates.json (fallback for historical analysis)
     """
-    # First try scheduled scan results (FRESH DATA)
     scheduled_path = Path(__file__).parent.parent / "scheduled_scan_results.json"
+    pattern_path = Path(__file__).parent.parent / "pattern_scan_results.json"
+    
+    # First try scheduled scan results (FRESH DATA)
     if scheduled_path.exists():
         try:
             with open(scheduled_path, "r") as f:
                 data = json.load(f)
-            # Check if data is recent (within last 24 hours)
-            last_scan = data.get("last_scan", "")
-            if last_scan:
-                # Add metadata for display
+            
+            # Check if data has actual candidates
+            total_candidates = (
+                len(data.get("gamma_drain", [])) +
+                len(data.get("distribution", [])) +
+                len(data.get("liquidity", []))
+            )
+            
+            if total_candidates > 0:
+                # Good data - return it
+                last_scan = data.get("last_scan", "")
                 data["data_source"] = "SCHEDULED_SCAN"
-                data["analysis_date"] = last_scan[:10]  # Extract date portion
-                data["next_week_start"] = last_scan[:10]
+                data["analysis_date"] = last_scan[:10] if last_scan else ""
+                data["next_week_start"] = last_scan[:10] if last_scan else ""
                 return data
+            
+            # Empty data - try to populate from patterns
+            if pattern_path.exists():
+                data = _populate_from_patterns_dashboard(pattern_path, scheduled_path)
+                if data:
+                    return data
+                    
         except Exception:
             pass
     
@@ -195,6 +212,118 @@ def load_validated_candidates():
         with open(json_path, "r") as f:
             data = json.load(f)
         return data
+    except Exception as e:
+        return None
+
+
+def _populate_from_patterns_dashboard(pattern_path: Path, scheduled_path: Path):
+    """Populate scheduled results from pattern data when empty."""
+    from datetime import datetime
+    import pytz
+    ET = pytz.timezone('US/Eastern')
+    
+    try:
+        with open(pattern_path) as f:
+            patterns = json.load(f)
+        
+        pump_reversal = patterns.get("pump_reversal", [])
+        two_day_rally = patterns.get("two_day_rally", [])
+        high_vol_run = patterns.get("high_vol_run", [])
+        
+        if not pump_reversal and not two_day_rally and not high_vol_run:
+            return None
+        
+        gamma_drain = []
+        distribution = []
+        liquidity = []
+        
+        for pr in pump_reversal:
+            candidate = {
+                "symbol": pr["symbol"],
+                "current_price": pr.get("price", 0),
+                "close": pr.get("price", 0),
+                "score": round(0.45 + pr.get("score_boost", 0.1), 4),
+                "signals": pr.get("signals", []) + ["pump_reversal"],
+                "sector": pr.get("sector", "other"),
+                "pattern_enhanced": True,
+                "pattern_boost": pr.get("score_boost", 0.1),
+                "strike": pr.get("strike"),
+                "strike_display": pr.get("strike_display"),
+                "expiry": pr.get("expiry"),
+                "expiry_display": pr.get("expiry_display"),
+                "dte": pr.get("dte"),
+                "otm_pct": pr.get("otm_pct"),
+                "delta_target": pr.get("delta_target"),
+                "potential_mult": pr.get("potential_mult")
+            }
+            if "exhaustion" in pr.get("signals", []) or "high_vol_red" in pr.get("signals", []):
+                gamma_drain.append(candidate)
+            else:
+                distribution.append(candidate)
+        
+        for pr in two_day_rally:
+            candidate = {
+                "symbol": pr["symbol"],
+                "current_price": pr.get("price", 0),
+                "close": pr.get("price", 0),
+                "score": round(0.40 + pr.get("score_boost", 0.1), 4),
+                "signals": ["two_day_rally"],
+                "sector": pr.get("sector", "other"),
+                "pattern_enhanced": True,
+                "pattern_boost": pr.get("score_boost", 0.1),
+                "strike": pr.get("strike"),
+                "strike_display": pr.get("strike_display"),
+                "expiry": pr.get("expiry"),
+                "expiry_display": pr.get("expiry_display"),
+                "dte": pr.get("dte")
+            }
+            liquidity.append(candidate)
+        
+        for pr in high_vol_run:
+            candidate = {
+                "symbol": pr["symbol"],
+                "current_price": pr.get("price", 0),
+                "close": pr.get("price", 0),
+                "score": round(0.42 + pr.get("score_boost", 0.1), 4),
+                "signals": ["high_vol_run"],
+                "sector": pr.get("sector", "other"),
+                "pattern_enhanced": True,
+                "pattern_boost": pr.get("score_boost", 0.1),
+                "strike": pr.get("strike"),
+                "strike_display": pr.get("strike_display"),
+                "expiry": pr.get("expiry"),
+                "expiry_display": pr.get("expiry_display"),
+                "dte": pr.get("dte")
+            }
+            gamma_drain.append(candidate)
+        
+        # Sort
+        gamma_drain.sort(key=lambda x: x["score"], reverse=True)
+        distribution.sort(key=lambda x: x["score"], reverse=True)
+        liquidity.sort(key=lambda x: x["score"], reverse=True)
+        
+        now = datetime.now(ET)
+        scan_results = {
+            "gamma_drain": gamma_drain[:20],
+            "distribution": distribution[:20],
+            "liquidity": liquidity[:15],
+            "last_scan": now.isoformat(),
+            "scan_type": "pattern_auto_populated",
+            "market_regime": {"is_tradeable": True, "regime": "pattern_based"},
+            "tickers_scanned": len(pump_reversal) + len(two_day_rally) + len(high_vol_run),
+            "errors": [],
+            "total_candidates": len(gamma_drain) + len(distribution) + len(liquidity),
+            "data_source": "PATTERN_POPULATED",
+            "analysis_date": now.strftime("%Y-%m-%d"),
+            "next_week_start": now.strftime("%Y-%m-%d")
+        }
+        
+        # Save for persistence
+        with open(scheduled_path, 'w') as f:
+            json.dump(scan_results, f, indent=2, default=str)
+        
+        return scan_results
+        
     except Exception as e:
         return None
 
