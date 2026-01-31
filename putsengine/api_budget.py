@@ -1,26 +1,31 @@
 """
 Unusual Whales API Budget Manager
 
-STRATEGY: Distribute 6,000 daily API calls wisely across trading day.
+STRATEGY: Distribute 7,500 daily API calls wisely across trading day.
 
 PROBLEM: 
-- 175 tickers × 3-5 API calls/ticker × 13 scans/day = 11,000+ calls (OVER BUDGET)
-- Current implementation burns calls in first 2 hours
+- 200+ tickers × 3-5 API calls/ticker × 19 scans/day = high call volume
+- Rate limit of 120 req/min can cause throttling
 
 SOLUTION:
-- Tiered scanning (Priority 1/2/3 tickers get different call allocations)
+- BATCHED SCANNING: Split tickers into 3 batches of ~100, wait 65s between batches
 - Time-window budgets (not all scans are equal)
 - Caching (don't re-fetch unchanged data)
-- Skip UW for low-score tickers (use Alpaca only)
+- Rate limit protection (100 req/min to stay under 120 limit)
 
-DAILY BUDGET ALLOCATION (6,000 calls):
-├── Pre-Market (4:00-9:30 AM):     300 calls  (5%)  - Index GEX only
-├── Opening Range (9:30-10:30 AM): 1,500 calls (25%) - Full scan top 50
-├── Mid-Morning (10:30-12:00 PM):  1,200 calls (20%) - Active signals only
-├── Midday (12:00-2:00 PM):         600 calls (10%) - Maintenance scan
-├── Afternoon (2:00-3:30 PM):      1,500 calls (25%) - Full scan top 50
-├── Close (3:30-4:00 PM):           600 calls (10%) - Final confirmation
-└── After Hours:                    300 calls  (5%)  - Summary only
+DAILY BUDGET ALLOCATION (7,500 calls):
+├── Pre-Market (4:00-9:00 AM):     800 calls  (10.7%)  - 4 scans × 200 tickers
+├── Market Open (9:30 AM):         400 calls  (5.3%)   - Full scan all
+├── Regular Hours (10:00-3:30 PM): 4,400 calls (58.7%) - 11 scans × 200 tickers
+├── Market Close (4:00 PM):        400 calls  (5.3%)   - Full scan all
+├── End of Day (5:00 PM):          400 calls  (5.3%)   - Final summary
+└── Buffer/Retries:               1,100 calls (14.7%)  - For retries and manual
+
+RATE LIMIT STRATEGY:
+- Split 300 tickers into 3 batches of 100
+- Process each batch at max 100 req/min (safe under 120 limit)
+- Wait 65 seconds between batches (rate limit reset)
+- Result: ALL tickers scanned, ZERO misses
 """
 
 import asyncio
@@ -75,15 +80,15 @@ class APIBudget:
         return int(self.total_calls * self.priority_3_pct)
 
 
-# Budget allocation per time window
+# Budget allocation per time window (UPDATED FOR 7,500 daily limit)
 WINDOW_BUDGETS: Dict[TimeWindow, APIBudget] = {
-    TimeWindow.PRE_MARKET: APIBudget(TimeWindow.PRE_MARKET, 300),
-    TimeWindow.OPENING_RANGE: APIBudget(TimeWindow.OPENING_RANGE, 1500),
-    TimeWindow.MID_MORNING: APIBudget(TimeWindow.MID_MORNING, 1200),
-    TimeWindow.MIDDAY: APIBudget(TimeWindow.MIDDAY, 600, 0.80, 0.20, 0.00),  # Skip P3 midday
-    TimeWindow.AFTERNOON: APIBudget(TimeWindow.AFTERNOON, 1500),
-    TimeWindow.CLOSE: APIBudget(TimeWindow.CLOSE, 600),
-    TimeWindow.AFTER_HOURS: APIBudget(TimeWindow.AFTER_HOURS, 600, 0.50, 0.30, 0.20),  # Allow P2/P3 for manual scans
+    TimeWindow.PRE_MARKET: APIBudget(TimeWindow.PRE_MARKET, 800),      # 4 scans (4, 6, 8, 9 AM)
+    TimeWindow.OPENING_RANGE: APIBudget(TimeWindow.OPENING_RANGE, 800),  # Market open + 10:00
+    TimeWindow.MID_MORNING: APIBudget(TimeWindow.MID_MORNING, 1500),    # 10:30-12:00 (4 scans)
+    TimeWindow.MIDDAY: APIBudget(TimeWindow.MIDDAY, 1000),              # 12:00-2:00 (4 scans)
+    TimeWindow.AFTERNOON: APIBudget(TimeWindow.AFTERNOON, 1500),       # 2:00-3:30 (4 scans)
+    TimeWindow.CLOSE: APIBudget(TimeWindow.CLOSE, 800),                # 4:00 PM close
+    TimeWindow.AFTER_HOURS: APIBudget(TimeWindow.AFTER_HOURS, 1100),   # 5:00 PM + buffer
 }
 
 
@@ -101,7 +106,7 @@ class APIBudgetManager:
             manager.record_call(symbol)
     """
     
-    daily_limit: int = 6000
+    daily_limit: int = 7500  # Increased from 6000
     _calls_today: int = 0
     _calls_reset_date: date = field(default_factory=date.today)
     _window_calls: Dict[TimeWindow, int] = field(default_factory=dict)

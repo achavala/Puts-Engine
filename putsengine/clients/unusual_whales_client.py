@@ -4,14 +4,19 @@ Provides institutional flow detection, dark pool data, and options analytics.
 
 API Documentation: https://api.unusualwhales.com/docs
 
-BUDGET STRATEGY (6,000 calls/day):
-├── Pre-Market (4:00-9:30 AM):     300 calls  (5%)  - Index GEX only
-├── Opening Range (9:30-10:30 AM): 1,500 calls (25%) - Full scan top 50
-├── Mid-Morning (10:30-12:00 PM):  1,200 calls (20%) - Active signals only
-├── Midday (12:00-2:00 PM):         600 calls (10%) - Maintenance scan
-├── Afternoon (2:00-3:30 PM):      1,500 calls (25%) - Full scan top 50
-├── Close (3:30-4:00 PM):           600 calls (10%) - Final confirmation
-└── After Hours:                    300 calls  (5%)  - Summary only
+BUDGET STRATEGY (7,500 calls/day with 19 scans):
+├── Pre-Market (4:00-9:00 AM):     800 calls  - 4 scans × all tickers
+├── Market Open (9:30-10:00 AM):   800 calls  - Full scan all
+├── Regular Hours (10:00-3:30 PM): 4,000 calls - 11 scans × all tickers  
+├── Market Close (4:00 PM):        800 calls  - Full scan all
+├── End of Day (5:00 PM):          400 calls  - Final summary
+└── Buffer:                        700 calls  - For retries
+
+RATE LIMIT STRATEGY (120 req/min limit):
+- Batch tickers into groups of 100
+- Wait 65 seconds between batches (rate limit reset)
+- Use 0.6s interval within batch (100 req/min, safe under 120)
+- Result: ALL tickers scanned per scan, ZERO misses
 """
 
 import asyncio
@@ -42,8 +47,9 @@ class UnusualWhalesClient:
 
     BASE_URL = "https://api.unusualwhales.com"
     
-    # Rate limiting: increased interval to prevent 429s
-    MIN_REQUEST_INTERVAL = 0.5  # 500ms between requests (2 req/sec max)
+    # Rate limiting: 0.6s = 100 req/min (safe under 120 limit)
+    # When batched: 100 tickers × 0.6s = 60s per batch, then wait 65s
+    MIN_REQUEST_INTERVAL = 0.6  # 600ms between requests (100 req/min max)
 
     def __init__(self, settings: Settings):
         self.settings = settings
