@@ -203,7 +203,7 @@ class PutsEngineScheduler:
         11  4:00 PM     Market Close
         12  5:00 PM     End of Day
         """
-        # Pre-market scans (4 scans)
+        # Pre-market scans (4 scans at :15)
         self.scheduler.add_job(
             self._run_scan_wrapper,
             CronTrigger(hour=4, minute=15, timezone=EST),
@@ -240,7 +240,8 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        # Regular scans (6 scans at strategic times)
+        # Regular scans during market hours (6 scans)
+        # 10:15 AM
         self.scheduler.add_job(
             self._run_scan_wrapper,
             CronTrigger(hour=10, minute=15, timezone=EST),
@@ -250,6 +251,7 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
+        # 11:15 AM
         self.scheduler.add_job(
             self._run_scan_wrapper,
             CronTrigger(hour=11, minute=15, timezone=EST),
@@ -259,6 +261,7 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
+        # 12:45 PM
         self.scheduler.add_job(
             self._run_scan_wrapper,
             CronTrigger(hour=12, minute=45, timezone=EST),
@@ -268,6 +271,7 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
+        # 1:45 PM
         self.scheduler.add_job(
             self._run_scan_wrapper,
             CronTrigger(hour=13, minute=45, timezone=EST),
@@ -277,6 +281,7 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
+        # 2:45 PM
         self.scheduler.add_job(
             self._run_scan_wrapper,
             CronTrigger(hour=14, minute=45, timezone=EST),
@@ -286,6 +291,7 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
+        # 3:15 PM
         self.scheduler.add_job(
             self._run_scan_wrapper,
             CronTrigger(hour=15, minute=15, timezone=EST),
