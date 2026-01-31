@@ -1,16 +1,20 @@
 """
 PutsEngine Scheduled Scanner Service.
 
-FINAL SCHEDULE: 19 scans/day (ET):
+FINAL SCHEDULE: 12 scans/day (ET):
 #   Time (ET)    Label
-1   4:00 AM      Pre-Market #1
-2   6:00 AM      Pre-Market #2
-3   8:00 AM      Pre-Market #3
-4   9:00 AM      Pre-Market #4
-5   9:30 AM      Market Open
-6-16 10:00-3:30  Every 30 min (11 scans)
-17  4:00 PM      Market Close
-18  5:00 PM      End of Day
+1   4:15 AM      Pre-Market #1
+2   6:15 AM      Pre-Market #2
+3   8:15 AM      Pre-Market #3
+4   9:15 AM      Pre-Market #4
+5   10:15 AM     Regular
+6   11:15 AM     Regular
+7   12:45 PM     Regular
+8   1:45 PM      Regular
+9   2:45 PM      Regular
+10  3:15 PM      Regular
+11  4:00 PM      Market Close
+12  5:00 PM      End of Day
 
 BATCHED SCANNING STRATEGY:
 - All tickers (universe + dynamic) scanned in EVERY scan
@@ -184,78 +188,112 @@ class PutsEngineScheduler:
         """
         Configure all scheduled scan jobs.
         
-        FINAL SCHEDULE (19 scans/day, ET):
+        FINAL SCHEDULE (12 scans/day, ET):
         #   Time        Label
-        1   4:00 AM     Pre-Market #1
-        2   6:00 AM     Pre-Market #2
-        3   8:00 AM     Pre-Market #3
-        4   9:00 AM     Pre-Market #4
-        5   9:30 AM     Market Open
-        6-16 10:00-3:30 Every 30 min (11 scans)
-        17  4:00 PM     Market Close
-        18  5:00 PM     End of Day
+        1   4:15 AM     Pre-Market #1
+        2   6:15 AM     Pre-Market #2
+        3   8:15 AM     Pre-Market #3
+        4   9:15 AM     Pre-Market #4
+        5   10:15 AM    Regular
+        6   11:15 AM    Regular
+        7   12:45 PM    Regular
+        8   1:45 PM     Regular
+        9   2:45 PM     Regular
+        10  3:15 PM     Regular
+        11  4:00 PM     Market Close
+        12  5:00 PM     End of Day
         """
         # Pre-market scans (4 scans)
         self.scheduler.add_job(
             self._run_scan_wrapper,
-            CronTrigger(hour=4, minute=0, timezone=EST),
+            CronTrigger(hour=4, minute=15, timezone=EST),
             args=["pre_market_1"],
             id="pre_market_1",
-            name="Pre-Market Scan #1 (4:00 AM ET)",
+            name="Pre-Market Scan #1 (4:15 AM ET)",
             replace_existing=True
         )
         
         self.scheduler.add_job(
             self._run_scan_wrapper,
-            CronTrigger(hour=6, minute=0, timezone=EST),
+            CronTrigger(hour=6, minute=15, timezone=EST),
             args=["pre_market_2"],
             id="pre_market_2",
-            name="Pre-Market Scan #2 (6:00 AM ET)",
+            name="Pre-Market Scan #2 (6:15 AM ET)",
             replace_existing=True
         )
         
         self.scheduler.add_job(
             self._run_scan_wrapper,
-            CronTrigger(hour=8, minute=0, timezone=EST),
+            CronTrigger(hour=8, minute=15, timezone=EST),
             args=["pre_market_3"],
             id="pre_market_3",
-            name="Pre-Market Scan #3 (8:00 AM ET)",
+            name="Pre-Market Scan #3 (8:15 AM ET)",
             replace_existing=True
         )
         
-        # NEW: 9:00 AM Pre-Market #4
         self.scheduler.add_job(
             self._run_scan_wrapper,
-            CronTrigger(hour=9, minute=0, timezone=EST),
+            CronTrigger(hour=9, minute=15, timezone=EST),
             args=["pre_market_4"],
             id="pre_market_4",
-            name="Pre-Market Scan #4 (9:00 AM ET)",
+            name="Pre-Market Scan #4 (9:15 AM ET)",
             replace_existing=True
         )
         
-        # Market open scan
+        # Regular scans (6 scans at strategic times)
         self.scheduler.add_job(
             self._run_scan_wrapper,
-            CronTrigger(hour=9, minute=30, timezone=EST),
-            args=["market_open"],
-            id="market_open",
-            name="Market Open Scan (9:30 AM ET)",
+            CronTrigger(hour=10, minute=15, timezone=EST),
+            args=["regular"],
+            id="regular_1015",
+            name="Regular Scan (10:15 AM ET)",
             replace_existing=True
         )
         
-        # Regular 30-minute scans (10:00 AM to 3:30 PM = 11 scans)
-        # 10:00, 10:30, 11:00, 11:30, 12:00, 12:30, 1:00, 1:30, 2:00, 2:30, 3:00, 3:30
-        for hour in range(10, 16):
-            for minute in [0, 30]:
-                job_id = f"regular_{hour:02d}{minute:02d}"
-                self.scheduler.add_job(
-                    self._run_scan_wrapper,
-                    CronTrigger(hour=hour, minute=minute, timezone=EST),
-                    args=["regular"],
-                    id=job_id,
-                    name=f"Regular Scan ({hour:02d}:{minute:02d} ET)",
-                    replace_existing=True
-                )
+        self.scheduler.add_job(
+            self._run_scan_wrapper,
+            CronTrigger(hour=11, minute=15, timezone=EST),
+            args=["regular"],
+            id="regular_1115",
+            name="Regular Scan (11:15 AM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_scan_wrapper,
+            CronTrigger(hour=12, minute=45, timezone=EST),
+            args=["regular"],
+            id="regular_1245",
+            name="Regular Scan (12:45 PM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_scan_wrapper,
+            CronTrigger(hour=13, minute=45, timezone=EST),
+            args=["regular"],
+            id="regular_1345",
+            name="Regular Scan (1:45 PM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_scan_wrapper,
+            CronTrigger(hour=14, minute=45, timezone=EST),
+            args=["regular"],
+            id="regular_1445",
+            name="Regular Scan (2:45 PM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_scan_wrapper,
+            CronTrigger(hour=15, minute=15, timezone=EST),
+            args=["regular"],
+            id="regular_1515",
+            name="Regular Scan (3:15 PM ET)",
+            replace_existing=True
+        )
         
         # Market close scan (4:00 PM)
         self.scheduler.add_job(
@@ -267,7 +305,7 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        # NEW: End of Day scan (5:00 PM)
+        # End of Day scan (5:00 PM)
         self.scheduler.add_job(
             self._run_scan_wrapper,
             CronTrigger(hour=17, minute=0, timezone=EST),
