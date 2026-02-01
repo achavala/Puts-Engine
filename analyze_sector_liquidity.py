@@ -70,8 +70,10 @@ async def analyze_sector_liquidity(symbol: str = "T"):
     print(f"PEERS ANALYZED: {sector_context['peer_count']}")
     print()
     
-    print("PEER LIQUIDITY STATUS:")
-    print("-" * 60)
+    print("PEER LIQUIDITY STATUS (WEIGHTED):")
+    print("-" * 70)
+    print(f"   {'PEER':6} | {'WEIGHT':6} | {'SIGNALS':30} | {'SAME-SIGNAL':10}")
+    print("-" * 70)
     for peer in sector_context['peer_details']:
         signals = []
         if peer['bid_collapse']:
@@ -82,7 +84,9 @@ async def analyze_sector_liquidity(symbol: str = "T"):
             signals.append("VWAP_LOSS")
         
         signal_str = ", ".join(signals) if signals else "No signals"
-        print(f"   {peer['symbol']:6} | {signal_str}")
+        same_signal = "✓ MATCH" if peer.get('same_signal_match', False) else "-"
+        weight = peer.get('weight', 0.5)
+        print(f"   {peer['symbol']:6} | {weight:6.2f} | {signal_str:30} | {same_signal:10}")
     
     print()
     print("SECTOR SUMMARY:")
@@ -90,7 +94,12 @@ async def analyze_sector_liquidity(symbol: str = "T"):
     print(f"   Peers with Bid Collapse:    {sector_context['peers_with_bid_collapse']}")
     print(f"   Peers with Spread Widening: {sector_context['peers_with_spread_widening']}")
     print(f"   Peers with VWAP Loss:       {sector_context['peers_with_vwap_loss']}")
-    print(f"   Sector Liquidity Ratio:     {sector_context['sector_liquidity_ratio']:.0%}")
+    print()
+    print("ARCHITECT-4 METRICS:")
+    print("-" * 40)
+    print(f"   Unweighted Ratio:           {sector_context['sector_liquidity_ratio']:.0%}")
+    print(f"   WEIGHTED Ratio:             {sector_context.get('weighted_sector_ratio', 0):.0%}")
+    print(f"   Same-Signal Ratio:          {sector_context.get('same_signal_ratio', 0):.0%}")
     print()
     print(f"   CONTEXT TYPE: {sector_context['context_type']}")
     print(f"   IS SECTOR-WIDE: {'YES' if sector_context['is_sector_wide'] else 'NO'}")

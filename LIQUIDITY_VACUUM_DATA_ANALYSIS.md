@@ -567,40 +567,57 @@ return current_wide and persistence_pct >= 0.60
 
 ```python
 async def analyze_sector_context(symbol, vacuum):
-    # Get sector peers
+    # Get sector peers with LIQUIDITY WEIGHTS
     peers = _get_sector_peers(symbol, max_peers=5)
     
-    # Quick liquidity checks on each peer
+    # Market cap weights (mega=1.0, mid=0.5, small=0.25)
+    MEGA_CAP_STOCKS = {"T": 0.9, "VZ": 0.9, "TMUS": 0.85, ...}
+    
     for peer in peers:
-        # Check bid collapse, spread widening, VWAP loss
-        ...
+        weight = _get_peer_weight(peer)  # VZ=0.9, GSAT=0.3
+        
+        # REFINEMENT 2: Same-signal check
+        same_signal = (
+            (target_bid_collapse AND peer_bid_collapse) OR
+            (target_spread_wide AND peer_spread_wide)
+        )
     
-    # Calculate sector liquidity ratio
-    sector_liquidity_ratio = peers_with_issues / peer_count
+    # REFINEMENT 1: Weighted aggregation
+    weighted_ratio = weighted_issues / total_weight
     
-    # Determine context type
-    if sector_liquidity_ratio >= 0.50:
+    # Require BOTH weighted ratio AND same-signal for SECTOR_WIDE
+    if weighted_ratio >= 0.50 AND same_signal_count >= 1:
         context_type = "SECTOR_WIDE"
-        context_boost = +0.10  # Strengthens signal
-    elif sector_liquidity_ratio >= 0.25:
-        context_type = "MIXED"
-        context_boost = +0.05
-    else:
-        context_type = "IDIOSYNCRATIC"
-        context_boost = -0.03  # Dampens signal
 ```
+
+**ARCHITECT-4 REFINEMENTS:**
+
+| Refinement | Purpose | Impact |
+|------------|---------|--------|
+| **Liquidity-weighted aggregation** | VZ stress >> GSAT stress | Economically meaningful |
+| **Same-signal confirmation** | Prevent heterogeneous mixing | Directional agreement |
 
 **Context Types:**
 
 | Type | Threshold | Boost | Meaning |
 |------|-----------|-------|---------|
-| `SECTOR_WIDE` | ≥50% peers affected | +0.10 | Sector/macro event, high conviction |
-| `MIXED` | 25-50% peers affected | +0.05 | Some peers affected |
-| `IDIOSYNCRATIC` | <25% peers affected | -0.03 | Single stock, could be noise |
+| `SECTOR_WIDE` | ≥50% weighted + same-signal | +0.10 | Sector/macro event, high conviction |
+| `MIXED` | 25-50% weighted | +0.05 | Some peers affected |
+| `IDIOSYNCRATIC` | <25% weighted | -0.03 | Single stock, could be noise |
 
-**Impact:** 
-- If T shows liquidity withdrawal AND VZ, TMUS, CMCSA also show it → Sector-wide event
-- If only T shows it → Idiosyncratic (lower conviction)
+**Example: T in Telecom Sector**
+
+| Peer | Weight | Signals | Same-Signal? |
+|------|--------|---------|--------------|
+| VZ | 0.90 | BID_COLLAPSE, SPREAD_WIDE | ✓ MATCH |
+| TMUS | 0.85 | SPREAD_WIDE | ✓ MATCH |
+| CMCSA | 0.80 | - | - |
+| ONDS | 0.30 | VWAP_LOSS | - |
+| GSAT | 0.30 | - | - |
+
+**Weighted Ratio:** (0.90 + 0.85 + 0.30) / (0.90 + 0.85 + 0.80 + 0.30 + 0.30) = 65%  
+**Same-Signal Count:** 2 (VZ, TMUS)  
+**Result:** SECTOR_WIDE (+0.10 boost)
 
 ---
 

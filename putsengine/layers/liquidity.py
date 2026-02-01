@@ -459,6 +459,36 @@ class LiquidityVacuumLayer:
     # ARCHITECT-4 ENHANCEMENT: Sector-Relative Liquidity Analysis
     # =========================================================================
     
+    # Market cap tier weights for liquidity-weighted aggregation
+    # ARCHITECT-4 REFINEMENT: Weight peers by liquidity significance
+    MARKET_CAP_WEIGHTS = {
+        "mega_cap_tech": 1.0,    # Mega caps = highest weight
+        "cloud_saas": 0.8,       # Large/mid growth
+        "high_vol_tech": 0.6,    # High vol = more liquid
+        "space_aerospace": 0.7,  # Mixed cap
+        "nuclear_energy": 0.5,   # Mid cap
+        "materials_mining": 0.5,
+        "silver_miners": 0.3,    # Small cap
+        "gaming": 0.5,
+        "auto_retail": 0.5,
+        "biotech_pharma": 0.6,
+        "financial": 0.8,
+        "healthcare": 0.7,
+        "retail": 0.6,
+        "telecom": 0.8,          # T, VZ, TMUS = highly liquid
+        "travel": 0.5,
+        "china_adr": 0.4,
+    }
+    
+    # Individual mega-cap stock weights (override sector weights)
+    MEGA_CAP_STOCKS = {
+        "AAPL": 1.0, "MSFT": 1.0, "GOOGL": 1.0, "AMZN": 1.0, "META": 1.0,
+        "NVDA": 1.0, "TSLA": 1.0, "AMD": 0.9, "INTC": 0.8, "AVGO": 0.9,
+        "T": 0.9, "VZ": 0.9, "TMUS": 0.85, "CMCSA": 0.8,
+        "BA": 0.8, "LMT": 0.7, "GE": 0.8,
+        "JPM": 1.0, "BAC": 0.9, "GS": 0.9,
+    }
+    
     def _get_sector_for_symbol(self, symbol: str) -> Optional[str]:
         """Get the sector name for a given symbol."""
         for sector_name, tickers in self.config.UNIVERSE_SECTORS.items():
@@ -476,6 +506,25 @@ class LiquidityVacuumLayer:
                  if t != symbol]
         return peers[:max_peers]
     
+    def _get_peer_weight(self, symbol: str) -> float:
+        """
+        Get liquidity weight for a peer symbol.
+        
+        ARCHITECT-4 REFINEMENT 1: Liquidity-weighted peer aggregation
+        Uses individual stock weights for mega-caps, falls back to sector weight.
+        """
+        # Check individual mega-cap weights first
+        if symbol in self.MEGA_CAP_STOCKS:
+            return self.MEGA_CAP_STOCKS[symbol]
+        
+        # Fall back to sector weight
+        sector = self._get_sector_for_symbol(symbol)
+        if sector and sector in self.MARKET_CAP_WEIGHTS:
+            return self.MARKET_CAP_WEIGHTS[sector]
+        
+        # Default weight for unknown
+        return 0.5
+    
     async def analyze_sector_context(
         self,
         symbol: str,
@@ -484,25 +533,23 @@ class LiquidityVacuumLayer:
         """
         Analyze liquidity vacuum in sector context.
         
-        ARCHITECT-4 RECOMMENDED ENHANCEMENT
-        ===================================
+        ARCHITECT-4 RECOMMENDED ENHANCEMENT (WITH REFINEMENTS)
+        ======================================================
         Compares the target symbol's liquidity signals against sector peers
         to determine if the signal is:
         - IDIOSYNCRATIC: Only this stock shows liquidity withdrawal
         - SECTOR_WIDE: Multiple peers show similar patterns
         
-        This adds powerful context without disturbing existing functionality.
+        REFINEMENT 1: Liquidity-weighted peer aggregation
+        - Weight peers by ADV/market cap tier (mega=1.0, mid=0.5, small=0.25)
+        - Makes "50% of peers affected" economically meaningful
+        
+        REFINEMENT 2: Same-signal confirmation
+        - Only count peers showing at least one of the SAME signals as target
+        - Prevents mixing spread-only stress with bid-collapse stress
         
         Returns:
-            Dict with sector context analysis:
-            - sector_name: Name of the sector
-            - peer_count: Number of peers analyzed
-            - peers_with_bid_collapse: Count showing bid collapse
-            - peers_with_spread_widening: Count showing spread widening
-            - sector_liquidity_ratio: % of peers with liquidity issues
-            - is_sector_wide: True if ≥50% peers affected
-            - context_type: "IDIOSYNCRATIC" or "SECTOR_WIDE"
-            - context_boost: Score adjustment (-0.05 to +0.10)
+            Dict with sector context analysis
         """
         result = {
             "sector_name": None,
@@ -511,6 +558,8 @@ class LiquidityVacuumLayer:
             "peers_with_spread_widening": 0,
             "peers_with_vwap_loss": 0,
             "sector_liquidity_ratio": 0.0,
+            "weighted_sector_ratio": 0.0,  # NEW: Liquidity-weighted ratio
+            "same_signal_ratio": 0.0,       # NEW: Same-signal confirmation ratio
             "is_sector_wide": False,
             "context_type": "UNKNOWN",
             "context_boost": 0.0,
@@ -533,25 +582,36 @@ class LiquidityVacuumLayer:
             
             result["peer_count"] = len(peers)
             
+            # Get target's signals for same-signal comparison
+            target_has_bid_collapse = vacuum.bid_collapsing
+            target_has_spread_widening = vacuum.spread_widening
+            
             # Quick liquidity check on each peer
-            # Use lightweight checks to avoid API overload
+            total_weight = 0.0
+            weighted_issues = 0.0
+            same_signal_count = 0
+            
             for peer in peers:
                 try:
+                    peer_weight = self._get_peer_weight(peer)
+                    total_weight += peer_weight
+                    
                     peer_analysis = {
                         "symbol": peer,
+                        "weight": peer_weight,
                         "bid_collapse": False,
                         "spread_widening": False,
-                        "vwap_loss": False
+                        "vwap_loss": False,
+                        "same_signal_match": False  # NEW: Track same-signal match
                     }
                     
                     # Get peer quote and snapshot
                     peer_quote = await self.alpaca.get_latest_quote(peer)
                     peer_snapshot = await self.polygon.get_snapshot(peer)
                     
-                    # Quick bid size check (simplified - no ADV normalization for peers)
+                    # Quick bid size check
                     if peer_quote and "quote" in peer_quote:
                         peer_bid_size = peer_quote["quote"].get("bs", 0)
-                        # Simple threshold: bid size < 100 shares for most stocks
                         if peer_bid_size > 0 and peer_bid_size < 100:
                             peer_analysis["bid_collapse"] = True
                             result["peers_with_bid_collapse"] += 1
@@ -561,7 +621,6 @@ class LiquidityVacuumLayer:
                         ask = float(peer_quote["quote"].get("ap", 0))
                         if bid > 0 and ask > 0:
                             spread_pct = (ask - bid) / ((bid + ask) / 2)
-                            # Wide spread > 0.5%
                             if spread_pct > 0.005:
                                 peer_analysis["spread_widening"] = True
                                 result["peers_with_spread_widening"] += 1
@@ -571,10 +630,42 @@ class LiquidityVacuumLayer:
                         ticker_data = peer_snapshot["ticker"]
                         current_price = ticker_data.get("lastTrade", {}).get("p", 0)
                         vwap = ticker_data.get("day", {}).get("vw", 0)
-                        if current_price > 0 and vwap > 0:
-                            if current_price < vwap:
-                                peer_analysis["vwap_loss"] = True
-                                result["peers_with_vwap_loss"] += 1
+                        if current_price > 0 and vwap > 0 and current_price < vwap:
+                            peer_analysis["vwap_loss"] = True
+                            result["peers_with_vwap_loss"] += 1
+                    
+                    # ============================================================
+                    # ARCHITECT-4 REFINEMENT 2: Same-Signal Confirmation
+                    # ============================================================
+                    # Only count peer if it shows at least one of the SAME signals
+                    # as the target. This prevents mixing heterogeneous signals.
+                    # ============================================================
+                    same_signal = False
+                    if target_has_bid_collapse and peer_analysis["bid_collapse"]:
+                        same_signal = True
+                    if target_has_spread_widening and peer_analysis["spread_widening"]:
+                        same_signal = True
+                    
+                    peer_analysis["same_signal_match"] = same_signal
+                    
+                    # Check if peer has any liquidity issues
+                    has_any_issue = (
+                        peer_analysis["bid_collapse"] or 
+                        peer_analysis["spread_widening"] or 
+                        peer_analysis["vwap_loss"]
+                    )
+                    
+                    if has_any_issue:
+                        # ============================================================
+                        # ARCHITECT-4 REFINEMENT 1: Liquidity-Weighted Aggregation
+                        # ============================================================
+                        # Weight peers by liquidity significance
+                        # VZ/TMUS with stress >> GSAT/ONDS with stress
+                        # ============================================================
+                        weighted_issues += peer_weight
+                    
+                    if same_signal:
+                        same_signal_count += 1
                     
                     result["peer_details"].append(peer_analysis)
                     
@@ -582,8 +673,7 @@ class LiquidityVacuumLayer:
                     logger.debug(f"Error checking peer {peer}: {e}")
                     continue
             
-            # Calculate sector liquidity ratio
-            # Count peers with at least one liquidity signal
+            # Calculate unweighted sector liquidity ratio (original)
             peers_with_issues = sum(
                 1 for p in result["peer_details"]
                 if p["bid_collapse"] or p["spread_widening"] or p["vwap_loss"]
@@ -592,30 +682,49 @@ class LiquidityVacuumLayer:
             if result["peer_count"] > 0:
                 result["sector_liquidity_ratio"] = peers_with_issues / result["peer_count"]
             
-            # Determine context type
-            if result["sector_liquidity_ratio"] >= 0.50:
+            # Calculate WEIGHTED sector ratio (REFINEMENT 1)
+            if total_weight > 0:
+                result["weighted_sector_ratio"] = weighted_issues / total_weight
+            
+            # Calculate same-signal ratio (REFINEMENT 2)
+            if result["peer_count"] > 0:
+                result["same_signal_ratio"] = same_signal_count / result["peer_count"]
+            
+            # ============================================================
+            # FINAL CONTEXT DETERMINATION
+            # ============================================================
+            # Use WEIGHTED ratio as primary (economically meaningful)
+            # Require SAME-SIGNAL confirmation for SECTOR_WIDE (directional agreement)
+            # ============================================================
+            
+            # Primary metric: weighted sector ratio
+            weighted_ratio = result["weighted_sector_ratio"]
+            same_signal_ratio = result["same_signal_ratio"]
+            
+            # For SECTOR_WIDE, require both:
+            # 1. Weighted ratio >= 50%
+            # 2. At least one peer with same-signal match
+            if weighted_ratio >= 0.50 and same_signal_count >= 1:
                 result["is_sector_wide"] = True
                 result["context_type"] = "SECTOR_WIDE"
-                # Sector-wide liquidity withdrawal = stronger signal
                 result["context_boost"] = 0.10
                 logger.info(
-                    f"{symbol}: SECTOR-WIDE LIQUIDITY WITHDRAWAL detected in {sector} - "
-                    f"{peers_with_issues}/{result['peer_count']} peers affected ({result['sector_liquidity_ratio']:.0%})"
+                    f"{symbol}: SECTOR-WIDE LIQUIDITY WITHDRAWAL - "
+                    f"weighted_ratio={weighted_ratio:.0%}, same_signal={same_signal_count}/{result['peer_count']} peers"
                 )
-            elif result["sector_liquidity_ratio"] >= 0.25:
+            elif weighted_ratio >= 0.25:
                 result["context_type"] = "MIXED"
                 result["context_boost"] = 0.05
                 logger.info(
-                    f"{symbol}: Mixed sector liquidity in {sector} - "
-                    f"{peers_with_issues}/{result['peer_count']} peers affected"
+                    f"{symbol}: Mixed sector liquidity - "
+                    f"weighted_ratio={weighted_ratio:.0%}, same_signal={same_signal_count} peers"
                 )
             else:
                 result["context_type"] = "IDIOSYNCRATIC"
-                # Idiosyncratic = could be noise, slight dampen
                 result["context_boost"] = -0.03
                 logger.info(
-                    f"{symbol}: IDIOSYNCRATIC liquidity signal in {sector} - "
-                    f"only {peers_with_issues}/{result['peer_count']} peers affected"
+                    f"{symbol}: IDIOSYNCRATIC liquidity signal - "
+                    f"weighted_ratio={weighted_ratio:.0%}, same_signal={same_signal_count} peers"
                 )
             
         except Exception as e:
