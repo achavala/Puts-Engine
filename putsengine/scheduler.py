@@ -906,38 +906,64 @@ class PutsEngineScheduler:
         """
         Determine which engine type based on signals.
         
-        IMPROVED LOGIC (Jan 29, 2026):
-        - Gamma Drain: Options flow + dealer positioning OR high score + volume signals
-        - Distribution: Price-volume contradictions + event-driven
-        - Liquidity: Dark pool + institutional + VWAP loss
+        ARCHITECT-4 REFINED LOGIC (Feb 1, 2026):
+        =========================================
+        KEY INSIGHT: pump_reversal is a TRANSITION state, not pure execution.
         
-        Ensures balanced distribution across all 3 engines.
+        - Distribution = early warning (supply detection, 1-3 days before breakdown)
+        - Gamma Drain = forced execution (dealer-driven acceleration)
+        - Liquidity = vacuum detection (buyers disappearing)
+        
+        CRITICAL FIX: pump_reversal + high_rvol_red_day → Distribution (transition)
+        This separates thesis formation from execution timing.
         """
         signals = distribution.signals
         score = distribution.score
         
+        # ======================================================================
+        # ARCHITECT-4 FIX: Handle pump_reversal as TRANSITION state
+        # pump_reversal alone is supply detection, not execution timing
+        # ======================================================================
+        has_pump_reversal = signals.get("pump_reversal", False)
+        has_high_rvol_red = signals.get("high_rvol_red_day", False)
+        
+        # If pump_reversal + high_rvol_red_day → DISTRIBUTION (transition phase)
+        # This is early warning, not execution trigger
+        if has_pump_reversal and has_high_rvol_red:
+            logger.info("Engine assignment: DISTRIBUTION (pump_reversal + high_rvol = transition)")
+            return EngineType.DISTRIBUTION_TRAP
+        
+        # ======================================================================
         # Gamma Drain: Options flow + dealer positioning signals
+        # These indicate forced execution (dealers must hedge)
+        # ======================================================================
         gamma_signals = sum([
             signals.get("call_selling_at_bid", False),
             signals.get("put_buying_at_ask", False),
             signals.get("rising_put_oi", False),
             signals.get("skew_steepening", False),
-            # Add volume_price_divergence as gamma-related (institutional selling)
             signals.get("volume_price_divergence", False),
         ])
         
+        # ======================================================================
         # Distribution: Price-volume signals + event-driven
+        # These indicate supply absorption (smart money exiting)
+        # ======================================================================
         dist_signals = sum([
             signals.get("gap_up_reversal", False),
             signals.get("gap_down_no_recovery", False),
-            signals.get("high_rvol_red_day", False),
+            has_high_rvol_red,  # Already calculated
             signals.get("flat_price_rising_volume", False),
             signals.get("failed_breakout", False),
             signals.get("is_post_earnings_negative", False),
             signals.get("is_pre_earnings", False),
+            has_pump_reversal,  # pump_reversal is distribution evidence
         ])
         
-        # Liquidity: Dark pool + institutional + VWAP
+        # ======================================================================
+        # Liquidity: Dark pool + institutional + VWAP loss
+        # These indicate buyer disappearance
+        # ======================================================================
         liq_signals = sum([
             signals.get("repeated_sell_blocks", False),
             signals.get("vwap_loss", False),
@@ -945,29 +971,34 @@ class PutsEngineScheduler:
             signals.get("below_vwap", False),
         ])
         
-        # SMART DISTRIBUTION LOGIC:
-        # 1. High score (>=0.65) with options signals -> Gamma Drain
-        # 2. Event-driven (earnings, failed breakout) -> Distribution  
-        # 3. VWAP loss + weakness -> Liquidity
-        # 4. If all equal, use score-based rotation
+        # ======================================================================
+        # DECISION LOGIC (Architect-4 validated):
+        # 1. 2+ gamma signals (pure flow) → Gamma Drain (execution)
+        # 2. Event-driven OR distribution patterns → Distribution (early warning)
+        # 3. VWAP loss + weakness → Liquidity (vacuum detection)
+        # ======================================================================
         
-        # Check for strong gamma signals
-        has_gamma_flow = gamma_signals >= 1 and signals.get("volume_price_divergence", False)
+        # Check for pure gamma flow (2+ signals = dealer execution)
+        has_pure_gamma = gamma_signals >= 2
         
         # Check for event-driven distribution
-        has_event = signals.get("is_post_earnings_negative", False) or signals.get("is_pre_earnings", False)
+        has_event = signals.get("is_post_earnings_negative", False)
         has_failed_breakout = signals.get("failed_breakout", False) or signals.get("gap_up_reversal", False)
         
         # Check for liquidity vacuum
         has_vwap_loss = signals.get("vwap_loss", False) or signals.get("below_vwap", False)
         has_weakness = signals.get("multi_day_weakness", False)
         
-        # Decision logic with balanced distribution
-        if has_gamma_flow and score >= 0.55:
+        # Decision tree (institutionally correct separation)
+        if has_pure_gamma and score >= 0.55:
+            logger.debug("Engine assignment: GAMMA_DRAIN (2+ gamma signals + high score)")
             return EngineType.GAMMA_DRAIN
-        elif has_event or has_failed_breakout:
+        elif has_pump_reversal or has_event or has_failed_breakout:
+            # pump_reversal alone → Distribution (not Gamma Drain)
+            logger.debug("Engine assignment: DISTRIBUTION (supply detection)")
             return EngineType.DISTRIBUTION_TRAP
         elif has_vwap_loss and has_weakness:
+            logger.debug("Engine assignment: LIQUIDITY (vacuum detection)")
             return EngineType.SNAPBACK  # Liquidity
         elif gamma_signals > dist_signals and gamma_signals > liq_signals:
             return EngineType.GAMMA_DRAIN
@@ -975,16 +1006,6 @@ class PutsEngineScheduler:
             return EngineType.DISTRIBUTION_TRAP
         else:
             return EngineType.SNAPBACK  # Liquidity
-        
-        # Fallback: rotate based on score decimal to ensure distribution
-        # This ensures even when signals are similar, we get varied assignment
-        score_decimal = int((score * 100) % 10)
-        if score_decimal < 3:
-            return EngineType.GAMMA_DRAIN
-        elif score_decimal < 7:
-            return EngineType.DISTRIBUTION_TRAP
-        else:
-            return EngineType.SNAPBACK
     
     def _save_results(self):
         """Save scan results to JSON file and history."""

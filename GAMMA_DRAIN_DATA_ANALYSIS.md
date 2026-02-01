@@ -320,7 +320,7 @@ LEU score = 0.65 → Medium-High conviction → 14 DTE selected
 |-----------|--------|-----------|-------|
 | Price bars | Polygon | < 1 day (daily) | Adjusted for splits |
 | Minute bars | Polygon | < 5 minutes | RTH session only |
-| Options flow | Unusual Whales | **Near real-time** (< 1 min) | Not truly "real-time" |
+| Options flow | Unusual Whales | **Near real-time, provider-derived from consolidated prints & NBBO** | |
 | Dark pool | Unusual Whales | Same-day (< 5 min) | |
 | Insider trades | Unusual Whales | **Filing-lagged (1-2 days)** | SEC Form 4 regulatory delay |
 | Congress trades | Unusual Whales | **Filing-lagged (up to 45 days)** | STOCK Act compliance |

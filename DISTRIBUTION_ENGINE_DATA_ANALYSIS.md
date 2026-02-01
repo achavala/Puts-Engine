@@ -341,11 +341,11 @@ def _determine_engine_type(candidate):
 |-----------|--------|-----------|-------|
 | Price bars | Polygon | < 1 day | Adjusted for splits |
 | Minute bars | Polygon | < 5 minutes | RTH session only |
-| Options flow | UW | **Near real-time** (< 1 min) | |
-| Dark pool | UW | Same-day (< 5 min) | |
+| Options flow | UW | **Near real-time, provider-derived from consolidated prints & NBBO** | |
+| Dark pool | UW | Same-day (< 5 min) | Provider-derived |
 | Insider trades | UW | **Filing-lagged (1-2 days)** | SEC Form 4 |
 | Pattern data | Alpaca | 3-5 day lookback | |
-| FinViz screens | FinViz | Near real-time | Validation only |
+| FinViz screens | FinViz | Near real-time, provider-derived | Validation only |
 
 ---
 
@@ -451,16 +451,40 @@ def _determine_engine_type(candidate):
 
 ---
 
-## ⚠️ ARCHITECT-4 REFINEMENTS (IMPLEMENTED)
+## ⚠️ ARCHITECT-4 REFINEMENTS (ALL IMPLEMENTED)
 
-### 🔧 Refinement 1: Dark Pool Context Guard
+### 🔧 Fix 1: Engine Classification Logic (HIGHEST IMPACT)
+
+**Problem:** `pump_reversal` was being assigned to Gamma Drain, but it's a **transition state**, not pure execution.
+
+**Solution Implemented in `scheduler.py`:**
+
+```python
+# ARCHITECT-4 FIX: pump_reversal + high_rvol_red_day → DISTRIBUTION
+# This is transition phase (early warning), not execution timing
+if has_pump_reversal and has_high_rvol_red:
+    return EngineType.DISTRIBUTION_TRAP  # NOT Gamma Drain
+
+# Pure gamma flow (2+ signals) → Gamma Drain (execution)
+if has_pure_gamma and score >= 0.55:
+    return EngineType.GAMMA_DRAIN
+```
+
+**Why This Matters:**
+- Distribution = **supply detection** (thesis formation)
+- Gamma Drain = **forced execution** (dealer-driven acceleration)
+- Separates time horizons for proper staging
+
+---
+
+### 🔧 Fix 2: Dark Pool Context Guard (PnL PROTECTION)
 
 **Problem:** Raw dark pool blocks can be false positives from:
 - ETF rebalancing
 - VWAP facilitation
 - Neutral internalization
 
-**Solution Implemented:**
+**Solution Implemented in `distribution.py`:**
 
 ```python
 # Repeated sell blocks AND (price below VWAP OR failed new intraday high)
@@ -471,17 +495,27 @@ if current_vwap and current_price and session_high:
     context_confirmed = below_vwap or failed_new_high
 ```
 
-This ensures we detect **genuine distribution**, not neutral facilitation.
+This converts **prints → intent**, filtering neutral facilitation.
 
 ---
 
-### 🔧 Refinement 2: Distribution → Gamma Drain Handoff Flag
+### 🔧 Fix 3: Near Real-Time Wording (COMPLIANCE)
+
+**Problem:** Legal/compliance nitpicks about "real-time" claims.
+
+**Solution:** Updated documentation wording:
+
+> "Near real-time, provider-derived from consolidated prints & NBBO."
+
+This avoids legal redlines without changing functionality.
+
+---
+
+### 🔧 Enhancement A: Distribution → Gamma Drain Handoff Flag (WORKFLOW)
 
 **Problem:** Distribution and Gamma Drain engines were linked implicitly.
 
 **Solution Implemented:**
-
-When a candidate meets these criteria, it's flagged for Gamma Drain entry timing:
 
 ```json
 {
@@ -494,11 +528,32 @@ When a candidate meets these criteria, it's flagged for Gamma Drain entry timing
 2. `pump_reversal` OR `gap_up_reversal` pattern present
 3. Index GEX ≤ neutral (dealer permission)
 
-**Workflow:**
-- **Distribution** → Watchlist (early warning)
-- **Gamma Drain** → Entry timing (acceleration)
+**Workflow (mirrors real desk operations):**
+- **Distribution** → Watchlist (watch → stalk)
+- **Gamma Drain** → Entry timing (strike)
 
-This mirrors real institutional desk workflow.
+---
+
+### 🔧 Enhancement B: Distribution Failure Labeling (LEARNING)
+
+**Problem:** No way to learn when distribution doesn't work.
+
+**Solution Implemented:**
+
+```json
+{
+  "failure_mode": "absorption"
+}
+```
+
+**Failure Modes Detected:**
+- `"absorption"`: VWAP holds + volume fades → selling absorbed
+- `"support_bounce"`: VWAP holds + no dark pool → key support held
+
+**Why This Matters:**
+- Enables post-mortem analysis
+- Answers: "When does distribution NOT work?"
+- Prevents repeating same loss patterns
 
 ---
 

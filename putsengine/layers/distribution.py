@@ -223,14 +223,56 @@ class DistributionLayer:
         # Add handoff flag to signals
         signal.signals["handoff_candidate"] = handoff_candidate
 
-        active_signals = sum(1 for k, v in signal.signals.items() if v and k != "handoff_candidate")
+        # =============================================================
+        # ARCHITECT-4 OPTIONAL: Distribution Failure Labeling
+        # =============================================================
+        # This is LEARNING INFRASTRUCTURE that helps answer:
+        # "When does distribution NOT work?"
+        #
+        # Failure modes to detect:
+        # - "absorption": VWAP holds, volume fades, dark pool selling stops
+        # - "squeeze": Short covering forces price higher despite distribution
+        # - "support_bounce": Price holds key support despite selling
+        #
+        # This enables post-mortem analysis and pattern refinement.
+        # =============================================================
+        
+        failure_mode = None
+        
+        # Check for potential failure conditions
+        vwap_holding = not signal.vwap_loss  # VWAP NOT lost = absorption
+        no_dark_pool_selling = not signal.repeated_sell_blocks
+        low_rvol = not signal.signals.get("high_rvol_red_day", False)
+        
+        # If we have some distribution signals but key confirmations missing...
+        active_dist_signals = sum([
+            signal.flat_price_rising_volume,
+            signal.failed_breakout,
+            signal.lower_highs_flat_rsi,
+            signal.call_selling_at_bid,
+            signal.put_buying_at_ask,
+        ])
+        
+        if active_dist_signals >= 2:  # Had distribution signals
+            if vwap_holding and low_rvol:
+                failure_mode = "absorption"  # Selling absorbed, price held
+            elif vwap_holding and no_dark_pool_selling:
+                failure_mode = "support_bounce"  # Key support held
+        
+        signal.signals["failure_mode"] = failure_mode
+        if failure_mode:
+            logger.debug(f"{symbol}: Distribution failure mode detected: {failure_mode}")
+
+        active_signals = sum(1 for k, v in signal.signals.items() 
+                           if v and k not in ["handoff_candidate", "failure_mode"])
         boost_applied = insider_boost + congress_boost + earnings_boost
         
         handoff_str = " 🎯 HANDOFF" if handoff_candidate else ""
+        failure_str = f" ⚠️ FAILURE_MODE={failure_mode}" if failure_mode else ""
         logger.info(
             f"{symbol} distribution analysis: "
             f"Score={signal.score:.2f} (base={base_score:.2f}, boost=+{boost_applied:.2f}), "
-            f"Active signals={active_signals}/{len(signal.signals) - 1}{handoff_str}"
+            f"Active signals={active_signals}/{len(signal.signals) - 2}{handoff_str}{failure_str}"
         )
 
         return signal
