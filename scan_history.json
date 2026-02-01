@@ -1,1087 +1,6 @@
 {
   "scans": [
     {
-      "timestamp": "2026-01-30T11:30:00.024664-05:00",
-      "gamma_drain": [],
-      "distribution": [],
-      "liquidity": [],
-      "market_regime": "bullish_neutral"
-    },
-    {
-      "timestamp": "2026-01-30T11:53:02.522252-05:00",
-      "gamma_drain": [
-        {
-          "symbol": "ASTS",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LUNR",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "EOSE",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "UUUU",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "INOD",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LITE",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "RCL",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "USAR",
-          "score": 0.6459,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "NCLH",
-          "score": 0.6425,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MU",
-          "score": 0.641,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "APP",
-          "score": 0.6296,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "IREN",
-          "score": 0.6292,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LMND",
-          "score": 0.6291,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "RCAT",
-          "score": 0.6253,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "HUT",
-          "score": 0.6246,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LTBR",
-          "score": 0.6216,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CLS",
-          "score": 0.6162,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "KLAC",
-          "score": 0.6153,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "NIO",
-          "score": 0.5792,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "INTC",
-          "score": 0.65,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LUV",
-          "score": 0.65,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "OKLO",
-          "score": 0.647,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "SMR",
-          "score": 0.6067,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.6055,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CCJ",
-          "score": 0.6045,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "META",
-          "score": 0.604,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LEU",
-          "score": 0.5917,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "BE",
-          "score": 0.5859,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CCL",
-          "score": 0.5846,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MA",
-          "score": 0.5829,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "UNH",
-          "score": 0.58,
-          "signals": [
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "BILI",
-          "score": 0.5758,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "FSLR",
-          "score": 0.5611,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "UEC",
-          "score": 0.549,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "T",
-          "score": 0.5465,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.5423,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LMT",
-          "score": 0.5423,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.5406,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.5391,
-          "signals": [
-            "pump_reversal"
-          ]
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "LMT",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "T",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        }
-      ],
-      "market_regime": {
-        "is_tradeable": true,
-        "regime": "pattern_based"
-      }
-    },
-    {
-      "timestamp": "2026-01-30T12:00:00.098673-05:00",
-      "gamma_drain": [],
-      "distribution": [],
-      "liquidity": [],
-      "market_regime": "bullish_neutral"
-    },
-    {
-      "timestamp": "2026-01-30T12:23:03.168416-05:00",
-      "gamma_drain": [
-        {
-          "symbol": "ASTS",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LUNR",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "EOSE",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "UUUU",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "INOD",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LITE",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "RCL",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "USAR",
-          "score": 0.6459,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "NCLH",
-          "score": 0.6425,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MU",
-          "score": 0.641,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "APP",
-          "score": 0.6296,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "IREN",
-          "score": 0.6292,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LMND",
-          "score": 0.6291,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "RCAT",
-          "score": 0.6253,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "HUT",
-          "score": 0.6246,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LTBR",
-          "score": 0.6216,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CLS",
-          "score": 0.6162,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "KLAC",
-          "score": 0.6153,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "NIO",
-          "score": 0.5792,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "INTC",
-          "score": 0.65,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LUV",
-          "score": 0.65,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "OKLO",
-          "score": 0.647,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "SMR",
-          "score": 0.6067,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.6055,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CCJ",
-          "score": 0.6045,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "META",
-          "score": 0.604,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LEU",
-          "score": 0.5917,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "BE",
-          "score": 0.5859,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CCL",
-          "score": 0.5846,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MA",
-          "score": 0.5829,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "UNH",
-          "score": 0.58,
-          "signals": [
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "BILI",
-          "score": 0.5758,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "FSLR",
-          "score": 0.5611,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "UEC",
-          "score": 0.549,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "T",
-          "score": 0.5465,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.5423,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LMT",
-          "score": 0.5423,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.5406,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.5391,
-          "signals": [
-            "pump_reversal"
-          ]
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "LMT",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "T",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        }
-      ],
-      "market_regime": {
-        "is_tradeable": true,
-        "regime": "pattern_based"
-      }
-    },
-    {
-      "timestamp": "2026-01-30T12:30:00.015983-05:00",
-      "gamma_drain": [],
-      "distribution": [],
-      "liquidity": [],
-      "market_regime": "bullish_neutral"
-    },
-    {
-      "timestamp": "2026-01-30T12:56:35.319910-05:00",
-      "gamma_drain": [
-        {
-          "symbol": "ASTS",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LUNR",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "EOSE",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "UUUU",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "INOD",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LITE",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "RCL",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "USAR",
-          "score": 0.6459,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "NCLH",
-          "score": 0.6425,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MU",
-          "score": 0.641,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "APP",
-          "score": 0.6296,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "IREN",
-          "score": 0.6292,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LMND",
-          "score": 0.6291,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "RCAT",
-          "score": 0.6253,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "HUT",
-          "score": 0.6246,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LTBR",
-          "score": 0.6216,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CLS",
-          "score": 0.6162,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "KLAC",
-          "score": 0.6153,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "NIO",
-          "score": 0.5792,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "INTC",
-          "score": 0.65,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LUV",
-          "score": 0.65,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "OKLO",
-          "score": 0.647,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "SMR",
-          "score": 0.6067,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.6055,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CCJ",
-          "score": 0.6045,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "META",
-          "score": 0.604,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LEU",
-          "score": 0.5917,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "BE",
-          "score": 0.5859,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CCL",
-          "score": 0.5846,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MA",
-          "score": 0.5829,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "UNH",
-          "score": 0.58,
-          "signals": [
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "BILI",
-          "score": 0.5758,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "FSLR",
-          "score": 0.5611,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "UEC",
-          "score": 0.549,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "T",
-          "score": 0.5465,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.5423,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LMT",
-          "score": 0.5423,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.5406,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.5391,
-          "signals": [
-            "pump_reversal"
-          ]
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "LMT",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "T",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        }
-      ],
-      "market_regime": {
-        "is_tradeable": true,
-        "regime": "pattern_based"
-      }
-    },
-    {
-      "timestamp": "2026-01-30T13:00:00.067283-05:00",
-      "gamma_drain": [],
-      "distribution": [],
-      "liquidity": [],
-      "market_regime": "bullish_neutral"
-    },
-    {
       "timestamp": "2026-01-30T13:26:35.811336-05:00",
       "gamma_drain": [
         {
@@ -11855,7 +10774,1183 @@
         "is_tradeable": true,
         "regime": "pattern_based"
       }
+    },
+    {
+      "timestamp": "2026-02-01T11:30:00.083535-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
+    },
+    {
+      "timestamp": "2026-02-01T11:55:52.132420-05:00",
+      "gamma_drain": [
+        {
+          "symbol": "LEU",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "UUUU",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "OKLO",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "EOSE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "STX",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "APP",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "KLAC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "GSAT",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "RBLX",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "AI",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LUV",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.6467,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.6445,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.6411,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "META",
+          "score": 0.604,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "CNC",
+          "score": 0.5806,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "NUE",
+          "score": 0.5789,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "score": 0.5738,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "SQQQ",
+          "score": 0.548,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "T",
+          "score": 0.5465,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "TMUS",
+          "score": 0.5391,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "GME",
+          "score": 0.5359,
+          "signals": [
+            "pump_reversal"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "T",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "SQQQ",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "TMUS",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "GE",
+          "score": 0.5434,
+          "signals": [
+            "two_day_rally"
+          ]
+        }
+      ],
+      "market_regime": {
+        "is_tradeable": true,
+        "regime": "pattern_based"
+      }
+    },
+    {
+      "timestamp": "2026-02-01T12:00:00.068169-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
+    },
+    {
+      "timestamp": "2026-02-01T12:08:01.111131-05:00",
+      "gamma_drain": [
+        {
+          "symbol": "LEU",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "UUUU",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "OKLO",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "EOSE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "STX",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "APP",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "KLAC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "GSAT",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "RBLX",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "AI",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LUV",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.6467,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.6445,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.6411,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "META",
+          "score": 0.604,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "CNC",
+          "score": 0.5806,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "NUE",
+          "score": 0.5789,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "score": 0.5738,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "SQQQ",
+          "score": 0.548,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "T",
+          "score": 0.5465,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "TMUS",
+          "score": 0.5391,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "GME",
+          "score": 0.5359,
+          "signals": [
+            "pump_reversal"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "T",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "SQQQ",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "TMUS",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "GE",
+          "score": 0.5434,
+          "signals": [
+            "two_day_rally"
+          ]
+        }
+      ],
+      "market_regime": {
+        "is_tradeable": true,
+        "regime": "pattern_based"
+      }
+    },
+    {
+      "timestamp": "2026-02-01T12:30:00.016611-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
+    },
+    {
+      "timestamp": "2026-02-01T12:38:01.777648-05:00",
+      "gamma_drain": [
+        {
+          "symbol": "LEU",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "UUUU",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "OKLO",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "EOSE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "STX",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "APP",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "KLAC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "GSAT",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "RBLX",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "AI",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LUV",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.6467,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.6445,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.6411,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "META",
+          "score": 0.604,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "CNC",
+          "score": 0.5806,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "NUE",
+          "score": 0.5789,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "score": 0.5738,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "SQQQ",
+          "score": 0.548,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "T",
+          "score": 0.5465,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "TMUS",
+          "score": 0.5391,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "GME",
+          "score": 0.5359,
+          "signals": [
+            "pump_reversal"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "T",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "SQQQ",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "TMUS",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "GE",
+          "score": 0.5434,
+          "signals": [
+            "two_day_rally"
+          ]
+        }
+      ],
+      "market_regime": {
+        "is_tradeable": true,
+        "regime": "pattern_based"
+      }
+    },
+    {
+      "timestamp": "2026-02-01T13:00:00.116742-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
+    },
+    {
+      "timestamp": "2026-02-01T13:08:02.556903-05:00",
+      "gamma_drain": [
+        {
+          "symbol": "LEU",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "UUUU",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "OKLO",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "EOSE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "STX",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "APP",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "KLAC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "GSAT",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "RBLX",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "AI",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LUV",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.6467,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.6445,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.6411,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "META",
+          "score": 0.604,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "CNC",
+          "score": 0.5806,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "NUE",
+          "score": 0.5789,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "score": 0.5738,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "SQQQ",
+          "score": 0.548,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "T",
+          "score": 0.5465,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "TMUS",
+          "score": 0.5391,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "GME",
+          "score": 0.5359,
+          "signals": [
+            "pump_reversal"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "T",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "SQQQ",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "TMUS",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "GE",
+          "score": 0.5434,
+          "signals": [
+            "two_day_rally"
+          ]
+        }
+      ],
+      "market_regime": {
+        "is_tradeable": true,
+        "regime": "pattern_based"
+      }
     }
   ],
-  "last_cleanup": "2026-02-01T11:26:05.027291-05:00"
+  "last_cleanup": "2026-02-01T13:08:16.422085-05:00"
 }

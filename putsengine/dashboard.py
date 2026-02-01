@@ -1173,6 +1173,55 @@ def render_big_movers_analysis():
     two_day_rally = pattern_data.get("two_day_rally", [])
     high_vol_run = pattern_data.get("high_vol_run", [])
     
+    # =========================================================================
+    # ARCHITECT-4 ENHANCEMENT: Cross-Engine Confirmation Check
+    # =========================================================================
+    # Get symbols confirmed by execution engines (Gamma, Distribution, Liquidity)
+    engine_confirmed_symbols = set()
+    engine_confirmation_map = {}  # symbol -> list of confirming engines
+    
+    for engine_key in ["gamma_drain", "distribution", "liquidity"]:
+        engine_candidates = scheduled_data.get(engine_key, [])
+        for c in engine_candidates:
+            sym = c.get("symbol")
+            if sym:
+                engine_confirmed_symbols.add(sym)
+                if sym not in engine_confirmation_map:
+                    engine_confirmation_map[sym] = []
+                engine_labels = {
+                    "gamma_drain": "🔥 Gamma",
+                    "distribution": "📉 Dist",
+                    "liquidity": "💧 Liq"
+                }
+                engine_confirmation_map[sym].append(engine_labels.get(engine_key, engine_key))
+    
+    # =========================================================================
+    # ARCHITECT-4 ENHANCEMENT: Confidence Tier Classification
+    # =========================================================================
+    def get_confidence_tier(candidate, pattern_type="pump_reversal"):
+        """Classify candidate into confidence tier based on reversal signals."""
+        if pattern_type == "pump_reversal":
+            signals = candidate.get("signals", [])
+            if len(signals) >= 3:
+                return "HIGH", "🟢"
+            elif len(signals) >= 2:
+                return "MEDIUM", "🟡"
+            else:
+                return "LOW", "🔴"
+        elif pattern_type == "two_day_rally":
+            total = candidate.get("total", 0)
+            if total >= 6:
+                return "MEDIUM", "🟡"
+            else:
+                return "LOW", "🔴"
+        else:  # high_vol_run
+            vol_ratio = candidate.get("vol_ratio", 1)
+            if vol_ratio >= 2.0:
+                return "MEDIUM", "🟡"
+            else:
+                return "LOW", "🔴"
+        return "LOW", "🔴"
+    
     # Parse scan time and calculate dates for column headers
     scan_time_raw = pattern_data.get("scan_time", "Unknown")
     scan_time_display = "Unknown"
@@ -1191,6 +1240,56 @@ def render_big_movers_analysis():
             date_3d = (dt - timedelta(days=3)).strftime("%b %d")  # 3 days ago
         except:
             pass
+    
+    # =========================================================================
+    # ARCHITECT-4 ENHANCEMENT: Cross-Engine Audit Summary (TOP OF PAGE)
+    # =========================================================================
+    # Count engine-confirmed candidates
+    all_pattern_symbols = set()
+    for p in pump_reversal:
+        all_pattern_symbols.add(p["symbol"])
+    for p in two_day_rally:
+        all_pattern_symbols.add(p["symbol"])
+    for p in high_vol_run:
+        all_pattern_symbols.add(p["symbol"])
+    
+    engine_confirmed_count = len(all_pattern_symbols & engine_confirmed_symbols)
+    
+    if engine_confirmed_count > 0:
+        st.markdown("### ✅ Engine-Confirmed Candidates (PRIORITY)")
+        st.markdown("*These Big Movers are ALSO flagged by execution engines → **highest conviction**.*")
+        
+        confirmed_list = []
+        for sym in all_pattern_symbols & engine_confirmed_symbols:
+            engines = engine_confirmation_map.get(sym, [])
+            # Find the pattern data
+            pattern_info = "Unknown"
+            for p in pump_reversal:
+                if p["symbol"] == sym:
+                    pattern_info = f"Pump +{p.get('total_gain', 0):.1f}%"
+                    break
+            for p in two_day_rally:
+                if p["symbol"] == sym:
+                    pattern_info = f"Rally +{p.get('total', 0):.1f}%"
+                    break
+            for p in high_vol_run:
+                if p["symbol"] == sym:
+                    pattern_info = f"Vol {p.get('vol_ratio', 1):.1f}x"
+                    break
+            
+            confirmed_list.append({
+                "Symbol": sym,
+                "Pattern": pattern_info,
+                "Confirmed By": " + ".join(engines),
+                "Status": "✅ TRADEABLE"
+            })
+        
+        if confirmed_list:
+            df_confirmed = pd.DataFrame(confirmed_list)
+            st.dataframe(df_confirmed, use_container_width=True, hide_index=True)
+            st.success(f"🎯 {engine_confirmed_count} candidates confirmed by execution engines - these are your HIGHEST CONVICTION plays!")
+        
+        st.divider()
     
     st.markdown("### 🎯 Future Candidates Summary")
     
@@ -1221,9 +1320,27 @@ def render_big_movers_analysis():
     st.markdown("*Stocks that pumped +3% in last 1-3 days. HIGH PROBABILITY of reversal crash. These are your primary targets.*")
     
     if pump_reversal:
+        # Count by confidence tier
+        high_conf = sum(1 for p in pump_reversal if len(p.get("signals", [])) >= 3)
+        med_conf = sum(1 for p in pump_reversal if len(p.get("signals", [])) == 2)
+        low_conf = sum(1 for p in pump_reversal if len(p.get("signals", [])) < 2)
+        
+        # Show confidence tier breakdown
+        tier_cols = st.columns(4)
+        with tier_cols[0]:
+            st.metric("🟢 HIGH (3+ signals)", high_conf, help="Highest conviction - consider trading")
+        with tier_cols[1]:
+            st.metric("🟡 MEDIUM (2 signals)", med_conf, help="Good conviction - watch closely")
+        with tier_cols[2]:
+            st.metric("🔴 LOW (0-1 signals)", low_conf, help="Lower conviction - wait for confirmation")
+        with tier_cols[3]:
+            engine_conf_pump = sum(1 for p in pump_reversal if p["symbol"] in engine_confirmed_symbols)
+            st.metric("✅ Engine Confirmed", engine_conf_pump, help="Also flagged by execution engines")
+        
         df_pump = pd.DataFrame([
             {
-                "⭐": "⭐" if len(p.get("signals", [])) >= 2 else "",
+                "Tier": get_confidence_tier(p, "pump_reversal")[1],
+                "✅": "✅" if p["symbol"] in engine_confirmed_symbols else "",
                 "Symbol": p["symbol"],
                 "Price": f"${p.get('price', 0):.2f}",
                 "🎯 Strike": p.get("strike_display", "N/A"),
@@ -1239,7 +1356,7 @@ def render_big_movers_analysis():
             for p in pump_reversal[:15]
         ])
         st.dataframe(df_pump, use_container_width=True, hide_index=True, height=420)
-        st.caption("⭐ = Multiple reversal signals | 🎯 Strike = Optimal OTM strike | δ = Target delta range")
+        st.caption("🟢 = HIGH (3+ signals) | 🟡 = MEDIUM (2 signals) | 🔴 = LOW (0-1 signals) | ✅ = Engine confirmed")
     else:
         st.info("No pump reversal candidates found. Market may be quiet.")
     
@@ -1332,7 +1449,7 @@ def render_big_movers_analysis():
     st.divider()
     
     # =========================================================================
-    # All Candidates Summary Table
+    # All Candidates Summary Table (WITH CONFIDENCE TIERS & ENGINE CONFIRMATION)
     # =========================================================================
     st.markdown("### 📋 All Future PUT Candidates")
     st.markdown("*Combined view of all pattern candidates with institutional strike/expiry recommendations*")
@@ -1341,6 +1458,7 @@ def render_big_movers_analysis():
     all_candidates = []
     
     for p in pump_reversal:
+        tier, tier_icon = get_confidence_tier(p, "pump_reversal")
         all_candidates.append({
             "Symbol": p["symbol"],
             "Pattern": "💥 Pump Reversal",
@@ -1353,10 +1471,15 @@ def render_big_movers_analysis():
             "Signals": len(p.get("signals", [])),
             "Delta": p.get("delta_target", "-0.30"),
             "Potential": p.get("potential_mult", "3x-5x"),
-            "Score Boost": p.get("score_boost", 0.1)
+            "Score Boost": p.get("score_boost", 0.1),
+            "Tier": tier,
+            "TierIcon": tier_icon,
+            "EngineConfirmed": p["symbol"] in engine_confirmed_symbols,
+            "ConfirmingEngines": engine_confirmation_map.get(p["symbol"], [])
         })
     
     for p in two_day_rally:
+        tier, tier_icon = get_confidence_tier(p, "two_day_rally")
         all_candidates.append({
             "Symbol": p["symbol"],
             "Pattern": "↩️ 2-Day Rally",
@@ -1369,10 +1492,15 @@ def render_big_movers_analysis():
             "Signals": 1,
             "Delta": p.get("delta_target", "-0.30"),
             "Potential": p.get("potential_mult", "3x-5x"),
-            "Score Boost": p.get("score_boost", 0.1)
+            "Score Boost": p.get("score_boost", 0.1),
+            "Tier": tier,
+            "TierIcon": tier_icon,
+            "EngineConfirmed": p["symbol"] in engine_confirmed_symbols,
+            "ConfirmingEngines": engine_confirmation_map.get(p["symbol"], [])
         })
     
     for p in high_vol_run:
+        tier, tier_icon = get_confidence_tier(p, "high_vol_run")
         all_candidates.append({
             "Symbol": p["symbol"],
             "Pattern": "📈 High Vol Run",
@@ -1385,16 +1513,26 @@ def render_big_movers_analysis():
             "Signals": 1,
             "Delta": p.get("delta_target", "-0.30"),
             "Potential": p.get("potential_mult", "3x-5x"),
-            "Score Boost": p.get("score_boost", 0.1)
+            "Score Boost": p.get("score_boost", 0.1),
+            "Tier": tier,
+            "TierIcon": tier_icon,
+            "EngineConfirmed": p["symbol"] in engine_confirmed_symbols,
+            "ConfirmingEngines": engine_confirmation_map.get(p["symbol"], [])
         })
     
     if all_candidates:
-        # Sort by score boost (highest conviction first)
-        all_candidates.sort(key=lambda x: x["Score Boost"], reverse=True)
+        # Sort by: Engine Confirmed first, then by Tier (HIGH > MEDIUM > LOW), then by Score Boost
+        tier_order = {"HIGH": 0, "MEDIUM": 1, "LOW": 2}
+        all_candidates.sort(key=lambda x: (
+            0 if x["EngineConfirmed"] else 1,  # Engine confirmed first
+            tier_order.get(x["Tier"], 3),       # Then by tier
+            -x["Score Boost"]                   # Then by score boost (descending)
+        ))
         
         df_all = pd.DataFrame([
             {
-                "⭐": "⭐" if c["Signals"] >= 2 else "",
+                "Tier": c["TierIcon"],
+                "✅": "✅" if c["EngineConfirmed"] else "",
                 "Symbol": c["Symbol"],
                 "Pattern": c["Pattern"],
                 "Price": f"${c['Price']:.2f}",
@@ -1402,12 +1540,27 @@ def render_big_movers_analysis():
                 "📅 Expiry": f"{c['Expiry']} ({c['DTE']}d)",
                 "OTM %": f"{c['OTM']:.1f}%",
                 "Gain": f"+{c['Gain/Move']:.1f}%",
+                "Engines": " + ".join(c["ConfirmingEngines"]) if c["ConfirmingEngines"] else "-",
                 "Target δ": c["Delta"],
                 "Potential": c["Potential"]
             }
-            for c in all_candidates[:25]
+            for c in all_candidates[:30]
         ])
-        st.dataframe(df_all, use_container_width=True, hide_index=True, height=500)
+        st.dataframe(df_all, use_container_width=True, hide_index=True, height=550)
+        
+        # Summary stats
+        total_engine_confirmed = sum(1 for c in all_candidates if c["EngineConfirmed"])
+        total_high_tier = sum(1 for c in all_candidates if c["Tier"] == "HIGH")
+        total_tradeable = sum(1 for c in all_candidates if c["EngineConfirmed"] or c["Tier"] == "HIGH")
+        
+        st.markdown(f"""
+        **Summary:**
+        - 🟢 HIGH confidence (3+ signals): **{total_high_tier}** candidates
+        - ✅ Engine confirmed: **{total_engine_confirmed}** candidates  
+        - 🎯 **TRADEABLE** (HIGH or Engine Confirmed): **{total_tradeable}** candidates
+        
+        ⚠️ **Action:** Only trade candidates with 🟢 or ✅ for 90%+ success rate.
+        """)
     else:
         st.info("No candidates found. Run pattern scan to populate.")
     
