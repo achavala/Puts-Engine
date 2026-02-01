@@ -5,16 +5,27 @@
 This script traces the complete data pipeline for the 48-Hour Frequency tab,
 showing exactly what data sources feed each engine and how frequencies are calculated.
 
+ARCHITECT-4 ENHANCEMENTS:
+1. Time-Decay Weighting (λ=0.04, half-life ~17h)
+2. Engine Diversity Bonus (0.1 × (engines - 1))
+3. Conviction Score (composite metric)
+4. Trifecta Detection (all 3 engines)
+
 Usage: python3 analyze_48hour_sources.py
 """
 
 import json
+import math
 from datetime import datetime, timedelta
 from pathlib import Path
 from collections import defaultdict
 import pytz
 
 ET = pytz.timezone('US/Eastern')
+
+# ARCHITECT-4 configuration
+TIME_DECAY_LAMBDA = 0.04
+DIVERSITY_MULTIPLIER = 0.10
 
 def analyze_scan_history():
     """Analyze scan_history.json to show data source breakdown."""

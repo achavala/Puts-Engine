@@ -919,8 +919,56 @@ def render_48hour_analysis():
         st.error(f"Error loading analysis: {e}")
         return
 
+    # =========================================================================
+    # ARCHITECT-4: TRIFECTA ALERT SECTION (Highest Priority)
+    # =========================================================================
+    trifecta_symbols = analysis.get("trifecta_symbols", [])
+    if trifecta_symbols:
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #ff6b6b22, #ff6b6b44);
+            border: 2px solid #ff6b6b;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        ">
+            <h2 style="margin: 0; color: #ff6b6b;">🚨 TRIFECTA ALERT — ALL 3 ENGINES CONVERGING</h2>
+            <p style="color: #aaa; margin: 10px 0 0 0;">
+                These symbols show signals in Gamma Drain + Distribution + Liquidity Vacuum simultaneously.<br/>
+                <strong>Highest conviction — "Drop everything and look"</strong>
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        trifecta_cols = st.columns(min(len(trifecta_symbols), 3))
+        for i, (col, trifecta) in enumerate(zip(trifecta_cols, trifecta_symbols[:3])):
+            with col:
+                conv_score = trifecta.get("conviction_score", 0)
+                st.markdown(f"""
+                <div style="
+                    background: linear-gradient(135deg, #1a1f3c, #2d3561);
+                    border: 2px solid #ff6b6b;
+                    border-radius: 10px;
+                    padding: 15px;
+                    text-align: center;
+                ">
+                    <h1 style="margin: 0; color: #ff6b6b;">🎯 {trifecta['symbol']}</h1>
+                    <p style="margin: 5px 0; color: #4ecdc4; font-size: 1.5rem;">
+                        Conv: {conv_score:.2f}
+                    </p>
+                    <p style="margin: 5px 0; color: #aaa;">
+                        {trifecta.get('total_appearances', 0)} appearances
+                    </p>
+                    <p style="margin: 5px 0; color: #ffd93d; font-weight: bold;">
+                        FULL SIZE POSITION
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+        
+        st.divider()
+
     # Summary metrics
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     
     with col1:
         st.metric("📊 Unique Symbols", analysis.get("unique_symbols", 0))
@@ -932,22 +980,31 @@ def render_48hour_analysis():
         st.metric("🔥 Multi-Engine", analysis.get("multi_engine_count", 0))
     
     with col4:
+        st.metric("🚨 Trifecta", analysis.get("trifecta_count", 0), 
+                  help="Symbols with ALL 3 engines detecting signals")
+    
+    with col5:
         top_symbol = analysis.get("top_symbol")
         if top_symbol:
-            st.metric("🏆 Top Symbol", f"{top_symbol['symbol']} ({top_symbol['total_appearances']})")
+            st.metric("🏆 Top Symbol", f"{top_symbol['symbol']} ({top_symbol.get('conviction_score', 0):.2f})")
         else:
             st.metric("🏆 Top Symbol", "N/A")
     
     st.divider()
     
+    # ARCHITECT-4: Show time-decay configuration
+    decay_lambda = analysis.get("decay_lambda", 0.04)
+    half_life = analysis.get("decay_half_life_hours", 17.3)
+    st.caption(f"⏱️ Time-Decay: λ={decay_lambda}, half-life={half_life:.1f}h | Recent signals weighted higher")
+    
     # Multi-Engine Symbols Table (2+ engines)
     st.markdown("### 🔥 Multi-Engine Symbols (2+ Engines)")
-    st.markdown("*These symbols appeared in at least 2 different engines - highest conviction picks*")
+    st.markdown("*Sorted by **Conviction Score** (time-weighted appearances × score × diversity bonus)*")
     
     multi_engine = analysis.get("multi_engine_symbols", [])
     
     if multi_engine:
-        # Create DataFrame for display
+        # Create DataFrame for display with ARCHITECT-4 enhancements
         df_data = []
         for i, symbol_data in enumerate(multi_engine, 1):
             # Engine badges
@@ -959,23 +1016,31 @@ def render_48hour_analysis():
             if symbol_data["liquidity_count"] > 0:
                 engines.append(f"💧 {symbol_data['liquidity_count']}")
             
-            # Calculate overall score
-            avg_score = max(
-                symbol_data["gamma_drain_avg_score"],
-                symbol_data["distribution_avg_score"],
-                symbol_data["liquidity_avg_score"]
-            )
+            # Conviction badge based on score
+            conviction = symbol_data.get("conviction_score", 0)
+            if conviction >= 0.3:
+                conv_badge = "🔥"
+            elif conviction >= 0.2:
+                conv_badge = "⚡"
+            else:
+                conv_badge = ""
+            
+            # Trifecta indicator
+            trifecta_badge = "🎯" if symbol_data["engines_count"] == 3 else ""
             
             df_data.append({
                 "Rank": i,
+                "Badge": f"{trifecta_badge}{conv_badge}",
                 "Symbol": symbol_data["symbol"],
+                "Conv": f"{conviction:.2f}",  # ARCHITECT-4: Conviction Score
+                "Weighted": f"{symbol_data.get('weighted_appearances', 0):.1f}",
                 "Total": symbol_data["total_appearances"],
                 "🔥 Gamma": symbol_data["gamma_drain_count"],
-                "📉 Distribution": symbol_data["distribution_count"],
-                "💧 Liquidity": symbol_data["liquidity_count"],
+                "📉 Dist": symbol_data["distribution_count"],
+                "💧 Liq": symbol_data["liquidity_count"],
                 "Engines": symbol_data["engines_count"],
-                "Avg Score": f"{avg_score:.2f}",
-                "Engine Breakdown": " | ".join(engines)
+                "Div Bonus": f"+{symbol_data.get('diversity_bonus', 0):.1f}",
+                "Last Seen": f"{symbol_data.get('hours_since_last', 0):.0f}h ago"
             })
         
         df = pd.DataFrame(df_data)
@@ -987,13 +1052,17 @@ def render_48hour_analysis():
             hide_index=True,
             column_config={
                 "Rank": st.column_config.NumberColumn("Rank", width="small"),
-                "Symbol": st.column_config.TextColumn("Symbol", width="medium"),
+                "Badge": st.column_config.TextColumn("", width="small"),
+                "Symbol": st.column_config.TextColumn("Symbol", width="small"),
+                "Conv": st.column_config.TextColumn("Conv", width="small", help="Conviction Score (time-weighted)"),
+                "Weighted": st.column_config.TextColumn("Wtd", width="small", help="Time-weighted appearances"),
                 "Total": st.column_config.NumberColumn("Total", width="small"),
-                "🔥 Gamma": st.column_config.NumberColumn("🔥 Gamma", width="small"),
-                "📉 Distribution": st.column_config.NumberColumn("📉 Dist", width="small"),
-                "💧 Liquidity": st.column_config.NumberColumn("💧 Liq", width="small"),
-                "Engines": st.column_config.NumberColumn("Engines", width="small"),
-                "Avg Score": st.column_config.TextColumn("Score", width="small"),
+                "🔥 Gamma": st.column_config.NumberColumn("🔥", width="small"),
+                "📉 Dist": st.column_config.NumberColumn("📉", width="small"),
+                "💧 Liq": st.column_config.NumberColumn("💧", width="small"),
+                "Engines": st.column_config.NumberColumn("Eng", width="small"),
+                "Div Bonus": st.column_config.TextColumn("Div", width="small", help="Engine Diversity Bonus"),
+                "Last Seen": st.column_config.TextColumn("Last", width="small"),
             }
         )
         
