@@ -612,7 +612,7 @@ async def run_engine_scan(engine, engine_type, progress_callback=None):
                 put_type = "GAMMA SQUEEZE" if candidate.dealer_score > 0.6 else "GAMMA DRAIN"
             elif engine_type == "distribution":
                 put_type = "DISTRIBUTION" if candidate.distribution_score > 0.6 else "SELLING PRESSURE"
-    else:
+            else:
                 put_type = "LIQUIDITY VACUUM" if candidate.liquidity_score > 0.5 else "BID COLLAPSE"
 
             signal_type = "🔥 Unusual Options Activity"
@@ -625,7 +625,7 @@ async def run_engine_scan(engine, engine_type, progress_callback=None):
 
             if candidate.entry_price and candidate.entry_price > 0:
                 entry_range = f"${candidate.entry_price * 0.95:.2f} - ${candidate.entry_price * 1.05:.2f}"
-    else:
+            else:
                 entry_range = "N/A"
 
             rr = random.randint(10, 18) if candidate.composite_score >= 0.70 else random.randint(8, 14)
@@ -690,7 +690,7 @@ def render_auto_scan_bar(engine_name, engine_key):
     total_tickers = len(EngineConfig.get_all_tickers())
     refresh_count = st.session_state.get("auto_refresh_count", 0)
     market_status = "🟢 MARKET OPEN" if is_market_open() else "🔴 MARKET CLOSED"
-        st.markdown(f"""
+    st.markdown(f"""
     <div class="auto-scan-bar">
         <div class="scan-status">
             <span class="scan-dot"></span>
@@ -698,8 +698,8 @@ def render_auto_scan_bar(engine_name, engine_key):
             <span class="auto-refresh-badge">AUTO #{refresh_count}</span>
         </div>
         <div class="scan-info">Last update: {last_scan_str} | Next refresh in: {minutes}m {seconds}s | {total_tickers} tickers</div>
-        </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
 
 
 def render_market_regime_cards(regime):
@@ -981,11 +981,11 @@ def render_48hour_analysis():
         df = pd.DataFrame(df_data)
         
         # Style the dataframe
-    st.dataframe(
-        df,
-        use_container_width=True,
-        hide_index=True,
-        column_config={
+        st.dataframe(
+            df,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
                 "Rank": st.column_config.NumberColumn("Rank", width="small"),
                 "Symbol": st.column_config.TextColumn("Symbol", width="medium"),
                 "Total": st.column_config.NumberColumn("Total", width="small"),
@@ -1696,7 +1696,7 @@ def render_big_movers_analysis():
         - ✅ or 🟢 = STANDARD SIZE
         - ⚠️ = AVOID (stale thesis)
         """)
-                        else:
+    else:
         st.info("No candidates found. Run pattern scan to populate.")
     
     st.caption(f"Total candidates: {len(all_candidates)} | Last updated: {scan_time_display}")
@@ -1751,7 +1751,7 @@ def main():
 
         with tab1:
             render_engine_tab(engine, "Gamma Drain", "gamma_drain", "gamma_drain", "gamma_drain_results")
-                st.divider()
+            st.divider()
             try:
                 regime = run_async(engine.get_cached_regime())
                 render_market_regime_cards(regime)
