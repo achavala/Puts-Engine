@@ -78,14 +78,14 @@ class LiquidityVacuumLayer:
             # Get snapshot for current market data
             snapshot = await self.polygon.get_snapshot(symbol)
 
-            # 1. Bid size collapsing
+            # 1. Bid size collapsing (ARCHITECT-4: ADV-normalized)
             vacuum.bid_collapsing = await self._detect_bid_collapse(
-                symbol, quote_data, snapshot
+                symbol, quote_data, snapshot, minute_bars
             )
 
-            # 2. Spread widening
+            # 2. Spread widening (ARCHITECT-4: 15-min persistence)
             vacuum.spread_widening = await self._detect_spread_widening(
-                symbol, quote_data, snapshot
+                symbol, quote_data, snapshot, minute_bars
             )
 
             # 3. Volume with no price progress
@@ -121,13 +121,22 @@ class LiquidityVacuumLayer:
         self,
         symbol: str,
         quote_data: Dict,
-        snapshot: Dict
+        snapshot: Dict,
+        minute_bars: Optional[List] = None
     ) -> bool:
         """
         Detect if bid size is collapsing.
 
         When market makers reduce bid sizes, it signals
         they expect lower prices and don't want to accumulate.
+        
+        ARCHITECT-4 REFINEMENT: ADV-Normalized Bid Collapse
+        ====================================================
+        Added dual-condition for precision:
+        1. bid_size < 30% of avg_print_size_1000 (rolling baseline)
+        2. bid_size < 0.5% of ADV_shares (stock-relative normalization)
+        
+        This reduces false positives for stocks with irregular print sizes.
         """
         try:
             # Get current bid size
@@ -151,12 +160,37 @@ class LiquidityVacuumLayer:
             if not trades:
                 return False
 
-            # Calculate typical trade size as proxy for normal liquidity
-            avg_trade_size = np.mean([t.get("size", 0) for t in trades])
+            # Calculate avg_print_size_1000 (rolling baseline from recent trades)
+            avg_print_size_1000 = np.mean([t.get("size", 0) for t in trades])
 
-            # Bid collapse = current bid size < 30% of avg trade size
-            threshold = avg_trade_size * self.config.BID_COLLAPSE_THRESHOLD
-            return current_bid_size < threshold
+            # CONDITION 1: Bid collapse relative to print size
+            # bid_size < 30% of avg_print_size_1000
+            threshold_print = avg_print_size_1000 * self.config.BID_COLLAPSE_THRESHOLD
+            collapse_vs_print = current_bid_size < threshold_print
+            
+            # ARCHITECT-4 REFINEMENT: ADV-normalized condition
+            # CONDITION 2: bid_size < 0.5% of ADV_shares
+            # ADV proxy: avg minute volume × 390 (minutes in trading day)
+            collapse_vs_adv = False
+            if minute_bars and len(minute_bars) > 0:
+                avg_minute_volume = np.mean([b.volume for b in minute_bars])
+                adv_shares = avg_minute_volume * 390  # Approx ADV
+                threshold_adv = adv_shares * 0.005  # 0.5% of ADV
+                collapse_vs_adv = current_bid_size < threshold_adv
+                
+                if collapse_vs_print and collapse_vs_adv:
+                    logger.info(
+                        f"{symbol}: BID COLLAPSE CONFIRMED (dual-condition) - "
+                        f"bid={current_bid_size:,}, print_threshold={threshold_print:,.0f}, "
+                        f"adv_threshold={threshold_adv:,.0f}"
+                    )
+            
+            # Require BOTH conditions for confirmed collapse (high precision)
+            # Fall back to single condition if ADV data unavailable
+            if minute_bars and len(minute_bars) > 0:
+                return collapse_vs_print and collapse_vs_adv
+            else:
+                return collapse_vs_print
 
         except Exception as e:
             logger.warning(f"Error detecting bid collapse for {symbol}: {e}")
@@ -166,13 +200,23 @@ class LiquidityVacuumLayer:
         self,
         symbol: str,
         quote_data: Dict,
-        snapshot: Dict
+        snapshot: Dict,
+        minute_bars: Optional[List] = None
     ) -> bool:
         """
         Detect if bid-ask spread is widening.
 
         Widening spreads indicate market makers are less
         confident in fair value - expecting volatility.
+        
+        ARCHITECT-4 REFINEMENT: Persistence Window
+        ==========================================
+        Spread widening signal requires persistence:
+        - Signal must persist ≥ 60% of last 15 minutes
+        - This converts tick noise into a real regime
+        - Uses minute bar high-low range as spread proxy
+        
+        NOTE: Baseline spread estimated from low-volume bar ranges (proxy method).
         """
         try:
             # Get current spread
@@ -205,21 +249,63 @@ class LiquidityVacuumLayer:
                 return False
 
             # Estimate typical spread from high-low range during low volume periods
+            # NOTE: This is a PROXY method, not true quote spread history
+            avg_volume = np.mean([b.volume for b in bars])
             typical_ranges = []
             for bar in bars:
-                if bar.volume < np.mean([b.volume for b in bars]) * 0.5:
+                if bar.volume < avg_volume * 0.5:
                     # Low volume bar - range approximates spread
                     range_pct = (bar.high - bar.low) / bar.close if bar.close > 0 else 0
                     typical_ranges.append(range_pct)
 
             if not typical_ranges:
                 # Default: spread > 0.5% is wide for liquid stocks
-                return spread_pct > 0.005
-
-            normal_spread = np.mean(typical_ranges)
+                normal_spread = 0.0025  # 0.25% baseline
+            else:
+                normal_spread = np.mean(typical_ranges)
+            
             threshold = normal_spread * self.config.SPREAD_WIDENING_THRESHOLD
-
-            return spread_pct > threshold
+            current_wide = spread_pct > threshold
+            
+            # ============================================================
+            # ARCHITECT-4 REFINEMENT: 15-Minute Persistence Window
+            # ============================================================
+            # Require spread widening to persist for ≥60% of last 15 minutes
+            # This converts tick noise into a real regime
+            # ============================================================
+            
+            if minute_bars and len(minute_bars) >= 15:
+                # Get last 15 minutes of bars
+                today = date.today()
+                today_bars = [b for b in minute_bars if b.timestamp.date() == today]
+                
+                if len(today_bars) >= 15:
+                    recent_15 = today_bars[-15:]
+                    
+                    # Count bars where range (spread proxy) exceeded threshold
+                    wide_count = 0
+                    for bar in recent_15:
+                        bar_range_pct = (bar.high - bar.low) / bar.close if bar.close > 0 else 0
+                        if bar_range_pct > threshold:
+                            wide_count += 1
+                    
+                    persistence_pct = wide_count / 15
+                    
+                    # Require 60%+ persistence for confirmed spread widening
+                    if current_wide and persistence_pct >= 0.60:
+                        logger.info(
+                            f"{symbol}: SPREAD WIDENING CONFIRMED (persistence={persistence_pct:.0%}) - "
+                            f"current_spread={spread_pct:.4f}, threshold={threshold:.4f}"
+                        )
+                        return True
+                    elif current_wide:
+                        logger.debug(
+                            f"{symbol}: Spread wide but not persistent ({persistence_pct:.0%} < 60%)"
+                        )
+                        return False
+            
+            # Fallback: just use current spread if persistence check unavailable
+            return current_wide
 
         except Exception as e:
             logger.warning(f"Error detecting spread widening for {symbol}: {e}")

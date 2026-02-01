@@ -496,6 +496,55 @@ Failed VWAP reclaims indicate:
 
 ---
 
+---
+
+## ⚠️ ARCHITECT-4 REFINEMENTS (IMPLEMENTED)
+
+### 🔧 Refinement A: ADV-Normalized Bid Collapse (HIGH ROI)
+
+**Problem:** Bid collapse can be noisy if print sizes are irregular.
+
+**Solution Implemented in `liquidity.py`:**
+
+```python
+# DUAL-CONDITION for precision:
+# 1. bid_size < 30% of avg_print_size_1000 (rolling baseline)
+collapse_vs_print = current_bid_size < avg_print_size_1000 * 0.30
+
+# 2. bid_size < 0.5% of ADV_shares (stock-relative)
+adv_shares = avg_minute_volume * 390  # Trading day minutes
+collapse_vs_adv = current_bid_size < adv_shares * 0.005
+
+# Require BOTH conditions
+return collapse_vs_print and collapse_vs_adv
+```
+
+**Impact:** Makes "collapse" meaningful relative to the stock's normal liquidity.
+
+---
+
+### 🔧 Refinement B: 15-Minute Persistence Window (HIGH ROI)
+
+**Problem:** Quote signals can flicker (tick noise).
+
+**Solution Implemented in `liquidity.py`:**
+
+```python
+# PERSISTENCE WINDOW for spread widening:
+# Signal must persist ≥60% of last 15 minutes
+
+recent_15 = today_bars[-15:]
+wide_count = sum(1 for bar in recent_15 if bar_range_pct > threshold)
+persistence_pct = wide_count / 15
+
+# Require 60%+ persistence for confirmed regime
+return current_wide and persistence_pct >= 0.60
+```
+
+**Impact:** Converts tick noise into a real regime - fewer false vacuum triggers.
+
+---
+
 ## 🏛️ ARCHITECT-4 CONSOLIDATED VERDICT
 
 ### ✔ What Is Institutionally Sound
@@ -507,6 +556,8 @@ Failed VWAP reclaims indicate:
 | VWAP as institutional benchmark | ✅ VALID |
 | Volume-progress divergence logic | ✅ VALID |
 | Spread widening as volatility indicator | ✅ VALID |
+| ADV-normalized bid collapse | ✅ **IMPLEMENTED** |
+| 15-minute persistence window | ✅ **IMPLEMENTED** |
 
 ### Data Sources for Liquidity Vacuum Engine
 
