@@ -337,7 +337,8 @@ class StrikeSelector:
     async def select_contract(
         self,
         candidate: PutCandidate,
-        atr: Optional[float] = None
+        atr: Optional[float] = None,
+        dte_adjustment: int = 0
     ) -> Optional[OptionsContract]:
         """
         Select optimal put contract for a candidate.
@@ -347,6 +348,7 @@ class StrikeSelector:
         Args:
             candidate: PutCandidate with price data populated
             atr: 14-day ATR for adaptive strike selection
+            dte_adjustment: Days to add to DTE range (from Vega Gate)
             
         Returns:
             Optimal OptionsContract or None if no suitable contract found
@@ -373,6 +375,12 @@ class StrikeSelector:
         
         # Get DTE range based on score
         dte_min, dte_max = self.get_dte_range(score)
+        
+        # Apply Vega Gate DTE adjustment (if elevated IV, widen DTE)
+        if dte_adjustment > 0:
+            dte_min += dte_adjustment
+            dte_max += dte_adjustment
+            logger.info(f"  Vega Gate: DTE adjusted by +{dte_adjustment} days (elevated IV)")
         
         logger.info(
             f"Selecting put for {symbol} | "

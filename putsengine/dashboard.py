@@ -499,13 +499,69 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
         else:
             pattern_col = ""
         
+        # =========================================================================
+        # FIX: Map REAL JSON fields to display columns
+        # =========================================================================
+        
+        # POTENTIAL: Use potential_mult from JSON (e.g., "3x-6x")
+        # Fallback to calculation based on OTM% and score
+        potential = c.get("potential_mult")
+        if not potential:
+            otm_pct = c.get("otm_pct", 0)
+            if otm_pct >= 12:
+                potential = "4x-8x"  # Deep OTM, high reward
+            elif otm_pct >= 8:
+                potential = "3x-6x"
+            elif otm_pct >= 5:
+                potential = "2.5x-5x"
+            else:
+                potential = "2x-4x"
+        
+        # SIGNAL STRENGTH: Calculate from score (ARCHITECT-4 tiers)
+        # These are the institutional tiers from the scoring system
+        signal_strength = c.get("tier")  # First try JSON field
+        if not signal_strength or signal_strength == "N/A":
+            if score >= 0.75:
+                signal_strength = "🔥 EXPLOSIVE"
+            elif score >= 0.68:
+                signal_strength = "🏛️ CLASS A"
+            elif score >= 0.60:
+                signal_strength = "💪 STRONG"
+            elif score >= 0.55:
+                signal_strength = "⚡ ELEVATED"
+            elif score >= 0.45:
+                signal_strength = "👀 MONITORING"
+            elif score >= 0.35:
+                signal_strength = "🟡 CLASS B"
+            else:
+                signal_strength = "📊 WATCHING"
+        
+        # =========================================================================
+        # VEGA GATE: IV Regime Indicator (Architect-4)
+        # =========================================================================
+        iv_rank = c.get("vega_gate_iv_rank", 0)
+        vega_structure = c.get("vega_gate_recommended", "Long Put")
+        vega_sizing = c.get("vega_gate_sizing", 1.0)
+        
+        # Format Vega Gate display
+        if iv_rank > 0:
+            if iv_rank < 60:
+                vega_display = f"🟢 IV {iv_rank:.0f}%"  # Optimal
+            elif iv_rank <= 80:
+                vega_display = f"🟡 IV {iv_rank:.0f}%"  # Elevated
+            else:
+                vega_display = f"🔴 IV {iv_rank:.0f}%"  # Extreme - consider spread
+        else:
+            vega_display = ""  # No IV data
+        
         results.append({
             "Symbol": symbol_display,
             "Pattern": pattern_col,
             "Signal Type": signal_type,
             "Score": score,
-            "Potential": c.get("next_week_potential", "N/A"),
-            "Signal Strength": c.get("tier", "N/A"),
+            "Potential": potential,
+            "Signal Strength": signal_strength,
+            "IV Rank": vega_display,  # NEW: Vega Gate
             "PUT Type": put_type,
             "Flow Intent": flow_intent,
             "Expiry": expiry_str,
@@ -1180,25 +1236,28 @@ def render_big_movers_analysis():
     # Case 1: No pattern file exists
     if not pattern_file.exists():
         needs_scan = True
-    # Case 2: Main dashboard refreshed AND data is stale AND market is open
-    elif main_refresh_count > last_pattern_refresh and not is_pattern_data_fresh():
-        if is_market_open():
-            needs_scan = True
-            st.session_state.last_pattern_refresh_count = main_refresh_count
+    # Case 2: Data is stale (> 25 minutes old)
+    elif not is_pattern_data_fresh():
+        needs_scan = True
+        st.session_state.last_pattern_refresh_count = main_refresh_count
     
     # Run pattern scan ONLY if needed (uses Alpaca API only, NOT Unusual Whales)
+    # This runs automatically in the background during dashboard refresh
     if needs_scan and not st.session_state.pattern_scan_triggered:
         import subprocess
         try:
-            subprocess.run(
-                ["python3", "integrate_patterns.py"],
-                cwd=str(Path(__file__).parent.parent),
-                capture_output=True,
-                text=True,
-                timeout=180
-            )
+            # Show a subtle indicator that scan is running
+            with st.spinner("🔄 Auto-updating pattern scan... (uses Alpaca only, ~30 seconds)"):
+                subprocess.run(
+                    ["python3", "integrate_patterns.py"],
+                    cwd=str(Path(__file__).parent.parent),
+                    capture_output=True,
+                    text=True,
+                    timeout=180
+                )
             st.session_state.pattern_scan_triggered = True
-        except:
+            st.rerun()  # Reload to show new data
+        except Exception:
             pass
     
     st.markdown("""
@@ -1210,38 +1269,23 @@ def render_big_movers_analysis():
     Use this to identify put opportunities 1-2 days BEFORE the crash.
     """)
     
-    # Refresh button - always at top
-    col_btn1, col_btn2, col_btn3 = st.columns([1, 1, 3])
-    with col_btn1:
-        refresh_clicked = st.button("🔄 Refresh Pattern Scan", key="refresh_patterns")
-    with col_btn2:
-        # Show freshness status
-        if is_pattern_data_fresh():
-            st.success("✅ Data Fresh")
-        else:
-            st.warning("🔄 Will auto-update")
-    
-    if refresh_clicked:
-        # Allow manual refresh even if fresh (user's choice)
-        with st.spinner("Running pattern scan... This uses Alpaca API only (NOT Unusual Whales). May take 30-60 seconds."):
-            import subprocess
-            try:
-                result = subprocess.run(
-                    ["python3", "integrate_patterns.py"],
-                    cwd=str(Path(__file__).parent.parent),
-                    capture_output=True,
-                    text=True,
-                    timeout=180
-                )
-                if result.returncode == 0:
-                    st.success("✅ Pattern scan complete!")
-                    st.session_state.pattern_scan_triggered = True
-                    time.sleep(1)
-                    st.rerun()
+    # Show last scan time info (compact, no buttons)
+    try:
+        if pattern_file.exists():
+            with open(pattern_file, 'r') as f:
+                _temp_data = json.load(f)
+            scan_time = _temp_data.get("scan_time", "")
+            if scan_time:
+                scan_dt = datetime.fromisoformat(scan_time.replace("Z", "+00:00"))
+                if scan_dt.tzinfo is None:
+                    scan_dt = pytz.timezone('US/Eastern').localize(scan_dt)
+                age_minutes = (datetime.now(pytz.UTC) - scan_dt).total_seconds() / 60
+                if age_minutes < 30:
+                    st.caption(f"🟢 Last scan: {scan_dt.strftime('%I:%M %p ET')} ({age_minutes:.0f} min ago) | Auto-refreshes with dashboard")
                 else:
-                    st.error(f"Scan failed: {result.stderr[:200]}")
-            except Exception as e:
-                st.error(f"Error running scan: {e}")
+                    st.caption(f"🟡 Last scan: {scan_dt.strftime('%I:%M %p ET')} ({age_minutes:.0f} min ago) | Will refresh on next auto-update")
+    except Exception:
+        pass
     
     # Load pattern scan results (always reload fresh)
     pattern_data = None

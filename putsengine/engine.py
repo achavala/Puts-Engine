@@ -22,8 +22,11 @@ Daily Execution Windows:
 """
 
 import asyncio
+import json
 from datetime import datetime, date, time, timedelta
+from pathlib import Path
 from typing import Optional, List, Dict, Tuple
+import pytz
 from loguru import logger
 
 from putsengine.config import Settings, EngineConfig, get_settings
@@ -105,6 +108,10 @@ class PutsEngine:
         self._cached_regime: Optional[MarketRegimeData] = None
         self._regime_cache_time: Optional[datetime] = None
         self._regime_cache_ttl = 300  # 5 minutes cache
+        
+        # File-based caching for market regime (persists across dashboard reloads)
+        self._regime_cache_file = Path(__file__).parent.parent / "market_regime_cache.json"
+        self._regime_file_cache_ttl = 1800  # 30 minutes for file cache
 
         logger.info("PutsEngine initialized")
 
@@ -187,10 +194,36 @@ class PutsEngine:
                 logger.info("No candidates passed all gates and scoring")
                 return self.daily_report
 
-            # STEP 5: Strike Selection
+            # STEP 5: Vega Gate - Volatility Structure Selection (Architect-4)
+            logger.info("\n>>> LAYER 7.5: Vega Gate (IV Regime Check)")
+            from putsengine.gates.vega_gate import apply_vega_gate
+            
+            for candidate in actionable:
+                try:
+                    candidate, vega_result = await apply_vega_gate(
+                        candidate,
+                        alpaca_client=self.alpaca,
+                        polygon_client=self.polygon
+                    )
+                    if vega_result:
+                        logger.info(
+                            f"  {candidate.symbol}: IV Rank={vega_result.iv_rank:.0f}%, "
+                            f"Decision={vega_result.decision.value}, "
+                            f"Structure={vega_result.recommended_structure}"
+                        )
+                except Exception as e:
+                    logger.debug(f"Vega Gate error for {candidate.symbol}: {e}")
+
+            # STEP 6: Strike Selection
             logger.info("\n>>> LAYER 8: Strike/DTE Selection")
             for candidate in actionable[:self.settings.max_daily_trades]:
-                contract = await self.strike_selector.select_contract(candidate)
+                # Apply Vega Gate adjustments to DTE if needed
+                dte_adjustment = candidate.vega_gate_dte_add if hasattr(candidate, 'vega_gate_dte_add') else 0
+                
+                contract = await self.strike_selector.select_contract(
+                    candidate, 
+                    dte_adjustment=dte_adjustment
+                )
                 if contract:
                     candidate.contract_symbol = contract.symbol
                     candidate.recommended_strike = contract.strike
@@ -600,14 +633,135 @@ class PutsEngine:
 
         return execution
 
-    async def get_cached_regime(self) -> MarketRegimeData:
-        """Get market regime with caching (5 min TTL)."""
+    def _is_market_open(self) -> bool:
+        """Check if US stock market is currently open."""
+        est = pytz.timezone('US/Eastern')
+        now = datetime.now(est)
+        
+        # Weekend check
+        if now.weekday() >= 5:  # Saturday=5, Sunday=6
+            return False
+        
+        # Market hours: 9:30 AM - 4:00 PM ET
+        market_open = now.replace(hour=9, minute=30, second=0, microsecond=0)
+        market_close = now.replace(hour=16, minute=0, second=0, microsecond=0)
+        
+        return market_open <= now <= market_close
+
+    def _load_regime_from_file(self) -> Optional[MarketRegimeData]:
+        """Load cached market regime from file."""
+        try:
+            if not self._regime_cache_file.exists():
+                return None
+            
+            with open(self._regime_cache_file, 'r') as f:
+                data = json.load(f)
+            
+            # Check if cache is still valid
+            cache_time = datetime.fromisoformat(data.get('cache_time', '2000-01-01'))
+            now = datetime.now()
+            age_seconds = (now - cache_time).total_seconds()
+            
+            # Use 30-minute TTL for file cache
+            if age_seconds > self._regime_file_cache_ttl:
+                logger.debug(f"File cache expired (age: {age_seconds/60:.1f} min)")
+                return None
+            
+            # Reconstruct MarketRegimeData from cached data
+            from putsengine.models import MarketRegime
+            regime_data = data.get('regime_data', {})
+            
+            return MarketRegimeData(
+                timestamp=datetime.fromisoformat(regime_data.get('timestamp', datetime.now().isoformat())),
+                regime=MarketRegime(regime_data.get('regime', 'bullish_neutral')),
+                spy_below_vwap=regime_data.get('spy_below_vwap', False),
+                qqq_below_vwap=regime_data.get('qqq_below_vwap', False),
+                index_gex=regime_data.get('index_gex', 0),
+                vix_level=regime_data.get('vix_level', 20.0),
+                vix_change=regime_data.get('vix_change', 0.0),
+                is_tradeable=regime_data.get('is_tradeable', False),
+                block_reasons=[BlockReason(r) for r in regime_data.get('block_reasons', [])],
+                is_passive_inflow_window=regime_data.get('is_passive_inflow_window', False),
+                passive_inflow_reason=regime_data.get('passive_inflow_reason'),
+                below_zero_gamma=regime_data.get('below_zero_gamma', False)
+            )
+        except Exception as e:
+            logger.debug(f"Failed to load regime from file cache: {e}")
+            return None
+
+    def _save_regime_to_file(self, regime: MarketRegimeData):
+        """Save market regime to file cache."""
+        try:
+            data = {
+                'cache_time': datetime.now().isoformat(),
+                'regime_data': {
+                    'timestamp': regime.timestamp.isoformat(),
+                    'regime': regime.regime.value,
+                    'spy_below_vwap': regime.spy_below_vwap,
+                    'qqq_below_vwap': regime.qqq_below_vwap,
+                    'index_gex': regime.index_gex,
+                    'vix_level': regime.vix_level,
+                    'vix_change': regime.vix_change,
+                    'is_tradeable': regime.is_tradeable,
+                    'block_reasons': [r.value for r in regime.block_reasons],
+                    'is_passive_inflow_window': regime.is_passive_inflow_window,
+                    'passive_inflow_reason': regime.passive_inflow_reason,
+                    'below_zero_gamma': regime.below_zero_gamma
+                }
+            }
+            with open(self._regime_cache_file, 'w') as f:
+                json.dump(data, f, indent=2)
+            logger.debug("Saved regime to file cache")
+        except Exception as e:
+            logger.debug(f"Failed to save regime to file cache: {e}")
+
+    async def get_cached_regime(self, force_refresh: bool = False) -> MarketRegimeData:
+        """
+        Get market regime with intelligent caching.
+        
+        Caching Strategy:
+        1. Memory cache (5 min TTL) - fastest
+        2. File cache (30 min TTL) - persists across dashboard reloads
+        3. Skip UW API calls when market is closed (use file cache)
+        4. Only make fresh API calls during market hours or when force_refresh=True
+        """
         now = datetime.now()
-        if (self._cached_regime is None or 
-            self._regime_cache_time is None or
-            (now - self._regime_cache_time).total_seconds() > self._regime_cache_ttl):
-            self._cached_regime = await self.market_regime.analyze()
-            self._regime_cache_time = now
+        market_is_open = self._is_market_open()
+        
+        # Check memory cache first
+        if (not force_refresh and 
+            self._cached_regime is not None and 
+            self._regime_cache_time is not None and
+            (now - self._regime_cache_time).total_seconds() <= self._regime_cache_ttl):
+            logger.debug("Using memory-cached market regime")
+            return self._cached_regime
+        
+        # If market is closed, use file cache (don't waste API calls)
+        if not market_is_open and not force_refresh:
+            file_regime = self._load_regime_from_file()
+            if file_regime:
+                logger.info("Market closed - using file-cached regime (no UW API calls)")
+                self._cached_regime = file_regime
+                self._regime_cache_time = now
+                return file_regime
+        
+        # Check file cache before making API calls
+        if not force_refresh:
+            file_regime = self._load_regime_from_file()
+            if file_regime:
+                logger.debug("Using file-cached market regime")
+                self._cached_regime = file_regime
+                self._regime_cache_time = now
+                return file_regime
+        
+        # Make fresh API call (only during market hours or forced refresh)
+        logger.info("Fetching fresh market regime from APIs...")
+        self._cached_regime = await self.market_regime.analyze(force_api_call=force_refresh)
+        self._regime_cache_time = now
+        
+        # Save to file cache for persistence
+        self._save_regime_to_file(self._cached_regime)
+        
         return self._cached_regime
 
     async def run_single_symbol(

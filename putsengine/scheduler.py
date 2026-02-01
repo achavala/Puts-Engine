@@ -713,8 +713,8 @@ class PutsEngineScheduler:
             distribution_candidates = []
             liquidity_candidates = []
             
-            # Get market regime first
-            market_regime = await self._market_regime_layer.analyze()
+            # Get market regime first (force API calls during scheduled scans)
+            market_regime = await self._market_regime_layer.analyze(force_api_call=True)
             logger.info(f"Market Regime: {market_regime.regime.value}")
             
             # Calculate expiry dates

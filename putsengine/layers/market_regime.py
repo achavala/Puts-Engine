@@ -17,6 +17,7 @@ Absolute blockers (ANY one blocks):
 
 from datetime import datetime, date, timedelta
 from typing import Optional, List, Tuple
+import pytz
 from loguru import logger
 
 from putsengine.config import EngineConfig, Settings
@@ -50,10 +51,18 @@ class MarketRegimeLayer:
         self.unusual_whales = unusual_whales
         self.settings = settings
         self.config = EngineConfig
+        
+        # Cache for GEX data when market is closed
+        self._cached_gex = 0.0
+        self._gex_cache_time: Optional[datetime] = None
 
-    async def analyze(self) -> MarketRegimeData:
+    async def analyze(self, force_api_call: bool = False) -> MarketRegimeData:
         """
         Perform complete market regime analysis.
+        
+        Args:
+            force_api_call: If True, forces API calls even when market is closed.
+                           Use True for scheduled scans, False for dashboard refreshes.
 
         Returns:
             MarketRegimeData with regime classification and tradability flag.
@@ -67,8 +76,8 @@ class MarketRegimeLayer:
         # Get VIX data
         vix_level, vix_change = await self._get_vix_data()
 
-        # Get market-wide GEX
-        index_gex = await self._get_index_gex()
+        # Get market-wide GEX (skip UW API calls when market closed unless forced)
+        index_gex = await self._get_index_gex(force_api_call=force_api_call)
 
         # Check for blockers
         block_reasons = []
@@ -238,13 +247,42 @@ class MarketRegimeLayer:
             logger.error(f"Error getting VIX data: {e}")
             return (20.0, 0.0)
 
-    async def _get_index_gex(self) -> float:
+    def _is_market_open(self) -> bool:
+        """Check if US stock market is currently open."""
+        est = pytz.timezone('US/Eastern')
+        now = datetime.now(est)
+        
+        # Weekend check
+        if now.weekday() >= 5:  # Saturday=5, Sunday=6
+            return False
+        
+        # Market hours: 9:30 AM - 4:00 PM ET
+        market_open = now.replace(hour=9, minute=30, second=0, microsecond=0)
+        market_close = now.replace(hour=16, minute=0, second=0, microsecond=0)
+        
+        return market_open <= now <= market_close
+
+    async def _get_index_gex(self, force_api_call: bool = False) -> float:
         """
         Get aggregate Gamma Exposure for major indices.
 
         Positive GEX = dealers long gamma = will buy dips, sell rips
         Negative GEX = dealers short gamma = will amplify moves
+        
+        OPTIMIZATION: Skip Unusual Whales API calls when market is closed.
+        Use cached GEX value instead to preserve API budget.
         """
+        # Check if market is open
+        if not self._is_market_open() and not force_api_call:
+            # Market closed - use cached value (don't waste API calls)
+            if self._gex_cache_time and self._cached_gex != 0:
+                logger.debug(f"Market closed - using cached GEX: {self._cached_gex:,.0f}")
+                return self._cached_gex
+            else:
+                # No cache available, return neutral GEX
+                logger.info("Market closed - using neutral GEX (0) to avoid UW API calls")
+                return 0.0
+        
         total_gex = 0.0
 
         for symbol in ["SPY", "QQQ"]:
@@ -255,6 +293,11 @@ class MarketRegimeLayer:
             except Exception as e:
                 logger.warning(f"Error getting GEX for {symbol}: {e}")
 
+        # Cache the GEX value
+        if total_gex != 0:
+            self._cached_gex = total_gex
+            self._gex_cache_time = datetime.now()
+        
         return total_gex
 
     def _is_passive_inflow_window(self) -> tuple:

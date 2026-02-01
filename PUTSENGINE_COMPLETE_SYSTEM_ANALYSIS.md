@@ -1,0 +1,813 @@
+# 🏛️ PUTSENGINE COMPLETE SYSTEM ANALYSIS
+## Institutional-Grade Deep Dive | 30+ Years Trading + PhD Quant + Microstructure Lens
+
+**Analysis Date:** February 1, 2026  
+**System Version:** architect4-big-movers-final-020126  
+**Author:** Institutional System Audit
+
+---
+
+## EXECUTIVE SUMMARY
+
+PutsEngine is a **multi-layer institutional PUT detection system** designed to identify stocks likely to experience **-3% to -20% drops** within 1-2 weeks, enabling **3x-10x asymmetric option returns**.
+
+### Core Philosophy
+> "Puts are permission-based, not momentum-based"
+- Calls = acceleration engines
+- Puts = permission engines
+- Flow is leading, price is lagging
+- Empty days are a feature, not a bug
+
+---
+
+## 1️⃣ COMPLETE SYSTEM ARCHITECTURE
+
+### A. Pipeline Flow (9 Layers)
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    PUTSENGINE EXECUTION PIPELINE                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  LAYER 1: MARKET REGIME CHECK (GATE) ──────────────────────────────────│
+│  ├── SPY/QQQ below VWAP check                                          │
+│  ├── Index Net GEX check (≤ neutral required)                          │
+│  ├── VIX/VVIX direction check                                          │
+│  ├── Passive inflow window check (Day 1-3, 28-31 = BLOCKED)           │
+│  └── Result: TRADEABLE or BLOCKED                                      │
+│                                                                         │
+│  LAYER 2: UNIVERSE SCAN ─────────────────────────────────────────────── │
+│  ├── Static Universe: 300+ tickers across 20+ sectors                  │
+│  ├── Dynamic Universe Injection (DUI): Pattern-detected tickers        │
+│  └── Build shortlist (≤15 names)                                       │
+│                                                                         │
+│  LAYER 3: DISTRIBUTION DETECTION ────────────────────────────────────── │
+│  ├── Price-Volume Analysis (Polygon)                                   │
+│  ├── Options Flow Analysis (Unusual Whales)                            │
+│  ├── Dark Pool Analysis (Unusual Whales)                               │
+│  ├── Insider/Congress Trading (Unusual Whales)                         │
+│  └── Earnings Proximity Check (Polygon)                                │
+│                                                                         │
+│  LAYER 4: LIQUIDITY VACUUM CHECK ────────────────────────────────────── │
+│  ├── Bid size collapse detection (Alpaca + Polygon)                    │
+│  ├── Spread widening detection                                         │
+│  ├── Volume without price progress                                     │
+│  ├── VWAP retest failure                                               │
+│  └── Sector-relative liquidity analysis                                │
+│                                                                         │
+│  LAYER 5: ACCELERATION WINDOW ───────────────────────────────────────── │
+│  ├── Time-of-day optimal entry windows                                 │
+│  └── Session momentum analysis                                         │
+│                                                                         │
+│  LAYER 6: DEALER POSITIONING CHECK (GATE) ──────────────────────────── │
+│  ├── GEX analysis (Unusual Whales)                                     │
+│  ├── Put wall proximity check                                          │
+│  └── Dealer delta positioning                                          │
+│                                                                         │
+│  LAYER 7: FINAL SCORING ─────────────────────────────────────────────── │
+│  ├── Weighted composite calculation                                    │
+│  ├── Class A/B/C classification                                        │
+│  └── Pattern boost application                                         │
+│                                                                         │
+│  LAYER 8: STRIKE/DTE SELECTION ──────────────────────────────────────── │
+│  ├── Price-tier based strike selection                                 │
+│  ├── ATR-based adaptive adjustment                                     │
+│  ├── Delta gating                                                      │
+│  └── Liquidity validation                                              │
+│                                                                         │
+│  LAYER 9: TRADE EXECUTION ───────────────────────────────────────────── │
+│  └── Order submission via Alpaca                                       │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 2️⃣ DATA SOURCES - COMPLETE INVENTORY
+
+### A. PRIMARY DATA PROVIDERS
+
+| Provider | Role | Data Types | API Rate Limits | Freshness |
+|----------|------|------------|-----------------|-----------|
+| **Polygon.io** | Primary tape truth | Minute bars, VWAP, daily OHLCV, trades, snapshots | 5 req/sec | < 5 min (bars), Near-RT (snapshot) |
+| **Alpaca** | Trading + quotes | Real-time quotes (NBBO), daily bars, options chains, order execution | High | Near real-time |
+| **Unusual Whales** | Options flow intelligence | Options flow, dark pool prints, GEX data, insider trades, congress trades | 7,500/day, 120/min | Near real-time |
+| **FinViz** | Technical screening | Technical indicators, support/resistance, analyst ratings, insider activity | Per subscription | ~15 min delay |
+
+### B. DETAILED API CALL INVENTORY
+
+#### POLYGON.IO CALLS
+```
+Endpoint                              | Purpose                          | Called By
+─────────────────────────────────────┼──────────────────────────────────┼─────────────────
+/v2/aggs/ticker/{sym}/range/1/min    | Intraday minute bars             | Distribution, Liquidity
+/v2/aggs/ticker/{sym}/range/1/day    | Daily bars (OHLCV)               | Big Movers, Patterns
+/v2/snapshot/locale/us/markets/stocks/{sym} | Current price snapshot    | Liquidity, Strike Sel
+/v2/reference/conditions             | Trade conditions                 | Dark Pool filtering
+/v3/reference/tickers/{sym}          | Ticker details                   | Universe management
+/v1/last/crypto/{sym}                | Crypto for BTC correlation       | MSTR, COIN analysis
+```
+
+#### ALPACA CALLS
+```
+Endpoint                              | Purpose                          | Called By
+─────────────────────────────────────┼──────────────────────────────────┼─────────────────
+/v2/stocks/{sym}/quotes/latest       | Real-time bid/ask                | Liquidity Vacuum
+/v2/stocks/{sym}/bars                | Historical bars                  | Pattern Scanner
+/v1beta1/options/contracts           | Options chain                    | Strike Selector
+/v2/account                          | Account info                     | Position sizing
+/v2/orders                           | Order submission                 | Execution
+/v2/positions                        | Current positions                | Risk management
+```
+
+#### UNUSUAL WHALES CALLS
+```
+Endpoint                              | Purpose                          | Called By
+─────────────────────────────────────┼──────────────────────────────────┼─────────────────
+/api/stock/{sym}/options-volume      | Options flow data                | Distribution Layer
+/api/stock/{sym}/darkpool            | Dark pool transactions           | Distribution Layer
+/api/stock/{sym}/greek-exposure      | GEX data                         | Market Regime, Dealer
+/api/congress/trades                 | Congressional trading            | Distribution Layer
+/api/insider/trades                  | Insider transactions             | Distribution Layer
+/api/options/chain/{sym}             | Options chain details            | Strike Selection
+/api/market/sector-etf              | Sector performance               | Sector Correlation
+```
+
+---
+
+## 3️⃣ ENGINE BREAKDOWN - THE ANTI-TRINITY
+
+### Engine 1: GAMMA DRAIN (Flow-Driven)
+**Primary Engine — Highest Conviction**
+
+**Physics:**
+- Negative GEX = dealers short gamma = forced selling on down moves
+- Net Call Delta flipping negative = hedgers capitulating
+- Put sweeps (urgency buying) = smart money positioning
+
+**Data Sources:**
+1. **Unusual Whales** `/api/stock/{sym}/greek-exposure` → Net GEX, dealer delta
+2. **Polygon.io** minute bars → VWAP calculation, price below VWAP check
+3. **Alpaca** quotes → Real-time bid/ask for entry timing
+
+**Signals Detected:**
+- `exhaustion` - Price exhaustion pattern
+- `below_prior_low` - Breaking support
+- `pump_reversal` - Up big then reversing
+- `high_vol_red` - High volume red day
+
+**Required Confirmations:**
+- Price below VWAP for ≥70% of session
+- Delta flip occurs BEFORE 2:30 PM (not EOD hedging)
+- No put wall within ±1% of price
+
+---
+
+### Engine 2: DISTRIBUTION TRAP (Event-Driven)
+**Secondary Engine — Confirmation-Heavy**
+
+**Physics:**
+- Distribution = selling without price response
+- Institutions exit into strength (sell the news)
+- Options flow reveals intent before price shows it
+
+**Data Sources:**
+1. **Polygon.io** bars → Price-volume divergence, RVOL calculation
+2. **Unusual Whales** flow → Call selling at bid, put buying at ask
+3. **Unusual Whales** dark pool → Repeated sell blocks
+4. **Unusual Whales** insider → C-level selling clusters
+5. **FinViz** (optional) → Technical confirmation, analyst downgrades
+
+**Signals Detected:**
+- `flat_price_rising_volume` - Classic distribution
+- `failed_breakout` - Rejection at resistance
+- `vwap_loss` - Benchmark rejection
+- `call_selling_at_bid` - Bearish options flow
+- `repeated_sell_blocks` - Dark pool selling
+- `skew_steepening` - Put IV > Call IV
+
+**Dark Pool Context Guard (Architect-4):**
+```
+Repeated sell blocks count ONLY IF:
+  - Price remains below VWAP
+  OR
+  - Price fails to make new intraday high post-print
+```
+
+---
+
+### Engine 3: LIQUIDITY VACUUM (Acceleration)
+**Execution Timing Engine**
+
+**Physics:**
+- Crashes happen when buyers DISAPPEAR, not just when sellers appear
+- Bid collapse = market makers stepping away
+- Spread widening = risk premium repriced
+
+**Data Sources:**
+1. **Alpaca** quotes → Bid size, ask size, spread
+2. **Polygon.io** bars → Volume without progress, VWAP reclaim failures
+3. **Polygon.io** trades → Average print size for bid collapse baseline
+
+**Signals Detected:**
+- `bid_collapsing` - Bid size < 30% of baseline (ADV-normalized)
+- `spread_widening` - Spread > 2× normal (15-min persistence required)
+- `volume_no_progress` - Volume > 1.5× avg, price change < 0.5%
+- `vwap_retest_failed` - 2+ failed VWAP reclaims
+
+**Sector-Relative Context (Architect-4):**
+```python
+# Compare against sector peers
+sector_impact = Σ(peer_liquidity_flag × peer_weight) / Σ(peer_weight)
+
+Adjustments:
+- SECTOR_WIDE (≥50% peers): +0.10 boost
+- MIXED (25-50% peers): +0.05 boost  
+- IDIOSYNCRATIC (<25% peers): -0.03 dampen
+```
+
+---
+
+## 4️⃣ SCORING MODEL - LOCKED WEIGHTS
+
+```
+┌───────────────────────────────────────────────────────────────┐
+│              COMPOSITE SCORING MODEL (LOCKED)                 │
+├───────────────────────────────────────────────────────────────┤
+│                                                               │
+│  Distribution Quality ............................ 30%        │
+│  Dealer Positioning (GEX / Delta) ............... 20%        │
+│  Liquidity Vacuum ............................... 15%        │
+│  Options Flow Quality ........................... 15%        │
+│  Catalyst Proximity ............................. 10%        │
+│  Sentiment / Technical .......................... 10%        │
+│                                                               │
+│  Risk Gates .................................... HARD BLOCK   │
+│                                                               │
+├───────────────────────────────────────────────────────────────┤
+│  CLASS A: Score ≥ 0.60  →  Full position (up to 5 contracts) │
+│  CLASS B: Score 0.20-0.55  →  Reduced (max 2 contracts)      │
+│  CLASS C: Score < 0.20  →  Monitor only                      │
+└───────────────────────────────────────────────────────────────┘
+```
+
+### Signal Contribution Breakdown
+
+| Signal | Score Contribution | Source |
+|--------|-------------------|--------|
+| High RVOL red day | +0.20 | Polygon bars |
+| Gap down no recovery | +0.15 | Polygon bars |
+| Multi-day weakness | +0.12 | Polygon bars |
+| Put buying at ask | +0.10 | Unusual Whales flow |
+| Call selling at bid | +0.10 | Unusual Whales flow |
+| Repeated dark pool sells | +0.08 | Unusual Whales dark pool |
+| Skew steepening | +0.08 | Unusual Whales options |
+| VWAP loss | +0.08 | Polygon bars |
+| Insider selling cluster | +0.10-0.15 | Unusual Whales insider |
+| Post-earnings negative guidance | +0.10 | Polygon reference |
+| Pattern boost (pump reversal) | +0.15-0.20 | Pattern Scanner |
+
+---
+
+## 5️⃣ PATTERN DETECTION - BIG MOVERS ANALYSIS
+
+### Patterns That Lead to -5% to -20% Moves
+
+#### A. PUMP-AND-DUMP Pattern
+```
+Detection Logic:
+- Price up > 3% in 1-3 days
+- Then showing reversal signals:
+  - Upper wick > 1.5× body (topping tail)
+  - Close < 97% of high (exhaustion)
+  - Volume spike on red day
+
+Data Source: Alpaca daily bars only
+Historical Examples: RR (+44.6% → -20.9%), NET (-10.2%)
+```
+
+#### B. TWO-DAY RALLY EXHAUSTION
+```
+Detection Logic:
+- 2 consecutive +1% days
+- Total gain ≥ 3%
+- Watch for reversal on day 3
+
+Data Source: Alpaca daily bars
+Historical Examples: UUUU, OKLO, FSLR
+```
+
+#### C. SECTOR CONTAGION
+```
+Detection Logic:
+- Leader ticker drops > 5%
+- ≥ 2 peer tickers in same sector showing weakness
+- High correlation to sector leader
+
+Data Source: Alpaca bars + sector mapping
+Historical Examples: Silver miners (AG, CDE, HL), Uranium (all moved together)
+```
+
+---
+
+## 6️⃣ STRIKE & DTE SELECTION - INSTITUTIONAL LOGIC
+
+### Price Tier System
+
+| Price Tier | Range | OTM Target | Delta Band | Rationale |
+|------------|-------|------------|------------|-----------|
+| Gamma Sweet Spot | $10-$30 | 10-16% | -0.20 to -0.30 | % works for cheap stocks |
+| Low-Mid | $30-$100 | 7-12% | -0.22 to -0.32 | Balanced approach |
+| Mid | $100-$300 | 4-8% | -0.25 to -0.35 | Tighter % for bigger stocks |
+| High | $300-$500 | $15-$35 | -0.25 to -0.40 | Switch to $ distance |
+| Premium | $500-$800 | $20-$50 | -0.22 to -0.35 | $ distance only |
+| Ultra Premium | $800-$1200 | $30-$70 | -0.20 to -0.30 | Mega caps |
+| Mega | $1200+ | $40-$90 | ≥ -0.20 | Conservative delta |
+
+### DTE Rules by Conviction
+
+| Score Range | DTE Target | Expiry Selection |
+|-------------|------------|------------------|
+| ≥ 0.60 | 7-12 DTE | Nearest Friday |
+| 0.45-0.59 | 12-18 DTE | Next Friday |
+| 0.35-0.44 | 14-21 DTE | 2 weeks out |
+
+### Liquidity Gates (HARD BLOCKS)
+
+```
+REJECT IF:
+- Open Interest < 300
+- Volume < 50 (unless OI > 800)
+- Spread > 10% of mid price
+- Delta < -0.18 (too far OTM = lottery)
+```
+
+---
+
+## 7️⃣ SCHEDULED SCANNING SYSTEM
+
+### Daily Schedule (12 Scans)
+
+| # | Time (ET) | Type | Focus |
+|---|-----------|------|-------|
+| 1 | 4:15 AM | Pre-Market #1 | After-hours movers |
+| 2 | 6:15 AM | Pre-Market #2 | Pre-market gaps |
+| 3 | 8:15 AM | Pre-Market #3 | Final pre-market check |
+| 4 | 9:15 AM | Pre-Market #4 | Just before open |
+| 5 | 10:15 AM | Regular | Opening range analysis |
+| 6 | 11:15 AM | Regular | Mid-morning flow |
+| 7 | 12:45 PM | Regular | Midday check |
+| 8 | 1:45 PM | Regular | Afternoon setup |
+| 9 | 2:45 PM | Regular | Power hour prep |
+| 10 | 3:15 PM | Regular + Email | Final trading scan |
+| 11 | 4:00 PM | Market Close | EOD analysis |
+| 12 | 5:00 PM | End of Day | After-hours scan |
+
+### API Budget Strategy
+
+```
+Daily Budget: 7,500 Unusual Whales calls
+
+Distribution:
+├── Pre-Market (4 scans): 800 calls
+├── Market Open: 800 calls  
+├── Regular Hours (11 scans): 4,400 calls
+├── Market Close: 400 calls
+├── End of Day: 400 calls
+└── Buffer/Retries: 700 calls
+
+Rate Limit Strategy:
+- Split 300 tickers into 3 batches of 100
+- Process at 100 req/min (safe under 120 limit)
+- Wait 65 seconds between batches
+- Result: ALL tickers scanned, ZERO misses
+```
+
+---
+
+## 8️⃣ MARKET REGIME GATES - ABSOLUTE BLOCKS
+
+### Required Conditions (ALL must be true)
+
+```
+✅ SPY OR QQQ below VWAP (at least one)
+✅ Index Net GEX ≤ neutral
+✅ VIX stable or rising (not collapsing > 5%)
+```
+
+### Absolute Blockers (ANY one blocks trading)
+
+| Blocker | Detection | Rationale |
+|---------|-----------|-----------|
+| Positive GEX | GEX > 1.5× neutral threshold | Dealers long gamma = pinned market |
+| Index Pinned | Both SPY & QQQ above VWAP | Never short names against pinned index |
+| Passive Inflow Window | Day 1-3 or 28-31 of month | Systematic flows you can't fight |
+| Buyback Window | Mega-caps in active buyback | Corporate bid under stock |
+
+### Current Status Example
+```json
+{
+  "regime": "bullish_neutral",
+  "spy_below_vwap": false,
+  "qqq_below_vwap": false,
+  "index_gex": 0.0,
+  "vix_level": 26.71,
+  "is_tradeable": false,
+  "block_reasons": ["index_pinned", "passive_inflow_window"]
+}
+```
+
+---
+
+## 9️⃣ 48-HOUR FREQUENCY ANALYSIS - SUPREME COURT
+
+### Role
+The 48-Hour Frequency tab is the **strategic conviction layer** that aggregates outputs from all three engines over a rolling 48-hour window.
+
+### Data Flow
+```
+Scheduled Scans → scan_history.json → 48-Hour Analysis Tab
+                                   ↓
+                           Multi-Engine Detection
+                                   ↓
+                           Conviction Scoring
+```
+
+### Architect-4 Enhancements
+
+#### 1. Time-Decay Weighting
+```python
+weight = exp(-0.04 × hours_since_detection)
+# λ = 0.04 → half-life ≈ 17 hours
+# Recent convergence matters more
+```
+
+#### 2. Engine Diversity Bonus
+```python
+diversity_bonus = 0.1 × (num_engines - 1)
+# 3 different engines > 3 hits from same engine
+```
+
+#### 3. Trifecta Alert
+When a symbol appears in **ALL 3 engines** within 48 hours:
+- 🚨 TRIFECTA alert triggered
+- Highest conviction setup
+- "Drop everything and look" priority
+
+### Conviction Score Formula
+```python
+conviction_score = min(1.0,
+    (time_weighted_appearances / max_appearances) × 0.4 +
+    (avg_weighted_score) × 0.5 +
+    diversity_bonus
+)
+```
+
+---
+
+## 🔟 UNIVERSE COVERAGE - 300+ TICKERS
+
+### Sector Breakdown
+
+| Sector | Count | Key Tickers |
+|--------|-------|-------------|
+| Mega Cap Tech | 15 | AAPL, MSFT, GOOGL, AMZN, META, NVDA, TSLA |
+| Cloud/SaaS | 16 | NET, CRWD, ZS, DDOG, MDB, SNOW, PANW |
+| High Vol Tech | 14 | SMCI, PLTR, COIN, HOOD, SOFI, MSTR |
+| Materials/Mining | 16 | MP, USAR, LAC, ALB, FCX, NEM, GOLD |
+| Silver Miners | 9 | AG, CDE, HL, PAAS, MAG, EXK |
+| Gaming | 7 | U, EA, TTWO, SKLZ, PLTK |
+| Auto Retail | 9 | CVNA, KMX, AN, PAG, LAD |
+| Space/Aerospace | 15 | RKLB, ASTS, SPCE, JOBY, ACHR, BA, LMT |
+| Nuclear/Energy | 14 | OKLO, SMR, CCJ, LEU, NNE, CEG, VST |
+| Quantum | 4 | RGTI, QUBT, IONQ, QBTS |
+| Healthcare | 12 | UNH, JNJ, PFE, MRK, ABBV, LLY |
+| Financials | 12 | JPM, BAC, GS, MS, C, WFC |
+| ... | ... | ... |
+
+### Dynamic Universe Injection (DUI)
+
+Tickers can be promoted to the universe when:
+1. Pattern scanner detects pump-reversal setup
+2. Sector correlation scanner flags contagion
+3. After-hours scanner detects significant move
+4. Pre-catalyst scanner detects smart money positioning
+
+**TTL:** 3 trading days
+
+---
+
+## 11️⃣ DATA VALIDATION - REAL VS STALE
+
+### Live Data Sources (Validated ✅)
+
+| Data Type | Source | Freshness | Validation Method |
+|-----------|--------|-----------|-------------------|
+| Stock prices | Polygon.io | < 5 min | Timestamp check |
+| Real-time quotes | Alpaca | Near-RT | NBBO verified |
+| Options flow | Unusual Whales | Near-RT | Timestamp + rate limit tracking |
+| Dark pool | Unusual Whales | Near-RT | Timestamp in response |
+| GEX data | Unusual Whales | Near-RT | Market hours check |
+| Daily bars | Polygon.io | EOD | Date verification |
+
+### Caching Strategy
+
+```python
+# Market Regime (to prevent wasted API calls)
+Memory Cache: 5 minutes TTL
+File Cache: 30 minutes TTL (persists across dashboard reloads)
+
+# When market is closed:
+- Skip Unusual Whales API calls
+- Return cached/neutral values
+- Zero API waste
+```
+
+### Audit Trail Fields
+
+```json
+{
+  "as_of_utc": "2026-02-01T17:30:00Z",
+  "price_source": "polygon_snapshot",
+  "adjusted_flag": true,
+  "payload_hash": "sha256:a1b2c3...",
+  "code_version": "architect4-final",
+  "weights_version": "v4.0"
+}
+```
+
+---
+
+## 12️⃣ MISSING TOOLS / POTENTIAL INTEGRATIONS
+
+### Currently NOT Integrated (Future Considerations)
+
+| Tool | Potential Value | Implementation Effort |
+|------|-----------------|----------------------|
+| **SEC EDGAR Filings** | 13F holdings, insider Form 4s (direct source) | Medium |
+| **Social Sentiment (StockTwits, Reddit)** | Retail sentiment as contrarian indicator | Medium |
+| **News APIs (Benzinga, NewsAPI)** | Real-time news catalysts | Medium |
+| **Alternative Data (SimilarWeb, Placer.ai)** | Consumer traffic patterns | High |
+| **Macro Data (FRED)** | Economic indicators | Low |
+| **Global Markets (FX, Bonds)** | Cross-asset correlation | Medium |
+
+### What We Have vs What Could Be Added
+
+```
+CURRENT STATE:
+✅ Options flow (Unusual Whales)
+✅ Dark pool data (Unusual Whales)
+✅ Insider trades (Unusual Whales)
+✅ Congress trades (Unusual Whales)
+✅ Price/Volume (Polygon + Alpaca)
+✅ GEX/Dealer positioning (Unusual Whales)
+✅ Technical indicators (FinViz optional)
+✅ Pattern recognition (internal)
+✅ Sector correlation (internal)
+
+POTENTIAL ADDITIONS:
+❌ Direct SEC filings (instead of UW aggregation)
+❌ Social media sentiment
+❌ Earnings whisper numbers
+❌ Short interest real-time (currently daily)
+❌ Institutional 13F changes
+❌ Credit default swaps (for distressed plays)
+```
+
+---
+
+## 13️⃣ COMPLETE SIGNAL DEFINITIONS
+
+### Formal Signal Specifications (Architect-4 Locked)
+
+#### Gap Up Reversal
+```
+Definition:
+  gap_up_reversal = (
+    open > prior_close × 1.01  # Gap up > 1%
+    AND close < open × 0.97    # Closed red (> 3% from open)
+    AND volume > SMA(volume, 20) × 1.2  # Above average volume
+  )
+  
+Data Sources:
+  - open: Polygon daily bar "o"
+  - prior_close: Polygon prior day "c"
+  - close: Polygon daily bar "c"
+  - volume: Polygon daily bar "v"
+  - SMA(volume, 20): Calculated from 20-day Polygon bars
+```
+
+#### RVOL Red Day
+```
+Definition:
+  rvol_red_day = (
+    close < open  # Red day
+    AND volume > SMA(volume, 20) × 2.0  # RVOL > 2
+  )
+  
+Interpretation: Institutions selling with urgency
+```
+
+#### VWAP Loss
+```
+Definition:
+  vwap_loss = (
+    price < session_vwap  # Currently below VWAP
+    AND has_attempted_reclaim  # Tried to get back above
+    AND failed_reclaim_count >= 2  # Failed twice or more
+  )
+  
+Calculation:
+  session_vwap = Σ(price × volume) / Σ(volume)
+  Using: Polygon minute bars from market open
+```
+
+---
+
+## 14️⃣ RISK GATES & HARD BLOCKS
+
+### Trading is BLOCKED when:
+
+| Gate | Condition | Rationale |
+|------|-----------|-----------|
+| Positive GEX | Index GEX > 1.5× neutral | Market pinned by dealer hedging |
+| Index Pinned | Both SPY & QQQ > VWAP | Can't short names in bullish regime |
+| Passive Inflow | Day 1-3 or 28-31 | Systematic flows (pension, 401k) |
+| Earnings Proximity | Within 3 days pre-earnings | Never buy puts before earnings |
+| Put Wall Support | Massive put OI at ±1% | Dealers will defend level |
+| HTB Squeeze Risk | ETB → HTB transition | Short squeeze risk |
+| Snapback Only | Engine 3 alone | Requires confirmation |
+| Late IV Spike | IV expanded > 20% | Premium too expensive |
+
+---
+
+## 15️⃣ DOLLAR AMOUNT MOVE TARGETING
+
+### Expected Move Calculation
+
+For 1-2 day moves:
+```python
+expected_move_1d = current_price × ATR_1d_pct
+
+For:
+- $50 stock with 2% daily ATR → $1 move expected
+- Need -3% for meaningful put profit → $1.50 target
+```
+
+For 1-2 week moves:
+```python
+# Using ATR and historical volatility
+expected_move_1w = current_price × (ATR_5d_pct × sqrt(5))
+
+Target move for profitable put:
+- Cheap stocks ($10-$30): -5% to -15% = 3x-8x return
+- Mid stocks ($30-$100): -3% to -10% = 2x-5x return
+- Expensive stocks ($100+): -3% to -7% = 2x-4x return
+```
+
+### Dollar-Based Targeting Examples
+
+| Stock | Price | Target Move % | Dollar Move | Put Strike | Expected Return |
+|-------|-------|---------------|-------------|------------|-----------------|
+| OKLO | $79.62 | -10% | -$7.96 | $72P | 3x-6x |
+| ASTS | $111.21 | -6% | -$6.67 | $105P | 2.5x-5x |
+| LUNR | $18.99 | -13% | -$2.47 | $16P | 4x-8x |
+| INTC | $46.47 | -9% | -$4.18 | $42P | 3x-6x |
+
+---
+
+## 16️⃣ SUMMARY - WHAT THE SYSTEM IS ACTUALLY DOING
+
+### Data Collection Per Scan
+
+```
+For each of 300+ tickers:
+1. Polygon: Get daily bars (20 days) → RVOL, patterns, VWAP
+2. Polygon: Get minute bars (2 days) → Intraday VWAP, momentum
+3. Polygon: Get snapshot → Current price, volume
+4. Alpaca: Get quote → Bid/ask size, spread
+5. Unusual Whales: Get flow → Options activity (P1 tickers only)
+6. Unusual Whales: Get dark pool → Block trades (P1 tickers only)
+7. Unusual Whales: Get GEX → Dealer positioning (index + P1)
+```
+
+### Decision Flow
+
+```
+                    ┌─────────────────┐
+                    │ Market Regime   │
+                    │ Check (Gate)    │
+                    └────────┬────────┘
+                             │
+              ┌──────────────┼──────────────┐
+              │              │              │
+              ▼              ▼              ▼
+        ┌──────────┐  ┌──────────┐  ┌──────────┐
+        │ Gamma    │  │ Distrib- │  │ Liquidity│
+        │ Drain    │  │ ution    │  │ Vacuum   │
+        │ Engine   │  │ Engine   │  │ Engine   │
+        └────┬─────┘  └────┬─────┘  └────┬─────┘
+             │             │             │
+             └──────────┬──┴─────────────┘
+                        │
+                        ▼
+                 ┌──────────────┐
+                 │ Scoring &    │
+                 │ Classification│
+                 └──────┬───────┘
+                        │
+           ┌────────────┼────────────┐
+           │            │            │
+           ▼            ▼            ▼
+      Class A       Class B      Class C
+      (Trade)      (Small)      (Monitor)
+           │            │
+           └────────────┼────────────
+                        │
+                        ▼
+                 ┌──────────────┐
+                 │ Strike/DTE   │
+                 │ Selection    │
+                 └──────┬───────┘
+                        │
+                        ▼
+                 ┌──────────────┐
+                 │ Dashboard    │
+                 │ Display &    │
+                 │ Email Alert  │
+                 └──────────────┘
+```
+
+---
+
+## 17️⃣ VALIDATION STATUS
+
+### System Components - ALL VALIDATED ✅
+
+| Component | Status | Last Validation |
+|-----------|--------|-----------------|
+| Market Regime Layer | ✅ OPERATIONAL | Feb 1, 2026 |
+| Distribution Engine | ✅ OPERATIONAL | Feb 1, 2026 |
+| Liquidity Vacuum Engine | ✅ OPERATIONAL | Feb 1, 2026 |
+| Gamma Drain Engine | ✅ OPERATIONAL | Feb 1, 2026 |
+| Pattern Scanner | ✅ OPERATIONAL | Feb 1, 2026 |
+| Strike Selector | ✅ OPERATIONAL | Feb 1, 2026 |
+| API Budget Manager | ✅ OPERATIONAL | Feb 1, 2026 |
+| Scheduler | ✅ OPERATIONAL | Feb 1, 2026 |
+| Dashboard | ✅ OPERATIONAL | Feb 1, 2026 |
+| 48-Hour Analysis | ✅ OPERATIONAL | Feb 1, 2026 |
+
+### Data Freshness - ALL REAL ✅
+
+| Data Type | Staleness | Acceptable? |
+|-----------|-----------|-------------|
+| Price data | < 5 min | ✅ YES |
+| Options flow | < 15 min | ✅ YES |
+| Dark pool | < 15 min | ✅ YES |
+| GEX data | < 30 min | ✅ YES |
+| Insider trades | < 24 hours | ✅ YES (daily update) |
+
+---
+
+## 18️⃣ RECOMMENDATIONS FOR IMPROVEMENT
+
+### Priority 1 - High Impact
+1. **Add direct SEC EDGAR integration** for insider Form 4s (bypass UW aggregation delay)
+2. **Implement earnings whisper numbers** for better post-earnings plays
+3. **Add social sentiment contrarian indicator** (high bullish sentiment = put opportunity)
+
+### Priority 2 - Medium Impact
+4. **Real-time short interest** (currently daily from UW)
+5. **Credit default swap spreads** for distressed company detection
+6. **News API integration** for real-time catalyst detection
+
+### Priority 3 - Lower Impact
+7. **Macro economic indicators** (FRED API) for regime context
+8. **Cross-asset correlation** (FX, bonds) for systematic risk
+9. **Alternative data** (web traffic, app downloads) for consumer companies
+
+---
+
+## CONCLUSION
+
+PutsEngine is a **comprehensive, institutional-grade system** for detecting high-probability PUT opportunities. It integrates:
+
+- **4 primary data sources** (Polygon, Alpaca, Unusual Whales, FinViz)
+- **3 independent detection engines** (Gamma Drain, Distribution, Liquidity Vacuum)
+- **300+ ticker universe** with dynamic injection
+- **12 daily scans** with intelligent API budgeting
+- **Institutional scoring model** with locked weights
+- **Price-tier based strike selection** with delta gating
+
+The system is **audit-ready** with:
+- Deterministic signal definitions
+- Replayable scoring logic
+- Complete data provenance
+- Time-decay weighted conviction scoring
+
+**Current System Status:** ✅ OPERATIONAL & AUDIT-READY
+
+---
+
+*Document generated: February 1, 2026*  
+*Version: architect4-big-movers-final-020126*

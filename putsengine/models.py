@@ -297,6 +297,21 @@ class PutCandidate:
     # Gate status
     passed_all_gates: bool = False
     block_reasons: List[BlockReason] = field(default_factory=list)
+    
+    # =========================================================================
+    # VEGA GATE (Architect-4): Volatility-Aware Structure Selection
+    # =========================================================================
+    # Prevents overpaying for volatility by adjusting size or switching
+    # from Long Put to Bear Call Spread when IV is elevated.
+    vega_gate_iv_rank: float = 50.0          # 0-100 scale
+    vega_gate_iv_percentile: float = 50.0    # 52-week percentile
+    vega_gate_current_iv: float = 0.0        # Current ATM IV
+    vega_gate_sizing: float = 1.0            # Size multiplier (1.0 = full)
+    vega_gate_dte_add: int = 0               # Days to add to DTE
+    vega_gate_structure_switch: bool = False # True = use Bear Call Spread
+    vega_gate_recommended: str = "Long Put"  # Recommended structure
+    vega_gate_rejected: bool = False         # True = skip due to IV
+    vega_gate_result: Optional[Any] = None   # Full VegaGateResult
 
     # Metadata
     shortlist_position: int = 0
