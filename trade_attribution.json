@@ -1,0 +1,72 @@
+{
+  "trades": [
+    {
+      "trade_id": "0febb1cb",
+      "symbol": "TEST",
+      "engine_convergence": 3,
+      "engines_triggered": [
+        "gamma_drain",
+        "distribution",
+        "liquidity"
+      ],
+      "entry_score": 0.72,
+      "conviction_tier": "CLASS A",
+      "iv_rank": 45,
+      "iv_percentile": 0.0,
+      "vega_gate_decision": "long_put",
+      "structure": "long_put",
+      "size_multiplier": 1.0,
+      "entry_date": "2026-02-01",
+      "entry_price": 2.5,
+      "entry_strike": 100,
+      "entry_expiry": "2026-02-14",
+      "entry_dte": 13,
+      "underlying_price_entry": 105.0,
+      "exit_date": "2026-02-01",
+      "exit_price": 4.5,
+      "exit_reason": "target_hit",
+      "underlying_price_exit": 98.0,
+      "realized_return_pct": 80.0,
+      "max_return_pct": 100.0,
+      "max_drawdown_pct": -12.0,
+      "days_held": 0,
+      "pnl_dollars": 200.0,
+      "outcome": "win",
+      "timestamp": "2026-02-01T18:45:55.842348",
+      "notes": "Test trade"
+    }
+  ],
+  "summary": {
+    "total_trades": 1,
+    "total_pnl": 200.0,
+    "avg_return_pct": 80.0,
+    "win_rate": 100.0,
+    "by_structure": {
+      "long_put": {
+        "count": 1,
+        "win_rate": 100.0,
+        "avg_return_pct": 80.0,
+        "total_pnl": 200.0
+      }
+    },
+    "by_iv_regime": {
+      "optimal_0_60": {
+        "count": 1,
+        "win_rate": 100.0,
+        "avg_return_pct": 80.0,
+        "total_pnl": 200.0,
+        "avg_iv_rank": 45
+      }
+    },
+    "by_convergence": {
+      "3_engines": {
+        "count": 1,
+        "win_rate": 100.0,
+        "avg_return_pct": 80.0,
+        "total_pnl": 200.0
+      }
+    },
+    "avg_days_held": 0
+  },
+  "last_updated": "2026-02-01T18:45:55.842910"
+}
