@@ -870,5 +870,100 @@ IV Rank indicator column shows:
 
 ---
 
+## 19️⃣ POST-TRADE ATTRIBUTION SYSTEM (MANDATORY)
+
+### Purpose
+Track outcomes by structure to **prove** the Vega Gate is doing its job. Without attribution, you're guessing.
+
+### Schema Per Trade
+
+```json
+{
+  "symbol": "ASTS",
+  "trade_id": "a1b2c3d4",
+  "engine_convergence": 3,
+  "iv_rank": 84,
+  "structure": "bear_call_spread",
+  "entry_score": 0.71,
+  "entry_price": 2.45,
+  "entry_date": "2026-02-01",
+  "exit_price": 3.92,
+  "exit_date": "2026-02-05",
+  "max_return_pct": 110.0,
+  "realized_return_pct": 60.0,
+  "days_held": 4,
+  "pnl_dollars": 147.00,
+  "outcome": "win"
+}
+```
+
+### Key Metrics Tracked
+
+| Metric | Purpose |
+|--------|---------|
+| By Structure | Long Put vs Bear Call Spread win rate |
+| By IV Regime | Optimal (<60), Elevated (60-80), Extreme (>80) |
+| By Convergence | 1, 2, or 3 engine confirmation |
+| MFE/MAE | Max favorable/adverse excursion |
+
+### Implementation
+
+- `putsengine/attribution/trade_attribution.py` - Core attribution logic
+- `putsengine/attribution/__init__.py` - Module exports
+- `trade_attribution.json` - Historical trade data
+
+---
+
+## 20️⃣ CAPITAL RAMP PROTOCOL (PROFESSIONAL RISK DEPLOYMENT)
+
+### Phase Structure
+
+| Phase | Trade Count | Size Multiplier | Description |
+|-------|-------------|-----------------|-------------|
+| **VALIDATION** | 0-10 | 25% | Prove the system works |
+| **SCALING** | 11-30 | 50% | Build confidence |
+| **FULL_DEPLOYMENT** | 31+ | 100% | Full capital deployment |
+
+### Quality Gate
+
+**Cannot advance if win rate < 40%**
+
+This prevents scaling a broken system.
+
+### Position Sizing Formula
+
+```
+Final Size = Base × Vega Gate × Capital Ramp × Score
+
+Example:
+- Base: 5 contracts
+- Vega Gate (IV 70%): 0.6×
+- Capital Ramp (15 trades): 0.5×
+- Score (0.70): 0.8×
+- Final: 5 × 0.6 × 0.5 × 0.8 = 1.2 → 1 contract
+```
+
+### Implementation
+
+- `putsengine/capital_ramp.py` - Capital ramp logic
+
+---
+
+## 📋 DEPLOYMENT CHECKLIST
+
+| Step | Status | Version |
+|------|--------|---------|
+| ✅ Anti-Trinity Engines | Complete | architect4-final |
+| ✅ Market Regime Gates | Complete | architect4-final |
+| ✅ 48-Hour Frequency Analysis | Complete | 48-Hour-Analysis-012826 |
+| ✅ Vega Gate | Complete | architect4-vega-gate-020126 |
+| ✅ Post-Trade Attribution | Complete | architect4-attribution-020126 |
+| ✅ Capital Ramp Protocol | Complete | architect4-attribution-020126 |
+| 🔄 First 10 Trades | In Progress | - |
+| ⏳ Scale to 50% | Pending | - |
+| ⏳ Full Deployment | Pending | - |
+
+---
+
 *Document generated: February 1, 2026*  
-*Version: architect4-vega-gate-020126*
+*Version: architect4-attribution-020126*
