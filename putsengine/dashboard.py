@@ -81,6 +81,17 @@ if refresh_count > st.session_state.auto_refresh_count:
     st.session_state["force_refresh_gamma_drain"] = True
     st.session_state["force_refresh_distribution"] = True
     st.session_state["force_refresh_liquidity"] = True
+    # Reset pattern scan trigger for new refresh cycle
+    st.session_state["pattern_scan_triggered"] = False
+
+# ============================================================================
+# API CALL SAFETY: Dashboard refresh ONLY loads from JSON files
+# ============================================================================
+# IMPORTANT: This dashboard does NOT make Unusual Whales API calls.
+# - Engine tabs load from scheduled_scan_results.json (pre-computed by scheduler)
+# - Big Movers tab loads from pattern_scan_results.json (uses Alpaca only)
+# - All Unusual Whales API calls happen in scheduler.py during scheduled scans
+# This ensures dashboard refreshes (every 30 min) don't waste API budget.
 
 st.markdown("""
 <head>
@@ -601,7 +612,7 @@ async def run_engine_scan(engine, engine_type, progress_callback=None):
                 put_type = "GAMMA SQUEEZE" if candidate.dealer_score > 0.6 else "GAMMA DRAIN"
             elif engine_type == "distribution":
                 put_type = "DISTRIBUTION" if candidate.distribution_score > 0.6 else "SELLING PRESSURE"
-            else:
+    else:
                 put_type = "LIQUIDITY VACUUM" if candidate.liquidity_score > 0.5 else "BID COLLAPSE"
 
             signal_type = "🔥 Unusual Options Activity"
@@ -614,7 +625,7 @@ async def run_engine_scan(engine, engine_type, progress_callback=None):
 
             if candidate.entry_price and candidate.entry_price > 0:
                 entry_range = f"${candidate.entry_price * 0.95:.2f} - ${candidate.entry_price * 1.05:.2f}"
-            else:
+    else:
                 entry_range = "N/A"
 
             rr = random.randint(10, 18) if candidate.composite_score >= 0.70 else random.randint(8, 14)
@@ -679,7 +690,7 @@ def render_auto_scan_bar(engine_name, engine_key):
     total_tickers = len(EngineConfig.get_all_tickers())
     refresh_count = st.session_state.get("auto_refresh_count", 0)
     market_status = "🟢 MARKET OPEN" if is_market_open() else "🔴 MARKET CLOSED"
-    st.markdown(f"""
+        st.markdown(f"""
     <div class="auto-scan-bar">
         <div class="scan-status">
             <span class="scan-dot"></span>
@@ -687,8 +698,8 @@ def render_auto_scan_bar(engine_name, engine_key):
             <span class="auto-refresh-badge">AUTO #{refresh_count}</span>
         </div>
         <div class="scan-info">Last update: {last_scan_str} | Next refresh in: {minutes}m {seconds}s | {total_tickers} tickers</div>
-    </div>
-    """, unsafe_allow_html=True)
+        </div>
+        """, unsafe_allow_html=True)
 
 
 def render_market_regime_cards(regime):
@@ -832,7 +843,7 @@ def render_48hour_analysis():
     st.markdown("""
     <div class="section-header">📊 48-Hour Frequency Analysis (All Engines)</div>
     """, unsafe_allow_html=True)
-    
+
     st.markdown("""
     Shows how many times each symbol appeared across ALL scans in the last 48 hours.
     **Multi-Engine symbols** (appearing in 2+ engines) have highest conviction.
@@ -907,7 +918,7 @@ def render_48hour_analysis():
     except Exception as e:
         st.error(f"Error loading analysis: {e}")
         return
-    
+
     # Summary metrics
     col1, col2, col3, col4 = st.columns(4)
     
@@ -970,11 +981,11 @@ def render_48hour_analysis():
         df = pd.DataFrame(df_data)
         
         # Style the dataframe
-        st.dataframe(
-            df,
-            use_container_width=True,
-            hide_index=True,
-            column_config={
+    st.dataframe(
+        df,
+        use_container_width=True,
+        hide_index=True,
+        column_config={
                 "Rank": st.column_config.NumberColumn("Rank", width="small"),
                 "Symbol": st.column_config.TextColumn("Symbol", width="medium"),
                 "Total": st.column_config.NumberColumn("Total", width="small"),
@@ -1040,7 +1051,7 @@ def render_48hour_analysis():
     
     engine_totals = analysis.get("engine_totals", {})
     col1, col2, col3 = st.columns(3)
-    
+
     with col1:
         st.metric("🔥 Gamma Drain", engine_totals.get("gamma_drain", 0))
     with col2:
@@ -1056,26 +1067,58 @@ def render_big_movers_analysis():
     """
     Render Big Movers Analysis tab - shows FUTURE PUT CANDIDATES organized by pattern type.
     These are REAL-TIME candidates showing the same patterns as big movers from Jan 26-29.
-    Auto-refreshes every 2 hours.
+    
+    SYNC WITH MAIN DASHBOARD:
+    - Uses the main 30-minute auto-refresh (no separate auto-refresh)
+    - Only runs pattern scan if data is stale (> 25 minutes old)
+    - Pattern scan uses Alpaca API only (NOT Unusual Whales)
     """
-    # Auto-refresh every 2 hours (7200000 ms)
-    from streamlit_autorefresh import st_autorefresh
-    pattern_refresh_count = st_autorefresh(interval=7200000, limit=None, key="pattern_autorefresh")
-    
-    # Track refresh count in session state
-    if "pattern_refresh_count" not in st.session_state:
-        st.session_state.pattern_refresh_count = 0
-    
-    # Run pattern scan on auto-refresh or first load if no data
     pattern_file = Path(__file__).parent.parent / "pattern_scan_results.json"
-    needs_scan = not pattern_file.exists()
     
-    if pattern_refresh_count > st.session_state.pattern_refresh_count:
-        st.session_state.pattern_refresh_count = pattern_refresh_count
+    # =========================================================================
+    # FRESHNESS CHECK: Only scan if data is stale (> 25 minutes old)
+    # This prevents wasting API calls during dashboard refreshes
+    # =========================================================================
+    def is_pattern_data_fresh() -> bool:
+        """Check if pattern data is fresh (< 25 minutes old)."""
+        try:
+            if pattern_file.exists():
+                with open(pattern_file, 'r') as f:
+                    data = json.load(f)
+                scan_time = data.get("scan_time")
+                if scan_time:
+                    scan_dt = datetime.fromisoformat(scan_time.replace("Z", "+00:00"))
+                    now = datetime.now(pytz.UTC)
+                    if scan_dt.tzinfo is None:
+                        scan_dt = pytz.timezone('US/Eastern').localize(scan_dt)
+                    age_minutes = (now - scan_dt).total_seconds() / 60
+                    return age_minutes < 25  # Fresh if less than 25 minutes old
+        except Exception:
+            pass
+        return False
+    
+    # Track if we triggered a scan in this session
+    if "pattern_scan_triggered" not in st.session_state:
+        st.session_state.pattern_scan_triggered = False
+    
+    # Check if main dashboard auto-refresh triggered pattern scan
+    main_refresh_count = st.session_state.get("auto_refresh_count", 0)
+    last_pattern_refresh = st.session_state.get("last_pattern_refresh_count", 0)
+    
+    # Determine if we need to scan
+    needs_scan = False
+    
+    # Case 1: No pattern file exists
+    if not pattern_file.exists():
         needs_scan = True
+    # Case 2: Main dashboard refreshed AND data is stale AND market is open
+    elif main_refresh_count > last_pattern_refresh and not is_pattern_data_fresh():
+        if is_market_open():
+            needs_scan = True
+            st.session_state.last_pattern_refresh_count = main_refresh_count
     
-    if needs_scan:
-        # Run pattern scan on auto-refresh
+    # Run pattern scan ONLY if needed (uses Alpaca API only, NOT Unusual Whales)
+    if needs_scan and not st.session_state.pattern_scan_triggered:
         import subprocess
         try:
             subprocess.run(
@@ -1085,6 +1128,7 @@ def render_big_movers_analysis():
                 text=True,
                 timeout=180
             )
+            st.session_state.pattern_scan_triggered = True
         except:
             pass
     
@@ -1098,12 +1142,19 @@ def render_big_movers_analysis():
     """)
     
     # Refresh button - always at top
-    col_btn1, col_btn2 = st.columns([1, 4])
+    col_btn1, col_btn2, col_btn3 = st.columns([1, 1, 3])
     with col_btn1:
         refresh_clicked = st.button("🔄 Refresh Pattern Scan", key="refresh_patterns")
+    with col_btn2:
+        # Show freshness status
+        if is_pattern_data_fresh():
+            st.success("✅ Data Fresh")
+        else:
+            st.warning("🔄 Will auto-update")
     
     if refresh_clicked:
-        with st.spinner("Running pattern scan... This may take 30-60 seconds."):
+        # Allow manual refresh even if fresh (user's choice)
+        with st.spinner("Running pattern scan... This uses Alpaca API only (NOT Unusual Whales). May take 30-60 seconds."):
             import subprocess
             try:
                 result = subprocess.run(
@@ -1115,6 +1166,7 @@ def render_big_movers_analysis():
                 )
                 if result.returncode == 0:
                     st.success("✅ Pattern scan complete!")
+                    st.session_state.pattern_scan_triggered = True
                     time.sleep(1)
                     st.rerun()
                 else:
@@ -1381,7 +1433,9 @@ def render_big_movers_analysis():
         earnings_upcoming = [c for c in scheduled_data.get("distribution", []) if "earnings" in str(c.get("signals", [])).lower()]
         st.metric("⚡ Earnings Watch", len(earnings_upcoming), help="Stocks with earnings upcoming")
     
-    st.caption(f"Last scan: {scan_time_display} | 🔄 Auto-updates every 30 minutes")
+    # Calculate freshness indicator
+    freshness_indicator = "🟢 FRESH" if is_pattern_data_fresh() else "🟡 UPDATING SOON"
+    st.caption(f"Last scan: {scan_time_display} | {freshness_indicator} | 🔄 Auto-updates every 30 minutes (synced with dashboard)")
     
     st.divider()
     
@@ -1642,7 +1696,7 @@ def render_big_movers_analysis():
         - ✅ or 🟢 = STANDARD SIZE
         - ⚠️ = AVOID (stale thesis)
         """)
-    else:
+                        else:
         st.info("No candidates found. Run pattern scan to populate.")
     
     st.caption(f"Total candidates: {len(all_candidates)} | Last updated: {scan_time_display}")
@@ -1697,7 +1751,7 @@ def main():
 
         with tab1:
             render_engine_tab(engine, "Gamma Drain", "gamma_drain", "gamma_drain", "gamma_drain_results")
-            st.divider()
+                st.divider()
             try:
                 regime = run_async(engine.get_cached_regime())
                 render_market_regime_cards(regime)
