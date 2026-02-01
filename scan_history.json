@@ -1,13 +1,6 @@
 {
   "scans": [
     {
-      "timestamp": "2026-01-30T11:00:00.027824-05:00",
-      "gamma_drain": [],
-      "distribution": [],
-      "liquidity": [],
-      "market_regime": "bullish_neutral"
-    },
-    {
       "timestamp": "2026-01-30T11:23:01.761180-05:00",
       "gamma_drain": [
         {
@@ -11919,7 +11912,14 @@
         "is_tradeable": true,
         "regime": "pattern_based"
       }
+    },
+    {
+      "timestamp": "2026-02-01T11:00:00.018853-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
     }
   ],
-  "last_cleanup": "2026-02-01T10:56:04.398408-05:00"
+  "last_cleanup": "2026-02-01T11:14:51.419446-05:00"
 }

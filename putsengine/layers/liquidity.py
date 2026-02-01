@@ -14,7 +14,7 @@ Interpretation: Downside accelerates only when liquidity disappears.
 """
 
 from datetime import datetime, date, timedelta
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Any
 from loguru import logger
 import numpy as np
 
@@ -46,12 +46,17 @@ class LiquidityVacuumLayer:
         self.settings = settings
         self.config = EngineConfig
 
-    async def analyze(self, symbol: str) -> LiquidityVacuum:
+    async def analyze(
+        self, 
+        symbol: str,
+        include_sector_context: bool = False
+    ) -> LiquidityVacuum:
         """
         Perform liquidity vacuum analysis for a symbol.
 
         Args:
             symbol: Stock ticker to analyze
+            include_sector_context: If True, also analyze sector peers (ARCHITECT-4)
 
         Returns:
             LiquidityVacuum with detection results and score
@@ -96,8 +101,27 @@ class LiquidityVacuumLayer:
             if minute_bars:
                 vacuum.vwap_retest_failed = self._detect_vwap_retest_failure(minute_bars)
 
-            # Calculate score
+            # Calculate base score
             vacuum.score = self._calculate_liquidity_score(vacuum)
+
+            # ============================================================
+            # ARCHITECT-4 ENHANCEMENT: Sector Context Analysis
+            # ============================================================
+            # Compare against sector peers to determine if signal is
+            # IDIOSYNCRATIC (only this stock) or SECTOR_WIDE (multiple peers)
+            # ============================================================
+            sector_context = None
+            if include_sector_context and vacuum.score > 0:
+                sector_context = await self.analyze_sector_context(symbol, vacuum)
+                
+                # Apply sector context boost/dampen
+                if sector_context and sector_context.get("context_boost", 0) != 0:
+                    original_score = vacuum.score
+                    vacuum.score = max(0, min(1.0, vacuum.score + sector_context["context_boost"]))
+                    logger.info(
+                        f"{symbol}: Sector context adjustment: {original_score:.2f} → {vacuum.score:.2f} "
+                        f"({sector_context['context_type']}, boost={sector_context['context_boost']:+.2f})"
+                    )
 
             active_signals = sum([
                 vacuum.bid_collapsing,
@@ -106,10 +130,14 @@ class LiquidityVacuumLayer:
                 vacuum.vwap_retest_failed
             ])
 
+            sector_str = ""
+            if sector_context:
+                sector_str = f", Sector={sector_context['context_type']}"
+
             logger.info(
                 f"{symbol} liquidity vacuum: "
                 f"Score={vacuum.score:.2f}, "
-                f"Active signals={active_signals}/4"
+                f"Active signals={active_signals}/4{sector_str}"
             )
 
         except Exception as e:
@@ -426,6 +454,174 @@ class LiquidityVacuumLayer:
             return 0.0
 
         return min(signal_count * 0.25, 1.0)
+    
+    # =========================================================================
+    # ARCHITECT-4 ENHANCEMENT: Sector-Relative Liquidity Analysis
+    # =========================================================================
+    
+    def _get_sector_for_symbol(self, symbol: str) -> Optional[str]:
+        """Get the sector name for a given symbol."""
+        for sector_name, tickers in self.config.UNIVERSE_SECTORS.items():
+            if symbol in tickers:
+                return sector_name
+        return None
+    
+    def _get_sector_peers(self, symbol: str, max_peers: int = 5) -> List[str]:
+        """Get peer symbols from the same sector (excluding the target)."""
+        sector = self._get_sector_for_symbol(symbol)
+        if not sector:
+            return []
+        
+        peers = [t for t in self.config.UNIVERSE_SECTORS.get(sector, []) 
+                 if t != symbol]
+        return peers[:max_peers]
+    
+    async def analyze_sector_context(
+        self,
+        symbol: str,
+        vacuum: LiquidityVacuum
+    ) -> Dict[str, Any]:
+        """
+        Analyze liquidity vacuum in sector context.
+        
+        ARCHITECT-4 RECOMMENDED ENHANCEMENT
+        ===================================
+        Compares the target symbol's liquidity signals against sector peers
+        to determine if the signal is:
+        - IDIOSYNCRATIC: Only this stock shows liquidity withdrawal
+        - SECTOR_WIDE: Multiple peers show similar patterns
+        
+        This adds powerful context without disturbing existing functionality.
+        
+        Returns:
+            Dict with sector context analysis:
+            - sector_name: Name of the sector
+            - peer_count: Number of peers analyzed
+            - peers_with_bid_collapse: Count showing bid collapse
+            - peers_with_spread_widening: Count showing spread widening
+            - sector_liquidity_ratio: % of peers with liquidity issues
+            - is_sector_wide: True if ≥50% peers affected
+            - context_type: "IDIOSYNCRATIC" or "SECTOR_WIDE"
+            - context_boost: Score adjustment (-0.05 to +0.10)
+        """
+        result = {
+            "sector_name": None,
+            "peer_count": 0,
+            "peers_with_bid_collapse": 0,
+            "peers_with_spread_widening": 0,
+            "peers_with_vwap_loss": 0,
+            "sector_liquidity_ratio": 0.0,
+            "is_sector_wide": False,
+            "context_type": "UNKNOWN",
+            "context_boost": 0.0,
+            "peer_details": []
+        }
+        
+        try:
+            # Get sector and peers
+            sector = self._get_sector_for_symbol(symbol)
+            if not sector:
+                logger.debug(f"{symbol}: No sector found, skipping sector context")
+                return result
+            
+            result["sector_name"] = sector
+            peers = self._get_sector_peers(symbol, max_peers=5)
+            
+            if not peers:
+                logger.debug(f"{symbol}: No peers found in {sector}")
+                return result
+            
+            result["peer_count"] = len(peers)
+            
+            # Quick liquidity check on each peer
+            # Use lightweight checks to avoid API overload
+            for peer in peers:
+                try:
+                    peer_analysis = {
+                        "symbol": peer,
+                        "bid_collapse": False,
+                        "spread_widening": False,
+                        "vwap_loss": False
+                    }
+                    
+                    # Get peer quote and snapshot
+                    peer_quote = await self.alpaca.get_latest_quote(peer)
+                    peer_snapshot = await self.polygon.get_snapshot(peer)
+                    
+                    # Quick bid size check (simplified - no ADV normalization for peers)
+                    if peer_quote and "quote" in peer_quote:
+                        peer_bid_size = peer_quote["quote"].get("bs", 0)
+                        # Simple threshold: bid size < 100 shares for most stocks
+                        if peer_bid_size > 0 and peer_bid_size < 100:
+                            peer_analysis["bid_collapse"] = True
+                            result["peers_with_bid_collapse"] += 1
+                        
+                        # Quick spread check
+                        bid = float(peer_quote["quote"].get("bp", 0))
+                        ask = float(peer_quote["quote"].get("ap", 0))
+                        if bid > 0 and ask > 0:
+                            spread_pct = (ask - bid) / ((bid + ask) / 2)
+                            # Wide spread > 0.5%
+                            if spread_pct > 0.005:
+                                peer_analysis["spread_widening"] = True
+                                result["peers_with_spread_widening"] += 1
+                    
+                    # Quick VWAP check from snapshot
+                    if peer_snapshot and "ticker" in peer_snapshot:
+                        ticker_data = peer_snapshot["ticker"]
+                        current_price = ticker_data.get("lastTrade", {}).get("p", 0)
+                        vwap = ticker_data.get("day", {}).get("vw", 0)
+                        if current_price > 0 and vwap > 0:
+                            if current_price < vwap:
+                                peer_analysis["vwap_loss"] = True
+                                result["peers_with_vwap_loss"] += 1
+                    
+                    result["peer_details"].append(peer_analysis)
+                    
+                except Exception as e:
+                    logger.debug(f"Error checking peer {peer}: {e}")
+                    continue
+            
+            # Calculate sector liquidity ratio
+            # Count peers with at least one liquidity signal
+            peers_with_issues = sum(
+                1 for p in result["peer_details"]
+                if p["bid_collapse"] or p["spread_widening"] or p["vwap_loss"]
+            )
+            
+            if result["peer_count"] > 0:
+                result["sector_liquidity_ratio"] = peers_with_issues / result["peer_count"]
+            
+            # Determine context type
+            if result["sector_liquidity_ratio"] >= 0.50:
+                result["is_sector_wide"] = True
+                result["context_type"] = "SECTOR_WIDE"
+                # Sector-wide liquidity withdrawal = stronger signal
+                result["context_boost"] = 0.10
+                logger.info(
+                    f"{symbol}: SECTOR-WIDE LIQUIDITY WITHDRAWAL detected in {sector} - "
+                    f"{peers_with_issues}/{result['peer_count']} peers affected ({result['sector_liquidity_ratio']:.0%})"
+                )
+            elif result["sector_liquidity_ratio"] >= 0.25:
+                result["context_type"] = "MIXED"
+                result["context_boost"] = 0.05
+                logger.info(
+                    f"{symbol}: Mixed sector liquidity in {sector} - "
+                    f"{peers_with_issues}/{result['peer_count']} peers affected"
+                )
+            else:
+                result["context_type"] = "IDIOSYNCRATIC"
+                # Idiosyncratic = could be noise, slight dampen
+                result["context_boost"] = -0.03
+                logger.info(
+                    f"{symbol}: IDIOSYNCRATIC liquidity signal in {sector} - "
+                    f"only {peers_with_issues}/{result['peer_count']} peers affected"
+                )
+            
+        except Exception as e:
+            logger.warning(f"Error in sector context analysis for {symbol}: {e}")
+        
+        return result
 
     async def has_liquidity_vacuum(
         self,

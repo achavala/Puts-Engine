@@ -559,6 +559,51 @@ return current_wide and persistence_pct >= 0.60
 | ADV-normalized bid collapse | ✅ **IMPLEMENTED** |
 | 15-minute persistence window | ✅ **IMPLEMENTED** |
 
+### 🔧 Enhancement C: Sector-Relative Liquidity Analysis (NEW)
+
+**Feature:** Compare target symbol's liquidity signals against sector peers.
+
+**Solution Implemented in `liquidity.py`:**
+
+```python
+async def analyze_sector_context(symbol, vacuum):
+    # Get sector peers
+    peers = _get_sector_peers(symbol, max_peers=5)
+    
+    # Quick liquidity checks on each peer
+    for peer in peers:
+        # Check bid collapse, spread widening, VWAP loss
+        ...
+    
+    # Calculate sector liquidity ratio
+    sector_liquidity_ratio = peers_with_issues / peer_count
+    
+    # Determine context type
+    if sector_liquidity_ratio >= 0.50:
+        context_type = "SECTOR_WIDE"
+        context_boost = +0.10  # Strengthens signal
+    elif sector_liquidity_ratio >= 0.25:
+        context_type = "MIXED"
+        context_boost = +0.05
+    else:
+        context_type = "IDIOSYNCRATIC"
+        context_boost = -0.03  # Dampens signal
+```
+
+**Context Types:**
+
+| Type | Threshold | Boost | Meaning |
+|------|-----------|-------|---------|
+| `SECTOR_WIDE` | ≥50% peers affected | +0.10 | Sector/macro event, high conviction |
+| `MIXED` | 25-50% peers affected | +0.05 | Some peers affected |
+| `IDIOSYNCRATIC` | <25% peers affected | -0.03 | Single stock, could be noise |
+
+**Impact:** 
+- If T shows liquidity withdrawal AND VZ, TMUS, CMCSA also show it → Sector-wide event
+- If only T shows it → Idiosyncratic (lower conviction)
+
+---
+
 ### Data Sources for Liquidity Vacuum Engine
 
 | Source | Data Provided | Real? |
