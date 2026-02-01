@@ -1,74 +1,4 @@
 {
-  "QCOM": {
-    "score": 0.35,
-    "source": "distribution",
-    "signals": [
-      "multi_day_weakness",
-      "is_post_earnings_negative"
-    ],
-    "added_date": "2026-01-26",
-    "expires_date": "2026-01-31"
-  },
-  "BAC": {
-    "score": 0.3,
-    "source": "distribution",
-    "signals": [
-      "vwap_loss",
-      "is_post_earnings_negative"
-    ],
-    "added_date": "2026-01-26",
-    "expires_date": "2026-01-31"
-  },
-  "CRDO": {
-    "score": 0.3,
-    "source": "distribution",
-    "signals": [
-      "gap_down_no_recovery",
-      "multi_day_weakness"
-    ],
-    "added_date": "2026-01-26",
-    "expires_date": "2026-01-31"
-  },
-  "CRSP": {
-    "score": 0.35,
-    "source": "liquidity",
-    "signals": [
-      "gap_down_no_recovery",
-      "is_post_earnings_negative"
-    ],
-    "added_date": "2026-01-26",
-    "expires_date": "2026-01-31"
-  },
-  "IWM": {
-    "score": 0.35,
-    "source": "liquidity",
-    "signals": [
-      "multi_day_weakness",
-      "is_post_earnings_negative"
-    ],
-    "added_date": "2026-01-26",
-    "expires_date": "2026-01-31"
-  },
-  "PL": {
-    "score": 0.35,
-    "source": "liquidity",
-    "signals": [
-      "gap_down_no_recovery",
-      "is_post_earnings_negative"
-    ],
-    "added_date": "2026-01-26",
-    "expires_date": "2026-01-31"
-  },
-  "BE": {
-    "score": 0.3,
-    "source": "liquidity",
-    "signals": [
-      "gap_down_no_recovery",
-      "multi_day_weakness"
-    ],
-    "added_date": "2026-01-26",
-    "expires_date": "2026-01-31"
-  },
   "OKLO": {
     "score": 0.304,
     "source": "distribution",
@@ -79,16 +9,6 @@
     ],
     "added_date": "2026-01-29",
     "expires_date": "2026-02-03"
-  },
-  "TLN": {
-    "score": 0.3,
-    "source": "liquidity",
-    "signals": [
-      "gap_down_no_recovery",
-      "multi_day_weakness"
-    ],
-    "added_date": "2026-01-26",
-    "expires_date": "2026-01-31"
   },
   "ZS": {
     "score": 0.322,

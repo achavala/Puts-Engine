@@ -33,6 +33,9 @@ class Settings(BaseSettings):
 
     # Unusual Whales API
     unusual_whales_api_key: str = Field(..., description="Unusual Whales API key")
+    
+    # FinViz API (Elite subscription)
+    finviz_api_key: Optional[str] = Field(default=None, description="FinViz Elite API key")
 
     # ============================================================================
     # ENGINE CONFIGURATION - ARCHITECT-4 CLASS A/B SEPARATION

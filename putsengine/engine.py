@@ -34,6 +34,7 @@ from putsengine.models import (
 from putsengine.clients.alpaca_client import AlpacaClient
 from putsengine.clients.polygon_client import PolygonClient
 from putsengine.clients.unusual_whales_client import UnusualWhalesClient
+from putsengine.clients.finviz_client import FinVizClient
 from putsengine.layers.market_regime import MarketRegimeLayer
 from putsengine.layers.distribution import DistributionLayer
 from putsengine.layers.liquidity import LiquidityVacuumLayer
@@ -66,6 +67,11 @@ class PutsEngine:
         self.alpaca = AlpacaClient(self.settings)
         self.polygon = PolygonClient(self.settings)
         self.unusual_whales = UnusualWhalesClient(self.settings)
+        
+        # FinViz client (optional - for technical screening enhancement)
+        self.finviz = FinVizClient(self.settings) if self.settings.finviz_api_key else None
+        if self.finviz:
+            logger.info("FinViz integration enabled")
 
         # Initialize layers
         self.market_regime = MarketRegimeLayer(
@@ -93,7 +99,7 @@ class PutsEngine:
         # State tracking
         self.daily_report: Optional[DailyReport] = None
         self.candidates: List[PutCandidate] = []
-        self.api_calls = {"alpaca": 0, "polygon": 0, "unusual_whales": 0}
+        self.api_calls = {"alpaca": 0, "polygon": 0, "unusual_whales": 0, "finviz": 0}
         
         # Caching for performance
         self._cached_regime: Optional[MarketRegimeData] = None
@@ -107,6 +113,8 @@ class PutsEngine:
         await self.alpaca.close()
         await self.polygon.close()
         await self.unusual_whales.close()
+        if self.finviz:
+            await self.finviz.close()
 
     async def run_daily_pipeline(
         self,
