@@ -809,5 +809,66 @@ The system is **audit-ready** with:
 
 ---
 
+## 18️⃣ VEGA GATE - VOLATILITY STRUCTURE SELECTION (NEW)
+
+### Purpose
+Prevent buying puts **after** IV expansion. This is the highest-ROI enhancement for P&L quality.
+
+### Decision Logic (Architect-4 Approved)
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                      VEGA GATE DECISION TREE                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  IF IV Rank < 60%:                                                  │
+│  ├── Decision: LONG PUT (default, optimal)                          │
+│  ├── Size Multiplier: 100%                                          │
+│  └── Structure: Standard long put                                   │
+│                                                                     │
+│  ELIF 60% ≤ IV Rank ≤ 80%:                                         │
+│  ├── Decision: LONG PUT REDUCED                                     │
+│  ├── Size Multiplier: 60%                                           │
+│  ├── DTE Adjustment: +5 days (reduce gamma decay pressure)          │
+│  └── Structure: Long put with reduced risk                          │
+│                                                                     │
+│  ELIF IV Rank > 80%:                                                │
+│  ├── Decision: BEAR CALL SPREAD                                     │
+│  ├── Size Multiplier: 30%                                           │
+│  ├── Structure: Sell OTM call + Buy further OTM call                │
+│  └── Rationale: Same thesis, short vega, IV crush = profit          │
+│                                                                     │
+│  ELIF IV Rank > 95%:                                                │
+│  ├── Decision: REJECT                                               │
+│  └── Rationale: IV too extreme, wait for normalization              │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Why This Matters
+
+| Scenario | Without Vega Gate | With Vega Gate |
+|----------|-------------------|----------------|
+| Right direction, IV 50% | ✅ Profit | ✅ Profit |
+| Right direction, IV 75% | ⚠️ Reduced profit (IV crush) | ✅ Reduced size protects |
+| Right direction, IV 90% | ❌ Loss (IV crush > directional gain) | ✅ Bear Call Spread profits from IV crush |
+
+### Implementation Files
+
+- `putsengine/gates/vega_gate.py` - Core Vega Gate logic
+- `putsengine/gates/__init__.py` - Exports VegaGate classes
+- `putsengine/models.py` - VegaGate fields in PutCandidate
+- `putsengine/engine.py` - Integration in pipeline (Layer 7.5)
+- `putsengine/scoring/strike_selector.py` - DTE adjustment support
+
+### Dashboard Display
+
+IV Rank indicator column shows:
+- 🟢 IV < 60% - Optimal for long puts
+- 🟡 IV 60-80% - Elevated, reduced size recommended
+- 🔴 IV > 80% - Consider Bear Call Spread
+
+---
+
 *Document generated: February 1, 2026*  
-*Version: architect4-big-movers-final-020126*
+*Version: architect4-vega-gate-020126*
