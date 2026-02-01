@@ -178,32 +178,46 @@ def calculate_optimal_expiry(score: float, price: float, gain_pct: float = 0) ->
     dte_2 = (friday_2 - today).days
     dte_3 = (friday_3 - today).days
     
-    # DTE selection based on score and conviction
-    if score >= 0.70:
-        # High conviction: nearest Friday (7-12 DTE)
-        if dte_1 >= 7:
+    # DTE selection based on score and conviction (ARCHITECT-4 FINAL)
+    # Per Final Institutional Audit Report:
+    #   ≥ 0.60: 7-16 DTE (regime/liquidity aware)
+    #   0.45-0.59: 12-18 DTE
+    #   < 0.45: Watch tier (18-25 DTE)
+    
+    if score >= 0.60:
+        # High conviction: 7-16 DTE range
+        if 7 <= dte_1 <= 16:
             expiry = friday_1
             dte = dte_1
-            reasoning = "High conviction (≥0.70): Nearest Friday for max gamma"
+            reasoning = "High conviction (≥0.60): 7-16 DTE optimal gamma"
+        elif 7 <= dte_2 <= 16:
+            expiry = friday_2
+            dte = dte_2
+            reasoning = "High conviction (≥0.60): Next Friday (7-16 DTE range)"
+        else:
+            # Fall back to closest valid
+            expiry = friday_2 if dte_1 < 7 else friday_1
+            dte = (expiry - today).days
+            reasoning = "High conviction: Nearest valid Friday"
+    elif score >= 0.45:
+        # Medium conviction: 12-18 DTE
+        if 12 <= dte_2 <= 18:
+            expiry = friday_2
+            dte = dte_2
+            reasoning = "Medium conviction (0.45-0.59): 12-18 DTE for theta buffer"
+        elif dte_1 >= 12:
+            expiry = friday_1
+            dte = dte_1
+            reasoning = "Medium conviction: This Friday (12+ DTE)"
         else:
             expiry = friday_2
             dte = dte_2
-            reasoning = "High conviction (≥0.70): Next Friday (min 7 DTE)"
-    elif score >= 0.50:
-        # Medium conviction: 2nd Friday (12-18 DTE)
-        if dte_1 >= 10:
-            expiry = friday_1
-            dte = dte_1
-            reasoning = "Medium conviction: This Friday (enough time)"
-        else:
-            expiry = friday_2
-            dte = dte_2
-            reasoning = "Medium conviction: 2nd Friday for theta buffer"
+            reasoning = "Medium conviction: 2nd Friday for time value"
     else:
-        # Lower conviction: 3rd Friday (18-25 DTE)
+        # Lower conviction: 18-25 DTE (watch tier)
         expiry = friday_3
         dte = dte_3
-        reasoning = "Watch-tier: 3rd Friday for max time value"
+        reasoning = "Watch-tier (<0.45): 3rd Friday for max time value"
     
     # Aggressive adjustment for pumped stocks
     if gain_pct > 15:
