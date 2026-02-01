@@ -1196,6 +1196,61 @@ def render_big_movers_analysis():
                 engine_confirmation_map[sym].append(engine_labels.get(engine_key, engine_key))
     
     # =========================================================================
+    # ARCHITECT-4 REFINEMENT 1: "Confirmed by ≥2 Engines" Highlight
+    # =========================================================================
+    # Differentiate 1 engine (✅) vs 2+ engines (⭐⭐⭐) for size differentiation
+    def get_engine_badge(symbol: str) -> str:
+        """Return badge based on number of confirming engines."""
+        engines = engine_confirmation_map.get(symbol, [])
+        if len(engines) >= 2:
+            return "⭐⭐⭐"  # 2+ engines = highest conviction, larger size
+        elif len(engines) == 1:
+            return "✅"      # 1 engine = confirmed, standard size
+        else:
+            return ""        # No confirmation
+    
+    # =========================================================================
+    # ARCHITECT-4 REFINEMENT 2: Time-Decay Warning Badge
+    # =========================================================================
+    # Track stale theses - Big Movers that remain unconfirmed for 3+ sessions
+    stale_thesis_symbols = set()
+    try:
+        history_file = Path(__file__).parent.parent / "scan_history.json"
+        if history_file.exists():
+            with open(history_file, 'r') as f:
+                history_data = json.load(f)
+            
+            # Get last 6 scans (roughly 3 sessions if scanning every 30 min)
+            recent_scans = history_data.get("scans", [])[-6:]
+            
+            # Build a map of how many times each symbol appeared WITHOUT engine confirmation
+            symbol_unconfirmed_count = {}
+            for scan in recent_scans:
+                # Get all symbols from this scan
+                scan_symbols = set()
+                for engine in ["gamma_drain", "distribution", "liquidity"]:
+                    for c in scan.get(engine, []):
+                        scan_symbols.add(c.get("symbol"))
+                
+                # For Big Movers symbols, check if they were confirmed
+                for sym in all_pattern_symbols if 'all_pattern_symbols' in dir() else []:
+                    if sym not in scan_symbols:
+                        symbol_unconfirmed_count[sym] = symbol_unconfirmed_count.get(sym, 0) + 1
+            
+            # Mark symbols unconfirmed in 3+ of last 6 scans as stale
+            for sym, count in symbol_unconfirmed_count.items():
+                if count >= 3:
+                    stale_thesis_symbols.add(sym)
+    except Exception:
+        pass  # Silently handle if history unavailable
+    
+    def get_staleness_badge(symbol: str) -> str:
+        """Return ⚠️ if thesis is stale (unconfirmed for 3+ sessions)."""
+        if symbol in stale_thesis_symbols:
+            return "⚠️"
+        return ""
+    
+    # =========================================================================
     # ARCHITECT-4 ENHANCEMENT: Confidence Tier Classification
     # =========================================================================
     def get_confidence_tier(candidate, pattern_type="pump_reversal"):
@@ -1260,8 +1315,13 @@ def render_big_movers_analysis():
         st.markdown("*These Big Movers are ALSO flagged by execution engines → **highest conviction**.*")
         
         confirmed_list = []
+        multi_engine_count = 0
         for sym in all_pattern_symbols & engine_confirmed_symbols:
             engines = engine_confirmation_map.get(sym, [])
+            badge = get_engine_badge(sym)
+            if len(engines) >= 2:
+                multi_engine_count += 1
+            
             # Find the pattern data
             pattern_info = "Unknown"
             for p in pump_reversal:
@@ -1277,17 +1337,29 @@ def render_big_movers_analysis():
                     pattern_info = f"Vol {p.get('vol_ratio', 1):.1f}x"
                     break
             
+            # Determine size recommendation based on engine count
+            size_rec = "FULL SIZE" if len(engines) >= 2 else "STANDARD"
+            
             confirmed_list.append({
+                "Badge": badge,
                 "Symbol": sym,
                 "Pattern": pattern_info,
                 "Confirmed By": " + ".join(engines),
+                "Engines": len(engines),
+                "Size": size_rec,
                 "Status": "✅ TRADEABLE"
             })
         
+        # Sort by number of engines (descending)
+        confirmed_list.sort(key=lambda x: x["Engines"], reverse=True)
+        
         if confirmed_list:
-            df_confirmed = pd.DataFrame(confirmed_list)
+            df_confirmed = pd.DataFrame([{k: v for k, v in c.items() if k != "Engines"} for c in confirmed_list])
             st.dataframe(df_confirmed, use_container_width=True, hide_index=True)
-            st.success(f"🎯 {engine_confirmed_count} candidates confirmed by execution engines - these are your HIGHEST CONVICTION plays!")
+            
+            if multi_engine_count > 0:
+                st.success(f"⭐⭐⭐ {multi_engine_count} candidates confirmed by 2+ engines → **FULL SIZE** positions!")
+            st.info(f"🎯 {engine_confirmed_count} total candidates confirmed by execution engines")
         
         st.divider()
     
@@ -1340,7 +1412,8 @@ def render_big_movers_analysis():
         df_pump = pd.DataFrame([
             {
                 "Tier": get_confidence_tier(p, "pump_reversal")[1],
-                "✅": "✅" if p["symbol"] in engine_confirmed_symbols else "",
+                "Eng": get_engine_badge(p["symbol"]),
+                "⚠️": get_staleness_badge(p["symbol"]),
                 "Symbol": p["symbol"],
                 "Price": f"${p.get('price', 0):.2f}",
                 "🎯 Strike": p.get("strike_display", "N/A"),
@@ -1356,7 +1429,7 @@ def render_big_movers_analysis():
             for p in pump_reversal[:15]
         ])
         st.dataframe(df_pump, use_container_width=True, hide_index=True, height=420)
-        st.caption("🟢 = HIGH (3+ signals) | 🟡 = MEDIUM (2 signals) | 🔴 = LOW (0-1 signals) | ✅ = Engine confirmed")
+        st.caption("🟢 = HIGH (3+ signals) | 🟡 = MEDIUM | 🔴 = LOW | ⭐⭐⭐ = 2+ engines | ✅ = 1 engine | ⚠️ = Stale thesis")
     else:
         st.info("No pump reversal candidates found. Market may be quiet.")
     
@@ -1532,7 +1605,8 @@ def render_big_movers_analysis():
         df_all = pd.DataFrame([
             {
                 "Tier": c["TierIcon"],
-                "✅": "✅" if c["EngineConfirmed"] else "",
+                "Eng": get_engine_badge(c["Symbol"]),
+                "⚠️": get_staleness_badge(c["Symbol"]),
                 "Symbol": c["Symbol"],
                 "Pattern": c["Pattern"],
                 "Price": f"${c['Price']:.2f}",
@@ -1550,16 +1624,23 @@ def render_big_movers_analysis():
         
         # Summary stats
         total_engine_confirmed = sum(1 for c in all_candidates if c["EngineConfirmed"])
+        total_multi_engine = sum(1 for c in all_candidates if len(c.get("ConfirmingEngines", [])) >= 2)
         total_high_tier = sum(1 for c in all_candidates if c["Tier"] == "HIGH")
+        total_stale = sum(1 for c in all_candidates if c["Symbol"] in stale_thesis_symbols)
         total_tradeable = sum(1 for c in all_candidates if c["EngineConfirmed"] or c["Tier"] == "HIGH")
         
         st.markdown(f"""
         **Summary:**
+        - ⭐⭐⭐ **2+ engines** (FULL SIZE): **{total_multi_engine}** candidates
+        - ✅ **1 engine** (STANDARD): **{total_engine_confirmed - total_multi_engine}** candidates
         - 🟢 HIGH confidence (3+ signals): **{total_high_tier}** candidates
-        - ✅ Engine confirmed: **{total_engine_confirmed}** candidates  
         - 🎯 **TRADEABLE** (HIGH or Engine Confirmed): **{total_tradeable}** candidates
+        {"- ⚠️ **Stale thesis** (3+ sessions): **" + str(total_stale) + "** candidates — consider removing" if total_stale > 0 else ""}
         
-        ⚠️ **Action:** Only trade candidates with 🟢 or ✅ for 90%+ success rate.
+        **Position Sizing Guide:**
+        - ⭐⭐⭐ = FULL SIZE (2+ engines confirming)
+        - ✅ or 🟢 = STANDARD SIZE
+        - ⚠️ = AVOID (stale thesis)
         """)
     else:
         st.info("No candidates found. Run pattern scan to populate.")
