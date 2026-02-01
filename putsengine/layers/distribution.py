@@ -88,6 +88,11 @@ class DistributionLayer:
         high_rvol_red_day = pv_signals.get("high_rvol_red_day", False)
         gap_down_no_recovery = pv_signals.get("gap_down_no_recovery", False)
         multi_day_weakness = pv_signals.get("multi_day_weakness", False)
+        
+        # Extract context data for dark pool analysis (ARCHITECT-4 REFINEMENT)
+        current_vwap = pv_signals.get("current_vwap")
+        current_price = pv_signals.get("current_price")
+        session_high = pv_signals.get("session_high")
 
         # B. Options Flow Analysis
         options_signals = await self._analyze_options_flow(symbol)
@@ -96,8 +101,13 @@ class DistributionLayer:
         signal.rising_put_oi = options_signals.get("rising_put_oi", False)
         signal.skew_steepening = options_signals.get("skew_steepening", False)
 
-        # C. Dark Pool Analysis
-        dp_signals = await self._analyze_dark_pool(symbol)
+        # C. Dark Pool Analysis (with ARCHITECT-4 Context Guard)
+        dp_signals = await self._analyze_dark_pool(
+            symbol,
+            current_vwap=current_vwap,
+            current_price=current_price,
+            session_high=session_high
+        )
         signal.repeated_sell_blocks = dp_signals.get("repeated_sell_blocks", False)
 
         # D. Insider Trading Analysis (per Architect Blueprint)
@@ -163,12 +173,64 @@ class DistributionLayer:
         else:
             signal.score = base_score
 
-        active_signals = sum(1 for v in signal.signals.values() if v)
+        # =============================================================
+        # ARCHITECT-4 REFINEMENT: Distribution → Gamma Drain Handoff
+        # =============================================================
+        # When Distribution detects early signals AND conditions align,
+        # flag for Gamma Drain entry timing.
+        # 
+        # This mirrors real desk workflow:
+        # - Distribution = watchlist (early warning)
+        # - Gamma Drain = entry timing (acceleration)
+        #
+        # Handoff criteria:
+        # 1. Distribution score >= 0.55
+        # 2. pump_reversal OR gap_up_reversal pattern present
+        # 3. Index GEX <= neutral (dealer permission)
+        # =============================================================
+        
+        handoff_candidate = False
+        has_reversal_pattern = (
+            signal.signals.get("gap_up_reversal", False) or 
+            "pump_reversal" in str(signal.signals)
+        )
+        
+        if signal.score >= 0.55 and has_reversal_pattern:
+            # Check index GEX condition (attempt to fetch, but don't fail if unavailable)
+            try:
+                spy_gex = await self.unusual_whales.get_greek_exposure("SPY")
+                if spy_gex:
+                    net_gex = spy_gex.get("net_gex", 0)
+                    if net_gex is None or net_gex <= 0:  # Neutral or negative = dealer permission
+                        handoff_candidate = True
+                        logger.info(
+                            f"{symbol}: HANDOFF CANDIDATE - Distribution score={signal.score:.2f}, "
+                            f"reversal pattern present, SPY GEX={net_gex} (neutral/negative)"
+                        )
+                else:
+                    # Can't verify GEX, but other conditions met - still flag with warning
+                    handoff_candidate = True
+                    logger.info(
+                        f"{symbol}: HANDOFF CANDIDATE (GEX unverified) - "
+                        f"Distribution score={signal.score:.2f}, reversal pattern present"
+                    )
+            except Exception as e:
+                logger.debug(f"Could not check GEX for handoff: {e}")
+                # Still mark as potential handoff if score and pattern criteria met
+                if signal.score >= 0.60:  # Slightly higher threshold when GEX unavailable
+                    handoff_candidate = True
+        
+        # Add handoff flag to signals
+        signal.signals["handoff_candidate"] = handoff_candidate
+
+        active_signals = sum(1 for k, v in signal.signals.items() if v and k != "handoff_candidate")
         boost_applied = insider_boost + congress_boost + earnings_boost
+        
+        handoff_str = " 🎯 HANDOFF" if handoff_candidate else ""
         logger.info(
             f"{symbol} distribution analysis: "
             f"Score={signal.score:.2f} (base={base_score:.2f}, boost=+{boost_applied:.2f}), "
-            f"Active signals={active_signals}/{len(signal.signals)}"
+            f"Active signals={active_signals}/{len(signal.signals) - 1}{handoff_str}"
         )
 
         return signal
@@ -194,7 +256,11 @@ class DistributionLayer:
             "high_rvol_red_day": False,
             "gap_down_no_recovery": False,
             "gap_up_reversal": False,  # NEW: Distribution trap pattern
-            "multi_day_weakness": False
+            "multi_day_weakness": False,
+            # ARCHITECT-4 REFINEMENT: Context data for dark pool analysis
+            "current_vwap": None,
+            "current_price": None,
+            "session_high": None
         }
 
         try:
@@ -213,6 +279,20 @@ class DistributionLayer:
                 from_date=date.today() - timedelta(days=2),
                 limit=2000
             )
+            
+            # ARCHITECT-4 REFINEMENT: Extract context data for dark pool analysis
+            if daily_bars:
+                signals["current_price"] = daily_bars[-1].close
+            if minute_bars:
+                # Calculate VWAP from minute bars
+                today_bars = [b for b in minute_bars if b.timestamp.date() == date.today()]
+                if today_bars:
+                    signals["session_high"] = max(b.high for b in today_bars)
+                    # VWAP = Σ(typical_price × volume) / Σ(volume)
+                    total_vp = sum((b.high + b.low + b.close) / 3 * b.volume for b in today_bars)
+                    total_vol = sum(b.volume for b in today_bars)
+                    if total_vol > 0:
+                        signals["current_vwap"] = total_vp / total_vol
 
             # 1. Flat price + rising volume
             signals["flat_price_rising_volume"] = self._detect_flat_price_rising_volume(
@@ -675,12 +755,27 @@ class DistributionLayer:
 
         return signals
 
-    async def _analyze_dark_pool(self, symbol: str) -> Dict[str, bool]:
+    async def _analyze_dark_pool(
+        self, 
+        symbol: str,
+        current_vwap: Optional[float] = None,
+        current_price: Optional[float] = None,
+        session_high: Optional[float] = None
+    ) -> Dict[str, bool]:
         """
         Analyze dark pool for distribution signals.
 
         Key signal: Repeated sell blocks near same price
         with no positive price response.
+        
+        ARCHITECT-4 REFINEMENT: Dark Pool Context Guard
+        ================================================
+        To filter false positives from ETF rebalancing, VWAP facilitation,
+        and neutral internalization, we require:
+        
+        Repeated sell blocks AND (price below VWAP OR failed new intraday high)
+        
+        This ensures we're detecting genuine distribution, not neutral facilitation.
         """
         signals = {
             "repeated_sell_blocks": False
@@ -713,8 +808,34 @@ class DistributionLayer:
                         # Check if price moved up after (it shouldn't for distribution)
                         last_print_price = prints[-1].price
                         if last_print_price <= price_level * 1.01:  # Price didn't rise
-                            signals["repeated_sell_blocks"] = True
-                            break
+                            
+                            # ARCHITECT-4 CONTEXT GUARD:
+                            # Require price below VWAP OR failed to make new intraday high
+                            # This filters ETF rebalancing, VWAP facilitation, neutral internalization
+                            context_confirmed = True
+                            
+                            if current_vwap and current_price and session_high:
+                                # Check context conditions
+                                below_vwap = current_price < current_vwap
+                                failed_new_high = current_price < session_high * 0.995  # Below 0.5% of high
+                                
+                                # Must have at least one bearish context
+                                context_confirmed = below_vwap or failed_new_high
+                                
+                                if not context_confirmed:
+                                    logger.debug(
+                                        f"{symbol}: Dark pool blocks detected but context guard failed "
+                                        f"(price ${current_price:.2f} above VWAP ${current_vwap:.2f} "
+                                        f"and near session high ${session_high:.2f})"
+                                    )
+                            
+                            if context_confirmed:
+                                signals["repeated_sell_blocks"] = True
+                                logger.info(
+                                    f"{symbol}: DARK POOL DISTRIBUTION - {len(prints)} blocks, "
+                                    f"{total_size:,} shares at ${price_level:.2f}"
+                                )
+                                break
 
         except Exception as e:
             logger.error(f"Error in dark pool analysis for {symbol}: {e}")
