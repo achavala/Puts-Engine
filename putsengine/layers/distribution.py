@@ -1031,142 +1031,116 @@ class DistributionLayer:
 
     def _calculate_distribution_score(self, signal: DistributionSignal) -> float:
         """
-        Calculate composite distribution score.
+        Calculate composite distribution score with PRE-BREAKDOWN signal priority.
         
-        CRITICAL FIX: Previous version was too restrictive!
-        We were missing trades because the minimum requirement check
-        didn't count dark pool and options signals.
+        FEB 1, 2026 FIX: System was detecting moves AFTER they happened!
+        ================================================================
         
-        INSTITUTIONAL-GRADE SCORING for -3% to -15% moves:
-        - Every signal contributes to score
-        - No artificial minimum requirement (signals ARE the evidence)
-        - Dark pool blocks are strong institutional signal
+        NEW APPROACH:
+        - PRE-BREAKDOWN signals (predictive) get 1.5x weight
+        - POST-BREAKDOWN signals (reactive) get 0.7x weight
+        - This prioritizes EARLY detection over late confirmation
         
-        Scoring:
-        - Strong signals: 0.15-0.20 each
-        - Medium signals: 0.10 each
-        - Weak signals: 0.05 each
+        PRE-BREAKDOWN (PREDICTIVE) - Higher Weight:
+        - Dark pool distribution, put OI accumulation, call selling at bid
+        - IV inversion, skew steepening, flat price + rising volume
+        - Insider/C-level selling
+        
+        POST-BREAKDOWN (REACTIVE) - Lower Weight:
+        - High RVOL red day (price already dropped)
+        - Gap down no recovery (move already happened)
+        - Multi-day weakness (trend already started)
         """
-        score = 0.0
+        from putsengine.signal_priority import (
+            calculate_priority_score, 
+            get_signal_priority_summary,
+            is_predictive_signal_dominant
+        )
         
-        # === ENHANCED PRICE-VOLUME SIGNALS (highest value) ===
-        high_rvol = signal.signals.get("high_rvol_red_day", False)
-        gap_down = signal.signals.get("gap_down_no_recovery", False)
-        gap_up_reversal = signal.signals.get("gap_up_reversal", False)  # NEW
-        multi_day = signal.signals.get("multi_day_weakness", False)
+        # Use the new signal priority system
+        priority_score, breakdown = calculate_priority_score(signal.signals)
+        summary = get_signal_priority_summary(signal.signals)
         
-        # HIGH RVOL red day is the STRONGEST bearish signal
-        if high_rvol:
-            score += 0.20
-            logger.info(f"{signal.symbol}: HIGH RVOL RED DAY - strong bearish signal (+0.20)")
+        # Log PRE vs POST signal analysis
+        pre_count = summary["pre_breakdown_count"]
+        post_count = summary["post_breakdown_count"]
+        pre_score = summary["pre_breakdown_score"]
+        post_score = summary["post_breakdown_score"]
+        timing_rec = summary["timing_recommendation"]
         
-        # Gap down without recovery = trapped longs (STRONG)
-        if gap_down:
-            score += 0.15
+        if pre_count > 0 or post_count > 0:
+            logger.info(
+                f"{signal.symbol}: Signal Priority Analysis - "
+                f"PRE: {pre_count} signals ({pre_score:.2f}), "
+                f"POST: {post_count} signals ({post_score:.2f}), "
+                f"Timing: {timing_rec}"
+            )
         
-        # Gap UP reversal = distribution trap (CRITICAL - caught UUUU!)
-        # This is when institutions sell into gap-up strength
-        if gap_up_reversal:
-            score += 0.25  # HIGHEST score - this is the clearest distribution pattern
-            logger.info(f"{signal.symbol}: GAP UP REVERSAL - distribution trap (+0.25)")
+        # ===================================================================
+        # BONUS: Add extra weight for strong predictive (PRE) signals
+        # This ensures early detection candidates get prioritized
+        # ===================================================================
+        predictive_bonus = 0.0
         
-        # Multi-day weakness = sustained pressure (STRONG)
-        if multi_day:
-            score += 0.15
+        if is_predictive_signal_dominant(signal.signals):
+            # Strong predictive signals - add bonus
+            predictive_bonus = 0.10
+            logger.info(f"{signal.symbol}: PREDICTIVE SIGNALS DOMINANT - Early entry candidate (+0.10 bonus)")
         
-        # === STANDARD PRICE-VOLUME SIGNALS (0.10 each) ===
-        if signal.flat_price_rising_volume:
-            score += 0.10
-        if signal.failed_breakout:
-            score += 0.10
-        if signal.lower_highs_flat_rsi:
-            score += 0.10
-        if signal.vwap_loss:
-            score += 0.10  # VWAP loss is important!
-        
-        # === OPTIONS FLOW SIGNALS (0.08-0.12 each) ===
-        if signal.put_buying_at_ask:
-            score += 0.12  # Aggressive put buying
-        if signal.call_selling_at_bid:
-            score += 0.10  # Call selling
-        if signal.rising_put_oi:
-            score += 0.08
-        if signal.skew_steepening:
-            score += 0.08
-        
-        # === DARK POOL (CRITICAL - institutional selling) ===
-        # Repeated sell blocks means big money is distributing!
-        if signal.repeated_sell_blocks:
-            score += 0.15  # Increased from 0.10 - this is strong evidence!
-        
-        # === INSIDER/CONGRESS SIGNALS (from signals dict) ===
-        if signal.signals.get("c_level_selling", False):
-            score += 0.10  # C-level selling is very bearish
-        if signal.signals.get("insider_cluster", False):
-            score += 0.08
-        if signal.signals.get("congress_selling", False):
-            score += 0.05
-        
-        # === EARNINGS CONTEXT (ARCHITECT-4 FINAL LOGIC) ===
-        # Post-earnings negative = valid setup
-        if signal.signals.get("is_post_earnings_negative", False):
-            score += 0.10
-        
-        # ============================================================================
-        # ARCHITECT-4: CONDITIONAL PRE-EARNINGS FRONT-RUN DISTRIBUTION LOGIC
-        # ============================================================================
-        # This is CORRECT microstructure logic but must stay CONDITIONAL.
-        # 
-        # Final Rule:
-        #   if is_pre_earnings:
-        #       if (VWAP lost AND dark_pool_selling AND break_5day_low within 48h):
-        #           allow_trade + front_run_boost = +0.10 to +0.15 (capped)
-        #       else:
-        #           apply_pre_earnings_penalty
-        #
-        # Key constraint: This is PERMISSION logic, not prediction.
-        # Never override Gamma / Liquidity gates.
-        
+        # ===================================================================
+        # SPECIAL CASE: PRE-EARNINGS with front-run distribution
+        # ===================================================================
         is_pre_earnings = signal.signals.get("is_pre_earnings", False)
+        pre_earnings_adjustment = 0.0
         
         if is_pre_earnings:
-            # Check for strong front-run distribution signals
+            # Check for strong front-run distribution signals (PRE-breakdown)
+            has_dark_pool = signal.repeated_sell_blocks
+            has_put_flow = signal.put_buying_at_ask or signal.signals.get("rising_put_oi", False)
+            has_call_selling = signal.call_selling_at_bid
             has_vwap_loss = signal.vwap_loss
-            has_dark_pool_selling = signal.repeated_sell_blocks
-            has_gap_down = gap_down or gap_up_reversal
-            has_multi_day_weakness = multi_day  # Proxy for "break 5-day low within 48h"
             
-            # Full front-run permission: VWAP + Dark pool + Price breakdown
-            if has_vwap_loss and has_dark_pool_selling and (has_gap_down or has_multi_day_weakness):
-                front_run_boost = 0.15  # Max boost
-                score += front_run_boost
+            # Count PRE-breakdown signals in pre-earnings context
+            pre_earnings_pre_signals = sum([
+                has_dark_pool, has_put_flow, has_call_selling,
+                signal.signals.get("c_level_selling", False),
+                signal.signals.get("insider_cluster", False),
+            ])
+            
+            if pre_earnings_pre_signals >= 3 and has_vwap_loss:
+                # Strong front-run: 3+ PRE signals + VWAP lost
+                pre_earnings_adjustment = 0.15
                 logger.info(
-                    f"{signal.symbol}: PRE-EARNINGS FRONT-RUN DISTRIBUTION DETECTED! "
-                    f"VWAP loss + Dark pool + Price breakdown. Boost +{front_run_boost:.2f}"
+                    f"{signal.symbol}: PRE-EARNINGS FRONT-RUN DETECTED! "
+                    f"{pre_earnings_pre_signals} predictive signals + VWAP loss (+0.15)"
                 )
-            # Partial front-run: VWAP + one other signal
-            elif has_vwap_loss and (has_dark_pool_selling or has_gap_down or has_multi_day_weakness):
-                front_run_boost = 0.10  # Moderate boost
-                score += front_run_boost
+            elif pre_earnings_pre_signals >= 2:
+                # Moderate front-run: 2+ PRE signals
+                pre_earnings_adjustment = 0.08
                 logger.info(
-                    f"{signal.symbol}: Pre-earnings with partial distribution signals. "
-                    f"Boost +{front_run_boost:.2f}"
+                    f"{signal.symbol}: Pre-earnings with {pre_earnings_pre_signals} "
+                    f"predictive signals (+0.08)"
                 )
-            # Weak signals only - apply penalty
-            elif has_vwap_loss or has_dark_pool_selling:
-                # Some distribution but not enough - no penalty, no boost
-                logger.debug(f"{signal.symbol}: Pre-earnings with weak distribution - neutral")
-            else:
-                # No distribution signals - apply penalty (bullish setup before earnings is risky)
-                score -= 0.05
-                logger.debug(f"{signal.symbol}: Pre-earnings penalty applied (no distribution signals)")
+            elif pre_earnings_pre_signals == 0:
+                # No PRE signals in pre-earnings = risky
+                pre_earnings_adjustment = -0.05
+                logger.debug(f"{signal.symbol}: Pre-earnings penalty (no predictive signals)")
+        
+        # ===================================================================
+        # FINAL SCORE CALCULATION
+        # ===================================================================
+        final_score = priority_score + predictive_bonus + pre_earnings_adjustment
         
         # Log what contributed
-        if score > 0:
-            active = [k for k, v in signal.signals.items() if v]
-            logger.debug(f"{signal.symbol}: Distribution score {score:.2f} from signals: {active}")
+        if final_score > 0:
+            pre_signals = summary.get("pre_signals", [])
+            post_signals = summary.get("post_signals", [])
+            if pre_signals:
+                logger.debug(f"{signal.symbol}: PRE-breakdown signals: {pre_signals}")
+            if post_signals:
+                logger.debug(f"{signal.symbol}: POST-breakdown signals: {post_signals}")
         
-        return min(max(score, 0.0), 1.0)  # Clamp between 0 and 1
+        return min(max(final_score, 0.0), 1.0)  # Clamp between 0 and 1
 
     def calculate_sector_velocity_boost(
         self, 

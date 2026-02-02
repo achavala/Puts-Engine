@@ -959,11 +959,176 @@ Example:
 | ✅ Vega Gate | Complete | architect4-vega-gate-020126 |
 | ✅ Post-Trade Attribution | Complete | architect4-attribution-020126 |
 | ✅ Capital Ramp Protocol | Complete | architect4-attribution-020126 |
+| ✅ Early Warning System | Complete | architect4-early-warning-020126 |
 | 🔄 First 10 Trades | In Progress | - |
 | ⏳ Scale to 50% | Pending | - |
 | ⏳ Full Deployment | Pending | - |
 
 ---
 
-*Document generated: February 1, 2026*  
-*Version: architect4-attribution-020126*
+## 17. EARLY WARNING SYSTEM (NEW - Feb 1, 2026)
+
+### 17.1 The Core Insight
+
+**You can't predict the catalyst, but you CAN detect the footprints of those who KNOW.**
+
+Smart money can't hide their tracks completely:
+- They can't buy puts without moving open interest
+- They can't sell in dark pools without leaving prints
+- They can't hedge without affecting the options term structure
+- They can't exit large positions without degrading quote quality
+
+### 17.2 The 7 Institutional Footprints
+
+These are the signals that appear **1-3 days BEFORE** the breakdown:
+
+| # | Footprint | What It Detects | Weight |
+|---|-----------|-----------------|--------|
+| 1 | **Dark Pool Sequence** | Sequential sells at deteriorating prices (staircases) | 20% |
+| 2 | **Put OI Accumulation** | Quiet put buildup without price drop | 18% |
+| 3 | **IV Term Inversion** | Near-term IV > Far-term IV (backwardation) | 15% |
+| 4 | **Quote Degradation** | Bid shrinking, spread widening | 15% |
+| 5 | **Flow Divergence** | Bearish options flow, stable price | 12% |
+| 6 | **Multi-Day Distribution** | Lower highs, volume on down days | 12% |
+| 7 | **Cross-Asset Divergence** | Stock flat while sector drops | 8% |
+
+### 17.3 Institutional Pressure Index (IPI)
+
+The IPI aggregates footprints over 2-3 days with time decay:
+
+```
+IPI = Σ(weight × strength × decay) × diversity_bonus
+
+where:
+- decay = exp(-λ × hours_since_detection)  [λ ≈ 0.03, half-life ≈ 23h]
+- diversity_bonus = 1.0 + 0.1 × (unique_types - 1)
+```
+
+**Pressure Levels:**
+| IPI Range | Level | Action |
+|-----------|-------|--------|
+| 0.70 - 1.00 | 🔴 ACT | Consider put entry on any bounce |
+| 0.50 - 0.70 | 🟡 PREPARE | Add to watchlist |
+| 0.30 - 0.50 | 👀 WATCH | Monitor for more footprints |
+| 0.00 - 0.30 | NONE | No significant pressure |
+
+### 17.4 How Each Footprint Works
+
+#### Footprint 1: Dark Pool Sequence
+```
+Detection: 3+ dark pool prints within 2% price range
+           Sequential prints at deteriorating prices
+           Total size > 50,000 shares
+           
+Why: Institutions exit large positions in "staircases" to avoid
+     moving the market. This pattern shows they're leaving.
+```
+
+#### Footprint 2: Put OI Accumulation (Quiet)
+```
+Detection: Put OI increasing 30%+ over 3 days
+           Price has NOT dropped (stealth positioning)
+           
+Why: Someone is building put positions BEFORE the news.
+     If price hasn't dropped yet, they know something.
+```
+
+#### Footprint 3: IV Term Structure Inversion
+```
+Detection: 7-day IV > 30-day IV (backwardation)
+           Normally: 30-day IV > 7-day IV (contango)
+           
+Why: Someone is paying premium for NEAR-TERM protection.
+     This signals expected event within days.
+```
+
+#### Footprint 4: Quote Quality Degradation
+```
+Detection: Bid size < 50% of ask size (imbalance)
+           Spread widening (> 10 bps)
+           Very small bid size (< 100 shares)
+           
+Why: Market makers often KNOW before the public.
+     They reduce exposure when they sense risk.
+```
+
+#### Footprint 5: Options Flow Divergence
+```
+Detection: Put premium > 60% of total premium
+           Price flat or up (divergence)
+           
+Why: The options market often leads the stock by 1-2 days.
+     Bearish flow + stable price = imminent move.
+```
+
+#### Footprint 6: Multi-Day Distribution (Wyckoff)
+```
+Detection: Lower highs over 3+ days
+           Higher volume on down days
+           Lower volume on up days
+           
+Why: Classic distribution pattern. Supply is being absorbed
+     at progressively lower prices.
+```
+
+#### Footprint 7: Cross-Asset Divergence
+```
+Detection: Symbol flat while sector peers drop 2%+
+           Correlation breakdown
+           
+Why: When a stock diverges from its sector, someone is
+     holding it up artificially. This often precedes a catch-up move.
+```
+
+### 17.5 Scan Schedule
+
+| Time (ET) | Scan Type | Purpose |
+|-----------|-----------|---------|
+| 8:00 AM | Pre-Market | Detect overnight footprint accumulation |
+| 12:00 PM | Mid-Day | Catch developing distribution |
+| 4:30 PM | Post-Market | Accumulate end-of-day footprints |
+
+### 17.6 Footprint History Persistence
+
+Footprints are stored in `footprint_history.json` for multi-day analysis:
+- Persists across dashboard reloads
+- Automatically prunes entries older than 5 days
+- Enables tracking of footprint accumulation patterns
+
+### 17.7 Integration with Existing System
+
+The Early Warning System is **additive**, not replacement:
+
+1. **Detection Layer**: Early Warning scans run 3x/day
+2. **Injection**: ACT-level symbols (IPI ≥ 0.70) auto-inject to DUI
+3. **Validation**: Main 3-engine pipeline confirms the thesis
+4. **Execution**: Strike selection and Vega Gate determine structure
+
+### 17.8 Dashboard Tab
+
+The new "🚨 Early Warning" tab displays:
+- Summary metrics (ACT/PREPARE/WATCH counts)
+- Detailed alerts with footprint breakdown
+- Footprint type distribution chart
+- The 7 footprints legend for education
+
+### 17.9 Critical Design Decisions
+
+1. **Time Decay**: Older footprints decay exponentially (half-life ~23h)
+2. **Diversity Bonus**: More unique footprint types = higher confidence
+3. **No False Positives**: Requires multiple footprints to reach actionable IPI
+4. **Non-Disruptive**: Doesn't interfere with main engine pipeline
+
+### 17.10 What This Solves
+
+| Before | After |
+|--------|-------|
+| Detected moves AFTER they happened | Detects footprints 1-3 days BEFORE |
+| Reactive signals (exhaustion, pump_reversal) | Predictive signals (distribution, dark pool) |
+| Single-day analysis | Multi-day footprint accumulation |
+| No visibility into institutional activity | 7 distinct institutional footprint types |
+
+---
+
+*Document updated: February 1, 2026*  
+*Version: architect4-early-warning-020126*

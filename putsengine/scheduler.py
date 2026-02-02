@@ -1,5 +1,18 @@
 """
-PutsEngine Scheduled Scanner Service.
+PutsEngine Scheduled Scanner Service - ALWAYS-ON BACKGROUND DAEMON
+
+FEB 1, 2026 UPDATE: PRE-BREAKDOWN SIGNAL PRIORITY
+================================================
+The system now prioritizes PRE-breakdown (predictive) signals over
+POST-breakdown (reactive) signals. This ensures early detection.
+
+PRE-BREAKDOWN signals (1.5x weight):
+- Dark pool distribution, put OI accumulation, call selling at bid
+- IV inversion, skew steepening, insider selling
+
+POST-BREAKDOWN signals (0.7x weight):
+- High RVOL red day, gap down no recovery, multi-day weakness
+- Pump reversal, exhaustion patterns
 
 FINAL SCHEDULE: 12 scans/day (ET):
 #   Time (ET)    Label
@@ -21,6 +34,11 @@ BATCHED SCANNING STRATEGY:
 - Split into 3 batches of ~100 tickers
 - Wait 65 seconds between batches (rate limit reset)
 - Result: 0 tickers missed, complete coverage
+
+DAEMON MODE:
+- Runs independently of dashboard
+- Use start_scheduler_daemon.py to manage
+- Logs to logs/scheduler_daemon.log
 
 This scheduler runs as a background service and saves results for the dashboard.
 """
@@ -69,6 +87,15 @@ from putsengine.multiday_weakness_scanner import run_multiday_weakness_scan, Mul
 from putsengine.pump_dump_scanner import run_pump_dump_scan, inject_pump_dumps_to_dui
 from putsengine.pre_earnings_flow import run_pre_earnings_flow_scan, inject_pre_earnings_to_dui
 from putsengine.volume_price_divergence import run_volume_price_scan, inject_divergence_to_dui
+
+# EARLY WARNING SYSTEM (Feb 1, 2026) - Detect institutional footprints 1-3 days before breakdown
+from putsengine.early_warning_system import (
+    run_early_warning_scan, 
+    get_early_warning_summary,
+    EarlyWarningScanner,
+    InstitutionalPressure,
+    PressureLevel
+)
 
 # Email Reporter for daily 3 PM scan
 from putsengine.email_reporter import run_daily_report_scan, send_email_report, save_report_to_file
@@ -528,6 +555,45 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
+        # ============================================================================
+        # EARLY WARNING SYSTEM (Feb 1, 2026) - Institutional Footprint Detection
+        # Detects the 7 institutional footprints 1-3 days BEFORE breakdown:
+        # 1. Dark Pool Sequence - Smart money selling in staircases
+        # 2. Put OI Accumulation - Quiet positioning before news
+        # 3. IV Term Inversion - Premium for near-term protection
+        # 4. Quote Degradation - Market makers reducing exposure
+        # 5. Flow Divergence - Options leading stock by 1-2 days
+        # 6. Multi-Day Distribution - Classic Wyckoff distribution
+        # 7. Cross-Asset Divergence - Correlation breakdown
+        # ============================================================================
+        
+        # Morning early warning scan (before market opens) - HIGHEST PRIORITY
+        self.scheduler.add_job(
+            self._run_early_warning_scan_wrapper,
+            CronTrigger(hour=8, minute=0, timezone=EST),
+            id="early_warning_8am",
+            name="🚨 Early Warning Scan (8:00 AM ET) - Pre-Market Footprints",
+            replace_existing=True
+        )
+        
+        # Mid-day early warning scan - Catch developing distribution
+        self.scheduler.add_job(
+            self._run_early_warning_scan_wrapper,
+            CronTrigger(hour=12, minute=0, timezone=EST),
+            id="early_warning_12pm",
+            name="🚨 Early Warning Scan (12:00 PM ET) - Mid-Day Footprints",
+            replace_existing=True
+        )
+        
+        # Evening early warning scan - Accumulate end-of-day footprints
+        self.scheduler.add_job(
+            self._run_early_warning_scan_wrapper,
+            CronTrigger(hour=16, minute=30, timezone=EST),
+            id="early_warning_430pm",
+            name="🚨 Early Warning Scan (4:30 PM ET) - Post-Market Footprints",
+            replace_existing=True
+        )
+        
         # =========================================================================
         # PATTERN SCAN - Every 30 minutes during market hours (9:30 AM - 4:00 PM ET)
         # =========================================================================
@@ -664,6 +730,19 @@ class PutsEngineScheduler:
         except RuntimeError:
             asyncio.run(self.run_volume_price_scan())
     
+    def _run_early_warning_scan_wrapper(self):
+        """
+        Wrapper to run early warning institutional footprint scan.
+        
+        This is the KEY scan for 1-3 day early detection.
+        It runs at 8 AM, 12 PM, and 4:30 PM ET.
+        """
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_early_warning_scan(), loop=loop)
+        except RuntimeError:
+            asyncio.run(self.run_early_warning_scan())
+    
     async def run_scan(self, scan_type: str = "manual"):
         """
         Run a full scan of ALL tickers across all 3 engines.
@@ -762,6 +841,28 @@ class PutsEngineScheduler:
                         # Check if this is a DUI ticker
                         is_dui = symbol in dui_tickers
                         
+                        # ======================================================================
+                        # FEB 1, 2026 FIX: Add signal priority classification
+                        # PRE-breakdown signals = predictive (early entry)
+                        # POST-breakdown signals = reactive (late entry)
+                        # ======================================================================
+                        try:
+                            from putsengine.signal_priority import (
+                                classify_signals,
+                                get_signal_priority_summary,
+                                is_predictive_signal_dominant
+                            )
+                            priority_summary = get_signal_priority_summary(distribution.signals)
+                            pre_signals = priority_summary.get("pre_signals", [])
+                            post_signals = priority_summary.get("post_signals", [])
+                            timing_rec = priority_summary.get("timing_recommendation", "BALANCED")
+                            is_predictive = is_predictive_signal_dominant(distribution.signals)
+                        except Exception as e:
+                            pre_signals = []
+                            post_signals = []
+                            timing_rec = "UNKNOWN"
+                            is_predictive = False
+                        
                         # Create candidate data
                         candidate_data = {
                             "symbol": symbol,
@@ -776,7 +877,12 @@ class PutsEngineScheduler:
                             "scan_time": now_et.strftime("%H:%M ET"),
                             "scan_type": scan_type,
                             "is_dui": is_dui,
-                            "batch": batch_num
+                            "batch": batch_num,
+                            # NEW: Signal priority data (Feb 1, 2026)
+                            "pre_signals": pre_signals,
+                            "post_signals": post_signals,
+                            "timing_recommendation": timing_rec,
+                            "is_predictive": is_predictive,
                         }
                         
                         # Add to appropriate engine list
@@ -914,11 +1020,39 @@ class PutsEngineScheduler:
         - Gamma Drain = forced execution (dealer-driven acceleration)
         - Liquidity = vacuum detection (buyers disappearing)
         
+        FEB 1, 2026 UPDATE: PRE-BREAKDOWN SIGNAL PRIORITY
+        =================================================
+        - PRE-breakdown signals (predictive) → Distribution Engine (early warning)
+        - POST-breakdown signals (reactive) → Gamma Drain Engine (execution)
+        - This ensures early detection candidates get proper attribution
+        
         CRITICAL FIX: pump_reversal + high_rvol_red_day → Distribution (transition)
         This separates thesis formation from execution timing.
         """
+        from putsengine.signal_priority import (
+            classify_signals, 
+            is_predictive_signal_dominant,
+            get_signal_priority_summary
+        )
+        
         signals = distribution.signals
         score = distribution.score
+        
+        # ======================================================================
+        # FEB 1, 2026 FIX: Check if PRE-breakdown signals dominate
+        # If predictive signals are dominant, route to Distribution (early warning)
+        # ======================================================================
+        try:
+            summary = get_signal_priority_summary(signals)
+            if is_predictive_signal_dominant(signals):
+                pre_signals = summary.get("pre_signals", [])
+                logger.info(
+                    f"Engine assignment: DISTRIBUTION (PRE-breakdown signals dominant: "
+                    f"{', '.join(pre_signals[:3])}...)"
+                )
+                return EngineType.DISTRIBUTION_TRAP
+        except Exception as e:
+            logger.debug(f"Signal priority check error: {e}")
         
         # ======================================================================
         # ARCHITECT-4 FIX: Handle pump_reversal as TRANSITION state
@@ -1610,6 +1744,141 @@ class PutsEngineScheduler:
             logger.error(f"Daily report scan error: {e}")
             return {}
     
+    # ==========================================================================
+    # EARLY WARNING SYSTEM (Feb 1, 2026)
+    # Detects institutional footprints 1-3 DAYS BEFORE breakdown
+    # This is the KEY to early detection
+    # ==========================================================================
+    
+    async def run_early_warning_scan(self):
+        """
+        Run Early Warning scan to detect institutional footprints.
+        
+        THE 7 FOOTPRINTS (1-3 days before breakdown):
+        1. Dark Pool Sequence - Smart money selling in staircases
+        2. Put OI Accumulation - Quiet positioning before news
+        3. IV Term Inversion - Premium for near-term protection
+        4. Quote Degradation - Market makers reducing exposure
+        5. Flow Divergence - Options leading stock by 1-2 days
+        6. Multi-Day Distribution - Classic Wyckoff distribution
+        7. Cross-Asset Divergence - Correlation breakdown
+        
+        PHILOSOPHY:
+        We can't predict the catalyst, but we CAN detect the footprints
+        of those who KNOW about the catalyst. Smart money leaves traces.
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("🚨 EARLY WARNING SCAN - Institutional Footprint Detection")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Detecting 7 institutional footprints 1-3 days before breakdown...")
+        logger.info("=" * 60)
+        
+        try:
+            await self._init_clients()
+            
+            # Get all tickers to scan
+            all_tickers = EngineConfig.get_all_tickers()
+            dui_tickers = self._load_dui_tickers()
+            symbols = list(set(all_tickers) | set(dui_tickers))
+            
+            logger.info(f"Scanning {len(symbols)} symbols for institutional footprints...")
+            
+            # Run early warning scan
+            results = await run_early_warning_scan(
+                self._alpaca, 
+                self._polygon, 
+                self._unusual_whales,
+                symbols
+            )
+            
+            # Count by pressure level
+            act_count = sum(1 for p in results.values() if p.level == PressureLevel.ACT)
+            prepare_count = sum(1 for p in results.values() if p.level == PressureLevel.PREPARE)
+            watch_count = sum(1 for p in results.values() if p.level == PressureLevel.WATCH)
+            
+            logger.info(f"Early Warning Scan Complete:")
+            logger.info(f"  🔴 IMMINENT (ACT): {act_count}")
+            logger.info(f"  🟡 ACTIVE (PREPARE): {prepare_count}")
+            logger.info(f"  👀 EARLY (WATCH): {watch_count}")
+            
+            # Log critical alerts (ACT level)
+            for symbol, pressure in results.items():
+                if pressure.level == PressureLevel.ACT:
+                    footprint_types = ", ".join(set(f.footprint_type.value for f in pressure.footprints[:5]))
+                    logger.warning(
+                        f"  🔴 {symbol}: IPI={pressure.ipi:.2f} | "
+                        f"{pressure.unique_footprints} footprint types | "
+                        f"{pressure.days_building} days building | "
+                        f"Footprints: {footprint_types}"
+                    )
+                    
+                    # Inject ACT-level symbols to DUI for immediate scanning
+                    from putsengine.config import DynamicUniverseManager
+                    dui = DynamicUniverseManager()
+                    dui.inject_symbol(
+                        symbol=symbol,
+                        source="early_warning",
+                        reason=f"IPI={pressure.ipi:.2f} ({pressure.unique_footprints} footprints)",
+                        score=pressure.ipi,
+                        signals=list(set(f.footprint_type.value for f in pressure.footprints)),
+                        ttl_days=2
+                    )
+            
+            # Also log PREPARE level
+            for symbol, pressure in results.items():
+                if pressure.level == PressureLevel.PREPARE:
+                    logger.info(
+                        f"  🟡 {symbol}: IPI={pressure.ipi:.2f} | "
+                        f"{pressure.unique_footprints} footprints | "
+                        f"{pressure.days_building} days"
+                    )
+            
+            # Save early warning results to separate file
+            early_warning_file = Path(__file__).parent.parent / "early_warning_alerts.json"
+            try:
+                alert_data = {
+                    "timestamp": now_et.isoformat(),
+                    "summary": {
+                        "act_count": act_count,
+                        "prepare_count": prepare_count,
+                        "watch_count": watch_count,
+                    },
+                    "alerts": {
+                        symbol: {
+                            "ipi": pressure.ipi,
+                            "level": pressure.level.value,
+                            "unique_footprints": pressure.unique_footprints,
+                            "days_building": pressure.days_building,
+                            "recommendation": pressure.recommendation,
+                            "footprints": [
+                                {
+                                    "type": f.footprint_type.value,
+                                    "strength": f.strength,
+                                    "details": f.details,
+                                }
+                                for f in pressure.footprints[:10]  # Top 10 footprints
+                            ],
+                        }
+                        for symbol, pressure in results.items()
+                    }
+                }
+                with open(early_warning_file, 'w') as f:
+                    json.dump(alert_data, f, indent=2, default=str)
+                logger.info(f"Early warning alerts saved to {early_warning_file}")
+            except Exception as e:
+                logger.warning(f"Could not save early warning alerts: {e}")
+            
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Early warning scan error: {e}")
+            import traceback
+            traceback.print_exc()
+            return {}
+    
     def get_scheduled_jobs(self) -> List[Dict]:
         """Get list of all scheduled jobs."""
         jobs = []
@@ -1626,14 +1895,24 @@ class PutsEngineScheduler:
         return jobs
     
     async def start(self):
-        """Start the scheduler."""
+        """Start the scheduler as an always-on background service."""
         if self.is_running:
             logger.warning("Scheduler already running")
             return
         
         logger.info("=" * 60)
-        logger.info("PUTSENGINE SCHEDULER STARTING")
+        logger.info("🚀 PUTSENGINE SCHEDULER DAEMON STARTING")
         logger.info("=" * 60)
+        logger.info("")
+        logger.info("FEB 1, 2026 UPDATE: PRE-BREAKDOWN SIGNAL PRIORITY")
+        logger.info("================================================")
+        logger.info("PRE-breakdown signals (predictive) now have 1.5x weight")
+        logger.info("POST-breakdown signals (reactive) now have 0.7x weight")
+        logger.info("This prioritizes EARLY detection over late confirmation")
+        logger.info("")
+        logger.info("DAEMON MODE: Running independently of dashboard")
+        logger.info("Scheduler will run 24/7 until explicitly stopped")
+        logger.info("")
         
         # Schedule all jobs
         self._schedule_jobs()
@@ -1645,10 +1924,15 @@ class PutsEngineScheduler:
         # Log scheduled jobs
         jobs = self.get_scheduled_jobs()
         logger.info(f"Scheduled {len(jobs)} scan jobs:")
-        for job in jobs:
+        for job in jobs[:15]:  # Show first 15
             logger.info(f"  - {job['name']}: Next run at {job['next_run']}")
+        if len(jobs) > 15:
+            logger.info(f"  ... and {len(jobs) - 15} more jobs")
         
-        logger.info("Scheduler started. Running until interrupted.")
+        logger.info("")
+        logger.info("✅ Scheduler daemon started successfully!")
+        logger.info("📊 All scans will run automatically at scheduled times")
+        logger.info("🔄 Dashboard can be opened/closed without affecting scans")
         logger.info("=" * 60)
     
     async def stop(self):
@@ -1664,20 +1948,56 @@ class PutsEngineScheduler:
 
 
 async def run_scheduler():
-    """Run the scheduler service."""
+    """
+    Run the scheduler as an always-on background service.
+    
+    This function runs indefinitely until:
+    - SIGTERM or SIGINT received (graceful shutdown)
+    - KeyboardInterrupt (Ctrl+C)
+    
+    The scheduler is NOT dependent on the dashboard being open.
+    It can be started via:
+    - python -m putsengine.scheduler (foreground)
+    - python start_scheduler_daemon.py start (background daemon)
+    """
+    import signal as sig
+    
     scheduler = PutsEngineScheduler()
+    shutdown_requested = False
+    
+    def handle_shutdown(signum, frame):
+        nonlocal shutdown_requested
+        logger.info(f"Received shutdown signal ({signum})")
+        shutdown_requested = True
+    
+    # Register signal handlers for graceful shutdown
+    sig.signal(sig.SIGTERM, handle_shutdown)
+    sig.signal(sig.SIGINT, handle_shutdown)
     
     try:
         await scheduler.start()
         
-        # Keep running until interrupted
-        while True:
+        logger.info("Scheduler daemon is now running...")
+        logger.info("Press Ctrl+C or send SIGTERM to stop")
+        
+        # Keep running until shutdown requested
+        while not shutdown_requested:
             await asyncio.sleep(60)
             
+            # Log heartbeat every 30 minutes
+            now_et = datetime.now(EST)
+            if now_et.minute == 0 or now_et.minute == 30:
+                logger.info(f"♥ Scheduler heartbeat: {now_et.strftime('%H:%M ET')} - Running")
+            
     except KeyboardInterrupt:
-        logger.info("Received shutdown signal")
+        logger.info("Received keyboard interrupt (Ctrl+C)")
+    except Exception as e:
+        logger.error(f"Scheduler error: {e}")
+        raise
     finally:
+        logger.info("Shutting down scheduler daemon...")
         await scheduler.stop()
+        logger.info("Scheduler daemon stopped gracefully")
 
 
 async def run_single_scan(scan_type: str = "manual"):

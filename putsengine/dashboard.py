@@ -891,6 +891,234 @@ def render_config_view():
         st.plotly_chart(fig, use_container_width=True)
 
 
+def render_early_warning_tab():
+    """
+    Render Early Warning System tab.
+    
+    Displays the 7 institutional footprints that appear 1-3 days BEFORE breakdown:
+    1. Dark Pool Sequence - Smart money selling in staircases
+    2. Put OI Accumulation - Quiet positioning before news
+    3. IV Term Inversion - Premium for near-term protection
+    4. Quote Degradation - Market makers reducing exposure
+    5. Flow Divergence - Options leading stock by 1-2 days
+    6. Multi-Day Distribution - Classic Wyckoff distribution
+    7. Cross-Asset Divergence - Correlation breakdown
+    """
+    st.markdown("""
+    <div class="section-header">🚨 Early Warning System - Institutional Footprint Detection</div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    **Philosophy:** You can't predict the catalyst, but you CAN detect the footprints of those who KNOW.
+    Smart money leaves traces 1-3 days BEFORE the breakdown.
+    """)
+    
+    # Display the 7 footprints legend
+    with st.expander("📖 The 7 Institutional Footprints", expanded=False):
+        st.markdown("""
+        | # | Footprint | What It Detects | Why It Matters |
+        |---|-----------|-----------------|----------------|
+        | 1 | **Dark Pool Sequence** | Sequential sells at deteriorating prices | Institutions can't hide large exits |
+        | 2 | **Put OI Accumulation** | Quiet put buildup without price drop | Someone positioning BEFORE news |
+        | 3 | **IV Term Inversion** | Near-term IV > Far-term IV | Premium for near-term protection |
+        | 4 | **Quote Degradation** | Bid shrinking, spread widening | Market makers reducing exposure |
+        | 5 | **Flow Divergence** | Bearish options flow, stable price | Options lead stock by 1-2 days |
+        | 6 | **Multi-Day Distribution** | Lower highs, volume on down days | Classic Wyckoff distribution |
+        | 7 | **Cross-Asset Divergence** | Stock flat while sector drops | Correlation breakdown = signal |
+        """)
+    
+    # Load early warning data
+    early_warning_file = Path(__file__).parent.parent / "early_warning_alerts.json"
+    footprint_history_file = Path(__file__).parent.parent / "footprint_history.json"
+    
+    early_warning_data = None
+    if early_warning_file.exists():
+        try:
+            with open(early_warning_file, 'r') as f:
+                early_warning_data = json.load(f)
+        except Exception:
+            pass
+    
+    if not early_warning_data:
+        st.info("🔄 Early warning data not yet available. Scans run at 8 AM, 12 PM, and 4:30 PM ET.")
+        
+        # Check if there's any footprint history
+        if footprint_history_file.exists():
+            try:
+                with open(footprint_history_file, 'r') as f:
+                    history = json.load(f)
+                if history:
+                    st.markdown("### 📜 Recent Footprint History")
+                    recent_symbols = sorted(history.keys(), key=lambda x: len(history[x]), reverse=True)[:10]
+                    for symbol in recent_symbols:
+                        footprints = history[symbol]
+                        st.markdown(f"**{symbol}**: {len(footprints)} footprints detected")
+            except Exception:
+                pass
+        return
+    
+    # Show scan timestamp
+    scan_time = early_warning_data.get("timestamp", "")
+    if scan_time:
+        try:
+            scan_dt = datetime.fromisoformat(scan_time)
+            st.caption(f"Last scan: {scan_dt.strftime('%Y-%m-%d %I:%M %p ET')}")
+        except Exception:
+            pass
+    
+    # Summary metrics
+    summary = early_warning_data.get("summary", {})
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        act_count = summary.get("act_count", 0)
+        st.metric(
+            "🔴 IMMINENT (ACT)", 
+            act_count,
+            help="IPI ≥ 0.70 - Consider put entry on any bounce"
+        )
+    with col2:
+        prepare_count = summary.get("prepare_count", 0)
+        st.metric(
+            "🟡 ACTIVE (PREPARE)", 
+            prepare_count,
+            help="IPI 0.50-0.70 - Add to watchlist"
+        )
+    with col3:
+        watch_count = summary.get("watch_count", 0)
+        st.metric(
+            "👀 EARLY (WATCH)", 
+            watch_count,
+            help="IPI 0.30-0.50 - Monitor for more footprints"
+        )
+    with col4:
+        total = act_count + prepare_count + watch_count
+        st.metric("📊 Total Alerts", total)
+    
+    st.divider()
+    
+    # Get alerts
+    alerts = early_warning_data.get("alerts", {})
+    
+    if not alerts:
+        st.success("✅ No significant institutional pressure detected.")
+        return
+    
+    # Sort by IPI
+    sorted_alerts = sorted(
+        alerts.items(),
+        key=lambda x: x[1].get("ipi", 0),
+        reverse=True
+    )
+    
+    # ACT Level Alerts (Critical)
+    act_alerts = [(s, a) for s, a in sorted_alerts if a.get("level") == "act"]
+    if act_alerts:
+        st.markdown("### 🔴 IMMINENT BREAKDOWN (IPI ≥ 0.70)")
+        st.markdown("*These symbols have multiple institutional footprints converging. Consider put entry on any bounce.*")
+        
+        for symbol, alert in act_alerts:
+            with st.container():
+                col1, col2, col3, col4 = st.columns([1, 1, 1, 2])
+                
+                with col1:
+                    st.markdown(f"### {symbol}")
+                    st.markdown(f"**IPI: {alert.get('ipi', 0):.2f}**")
+                
+                with col2:
+                    st.metric("Footprint Types", alert.get("unique_footprints", 0))
+                
+                with col3:
+                    st.metric("Days Building", alert.get("days_building", 0))
+                
+                with col4:
+                    st.markdown(f"📋 {alert.get('recommendation', '')}")
+                
+                # Show footprint details
+                footprints = alert.get("footprints", [])
+                if footprints:
+                    with st.expander(f"View {len(footprints)} footprints"):
+                        for fp in footprints[:5]:
+                            fp_type = fp.get("type", "unknown").replace("_", " ").title()
+                            strength = fp.get("strength", 0)
+                            details = fp.get("details", {})
+                            
+                            st.markdown(f"**{fp_type}** (strength: {strength:.2f})")
+                            if details:
+                                st.json(details)
+                
+                st.divider()
+    
+    # PREPARE Level Alerts
+    prepare_alerts = [(s, a) for s, a in sorted_alerts if a.get("level") == "prepare"]
+    if prepare_alerts:
+        st.markdown("### 🟡 ACTIVE DISTRIBUTION (IPI 0.50-0.70)")
+        st.markdown("*Add to watchlist. Wait for confirmation or VWAP loss.*")
+        
+        # Create DataFrame
+        prepare_data = []
+        for symbol, alert in prepare_alerts:
+            prepare_data.append({
+                "Symbol": symbol,
+                "IPI": alert.get("ipi", 0),
+                "Footprints": alert.get("unique_footprints", 0),
+                "Days": alert.get("days_building", 0),
+                "Status": "🟡 PREPARE"
+            })
+        
+        if prepare_data:
+            df = pd.DataFrame(prepare_data)
+            st.dataframe(df, use_container_width=True, hide_index=True)
+    
+    # WATCH Level Alerts (collapsed by default)
+    watch_alerts = [(s, a) for s, a in sorted_alerts if a.get("level") == "watch"]
+    if watch_alerts:
+        with st.expander(f"👀 EARLY ACCUMULATION ({len(watch_alerts)} symbols)", expanded=False):
+            st.markdown("*Monitor for additional footprints.*")
+            
+            watch_data = []
+            for symbol, alert in watch_alerts:
+                watch_data.append({
+                    "Symbol": symbol,
+                    "IPI": alert.get("ipi", 0),
+                    "Footprints": alert.get("unique_footprints", 0),
+                    "Days": alert.get("days_building", 0),
+                })
+            
+            if watch_data:
+                df = pd.DataFrame(watch_data)
+                st.dataframe(df, use_container_width=True, hide_index=True)
+    
+    # Footprint Distribution Chart
+    st.markdown("### 📊 Footprint Type Distribution")
+    
+    # Count footprint types across all alerts
+    footprint_counts = {}
+    for symbol, alert in alerts.items():
+        for fp in alert.get("footprints", []):
+            fp_type = fp.get("type", "unknown")
+            footprint_counts[fp_type] = footprint_counts.get(fp_type, 0) + 1
+    
+    if footprint_counts:
+        labels = [t.replace("_", " ").title() for t in footprint_counts.keys()]
+        values = list(footprint_counts.values())
+        
+        fig = go.Figure(go.Bar(
+            x=labels,
+            y=values,
+            marker_color=['#dc3545' if v > 5 else '#ffc107' if v > 2 else '#28a745' for v in values]
+        ))
+        fig.update_layout(
+            height=300,
+            xaxis_title="Footprint Type",
+            yaxis_title="Count",
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            margin=dict(l=20, r=20, t=20, b=60)
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+
 def render_48hour_analysis():
     """
     Render 48-Hour Frequency Analysis across all 3 engines.
@@ -1851,10 +2079,11 @@ def main():
     secs_to_refresh = max(0, int(time_to_refresh % 60))
 
     if "Dashboard" in page or "Puts Scanner" in page:
-        tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
             "🔥 Gamma Drain Engine", 
             "📉 Distribution Engine", 
             "💧 Liquidity Engine", 
+            "🚨 Early Warning",
             "📊 48-Hour Analysis",
             "🎯 Big Movers Analysis",
             "📒 Ledger",
@@ -1890,18 +2119,21 @@ def main():
                 pass
 
         with tab4:
-            render_48hour_analysis()
+            render_early_warning_tab()
 
         with tab5:
-            render_big_movers_analysis()
+            render_48hour_analysis()
 
         with tab6:
-            render_ledger_view()
+            render_big_movers_analysis()
 
         with tab7:
-            render_backtest_view()
+            render_ledger_view()
 
         with tab8:
+            render_backtest_view()
+
+        with tab9:
             render_config_view()
 
     elif "Trade History" in page:
