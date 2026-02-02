@@ -230,11 +230,22 @@ class EngineConfig:
             "SQ", "PYPL", "AFRM", "UPST", "SOFI", "HOOD", "NU", "BILL", "FOUR",
             "LMND", "ROOT", "HIPO"
         ],
-        # Healthcare & Insurance (18)
-        "healthcare": [
+        # Healthcare & Insurance (26) - EXPANDED after missing ELV -14%, CVS -14%, HUM -21%
+        "healthcare_insurance": [
+            # Managed Care / Health Insurance (CRITICAL - missed big Jan 27 drops)
+            "UNH",    # UnitedHealth - MISSED -19.6% Jan 27
+            "HUM",    # Humana - MISSED -21.1% Jan 27
+            "ELV",    # Elevance (was Anthem/ANTM) - MISSED -14.3% Jan 27
+            "CVS",    # CVS Health - MISSED -14.2% Jan 27
+            "CI",     # Cigna
+            "CNC",    # Centene
+            "MOH",    # Molina Healthcare
+            # Telehealth & Digital Health
             "HIMS", "TDOC", "OSCR", "AMWL", "TEM",
-            "UNH", "HUM", "CI", "ELV", "CVS", "CNC", "MOH",
-            "PFE", "JNJ", "MRK", "LLY", "ABBV",
+            # Pharma (often moves with insurance on policy news)
+            "PFE", "JNJ", "MRK", "LLY", "ABBV", "BMY", "GILD",
+            # Hospital / Healthcare Services
+            "HCA", "THC", "UHS", "CYH",
         ],
         # Industrials / Clean Energy (14) - Added EOSE, SERV
         "industrials": [
