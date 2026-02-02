@@ -1,0 +1,50 @@
+{
+  "MSFT": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-01T20:15:01.396204",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 40,
+        "spread_pct": 0.021,
+        "signals": [
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-01T20:15:01.466824",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 29249241,
+        "avg_down_volume": 74698807,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    }
+  ],
+  "TSLA": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-01T20:15:02.691780",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 120,
+        "ask_size": 280,
+        "spread_pct": 0.016,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ]
+}

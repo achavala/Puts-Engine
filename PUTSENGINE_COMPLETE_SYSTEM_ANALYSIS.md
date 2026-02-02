@@ -960,6 +960,9 @@ Example:
 | ✅ Post-Trade Attribution | Complete | architect4-attribution-020126 |
 | ✅ Capital Ramp Protocol | Complete | architect4-attribution-020126 |
 | ✅ Early Warning System | Complete | architect4-early-warning-020126 |
+| ✅ Zero-Hour Gap Scanner | Complete | architect4-ews-complete-020126 |
+| ✅ EWS → Vega Gate Coupling | Complete | architect4-ews-complete-020126 |
+| ✅ Flash Alerts | Complete | architect4-ews-complete-020126 |
 | 🔄 First 10 Trades | In Progress | - |
 | ⏳ Scale to 50% | Pending | - |
 | ⏳ Full Deployment | Pending | - |
@@ -1130,5 +1133,189 @@ The new "🚨 Early Warning" tab displays:
 
 ---
 
+## 18. ZERO-HOUR GAP SCANNER (NEW - Feb 1, 2026)
+
+### 18.1 Purpose (Architect-4 Validated: Highest ROI)
+
+Institutions often:
+1. Accumulate footprints on **Day -1** (captured by EWS)
+2. Execute the damage via **pre-market gaps on Day 0**
+
+The Zero-Hour scanner confirms Day 0 execution.
+
+### 18.2 Schedule
+
+**9:15 AM ET** (15 minutes before market open)
+
+### 18.3 Filter
+
+Only checks symbols with **IPI ≥ 0.60** from last EWS scan.
+
+### 18.4 Verdicts
+
+| Verdict | Condition | Action |
+|---------|-----------|--------|
+| **VACUUM_OPEN** | IPI ≥ 0.60 AND gap down | "Vacuum is open" → ACT |
+| **SPREAD_COLLAPSE** | Spread > 1.0% | Urgent - MM confirming weakness |
+| **PRESSURE_ABSORBED** | IPI ≥ 0.60 AND gap up | Wait - pressure absorbed |
+| **NO_CONFIRMATION** | Neutral gap | Continue monitoring |
+
+### 18.5 Why This Is Confirmation, Not Signal
+
+The Zero-Hour scan **confirms** what EWS detected:
+- It does NOT generate new signals
+- It validates that Day -1 pressure is materializing on Day 0
+- VACUUM_OPEN symbols are auto-injected to DUI with short TTL
+
+---
+
+## 19. EWS → VEGA GATE COUPLING (NEW - Feb 1, 2026)
+
+### 19.1 The Problem
+
+Classic failure mode:
+> "Correct early warning → expensive puts → IV crush"
+
+### 19.2 The Solution
+
+```
+IF EWS level == ACT (IPI ≥ 0.70)
+AND IV Rank > 85:
+    → FORCE Bear Call Spread structure
+ELSE:
+    → Follow default Vega Gate logic
+```
+
+### 19.3 Why This Is Structure Optimization
+
+This prevents volatility overpayment while preserving the directional thesis:
+- Early warning is **strong** (EWS = ACT)
+- But IV is **expensive** (> 85)
+- Solution: Use a structure that is **short vega** (Bear Call Spread)
+- IV crush becomes profit, not loss
+
+### 19.4 Implementation
+
+The coupling is implemented in `putsengine/gates/vega_gate.py`:
+
+```python
+if ews_level == "act" and iv_rank > self.EWS_FORCE_SPREAD_IV:
+    decision = VegaDecision.BEAR_CALL_SPREAD
+    structure = "Bear Call Spread (EWS Override)"
+    reasoning = "EWS → VEGA GATE COUPLING ACTIVATED"
+```
+
+---
+
+## 20. FLASH ALERTS (NEW - Feb 1, 2026)
+
+### 20.1 Purpose
+
+This is about **ATTENTION**, not trading.
+
+### 20.2 Trigger Conditions
+
+```
+IF IPI increases by ≥ +0.30 within 60 minutes
+AND footprints come from ≥ 2 categories
+THEN:
+    → 🚨 "FLASH ALERT"
+    → Dashboard notification
+    → NO auto-trade
+```
+
+### 20.3 Why This Matters
+
+Rapid pressure accumulation suggests **institutional consensus is forming**.
+
+This mimics how institutional desks escalate urgency:
+- "Drop everything and look"
+- Human attention interrupt
+- NOT auto-trade
+
+### 20.4 Alert Levels
+
+| IPI Change | Footprints | Level | Action |
+|------------|------------|-------|--------|
+| ≥ +0.40 | Any | 🚨 CRITICAL | Immediate review |
+| ≥ +0.30 | ≥ 3 | 🚨 CRITICAL | Immediate review |
+| ≥ +0.30 | ≥ 2 | ⚡ FLASH | Review for entry timing |
+
+### 20.5 Implementation
+
+Flash alerts are checked after each EWS scan in the scheduler:
+
+```python
+flash_alerts = check_for_flash_alerts_in_ews_scan(results)
+```
+
+IPI history is stored in `ipi_history.json` and flash alerts in `flash_alerts.json`.
+
+---
+
+## 21. COMPLETE PREDICTIVE FLOW (Updated Feb 1, 2026)
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                    EARLY WARNING SYSTEM                          │
+│                 (Day -3 to Day -1 Detection)                     │
+├──────────────────────────────────────────────────────────────────┤
+│  8:00 AM ET  │  12:00 PM ET  │  4:30 PM ET                       │
+│  EWS Scan    │  EWS Scan     │  EWS Scan                         │
+│              │               │                                    │
+│  7 Institutional Footprints:                                     │
+│  1. Dark Pool Sequence    5. Flow Divergence                     │
+│  2. Put OI Accumulation   6. Multi-Day Distribution              │
+│  3. IV Term Inversion     7. Cross-Asset Divergence              │
+│  4. Quote Degradation                                            │
+│                                                                  │
+│  → Calculate IPI (Institutional Pressure Index)                  │
+│  → Check for FLASH ALERTS (IPI surge detection)                  │
+└────────────────────────┬─────────────────────────────────────────┘
+                         │
+                         │ IPI ≥ 0.60 symbols
+                         ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    ZERO-HOUR GAP SCANNER                         │
+│                    (Day 0 Confirmation)                          │
+├──────────────────────────────────────────────────────────────────┤
+│  9:15 AM ET - Pre-market check                                   │
+│                                                                  │
+│  IPI ≥ 0.60 + Gap Down → VACUUM_OPEN → ACT                       │
+│  IPI ≥ 0.60 + Gap Up   → ABSORBED    → WAIT                      │
+└────────────────────────┬─────────────────────────────────────────┘
+                         │
+                         │ Confirmed candidates
+                         ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    3-ENGINE PIPELINE                             │
+│              (Permission-Based Execution)                        │
+├──────────────────────────────────────────────────────────────────┤
+│  Distribution Engine → Gamma Drain Engine → Liquidity Engine     │
+│                                                                  │
+│  Multi-engine convergence = Higher conviction                    │
+└────────────────────────┬─────────────────────────────────────────┘
+                         │
+                         │ Scoring & Permission
+                         ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    VEGA GATE                                     │
+│              (Structure Selection)                               │
+├──────────────────────────────────────────────────────────────────┤
+│  EWS = ACT AND IV Rank > 85 → Bear Call Spread (EWS Override)    │
+│  IV Rank < 60              → Long Put                            │
+│  IV Rank 60-80             → Long Put (Reduced)                  │
+│  IV Rank > 80              → Bear Call Spread                    │
+└────────────────────────┬─────────────────────────────────────────┘
+                         │
+                         ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    STRIKE SELECTION & EXECUTION                  │
+│              (Price Tiers + Tradability Gates)                   │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 *Document updated: February 1, 2026*  
-*Version: architect4-early-warning-020126*
+*Version: architect4-ews-complete-020126*

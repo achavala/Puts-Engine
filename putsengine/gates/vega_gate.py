@@ -84,6 +84,12 @@ class VegaGate:
     2. Adjusting position sizing based on IV regime
     3. Switching structures when IV is elevated
     
+    ARCHITECT-4 UPDATE (Feb 1, 2026):
+    EWS → Vega Gate Coupling:
+    - If EWS level == ACT (IPI ≥ 0.70) AND IV Rank > 85:
+      → Force Bear Call Spread structure
+    - This prevents the classic failure: "Correct early warning → expensive puts → IV crush"
+    
     This is the difference between "right on direction, wrong on structure"
     and capturing alpha efficiently.
     """
@@ -92,6 +98,9 @@ class VegaGate:
     IV_RANK_OPTIMAL = 60          # Below this: Long Put optimal
     IV_RANK_ELEVATED = 80         # Above this: Consider spread
     IV_RANK_EXTREME = 95          # Above this: Maybe skip entirely
+    
+    # EWS coupling threshold (Architect-4 Feb 1, 2026)
+    EWS_FORCE_SPREAD_IV = 85      # If EWS=ACT and IV > 85, force spread
     
     # Size adjustments by IV regime
     SIZE_MULTIPLIERS = {
@@ -121,7 +130,9 @@ class VegaGate:
         self,
         symbol: str,
         candidate: Optional[PutCandidate] = None,
-        current_price: Optional[float] = None
+        current_price: Optional[float] = None,
+        ews_level: Optional[str] = None,
+        ews_ipi: Optional[float] = None
     ) -> VegaGateResult:
         """
         Perform Vega Gate analysis for a symbol.
@@ -130,9 +141,16 @@ class VegaGate:
             symbol: Stock ticker
             candidate: Optional PutCandidate with price data
             current_price: Current stock price (if candidate not provided)
+            ews_level: Optional EWS pressure level ("act", "prepare", "watch", "none")
+            ews_ipi: Optional EWS Institutional Pressure Index (0-1)
         
         Returns:
             VegaGateResult with decision and adjustments
+            
+        ARCHITECT-4 COUPLING (Feb 1, 2026):
+        If ews_level == "act" AND iv_rank > 85:
+            → Force Bear Call Spread structure
+        This prevents: "Correct early warning → expensive puts → IV crush"
         """
         logger.info(f"Vega Gate: Analyzing IV regime for {symbol}")
         
@@ -146,10 +164,36 @@ class VegaGate:
         current_iv = iv_data.get("current_iv", 0.30)
         historical_iv = iv_data.get("historical_iv", 0.30)
         
-        # Make decision
+        # Make decision (default logic)
         decision, size_mult, dte_adj, structure, reasoning = self._make_decision(
             iv_rank, iv_percentile, current_iv, historical_iv
         )
+        
+        # ================================================================
+        # EWS → VEGA GATE COUPLING (Architect-4 Feb 1, 2026)
+        # If EWS shows ACT level (IPI ≥ 0.70) AND IV Rank > 85,
+        # FORCE Bear Call Spread even if default logic says otherwise.
+        # 
+        # Why: Early warning is strong, but IV is expensive.
+        # Don't let IV crush destroy the correct directional thesis.
+        # ================================================================
+        ews_override_applied = False
+        if ews_level == "act" and iv_rank > self.EWS_FORCE_SPREAD_IV:
+            ews_override_applied = True
+            decision = VegaDecision.BEAR_CALL_SPREAD
+            size_mult = self.SIZE_MULTIPLIERS["extreme"]
+            dte_adj = self.DTE_ADDITIONS["extreme"]
+            structure = "Bear Call Spread (EWS Override)"
+            reasoning = (
+                f"⚡ EWS → VEGA GATE COUPLING ACTIVATED: "
+                f"EWS Level=ACT (IPI={ews_ipi:.2f}) AND IV Rank={iv_rank:.0f}% (>85). "
+                f"FORCE Bear Call Spread to avoid IV crush on otherwise correct early warning. "
+                f"This is structure optimization, not signal change."
+            )
+            logger.warning(
+                f"Vega Gate {symbol}: EWS OVERRIDE - ACT level + high IV → "
+                f"Forcing Bear Call Spread"
+            )
         
         result = VegaGateResult(
             symbol=symbol,
@@ -169,6 +213,7 @@ class VegaGate:
             f"Vega Gate {symbol}: IV Rank={iv_rank:.0f}%, "
             f"Decision={decision.value}, Size={size_mult:.0%}, "
             f"DTE+{dte_adj}, Structure={structure}"
+            f"{' [EWS Override]' if ews_override_applied else ''}"
         )
         
         return result
@@ -450,15 +495,28 @@ class VegaGate:
 async def apply_vega_gate(
     candidate: PutCandidate,
     alpaca_client=None,
-    polygon_client=None
+    polygon_client=None,
+    ews_level: Optional[str] = None,
+    ews_ipi: Optional[float] = None
 ) -> Tuple[PutCandidate, VegaGateResult]:
     """
     Apply Vega Gate to a PutCandidate and adjust accordingly.
     
     This is the main integration point for the scoring pipeline.
     
+    Args:
+        candidate: The PutCandidate to analyze
+        alpaca_client: AlpacaClient for options data
+        polygon_client: PolygonClient for historical IV
+        ews_level: Optional EWS level ("act", "prepare", "watch", "none")
+        ews_ipi: Optional EWS IPI score (0-1)
+    
     Returns:
         Updated candidate and VegaGateResult
+        
+    ARCHITECT-4 (Feb 1, 2026):
+    If EWS data is provided, the coupling rule applies:
+    - EWS=ACT AND IV Rank > 85 → Force Bear Call Spread
     """
     gate = VegaGate(
         alpaca_client=alpaca_client,
@@ -467,7 +525,9 @@ async def apply_vega_gate(
     
     result = await gate.analyze(
         symbol=candidate.symbol,
-        candidate=candidate
+        candidate=candidate,
+        ews_level=ews_level,
+        ews_ipi=ews_ipi
     )
     
     # Apply adjustments to candidate

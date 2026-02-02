@@ -97,6 +97,12 @@ from putsengine.early_warning_system import (
     PressureLevel
 )
 
+# ZERO-HOUR GAP SCANNER (Feb 1, 2026) - Day 0 execution confirmation
+from putsengine.zero_hour_scanner import run_zero_hour_scan, get_zero_hour_summary, ZeroHourVerdict
+
+# FLASH ALERTS (Feb 1, 2026) - Rapid IPI surge detection
+from putsengine.flash_alerts import check_for_flash_alerts_in_ews_scan, get_flash_alerts
+
 # Email Reporter for daily 3 PM scan
 from putsengine.email_reporter import run_daily_report_scan, send_email_report, save_report_to_file
 
@@ -594,6 +600,28 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
+        # ============================================================================
+        # ZERO-HOUR GAP SCANNER (Feb 1, 2026) - Day 0 Execution Confirmation
+        # ARCHITECT-4 VALIDATED: This is the HIGHEST ROI remaining addition.
+        # 
+        # Why: Institutions accumulate footprints on Day -1 (EWS), 
+        #      then execute via pre-market gaps on Day 0.
+        # 
+        # Schedule: 9:15 AM ET (15 minutes before market open)
+        # Only checks: IPI ≥ 0.60 names from last EWS scan
+        # 
+        # Interpretation:
+        # - IPI ≥ 0.60 AND gap down → "Vacuum is open" → ACT
+        # - IPI ≥ 0.60 AND gap up → "Pressure absorbed" → WAIT
+        # ============================================================================
+        self.scheduler.add_job(
+            self._run_zero_hour_scan_wrapper,
+            CronTrigger(hour=9, minute=15, timezone=EST),
+            id="zero_hour_915am",
+            name="⚡ Zero-Hour Gap Scanner (9:15 AM ET) - Day 0 Confirmation",
+            replace_existing=True
+        )
+        
         # =========================================================================
         # PATTERN SCAN - Every 30 minutes during market hours (9:30 AM - 4:00 PM ET)
         # =========================================================================
@@ -742,6 +770,19 @@ class PutsEngineScheduler:
             asyncio.ensure_future(self.run_early_warning_scan(), loop=loop)
         except RuntimeError:
             asyncio.run(self.run_early_warning_scan())
+    
+    def _run_zero_hour_scan_wrapper(self):
+        """
+        Wrapper to run zero-hour gap scanner.
+        
+        ARCHITECT-4 VALIDATED: Highest ROI remaining addition.
+        Runs at 9:15 AM ET to confirm Day 0 execution of Day -1 pressure.
+        """
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.ensure_future(self.run_zero_hour_scan(), loop=loop)
+        except RuntimeError:
+            asyncio.run(self.run_zero_hour_scan())
     
     async def run_scan(self, scan_type: str = "manual"):
         """
@@ -1869,12 +1910,108 @@ class PutsEngineScheduler:
             except Exception as e:
                 logger.warning(f"Could not save early warning alerts: {e}")
             
+            # ================================================================
+            # FLASH ALERTS (Architect-4 Feb 1, 2026)
+            # Check for rapid IPI surges (≥ +0.30 in 60 min)
+            # This is about ATTENTION, not trading
+            # ================================================================
+            try:
+                flash_alerts = check_for_flash_alerts_in_ews_scan(results)
+                if flash_alerts:
+                    logger.warning(f"⚡ {len(flash_alerts)} FLASH ALERTS detected!")
+                    for alert in flash_alerts[:3]:
+                        logger.warning(f"  {alert.symbol}: IPI {alert.ipi_change:+.2f} in {alert.minutes_elapsed} min")
+            except Exception as e:
+                logger.debug(f"Flash alert check failed: {e}")
+            
             logger.info("=" * 60)
             
             return results
             
         except Exception as e:
             logger.error(f"Early warning scan error: {e}")
+            import traceback
+            traceback.print_exc()
+            return {}
+    
+    # ==========================================================================
+    # ZERO-HOUR GAP SCANNER (Feb 1, 2026)
+    # ARCHITECT-4 VALIDATED: Highest ROI remaining addition
+    # Confirms Day 0 execution of Day -1 institutional pressure
+    # ==========================================================================
+    
+    async def run_zero_hour_scan(self):
+        """
+        Run Zero-Hour Gap scan to confirm Day 0 execution.
+        
+        ARCHITECT-4 VALIDATED: This is the HIGHEST ROI remaining addition.
+        
+        Why it matters:
+        - Institutions accumulate footprints on Day -1 (captured by EWS)
+        - They execute the damage via pre-market gaps on Day 0
+        
+        Schedule: 9:15 AM ET (15 minutes before market open)
+        Only checks: IPI ≥ 0.60 names from last EWS scan
+        
+        Interpretation:
+        - IPI ≥ 0.60 AND gap down → "Vacuum is open" → ACT
+        - IPI ≥ 0.60 AND gap up → "Pressure absorbed" → WAIT
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("⚡ ZERO-HOUR GAP SCANNER (Day 0 Execution Confirmation)")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Confirming institutional pressure → pre-market gap execution...")
+        logger.info("=" * 60)
+        
+        try:
+            await self._init_clients()
+            
+            # Run zero-hour scan
+            results = await run_zero_hour_scan(self._alpaca)
+            
+            # Log summary
+            summary = results.get("summary", {})
+            logger.info(f"Zero-Hour Scan Complete:")
+            logger.info(f"  Checked: {summary.get('checked', 0)} high-pressure names (IPI ≥ 0.60)")
+            logger.info(f"  🔴 VACUUM OPEN: {summary.get('vacuum_open', 0)}")
+            logger.info(f"  🔴 SPREAD COLLAPSE: {summary.get('spread_collapse', 0)}")
+            logger.info(f"  🟡 PRESSURE ABSORBED: {summary.get('pressure_absorbed', 0)}")
+            logger.info(f"  👀 MONITORING: {summary.get('monitoring', 0)}")
+            
+            # Log actionable alerts
+            alerts = results.get("alerts", {})
+            actionable = [
+                (sym, alert) for sym, alert in alerts.items() 
+                if alert.get("is_actionable", False)
+            ]
+            
+            for symbol, alert in actionable:
+                logger.warning(
+                    f"  ⚡ {symbol}: {alert['verdict'].upper()} | "
+                    f"IPI={alert['ipi']:.2f} | Gap={alert['gap_pct']:+.2f}% | "
+                    f"Spread={alert['spread_pct']:.2f}%"
+                )
+                
+                # Inject VACUUM_OPEN symbols to DUI with high priority
+                if alert.get("verdict") == "vacuum_open":
+                    from putsengine.config import DynamicUniverseManager
+                    dui = DynamicUniverseManager()
+                    dui.inject_symbol(
+                        symbol=symbol,
+                        source="zero_hour",
+                        reason=f"Vacuum open: IPI={alert['ipi']:.2f} + gap {alert['gap_pct']:+.2f}%",
+                        score=alert['ipi'],
+                        signals=["vacuum_open", "gap_confirmed"],
+                        ttl_days=1  # Short TTL - Day 0 execution
+                    )
+            
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Zero-hour scan error: {e}")
             import traceback
             traceback.print_exc()
             return {}
