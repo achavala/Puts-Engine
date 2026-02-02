@@ -963,7 +963,8 @@ Example:
 | ✅ Zero-Hour Gap Scanner | Complete | architect4-ews-complete-020126 |
 | ✅ EWS → Vega Gate Coupling | Complete | architect4-ews-complete-020126 |
 | ✅ Flash Alerts | Complete | architect4-ews-complete-020126 |
-| 🔄 First 10 Trades | In Progress | - |
+| ✅ EWS Attribution Logger | Complete | architect4-final-020126 |
+| 🔄 Observation Phase (20-30 events) | In Progress | - |
 | ⏳ Scale to 50% | Pending | - |
 | ⏳ Full Deployment | Pending | - |
 
@@ -1317,5 +1318,109 @@ IPI history is stored in `ipi_history.json` and flash alerts in `flash_alerts.js
 
 ---
 
-*Document updated: February 1, 2026*  
-*Version: architect4-ews-complete-020126*
+## 22. EWS ATTRIBUTION SYSTEM (MANDATORY - Feb 1, 2026)
+
+### 22.1 Architect-4 Mandate
+
+> "Do not add more detection logic. Your system is complete. Now MEASURE."
+
+For the next 20-30 Early Warning events, log:
+
+```json
+{
+  "symbol": "...",
+  "ews_level": "WATCH / PREPARE / ACT",
+  "zero_hour": "VACUUM_OPEN / NO_CONFIRMATION",
+  "lead_time_hours": 18,
+  "engine_confirmation": ["distribution", "gamma"],
+  "structure": "long_put / bear_call_spread",
+  "outcome": "win / loss",
+  "max_return": "3.4x"
+}
+```
+
+### 22.2 Key Questions to Answer
+
+1. **How often does ACT → VACUUM_OPEN convert?**
+2. **Optimal lead time window (12h vs 24h vs 48h)?**
+3. **Long Put vs Bear Call Spread performance by IV Rank?**
+
+This is where the **next layer of alpha** lives.
+
+### 22.3 Implementation
+
+**File:** `putsengine/ews_attribution.py`
+
+**Functions:**
+- `log_ews_detection()` - Called automatically when EWS finds ACT-level pressure
+- `update_zero_hour()` - Called after Zero-Hour scan
+- `update_structure()` - Called after Vega Gate
+- `update_trade_entry()` / `update_trade_exit()` - Manual trade logging
+- `get_attribution_report()` - Generate insights
+
+**Data stored in:** `ews_attribution.json`
+
+### 22.4 Attribution Report
+
+Run from command line:
+```bash
+cd /Users/chavala/PutsEngine
+python -m putsengine.ews_attribution
+```
+
+Output includes:
+- ACT → VACUUM_OPEN conversion rate
+- Win rate by structure
+- Average lead time
+- Structure performance comparison
+
+### 22.5 Scaling Gate
+
+**DO NOT scale capital until:**
+- 20-30 events logged
+- Win rate ≥ 50%
+- ACT → VACUUM_OPEN conversion ≥ 60%
+
+---
+
+## 23. WHAT NOT TO DO (CRITICAL)
+
+**DO NOT:**
+- Lower IPI thresholds
+- Add more footprints
+- Auto-trade from EWS or Flash Alerts
+- Introduce ML at this stage
+- Change frozen components
+
+**YOU ARE PAST BUILD PHASE.**
+**YOU ARE IN MEASURE & REFINE PHASE.**
+
+---
+
+## 24. FINAL INSTITUTIONAL VERDICT (Architect-4 Sign-Off)
+
+### ✔ System State
+
+- **Predictive**, not reactive
+- **Permission-based**, not momentum-based
+- **Volatility-aware**
+- **Audit-ready**
+- **Discipline enforced by code**
+
+### 🏛️ What Has Been Built
+
+> A **three-stage institutional downside system**:
+> 
+> **PRESSURE → PERMISSION → STRUCTURE**
+>
+> This is **how real money does it**.
+
+### 📌 Final Executive Summary
+
+> With the addition of the Zero-Hour Gap Scanner, Vega Gate coupling, Flash Alerts, and Attribution Logger, PutsEngine has completed its transition into a predictive, institutional-grade downside framework. The system now detects informed positioning days in advance, confirms execution at the open, enforces permission through multi-engine convergence, and dynamically selects volatility-appropriate option structures. Early Warning signals prioritize attention, not trades, preserving discipline while materially improving timing. The architecture is audit-ready, structurally sound, and suitable for controlled live deployment.
+
+---
+
+*Document finalized: February 1, 2026*  
+*Version: architect4-final-020126*  
+*Status: PREDICTIVE / AUDIT-READY / LIVE-DEPLOYMENT APPROVED*

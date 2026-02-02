@@ -103,6 +103,9 @@ from putsengine.zero_hour_scanner import run_zero_hour_scan, get_zero_hour_summa
 # FLASH ALERTS (Feb 1, 2026) - Rapid IPI surge detection
 from putsengine.flash_alerts import check_for_flash_alerts_in_ews_scan, get_flash_alerts
 
+# EWS ATTRIBUTION (Feb 1, 2026) - Observation & measurement phase
+from putsengine.ews_attribution import log_ews_detection
+
 # Email Reporter for daily 3 PM scan
 from putsengine.email_reporter import run_daily_report_scan, send_email_report, save_report_to_file
 
@@ -1843,7 +1846,7 @@ class PutsEngineScheduler:
             logger.info(f"  🟡 ACTIVE (PREPARE): {prepare_count}")
             logger.info(f"  👀 EARLY (WATCH): {watch_count}")
             
-            # Log critical alerts (ACT level)
+            # Log critical alerts (ACT level) and record for attribution
             for symbol, pressure in results.items():
                 if pressure.level == PressureLevel.ACT:
                     footprint_types = ", ".join(set(f.footprint_type.value for f in pressure.footprints[:5]))
@@ -1865,6 +1868,17 @@ class PutsEngineScheduler:
                         signals=list(set(f.footprint_type.value for f in pressure.footprints)),
                         ttl_days=2
                     )
+                    
+                    # Log to attribution system (Architect-4 mandate: measure before scaling)
+                    try:
+                        log_ews_detection(
+                            symbol=symbol,
+                            ews_level=pressure.level.value,
+                            ews_ipi=pressure.ipi,
+                            footprints=list(set(f.footprint_type.value for f in pressure.footprints[:10]))
+                        )
+                    except Exception as e:
+                        logger.debug(f"Attribution logging failed: {e}")
             
             # Also log PREPARE level
             for symbol, pressure in results.items():
