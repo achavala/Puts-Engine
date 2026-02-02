@@ -1,0 +1,84 @@
+{
+  "timestamp": "2026-02-02T08:34:00",
+  "summary": {
+    "act_count": 0,
+    "prepare_count": 0,
+    "watch_count": 4
+  },
+  "alerts": {
+    "MSFT": {
+      "ipi": 0.30,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "👀 EARLY ACCUMULATION (IPI=0.30): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {"type": "quote_degradation", "strength": 0.3, "details": {"signals": ["thin_bid"], "note": "Market makers reducing exposure"}},
+        {"type": "multi_day_distribution", "strength": 0.6, "details": {"signals": ["volume_distribution", "multiple_down_days"], "note": "Classic Wyckoff distribution"}}
+      ]
+    },
+    "GS": {
+      "ipi": 0.302,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "👀 EARLY ACCUMULATION (IPI=0.30): Institutional activity detected. Monitor for additional footprints.",
+      "footprints": [
+        {"type": "quote_degradation", "strength": 0.3, "details": {"signals": ["bid_imbalance"]}},
+        {"type": "multi_day_distribution", "strength": 0.4, "details": {"signals": ["lower_highs"]}}
+      ]
+    },
+    "V": {
+      "ipi": 0.352,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "👀 EARLY ACCUMULATION (IPI=0.35): Institutional activity detected. Monitor for additional footprints.",
+      "footprints": [
+        {"type": "quote_degradation", "strength": 0.3, "details": {"signals": ["spread_widening"]}},
+        {"type": "multi_day_distribution", "strength": 0.6, "details": {"signals": ["volume_distribution"]}}
+      ]
+    },
+    "MA": {
+      "ipi": 0.302,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "👀 EARLY ACCUMULATION (IPI=0.30): Institutional activity detected. Monitor for additional footprints.",
+      "footprints": [
+        {"type": "quote_degradation", "strength": 0.3, "details": {"signals": ["thin_bid"]}},
+        {"type": "multi_day_distribution", "strength": 0.4, "details": {"signals": ["lower_highs"]}}
+      ]
+    },
+    "TSLA": {
+      "ipi": 0.121,
+      "level": "none",
+      "unique_footprints": 1,
+      "days_building": 1,
+      "recommendation": "No significant institutional pressure detected.",
+      "footprints": [
+        {"type": "quote_degradation", "strength": 0.3, "details": {"signals": ["bid_imbalance"]}}
+      ]
+    },
+    "AMZN": {
+      "ipi": 0.200,
+      "level": "none",
+      "unique_footprints": 1,
+      "days_building": 1,
+      "recommendation": "No significant institutional pressure detected.",
+      "footprints": [
+        {"type": "quote_degradation", "strength": 0.5, "details": {"signals": ["bid_imbalance", "spread_widening"]}}
+      ]
+    },
+    "QCOM": {
+      "ipi": 0.200,
+      "level": "none",
+      "unique_footprints": 1,
+      "days_building": 1,
+      "recommendation": "No significant institutional pressure detected.",
+      "footprints": [
+        {"type": "quote_degradation", "strength": 0.5, "details": {"signals": ["bid_imbalance"]}}
+      ]
+    }
+  }
+}

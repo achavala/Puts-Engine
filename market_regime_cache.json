@@ -1,20 +1,19 @@
 {
-  "cache_time": "2026-02-01T23:07:52.260389",
+  "cache_time": "2026-02-02T09:48:14.402670",
   "regime_data": {
-    "timestamp": "2026-02-01T23:07:52.260227",
-    "regime": "bullish_neutral",
+    "timestamp": "2026-02-02T09:48:14.402464",
+    "regime": "bearish_neutral",
     "spy_below_vwap": false,
-    "qqq_below_vwap": false,
+    "qqq_below_vwap": true,
     "index_gex": 0.0,
-    "vix_level": 26.71,
-    "vix_change": 0.016749143509706937,
+    "vix_level": 25.995,
+    "vix_change": -0.02676900037439161,
     "is_tradeable": false,
     "block_reasons": [
-      "index_pinned",
       "passive_inflow_window"
     ],
     "is_passive_inflow_window": true,
-    "passive_inflow_reason": "month_start (Day 1)",
+    "passive_inflow_reason": "month_start (Day 2)",
     "below_zero_gamma": false
   }
 }

@@ -29,6 +29,38 @@
         "avg_down_volume": 74698807,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-02T08:33:55.704289",
+      "strength": 0.8,
+      "details": {
+        "bid_size": 80,
+        "ask_size": 480,
+        "spread_pct": 0.101,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-02T08:33:55.773988",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 29249241,
+        "avg_down_volume": 74698807,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "TSLA": [
@@ -44,6 +76,269 @@
           "bid_imbalance"
         ],
         "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-02T08:33:56.925679",
+      "strength": 0.6,
+      "details": {
+        "bid_size": 80,
+        "ask_size": 360,
+        "spread_pct": 0.021,
+        "signals": [
+          "bid_imbalance",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "META": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-02T08:33:57.521720",
+      "strength": 0.8,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 600,
+        "spread_pct": 0.267,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "AMZN": [
+    {
+      "footprint_type": "dark_pool_sequence",
+      "timestamp": "2026-02-02T08:33:58.704639",
+      "strength": 1.0,
+      "details": {
+        "print_count": 14,
+        "total_size": 1354293,
+        "price_range": "$239.30 - $239.65"
+      }
+    }
+  ],
+  "ORCL": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-02T08:34:01.123094",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 40,
+        "spread_pct": 0.006,
+        "signals": [
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-02T08:34:01.193915",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 21070453,
+        "avg_down_volume": 31898711,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    }
+  ],
+  "QCOM": [
+    {
+      "footprint_type": "dark_pool_sequence",
+      "timestamp": "2026-02-02T08:34:02.260479",
+      "strength": 1.0,
+      "details": {
+        "print_count": 50,
+        "total_size": 1605564,
+        "price_range": "$151.59 - $151.59"
+      }
+    }
+  ],
+  "MU": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-02T08:34:02.964038",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 1900,
+        "spread_pct": 0.041,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "CAT": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-02T08:34:04.135791",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 80,
+        "spread_pct": 0.734,
+        "signals": [
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "GS": [
+    {
+      "footprint_type": "dark_pool_sequence",
+      "timestamp": "2026-02-02T08:34:04.661958",
+      "strength": 1.0,
+      "details": {
+        "print_count": 18,
+        "total_size": 87415,
+        "price_range": "$935.25 - $935.41"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-02T08:34:04.732922",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 80,
+        "ask_size": 120,
+        "spread_pct": 0.952,
+        "signals": [
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "JPM": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-02T08:34:05.336065",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 40,
+        "spread_pct": 0.249,
+        "signals": [
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "V": [
+    {
+      "footprint_type": "dark_pool_sequence",
+      "timestamp": "2026-02-02T08:34:05.864789",
+      "strength": 1.0,
+      "details": {
+        "print_count": 50,
+        "total_size": 305776,
+        "price_range": "$321.83 - $322.21"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-02T08:34:05.939044",
+      "strength": 0.8,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 600,
+        "spread_pct": 0.121,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "MA": [
+    {
+      "footprint_type": "dark_pool_sequence",
+      "timestamp": "2026-02-02T08:34:06.469433",
+      "strength": 1.0,
+      "details": {
+        "print_count": 50,
+        "total_size": 279676,
+        "price_range": "$538.79 - $538.79"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-02T08:34:06.622010",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 40,
+        "spread_pct": 0.935,
+        "signals": [
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "PLTR": [
+    {
+      "footprint_type": "dark_pool_sequence",
+      "timestamp": "2026-02-02T08:59:53.552877",
+      "strength": 1.0,
+      "details": {
+        "print_count": 13,
+        "total_size": 1214512,
+        "price_range": "$146.59 - $147.21"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-02T08:59:54.006231",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 600,
+        "spread_pct": 0.033,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-02T08:59:54.074288",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 40155565,
+        "note": "Classic Wyckoff distribution pattern"
       }
     }
   ]
