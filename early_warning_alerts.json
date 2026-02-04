@@ -1,83 +1,5746 @@
 {
-  "timestamp": "2026-02-02T08:34:00",
+  "timestamp": "2026-02-04T10:35:48.973770-05:00",
   "summary": {
-    "act_count": 0,
-    "prepare_count": 0,
-    "watch_count": 4
+    "act_count": 12,
+    "prepare_count": 25,
+    "watch_count": 53
   },
   "alerts": {
+    "INFY": {
+      "ipi": 0.9247723360072776,
+      "level": "act",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.92): 3 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 13,
+            "total_size": 116361,
+            "price_range": "$16.68 - $17.01"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 9780895,
+            "avg_down_volume": 20591394,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.94759,
+          "details": {
+            "print_count": 4,
+            "total_size": 273795,
+            "price_range": "$17.21 - $17.32"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 13,
+            "total_size": 119411,
+            "price_range": "$16.70 - $17.03"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 400,
+            "ask_size": 1900,
+            "spread_pct": 0.059,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 9365446,
+            "avg_down_volume": 20591394,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "FISV": {
+      "ipi": 0.9200092091388442,
+      "level": "act",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.92): 2 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 21,
+            "total_size": 118215,
+            "price_range": "$58.57 - $59.71"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 4159676,
+            "avg_down_volume": 10695593,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 18,
+            "total_size": 82632,
+            "price_range": "$58.28 - $59.43"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 18,
+            "total_size": 100367,
+            "price_range": "$58.86 - $60.06"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 3999496,
+            "avg_down_volume": 10695593,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "OPEN": {
+      "ipi": 0.8206412517986731,
+      "level": "act",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.82): 2 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 6,
+            "total_size": 413438,
+            "price_range": "$4.80 - $4.85"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 6,
+            "total_size": 329099,
+            "price_range": "$4.80 - $4.88"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 3800,
+            "ask_size": 15200,
+            "spread_pct": 0.205,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 9,
+            "total_size": 471577,
+            "price_range": "$4.83 - $4.91"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 3500,
+            "ask_size": 10200,
+            "spread_pct": 0.204,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        }
+      ]
+    },
+    "PYPL": {
+      "ipi": 0.8070325781217086,
+      "level": "act",
+      "unique_footprints": 4,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.81): 4 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 10,
+            "total_size": 128457,
+            "price_range": "$41.38 - $41.62"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 18606465,
+            "avg_down_volume": 52373152,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "cross_asset_divergence",
+          "strength": 0.1747203240925544,
+          "details": {
+            "symbol_change_pct": -0.54,
+            "avg_peer_change_pct": -2.29,
+            "divergence_pct": 1.75,
+            "peers_checked": 4,
+            "note": "Symbol diverging from sector peers"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 17,
+            "total_size": 1409165,
+            "price_range": "$41.64 - $42.31"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 300,
+            "spread_pct": 0.167,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 18607755,
+            "avg_down_volume": 51951492,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "PLUG": {
+      "ipi": 0.7999517438524908,
+      "level": "act",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.80): 2 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 8,
+            "total_size": 480000,
+            "price_range": "$2.08 - $2.12"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 101208162,
+            "avg_down_volume": 84182459,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.9440000000000001,
+          "details": {
+            "print_count": 4,
+            "total_size": 272000,
+            "price_range": "$2.09 - $2.10"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 7,
+            "total_size": 420000,
+            "price_range": "$2.09 - $2.11"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 101208162,
+            "avg_down_volume": 82795674,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "AMC": {
+      "ipi": 0.7696651352547567,
+      "level": "act",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.77): 3 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 5,
+            "total_size": 429648,
+            "price_range": "$1.47 - $1.48"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 40246308,
+            "avg_down_volume": 51842801,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 12000,
+            "ask_size": 42400,
+            "spread_pct": 0.719,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 5,
+            "total_size": 429648,
+            "price_range": "$1.47 - $1.48"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 28900,
+            "ask_size": 71600,
+            "spread_pct": 0.676,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 39273757,
+            "avg_down_volume": 51842801,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "OWL": {
+      "ipi": 0.7597621622785132,
+      "level": "act",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.76): 3 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 17,
+            "total_size": 1294960,
+            "price_range": "$12.04 - $12.29"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 12224550,
+            "avg_down_volume": 35377910,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 200,
+            "ask_size": 6400,
+            "spread_pct": 0.084,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 10,
+            "total_size": 449543,
+            "price_range": "$11.81 - $12.05"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 29710788,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "CPRT": {
+      "ipi": 0.7555468612228989,
+      "level": "act",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.76): 3 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.73169,
+          "details": {
+            "print_count": 6,
+            "total_size": 65845,
+            "price_range": "$39.32 - $39.73"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 3718805,
+            "avg_down_volume": 8331359,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 8,
+            "total_size": 105768,
+            "price_range": "$39.32 - $39.91"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 700,
+            "spread_pct": 0.025,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 3498066,
+            "avg_down_volume": 8331359,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "IBM": {
+      "ipi": 0.7177890069658373,
+      "level": "act",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.72): 3 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 120,
+            "spread_pct": 0.164,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 4581001,
+            "avg_down_volume": 7486321,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 9,
+            "total_size": 250103,
+            "price_range": "$294.17 - $294.75"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 40,
+            "spread_pct": 0.63,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 4581001,
+            "avg_down_volume": 8374697,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 4581001,
+            "avg_down_volume": 7383888,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "BBAI": {
+      "ipi": 0.7100523122809829,
+      "level": "act",
+      "unique_footprints": 4,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.71): 4 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 63975454,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 200,
+            "ask_size": 500,
+            "spread_pct": 0.206,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 79413786,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "cross_asset_divergence",
+          "strength": 0.7947789703474617,
+          "details": {
+            "symbol_change_pct": 3.56,
+            "avg_peer_change_pct": -4.39,
+            "divergence_pct": 7.95,
+            "peers_checked": 1,
+            "note": "Symbol diverging from sector peers"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 7,
+            "total_size": 327289,
+            "price_range": "$4.63 - $4.72"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 63702107,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "ARES": {
+      "ipi": 0.7024526651421362,
+      "level": "act",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.70): 2 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 11,
+            "total_size": 134980,
+            "price_range": "$130.17 - $132.54"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 2281605,
+            "avg_down_volume": 5191399,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 9,
+            "total_size": 118126,
+            "price_range": "$128.98 - $131.54"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 3197135,
+            "avg_down_volume": 4121566,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "NCLH": {
+      "ipi": 0.7013604563907694,
+      "level": "act",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udd34 IMMINENT BREAKDOWN (IPI=0.70): 2 footprint types converging. Consider put entry on any bounce. 7-14 DTE, -0.30 to -0.40 delta.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 11,
+            "total_size": 90406,
+            "price_range": "$22.04 - $22.25"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 400,
+            "ask_size": 1600,
+            "spread_pct": 0.045,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.9845320000000001,
+          "details": {
+            "print_count": 8,
+            "total_size": 92266,
+            "price_range": "$21.61 - $21.98"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 10,
+            "total_size": 77210,
+            "price_range": "$22.04 - $22.23"
+          }
+        }
+      ]
+    },
+    "TWLO": {
+      "ipi": 0.6978148711725508,
+      "level": "prepare",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.70): 3 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 9,
+            "total_size": 55811,
+            "price_range": "$107.38 - $109.44"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 899883,
+            "avg_down_volume": 3416335,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 1922173,
+            "avg_down_volume": 3416373,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 300,
+            "spread_pct": 0.19,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 2837471,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "BB": {
+      "ipi": 0.6397406510083814,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.64): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 16000,
+            "ask_size": 59100,
+            "spread_pct": 0.292,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 4152741,
+            "avg_down_volume": 7635019,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 13900,
+            "ask_size": 34800,
+            "spread_pct": 0.295,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 5271208,
+            "avg_down_volume": 6943629,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 10300,
+            "ask_size": 62700,
+            "spread_pct": 0.29,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 3909738,
+            "avg_down_volume": 7635019,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "HUBS": {
+      "ipi": 0.6312122236198131,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.63): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.466,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 758658,
+            "avg_down_volume": 2561536,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 120,
+            "spread_pct": 0.589,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 2236853,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 120,
+            "spread_pct": 0.254,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 2185249,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "CSGP": {
+      "ipi": 0.6189228120281898,
+      "level": "prepare",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.62): 3 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 1656583,
+            "avg_down_volume": 7018166,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.889778,
+          "details": {
+            "print_count": 6,
+            "total_size": 144889,
+            "price_range": "$51.70 - $51.73"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 10,
+            "total_size": 59739,
+            "price_range": "$51.52 - $52.51"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 200,
+            "ask_size": 600,
+            "spread_pct": 0.267,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        }
+      ]
+    },
+    "CRWV": {
+      "ipi": 0.6161054191267761,
+      "level": "prepare",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.62): 3 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 9,
+            "total_size": 54735,
+            "price_range": "$87.34 - $89.04"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 7020998,
+            "avg_down_volume": 25197471,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 500,
+            "spread_pct": 0.211,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 5863685,
+            "avg_down_volume": 25197471,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "BILL": {
+      "ipi": 0.6112347911916872,
+      "level": "prepare",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.61): 3 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.607268,
+          "details": {
+            "print_count": 5,
+            "total_size": 53634,
+            "price_range": "$36.63 - $37.22"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 200,
+            "ask_size": 500,
+            "spread_pct": 0.298,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 870467,
+            "avg_down_volume": 3862460,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 300,
+            "ask_size": 700,
+            "spread_pct": 0.196,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 670368,
+            "avg_down_volume": 3862460,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "SOUN": {
+      "ipi": 0.5965892236905992,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.60): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 7,
+            "total_size": 197849,
+            "price_range": "$7.78 - $7.90"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 23807097,
+            "avg_down_volume": 22338370,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 8,
+            "total_size": 225986,
+            "price_range": "$7.87 - $8.02"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 23807097,
+            "avg_down_volume": 22006458,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "CCL": {
+      "ipi": 0.5952138811387196,
+      "level": "prepare",
+      "unique_footprints": 1,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.60): 1 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 8,
+            "total_size": 113038,
+            "price_range": "$32.03 - $32.16"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 9,
+            "total_size": 115091,
+            "price_range": "$31.25 - $31.70"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 15,
+            "total_size": 202088,
+            "price_range": "$31.70 - $32.18"
+          }
+        }
+      ]
+    },
+    "JBLU": {
+      "ipi": 0.5882780694417645,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.59): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.8736600000000001,
+          "details": {
+            "print_count": 4,
+            "total_size": 236830,
+            "price_range": "$5.71 - $5.80"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 5600,
+            "ask_size": 43500,
+            "spread_pct": 0.17,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 1300,
+            "ask_size": 5900,
+            "spread_pct": 0.172,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.6929099999999999,
+          "details": {
+            "print_count": 3,
+            "total_size": 196455,
+            "price_range": "$5.71 - $5.80"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 3400,
+            "ask_size": 7600,
+            "spread_pct": 0.173,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        }
+      ]
+    },
+    "U": {
+      "ipi": 0.5857389814349483,
+      "level": "prepare",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.59): 3 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.8707039999999999,
+          "details": {
+            "print_count": 7,
+            "total_size": 85352,
+            "price_range": "$24.05 - $24.54"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 11653093,
+            "avg_down_volume": 40186710,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 300,
+            "spread_pct": 0.166,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 10195123,
+            "avg_down_volume": 40186710,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "JD": {
+      "ipi": 0.5825924413214997,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.58): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 8,
+            "total_size": 120536,
+            "price_range": "$27.36 - $27.64"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 7621045,
+            "avg_down_volume": 9195794,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.696072,
+          "details": {
+            "print_count": 5,
+            "total_size": 98036,
+            "price_range": "$27.36 - $27.50"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 7621045,
+            "avg_down_volume": 9009036,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "DKNG": {
+      "ipi": 0.5781026989706513,
+      "level": "prepare",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.58): 3 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 300,
+            "spread_pct": 0.072,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 15837876,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.507302,
+          "details": {
+            "print_count": 4,
+            "total_size": 53651,
+            "price_range": "$27.57 - $27.88"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 300,
+            "spread_pct": 0.145,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.611096,
+          "details": {
+            "print_count": 5,
+            "total_size": 55548,
+            "price_range": "$27.44 - $27.86"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 15738749,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "ON": {
+      "ipi": 0.5577185022793101,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.56): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 19,
+            "total_size": 317285,
+            "price_range": "$60.20 - $61.00"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 5025652,
+            "avg_down_volume": 11342751,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.8222099999999999,
+          "details": {
+            "print_count": 3,
+            "total_size": 261105,
+            "price_range": "$60.20 - $60.48"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 4895131,
+            "avg_down_volume": 11342751,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "GSK": {
+      "ipi": 0.5438742924739429,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.54): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 18,
+            "total_size": 167334,
+            "price_range": "$56.20 - $57.13"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 1,
+            "up_days": 4,
+            "avg_up_volume": 4683823,
+            "avg_down_volume": 5904456,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 18,
+            "total_size": 167334,
+            "price_range": "$56.20 - $57.13"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 1,
+            "up_days": 4,
+            "avg_up_volume": 4553447,
+            "avg_down_volume": 5904456,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "NU": {
+      "ipi": 0.5377358988153881,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.54): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 13,
+            "total_size": 203823,
+            "price_range": "$17.10 - $17.32"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 1000,
+            "ask_size": 3600,
+            "spread_pct": 0.058,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 9,
+            "total_size": 146839,
+            "price_range": "$17.15 - $17.49"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 300,
+            "ask_size": 6800,
+            "spread_pct": 0.057,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        }
+      ]
+    },
+    "BAC": {
+      "ipi": 0.5316786965676582,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.53): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 11,
+            "total_size": 81689,
+            "price_range": "$55.47 - $55.67"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 1800,
+            "ask_size": 4900,
+            "spread_pct": 0.018,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 18,
+            "total_size": 62616,
+            "price_range": "$55.05 - $55.50"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 1500,
+            "spread_pct": 0.018,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        }
+      ]
+    },
+    "AI": {
+      "ipi": 0.5312964441446566,
+      "level": "prepare",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.53): 3 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 3906816,
+            "avg_down_volume": 11731693,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "cross_asset_divergence",
+          "strength": 1.0,
+          "details": {
+            "symbol_change_pct": 1.72,
+            "avg_peer_change_pct": -9.31,
+            "divergence_pct": 11.03,
+            "peers_checked": 5,
+            "note": "Symbol diverging from sector peers"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 300,
+            "ask_size": 700,
+            "spread_pct": 0.093,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 3742987,
+            "avg_down_volume": 11731693,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "cross_asset_divergence",
+          "strength": 0.9922871286628501,
+          "details": {
+            "symbol_change_pct": 1.16,
+            "avg_peer_change_pct": -8.76,
+            "divergence_pct": 9.92,
+            "peers_checked": 5,
+            "note": "Symbol diverging from sector peers"
+          }
+        }
+      ]
+    },
+    "MDB": {
+      "ipi": 0.5243304028996013,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.52): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 200,
+            "spread_pct": 0.693,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 1086439,
+            "avg_down_volume": 1734080,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 240,
+            "spread_pct": 0.392,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 1086439,
+            "avg_down_volume": 1706866,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
     "MSFT": {
-      "ipi": 0.30,
-      "level": "watch",
+      "ipi": 0.5241527499263818,
+      "level": "prepare",
       "unique_footprints": 2,
-      "days_building": 1,
-      "recommendation": "👀 EARLY ACCUMULATION (IPI=0.30): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "days_building": 3,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.52): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
       "footprints": [
-        {"type": "quote_degradation", "strength": 0.3, "details": {"signals": ["thin_bid"], "note": "Market makers reducing exposure"}},
-        {"type": "multi_day_distribution", "strength": 0.6, "details": {"signals": ["volume_distribution", "multiple_down_days"], "note": "Classic Wyckoff distribution"}}
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 80,
+            "spread_pct": 0.036,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 12399170,
+            "avg_down_volume": 72666531,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.021,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 29249241,
+            "avg_down_volume": 74698807,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 480,
+            "spread_pct": 0.101,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 29249241,
+            "avg_down_volume": 74698807,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.6,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 120,
+            "spread_pct": 0.027,
+            "signals": [
+              "bid_imbalance",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.022,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 8369121,
+            "avg_down_volume": 72666531,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
       ]
     },
-    "GS": {
-      "ipi": 0.302,
-      "level": "watch",
+    "DDOG": {
+      "ipi": 0.5212553019521717,
+      "level": "prepare",
       "unique_footprints": 2,
       "days_building": 1,
-      "recommendation": "👀 EARLY ACCUMULATION (IPI=0.30): Institutional activity detected. Monitor for additional footprints.",
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.52): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
       "footprints": [
-        {"type": "quote_degradation", "strength": 0.3, "details": {"signals": ["bid_imbalance"]}},
-        {"type": "multi_day_distribution", "strength": 0.4, "details": {"signals": ["lower_highs"]}}
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 20,
+            "total_size": 71377,
+            "price_range": "$116.36 - $118.18"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 21,
+            "total_size": 98830,
+            "price_range": "$115.75 - $118.07"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 300,
+            "spread_pct": 0.221,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        }
       ]
     },
-    "V": {
-      "ipi": 0.352,
+    "IONQ": {
+      "ipi": 0.5193730318178601,
+      "level": "prepare",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.52): 3 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 300,
+            "spread_pct": 0.056,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 18836478,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 12,
+            "total_size": 61546,
+            "price_range": "$36.05 - $36.76"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 300,
+            "spread_pct": 0.082,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 18732588,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "SNY": {
+      "ipi": 0.516755598772626,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.52): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 6,
+            "total_size": 360723,
+            "price_range": "$47.81 - $48.35"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 6,
+            "total_size": 363723,
+            "price_range": "$47.81 - $48.19"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 3699203,
+            "avg_down_volume": 4499192,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "CTSH": {
+      "ipi": 0.5065509557200826,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.51): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.902374,
+          "details": {
+            "print_count": 8,
+            "total_size": 51187,
+            "price_range": "$74.92 - $75.85"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 3787052,
+            "avg_down_volume": 8128560,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.926868,
+          "details": {
+            "print_count": 8,
+            "total_size": 63434,
+            "price_range": "$74.92 - $76.40"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 3681787,
+            "avg_down_volume": 8128560,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "VALE": {
+      "ipi": 0.5056833591384311,
+      "level": "prepare",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.51): 3 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 5000,
+            "ask_size": 14400,
+            "spread_pct": 0.06,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 32528433,
+            "avg_down_volume": 54461800,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 3700,
+            "ask_size": 10400,
+            "spread_pct": 0.059,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.726236,
+          "details": {
+            "print_count": 6,
+            "total_size": 63118,
+            "price_range": "$16.85 - $16.93"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 3300,
+            "ask_size": 15500,
+            "spread_pct": 0.059,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 32528433,
+            "avg_down_volume": 53327748,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "VRTX": {
+      "ipi": 0.5020354813586709,
+      "level": "prepare",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udfe1 ACTIVE DISTRIBUTION (IPI=0.50): 2 footprint types detected. Add to watchlist for put entry. Wait for confirmation or VWAP loss.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 80,
+            "spread_pct": 0.115,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 460610,
+            "avg_down_volume": 1246523,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 200,
+            "spread_pct": 0.184,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 200,
+            "spread_pct": 0.261,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 453093,
+            "avg_down_volume": 1246523,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "NKE": {
+      "ipi": 0.48977171317561036,
       "level": "watch",
       "unique_footprints": 2,
       "days_building": 1,
-      "recommendation": "👀 EARLY ACCUMULATION (IPI=0.35): Institutional activity detected. Monitor for additional footprints.",
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.49): Institutional activity detected but not confirmed. Monitor for additional footprints.",
       "footprints": [
-        {"type": "quote_degradation", "strength": 0.3, "details": {"signals": ["spread_widening"]}},
-        {"type": "multi_day_distribution", "strength": 0.6, "details": {"signals": ["volume_distribution"]}}
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 12,
+            "total_size": 95033,
+            "price_range": "$62.91 - $63.39"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 9151636,
+            "avg_down_volume": 15823329,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 12,
+            "total_size": 50936,
+            "price_range": "$62.62 - $62.87"
+          }
+        }
+      ]
+    },
+    "CMCSA": {
+      "ipi": 0.47099715653842844,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.47): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 9,
+            "total_size": 62734,
+            "price_range": "$30.18 - $30.59"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 600,
+            "ask_size": 2800,
+            "spread_pct": 0.033,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.9182680000000001,
+          "details": {
+            "print_count": 8,
+            "total_size": 59134,
+            "price_range": "$30.18 - $30.57"
+          }
+        }
+      ]
+    },
+    "CNC": {
+      "ipi": 0.46132198499757143,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.46): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.7798879999999999,
+          "details": {
+            "print_count": 6,
+            "total_size": 89944,
+            "price_range": "$42.10 - $42.50"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 4879733,
+            "avg_down_volume": 5861498,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.8441719999999999,
+          "details": {
+            "print_count": 7,
+            "total_size": 72086,
+            "price_range": "$42.10 - $42.58"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 4804593,
+            "avg_down_volume": 5861498,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "XLF": {
+      "ipi": 0.4612823472443626,
+      "level": "watch",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.46): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 200,
+            "ask_size": 17900,
+            "spread_pct": 0.019,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 1,
+            "up_days": 4,
+            "avg_up_volume": 38691585,
+            "avg_down_volume": 66867774,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 19,
+            "total_size": 77948,
+            "price_range": "$53.41 - $53.91"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 4700,
+            "ask_size": 14600,
+            "spread_pct": 0.019,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 1,
+            "up_days": 4,
+            "avg_up_volume": 38291619,
+            "avg_down_volume": 66867774,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "NVO": {
+      "ipi": 0.456312738289305,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.46): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 13,
+            "total_size": 68472,
+            "price_range": "$47.57 - $48.45"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.8,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 16196024,
+            "avg_down_volume": 43145383,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 14373533,
+            "avg_down_volume": 34234469,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "LEU": {
+      "ipi": 0.45205952735905813,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.45): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.388,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 1015241,
+            "avg_down_volume": 1301909,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 40,
+            "spread_pct": 0.371,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 120,
+            "spread_pct": 0.532,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 1015241,
+            "avg_down_volume": 1282882,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "COMP": {
+      "ipi": 0.4505097319332494,
+      "level": "watch",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.45): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 14780560,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 200,
+            "ask_size": 1100,
+            "spread_pct": 0.335,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.5760000000000001,
+          "details": {
+            "print_count": 4,
+            "total_size": 88000,
+            "price_range": "$11.67 - $11.72"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 800,
+            "ask_size": 2400,
+            "spread_pct": 0.085,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 14586274,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "ZS": {
+      "ipi": 0.42778904478729524,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.43): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 80,
+            "spread_pct": 0.183,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 1418150,
+            "avg_down_volume": 2117029,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.168,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 1418150,
+            "avg_down_volume": 2090018,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "CVNA": {
+      "ipi": 0.4276938551420975,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.43): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 160,
+            "spread_pct": 0.505,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 2521110,
+            "avg_down_volume": 3862225,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 80,
+            "spread_pct": 0.352,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 2521110,
+            "avg_down_volume": 3808495,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "FDS": {
+      "ipi": 0.42738997934450934,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.43): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 80,
+            "spread_pct": 0.152,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 644427,
+            "avg_down_volume": 1504244,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 40,
+            "spread_pct": 0.274,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 607558,
+            "avg_down_volume": 1504244,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "APP": {
+      "ipi": 0.42713894806187086,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.43): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 80,
+            "spread_pct": 0.19,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 5289140,
+            "avg_down_volume": 7795895,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 80,
+            "spread_pct": 0.202,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 5289140,
+            "avg_down_volume": 7487174,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "NOW": {
+      "ipi": 0.42068371761561857,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.42): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 200,
+            "spread_pct": 0.144,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 10030470,
+            "avg_down_volume": 34203370,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.1,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 40,
+            "spread_pct": 0.092,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 8384354,
+            "avg_down_volume": 34203370,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "SPGI": {
+      "ipi": 0.4145945939648572,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.41): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 80,
+            "spread_pct": 0.066,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 1521866,
+            "avg_down_volume": 3207961,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.8,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 1436084,
+            "avg_down_volume": 3999640,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 1521866,
+            "avg_down_volume": 3046076,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "BMY": {
+      "ipi": 0.40825415437661544,
+      "level": "watch",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.41): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 14,
+            "total_size": 50376,
+            "price_range": "$56.70 - $57.17"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 1,
+            "up_days": 4,
+            "avg_up_volume": 9716892,
+            "avg_down_volume": 16529981,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 200,
+            "ask_size": 1300,
+            "spread_pct": 0.035,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 1,
+            "up_days": 4,
+            "avg_up_volume": 9514375,
+            "avg_down_volume": 16529981,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "RDW": {
+      "ipi": 0.40173044128654894,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.40): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 13,
+            "total_size": 3361198,
+            "price_range": "$11.04 - $11.26"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 9400,
+            "spread_pct": 0.358,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.506118,
+          "details": {
+            "print_count": 3,
+            "total_size": 103059,
+            "price_range": "$10.10 - $10.23"
+          }
+        }
+      ]
+    },
+    "CEG": {
+      "ipi": 0.40122567361434147,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.40): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 80,
+            "spread_pct": 0.154,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 2939755,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 3361231,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 160,
+            "spread_pct": 0.196,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 2923925,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "LCID": {
+      "ipi": 0.39911042968430804,
+      "level": "watch",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.40): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.63825,
+          "details": {
+            "print_count": 4,
+            "total_size": 119125,
+            "price_range": "$10.38 - $10.56"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 5504719,
+            "avg_down_volume": 7401100,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 1000,
+            "spread_pct": 0.192,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.42,
+          "details": {
+            "print_count": 3,
+            "total_size": 60000,
+            "price_range": "$10.64 - $10.71"
+          }
+        }
+      ]
+    },
+    "GME": {
+      "ipi": 0.3984256332897545,
+      "level": "watch",
+      "unique_footprints": 1,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.40): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 11,
+            "total_size": 66475,
+            "price_range": "$24.42 - $24.91"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 14,
+            "total_size": 122222,
+            "price_range": "$24.53 - $25.02"
+          }
+        }
+      ]
+    },
+    "AAL": {
+      "ipi": 0.3983513829610186,
+      "level": "watch",
+      "unique_footprints": 1,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.40): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 16,
+            "total_size": 287334,
+            "price_range": "$14.30 - $14.57"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 17,
+            "total_size": 340752,
+            "price_range": "$14.23 - $14.51"
+          }
+        }
+      ]
+    },
+    "XLB": {
+      "ipi": 0.39408433123561437,
+      "level": "watch",
+      "unique_footprints": 1,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.39): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 13,
+            "total_size": 56316,
+            "price_range": "$51.19 - $51.60"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 15,
+            "total_size": 168932,
+            "price_range": "$51.19 - $51.74"
+          }
+        }
+      ]
+    },
+    "MARA": {
+      "ipi": 0.3893935761200098,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.39): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.40993799999999997,
+          "details": {
+            "print_count": 3,
+            "total_size": 54969,
+            "price_range": "$8.36 - $8.52"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 3000,
+            "ask_size": 7100,
+            "spread_pct": 0.117,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 7,
+            "total_size": 168083,
+            "price_range": "$8.50 - $8.65"
+          }
+        }
+      ]
+    },
+    "META": {
+      "ipi": 0.3832591751274712,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 3,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.38): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 40,
+            "spread_pct": 0.078,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 59776525,
+            "avg_down_volume": 14177825,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 600,
+            "spread_pct": 0.267,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.6,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 400,
+            "spread_pct": 0.059,
+            "signals": [
+              "bid_imbalance",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 40,
+            "spread_pct": 0.069,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 59776525,
+            "avg_down_volume": 14061476,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "VST": {
+      "ipi": 0.3775259266549629,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.38): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 4186764,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 14,
+            "total_size": 60123,
+            "price_range": "$143.73 - $145.10"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 4142326,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "APO": {
+      "ipi": 0.37703176742068056,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.38): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 1532788,
+            "avg_down_volume": 5197138,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 10,
+            "total_size": 56019,
+            "price_range": "$128.22 - $130.80"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 1457561,
+            "avg_down_volume": 5197138,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "GLXY": {
+      "ipi": 0.3767270255516549,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.38): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 9273785,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 7,
+            "total_size": 153295,
+            "price_range": "$20.93 - $21.31"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 9184198,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "MCO": {
+      "ipi": 0.3719661327621953,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.37): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.182,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 734218,
+            "avg_down_volume": 1259256,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 120,
+            "spread_pct": 0.171,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 734218,
+            "avg_down_volume": 1227359,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "HIMS": {
+      "ipi": 0.37045764541639403,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.37): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 22333770,
+            "avg_down_volume": 15997567,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 13,
+            "total_size": 100233,
+            "price_range": "$24.97 - $25.45"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 22333770,
+            "avg_down_volume": 15861437,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "LITE": {
+      "ipi": 0.3670333859545473,
+      "level": "watch",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.37): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 300,
+            "ask_size": 800,
+            "spread_pct": 0.932,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "cross_asset_divergence",
+          "strength": 1.0,
+          "details": {
+            "symbol_change_pct": 10.53,
+            "avg_peer_change_pct": -4.61,
+            "divergence_pct": 15.14,
+            "peers_checked": 5,
+            "note": "Symbol diverging from sector peers"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 5072286,
+            "avg_down_volume": 6406372,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "cross_asset_divergence",
+          "strength": 1.0,
+          "details": {
+            "symbol_change_pct": 10.09,
+            "avg_peer_change_pct": -4.05,
+            "divergence_pct": 14.14,
+            "peers_checked": 5,
+            "note": "Symbol diverging from sector peers"
+          }
+        }
+      ]
+    },
+    "XLK": {
+      "ipi": 0.3609321273225585,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.36): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 16243938,
+            "avg_down_volume": 20997181,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.6,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 1000,
+            "spread_pct": 0.007,
+            "signals": [
+              "bid_imbalance",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 16243938,
+            "avg_down_volume": 20344063,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "WULF": {
+      "ipi": 0.3586474802825971,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.36): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 26076913,
+            "avg_down_volume": 34390774,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.91815,
+          "details": {
+            "print_count": 7,
+            "total_size": 109075,
+            "price_range": "$13.10 - $13.36"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 26076913,
+            "avg_down_volume": 34004736,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "BNTX": {
+      "ipi": 0.3572889422574128,
+      "level": "watch",
+      "unique_footprints": 1,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.36): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 376689,
+            "avg_down_volume": 1002336,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 529136,
+            "avg_down_volume": 979005,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 355159,
+            "avg_down_volume": 1002336,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "AVGO": {
+      "ipi": 0.35549796990980825,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.36): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.6,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 240,
+            "spread_pct": 0.071,
+            "signals": [
+              "bid_imbalance",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 17276244,
+            "avg_down_volume": 22924863,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.6,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 120,
+            "spread_pct": 0.077,
+            "signals": [
+              "bid_imbalance",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 17276244,
+            "avg_down_volume": 22762238,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "AXP": {
+      "ipi": 0.35474951623742673,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.35): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.091,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 1493002,
+            "avg_down_volume": 4150956,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 40,
+            "spread_pct": 0.088,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.6,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 120,
+            "spread_pct": 0.077,
+            "signals": [
+              "bid_imbalance",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 1452922,
+            "avg_down_volume": 4150956,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "INTU": {
+      "ipi": 0.35218767930133427,
+      "level": "watch",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.35): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 1764424,
+            "avg_down_volume": 5062489,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "cross_asset_divergence",
+          "strength": 0.342432129664081,
+          "details": {
+            "symbol_change_pct": 0.45,
+            "avg_peer_change_pct": -2.98,
+            "divergence_pct": 3.42,
+            "peers_checked": 4,
+            "note": "Symbol diverging from sector peers"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 120,
+            "spread_pct": 0.155,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 4319749,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "BMNR": {
+      "ipi": 0.3463350478911065,
+      "level": "watch",
+      "unique_footprints": 3,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.35): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 800,
+            "spread_pct": 0.046,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 43381892,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.50127,
+          "details": {
+            "print_count": 4,
+            "total_size": 50635,
+            "price_range": "$21.23 - $21.52"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 43171278,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "TDOC": {
+      "ipi": 0.344499562373016,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.34): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 1664502,
+            "avg_down_volume": 7892887,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 400,
+            "ask_size": 1800,
+            "spread_pct": 0.195,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 1243454,
+            "avg_down_volume": 7892887,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "RR": {
+      "ipi": 0.3435617790218677,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.34): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 32452646,
+            "avg_down_volume": 49653622,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 2100,
+            "ask_size": 4800,
+            "spread_pct": 0.287,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 32452646,
+            "avg_down_volume": 49287883,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "EFX": {
+      "ipi": 0.3413633804120098,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.34): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 657945,
+            "avg_down_volume": 2510332,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 200,
+            "spread_pct": 0.272,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 2102978,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "CDE": {
+      "ipi": 0.3360216562256956,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.34): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 2200,
+            "ask_size": 4800,
+            "spread_pct": 0.049,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 26154402,
+            "avg_down_volume": 32842396,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 26154402,
+            "avg_down_volume": 39751556,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 26154402,
+            "avg_down_volume": 32392986,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
       ]
     },
     "MA": {
-      "ipi": 0.302,
+      "ipi": 0.32651568541053383,
+      "level": "watch",
+      "unique_footprints": 3,
+      "days_building": 3,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.33): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.067,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 3556032,
+            "avg_down_volume": 5007091,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 50,
+            "total_size": 279676,
+            "price_range": "$538.79 - $538.79"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.935,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.129,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 40,
+            "spread_pct": 0.08,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        }
+      ]
+    },
+    "GS": {
+      "ipi": 0.3264777390901906,
+      "level": "watch",
+      "unique_footprints": 3,
+      "days_building": 3,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.33): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 80,
+            "spread_pct": 0.184,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 18,
+            "total_size": 87415,
+            "price_range": "$935.25 - $935.41"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 120,
+            "spread_pct": 0.952,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 1,
+            "up_days": 4,
+            "avg_up_volume": 1926386,
+            "avg_down_volume": 2321651,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.6,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 120,
+            "spread_pct": 0.038,
+            "signals": [
+              "bid_imbalance",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        }
+      ]
+    },
+    "MSTR": {
+      "ipi": 0.3204049850410197,
       "level": "watch",
       "unique_footprints": 2,
       "days_building": 1,
-      "recommendation": "👀 EARLY ACCUMULATION (IPI=0.30): Institutional activity detected. Monitor for additional footprints.",
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.32): Institutional activity detected but not confirmed. Monitor for additional footprints.",
       "footprints": [
-        {"type": "quote_degradation", "strength": 0.3, "details": {"signals": ["thin_bid"]}},
-        {"type": "multi_day_distribution", "strength": 0.4, "details": {"signals": ["lower_highs"]}}
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 22767984,
+            "avg_down_volume": 23271341,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.109,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 120,
+            "ask_size": 280,
+            "spread_pct": 0.18,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 22767984,
+            "avg_down_volume": 23178414,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
       ]
     },
-    "TSLA": {
-      "ipi": 0.121,
-      "level": "none",
-      "unique_footprints": 1,
+    "TTWO": {
+      "ipi": 0.32003370770247996,
+      "level": "watch",
+      "unique_footprints": 2,
       "days_building": 1,
-      "recommendation": "No significant institutional pressure detected.",
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.32): Institutional activity detected but not confirmed. Monitor for additional footprints.",
       "footprints": [
-        {"type": "quote_degradation", "strength": 0.3, "details": {"signals": ["bid_imbalance"]}}
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 300,
+            "spread_pct": 0.396,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 4458020,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 400,
+            "spread_pct": 0.539,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 4393589,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
       ]
     },
-    "AMZN": {
-      "ipi": 0.200,
-      "level": "none",
-      "unique_footprints": 1,
+    "RGTI": {
+      "ipi": 0.3188133153157284,
+      "level": "watch",
+      "unique_footprints": 2,
       "days_building": 1,
-      "recommendation": "No significant institutional pressure detected.",
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.32): Institutional activity detected but not confirmed. Monitor for additional footprints.",
       "footprints": [
-        {"type": "quote_degradation", "strength": 0.5, "details": {"signals": ["bid_imbalance", "spread_widening"]}}
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 26494181,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.733518,
+          "details": {
+            "print_count": 6,
+            "total_size": 66759,
+            "price_range": "$17.11 - $17.35"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 5,
+            "up_days": 0,
+            "avg_up_volume": 0,
+            "avg_down_volume": 26362967,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
       ]
     },
-    "QCOM": {
-      "ipi": 0.200,
-      "level": "none",
-      "unique_footprints": 1,
+    "HUM": {
+      "ipi": 0.3188086727814438,
+      "level": "watch",
+      "unique_footprints": 2,
       "days_building": 1,
-      "recommendation": "No significant institutional pressure detected.",
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.32): Institutional activity detected but not confirmed. Monitor for additional footprints.",
       "footprints": [
-        {"type": "quote_degradation", "strength": 0.5, "details": {"signals": ["bid_imbalance"]}}
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 40,
+            "spread_pct": 0.257,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 1,
+            "up_days": 4,
+            "avg_up_volume": 2314660,
+            "avg_down_volume": 2819762,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 200,
+            "spread_pct": 0.19,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 1,
+            "up_days": 4,
+            "avg_up_volume": 2289291,
+            "avg_down_volume": 2819762,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "SOFI": {
+      "ipi": 0.31639899785488557,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.32): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 500,
+            "ask_size": 1200,
+            "spread_pct": 0.047,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 16,
+            "total_size": 93214,
+            "price_range": "$21.00 - $21.25"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 300,
+            "ask_size": 1800,
+            "spread_pct": 0.047,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        }
+      ]
+    },
+    "RCL": {
+      "ipi": 0.3149762700879501,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.31): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "lower_highs"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 3387475,
+            "avg_down_volume": 2822898,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 120,
+            "spread_pct": 0.383,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.5,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 40,
+            "spread_pct": 0.127,
+            "signals": [
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "lower_highs"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 3362049,
+            "avg_down_volume": 2822898,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "NIO": {
+      "ipi": 0.3149130763834424,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.31): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 57723346,
+            "avg_down_volume": 43490480,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 0.716308,
+          "details": {
+            "print_count": 4,
+            "total_size": 158154,
+            "price_range": "$4.45 - $4.46"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.6000000000000001,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "multiple_down_days"
+            ],
+            "down_days": 3,
+            "up_days": 2,
+            "avg_up_volume": 57723346,
+            "avg_down_volume": 43383187,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "USB": {
+      "ipi": 0.31193879804194713,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.31): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 17,
+            "total_size": 98553,
+            "price_range": "$59.18 - $60.31"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 500,
+            "spread_pct": 0.033,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 100,
+            "ask_size": 300,
+            "spread_pct": 0.017,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        }
+      ]
+    },
+    "BABA": {
+      "ipi": 0.31166013340269855,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.31): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 6551466,
+            "avg_down_volume": 8862684,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 200,
+            "ask_size": 500,
+            "spread_pct": 0.062,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 6551466,
+            "avg_down_volume": 8753979,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "CRWD": {
+      "ipi": 0.3092888715626477,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.31): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 2595288,
+            "avg_down_volume": 3132482,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 40,
+            "spread_pct": 0.088,
+            "signals": [
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 1.0,
+          "details": {
+            "signals": [
+              "lower_highs",
+              "volume_distribution",
+              "multiple_down_days"
+            ],
+            "down_days": 4,
+            "up_days": 1,
+            "avg_up_volume": 2595383,
+            "avg_down_volume": 3380237,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
+      ]
+    },
+    "V": {
+      "ipi": 0.30438167759576595,
+      "level": "watch",
+      "unique_footprints": 3,
+      "days_building": 3,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.30): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.3,
+          "details": {
+            "bid_size": 160,
+            "ask_size": 440,
+            "spread_pct": 0.089,
+            "signals": [
+              "bid_imbalance"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 6647578,
+            "avg_down_volume": 10139823,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "dark_pool_sequence",
+          "strength": 1.0,
+          "details": {
+            "print_count": 50,
+            "total_size": 305776,
+            "price_range": "$321.83 - $322.21"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.8,
+          "details": {
+            "bid_size": 40,
+            "ask_size": 600,
+            "spread_pct": 0.121,
+            "signals": [
+              "bid_imbalance",
+              "spread_widening",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.6,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 240,
+            "spread_pct": 0.055,
+            "signals": [
+              "bid_imbalance",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        }
+      ]
+    },
+    "DIA": {
+      "ipi": 0.30231702177064385,
+      "level": "watch",
+      "unique_footprints": 2,
+      "days_building": 1,
+      "recommendation": "\ud83d\udc40 EARLY ACCUMULATION (IPI=0.30): Institutional activity detected but not confirmed. Monitor for additional footprints.",
+      "footprints": [
+        {
+          "type": "quote_degradation",
+          "strength": 0.6,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 200,
+            "spread_pct": 0.008,
+            "signals": [
+              "bid_imbalance",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 5869171,
+            "avg_down_volume": 8453351,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        },
+        {
+          "type": "quote_degradation",
+          "strength": 0.6,
+          "details": {
+            "bid_size": 80,
+            "ask_size": 720,
+            "spread_pct": 0.006,
+            "signals": [
+              "bid_imbalance",
+              "thin_bid"
+            ],
+            "note": "Market makers reducing exposure"
+          }
+        },
+        {
+          "type": "multi_day_distribution",
+          "strength": 0.4,
+          "details": {
+            "signals": [
+              "volume_distribution"
+            ],
+            "down_days": 2,
+            "up_days": 3,
+            "avg_up_volume": 5747169,
+            "avg_down_volume": 8453351,
+            "note": "Classic Wyckoff distribution pattern"
+          }
+        }
       ]
     }
   }

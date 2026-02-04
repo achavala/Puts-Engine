@@ -1,11 +1,12 @@
 {
-  "timestamp": "2026-02-04T09:03:39.971494",
-  "running": true,
-  "healthy": true,
-  "issues": [],
-  "action_taken": null,
-  "pid": 91273,
-  "memory_mb": 9.296875,
-  "recent_errors": 0,
-  "last_monitor_check": "2026-02-04T09:03:39.981040"
+  "is_running": true,
+  "pid": 49096,
+  "memory_mb": 8.88,
+  "cpu_percent": 0.0,
+  "last_activity": "2026-02-04T10:30:22.396669",
+  "process_age_seconds": 1217.0,
+  "in_grace_period": false,
+  "status": "HEALTHY",
+  "timestamp": "2026-02-04T10:44:25.751745",
+  "watchdog_pid": 49104
 }

@@ -1,1898 +1,6 @@
 {
   "scans": [
     {
-      "timestamp": "2026-02-03T13:30:00.038213-05:00",
-      "gamma_drain": [],
-      "distribution": [],
-      "liquidity": [],
-      "market_regime": "bullish_neutral"
-    },
-    {
-      "timestamp": "2026-02-03T13:49:44.923079-05:00",
-      "gamma_drain": [
-        {
-          "symbol": "MSTR",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "high_vol_red",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "HIMS",
-          "score": 0.6219,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "BBBY",
-          "score": 0.5772,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.5196,
-          "signals": [
-            "high_vol_run"
-          ]
-        },
-        {
-          "symbol": "CAT",
-          "score": 0.515,
-          "signals": [
-            "high_vol_run"
-          ]
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "SNDK",
-          "score": 0.65,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "META",
-          "score": 0.644,
-          "signals": [
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.6132,
-          "signals": [
-            "topping_tail",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "NCLH",
-          "score": 0.6025,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.5821,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.5819,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "WDC",
-          "score": 0.5799,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "STX",
-          "score": 0.562,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MU",
-          "score": 0.5552,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CAT",
-          "score": 0.551,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "INTC",
-          "score": 0.5504,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "DAL",
-          "score": 0.5484,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "OKTA",
-          "score": 0.5432,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LMT",
-          "score": 0.5423,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "AAPL",
-          "score": 0.5406,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.5406,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "AMD",
-          "score": 0.5403,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "GEV",
-          "score": 0.5394,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LRCX",
-          "score": 0.5359,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "NOK",
-          "score": 0.5358,
-          "signals": [
-            "pump_reversal"
-          ]
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "NOK",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "SNDK",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "GEV",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "BMY",
-          "score": 0.5089,
-          "signals": [
-            "two_day_rally"
-          ]
-        }
-      ],
-      "market_regime": {
-        "is_tradeable": true,
-        "regime": "pattern_based"
-      }
-    },
-    {
-      "timestamp": "2026-02-03T13:50:02.434534-05:00",
-      "scan_type": "pattern_auto_populated",
-      "gamma_drain": [
-        {
-          "symbol": "MSTR",
-          "score": 0.85
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.7513
-        },
-        {
-          "symbol": "CAT",
-          "score": 0.7111
-        },
-        {
-          "symbol": "HIMS",
-          "score": 0.6219
-        },
-        {
-          "symbol": "BBBY",
-          "score": 0.5772
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "SNDK",
-          "score": 0.9
-        },
-        {
-          "symbol": "META",
-          "score": 0.838
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.8138
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.7764
-        },
-        {
-          "symbol": "CAT",
-          "score": 0.7471
-        },
-        {
-          "symbol": "WDC",
-          "score": 0.7098
-        },
-        {
-          "symbol": "STX",
-          "score": 0.674
-        },
-        {
-          "symbol": "MU",
-          "score": 0.6604
-        },
-        {
-          "symbol": "INTC",
-          "score": 0.6508
-        },
-        {
-          "symbol": "DAL",
-          "score": 0.6468
-        },
-        {
-          "symbol": "OKTA",
-          "score": 0.6364
-        },
-        {
-          "symbol": "LMT",
-          "score": 0.6346
-        },
-        {
-          "symbol": "AAPL",
-          "score": 0.6312
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.6312
-        },
-        {
-          "symbol": "AMD",
-          "score": 0.6306
-        },
-        {
-          "symbol": "NCLH",
-          "score": 0.6025
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.5819
-        },
-        {
-          "symbol": "MRNA",
-          "score": 0.55
-        },
-        {
-          "symbol": "GEV",
-          "score": 0.5394
-        },
-        {
-          "symbol": "LRCX",
-          "score": 0.5359
-        },
-        {
-          "symbol": "NOK",
-          "score": 0.5358
-        },
-        {
-          "symbol": "NIO",
-          "score": 0.5192
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "SNDK",
-          "score": 0.8
-        },
-        {
-          "symbol": "NOK",
-          "score": 0.55
-        },
-        {
-          "symbol": "GEV",
-          "score": 0.55
-        },
-        {
-          "symbol": "BMY",
-          "score": 0.5089
-        }
-      ]
-    },
-    {
-      "timestamp": "2026-02-03T14:00:24.038577-05:00",
-      "scan_type": "pattern_auto_populated",
-      "gamma_drain": [
-        {
-          "symbol": "MSTR",
-          "score": 0.95
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.95
-        },
-        {
-          "symbol": "HIMS",
-          "score": 0.7938
-        },
-        {
-          "symbol": "CAT",
-          "score": 0.7111
-        },
-        {
-          "symbol": "BBBY",
-          "score": 0.7044
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "SNDK",
-          "score": 0.95
-        },
-        {
-          "symbol": "META",
-          "score": 0.95
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.95
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.9396
-        },
-        {
-          "symbol": "GEV",
-          "score": 0.7788
-        },
-        {
-          "symbol": "MU",
-          "score": 0.7656
-        },
-        {
-          "symbol": "INTC",
-          "score": 0.7512
-        },
-        {
-          "symbol": "MRNA",
-          "score": 0.75
-        },
-        {
-          "symbol": "CAT",
-          "score": 0.7471
-        },
-        {
-          "symbol": "DAL",
-          "score": 0.7452
-        },
-        {
-          "symbol": "OKTA",
-          "score": 0.7296
-        },
-        {
-          "symbol": "LMT",
-          "score": 0.7269
-        },
-        {
-          "symbol": "AAPL",
-          "score": 0.7218
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.7218
-        },
-        {
-          "symbol": "AMD",
-          "score": 0.7209
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.7138
-        },
-        {
-          "symbol": "WDC",
-          "score": 0.7098
-        },
-        {
-          "symbol": "STX",
-          "score": 0.674
-        },
-        {
-          "symbol": "NCLH",
-          "score": 0.6025
-        },
-        {
-          "symbol": "LRCX",
-          "score": 0.5359
-        },
-        {
-          "symbol": "NOK",
-          "score": 0.5358
-        },
-        {
-          "symbol": "NIO",
-          "score": 0.5192
-        },
-        {
-          "symbol": "LCID",
-          "score": 0.5185
-        },
-        {
-          "symbol": "KLAC",
-          "score": 0.5153
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "SNDK",
-          "score": 0.95
-        },
-        {
-          "symbol": "GEV",
-          "score": 0.7894
-        },
-        {
-          "symbol": "NOK",
-          "score": 0.55
-        },
-        {
-          "symbol": "BMY",
-          "score": 0.5089
-        }
-      ]
-    },
-    {
-      "timestamp": "2026-02-03T13:45:00.050392-05:00",
-      "gamma_drain": [],
-      "distribution": [],
-      "liquidity": [],
-      "market_regime": "bullish_neutral"
-    },
-    {
-      "timestamp": "2026-02-03T14:00:00.036611-05:00",
-      "gamma_drain": [],
-      "distribution": [],
-      "liquidity": [],
-      "market_regime": "bullish_neutral"
-    },
-    {
-      "timestamp": "2026-02-03T14:19:46.009730-05:00",
-      "gamma_drain": [
-        {
-          "symbol": "MSTR",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "high_vol_red",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MRNA",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "high_vol_red",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "HIMS",
-          "score": 0.6219,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LITE",
-          "score": 0.6206,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LCID",
-          "score": 0.6185,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "BBBY",
-          "score": 0.5772,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.5196,
-          "signals": [
-            "high_vol_run"
-          ]
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "SNDK",
-          "score": 0.65,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "VZ",
-          "score": 0.65,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "RCL",
-          "score": 0.65,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "META",
-          "score": 0.644,
-          "signals": [
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "KLAC",
-          "score": 0.6153,
-          "signals": [
-            "topping_tail",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.6132,
-          "signals": [
-            "topping_tail",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "GME",
-          "score": 0.5825,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.5821,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.5819,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "WOLF",
-          "score": 0.5613,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MU",
-          "score": 0.5552,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "INTC",
-          "score": 0.5504,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "DAL",
-          "score": 0.5484,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TXN",
-          "score": 0.5439,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "OKTA",
-          "score": 0.5432,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MA",
-          "score": 0.5429,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LMT",
-          "score": 0.5423,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "AAPL",
-          "score": 0.5406,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.5406,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "AMD",
-          "score": 0.5403,
-          "signals": [
-            "pump_reversal"
-          ]
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "GME",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "SNDK",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "GEV",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "LITE",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "ABBV",
-          "score": 0.497,
-          "signals": [
-            "two_day_rally"
-          ]
-        }
-      ],
-      "market_regime": {
-        "is_tradeable": true,
-        "regime": "pattern_based"
-      }
-    },
-    {
-      "timestamp": "2026-02-03T14:20:51.363608-05:00",
-      "scan_type": "pattern_auto_populated",
-      "gamma_drain": [
-        {
-          "symbol": "LITE",
-          "score": 0.8706
-        },
-        {
-          "symbol": "MSTR",
-          "score": 0.85
-        },
-        {
-          "symbol": "BBBY",
-          "score": 0.7044
-        },
-        {
-          "symbol": "MRNA",
-          "score": 0.65
-        },
-        {
-          "symbol": "HIMS",
-          "score": 0.6219
-        },
-        {
-          "symbol": "LCID",
-          "score": 0.6185
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.5196
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "RCL",
-          "score": 0.85
-        },
-        {
-          "symbol": "META",
-          "score": 0.838
-        },
-        {
-          "symbol": "KLAC",
-          "score": 0.7806
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.7764
-        },
-        {
-          "symbol": "MU",
-          "score": 0.6604
-        },
-        {
-          "symbol": "INTC",
-          "score": 0.6508
-        },
-        {
-          "symbol": "SNDK",
-          "score": 0.65
-        },
-        {
-          "symbol": "VZ",
-          "score": 0.65
-        },
-        {
-          "symbol": "TXN",
-          "score": 0.6378
-        },
-        {
-          "symbol": "OKTA",
-          "score": 0.6364
-        },
-        {
-          "symbol": "AAPL",
-          "score": 0.6312
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.6312
-        },
-        {
-          "symbol": "AMD",
-          "score": 0.6306
-        },
-        {
-          "symbol": "GME",
-          "score": 0.5825
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.5821
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.5819
-        },
-        {
-          "symbol": "WOLF",
-          "score": 0.5613
-        },
-        {
-          "symbol": "DAL",
-          "score": 0.5484
-        },
-        {
-          "symbol": "MA",
-          "score": 0.5429
-        },
-        {
-          "symbol": "LMT",
-          "score": 0.5423
-        },
-        {
-          "symbol": "NIO",
-          "score": 0.5192
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "LITE",
-          "score": 0.8
-        },
-        {
-          "symbol": "GEV",
-          "score": 0.7894
-        },
-        {
-          "symbol": "GME",
-          "score": 0.55
-        },
-        {
-          "symbol": "SNDK",
-          "score": 0.55
-        },
-        {
-          "symbol": "ABBV",
-          "score": 0.497
-        }
-      ]
-    },
-    {
-      "timestamp": "2026-02-03T14:19:46.009730-05:00",
-      "gamma_drain": [
-        {
-          "symbol": "LITE",
-          "score": 0.8706,
-          "signals": [
-            "exhaustion",
-            "pump_reversal",
-            "pump_reversal_+10%",
-            "exhaustion",
-            "two_day_rally_+11%"
-          ]
-        },
-        {
-          "symbol": "MSTR",
-          "score": 0.85,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "high_vol_red",
-            "below_prior_low",
-            "pump_reversal",
-            "pump_reversal_-12%",
-            "exhaustion",
-            "topping_tail",
-            "high_vol_red",
-            "below_prior_low"
-          ]
-        },
-        {
-          "symbol": "BBBY",
-          "score": 0.7044,
-          "signals": [
-            "exhaustion",
-            "pump_reversal",
-            "pump_reversal_-6%",
-            "exhaustion"
-          ]
-        },
-        {
-          "symbol": "MRNA",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "high_vol_red",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "HIMS",
-          "score": 0.6219,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LCID",
-          "score": 0.6185,
-          "signals": [
-            "exhaustion",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.5196,
-          "signals": [
-            "high_vol_run"
-          ]
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "RCL",
-          "score": 0.85,
-          "signals": [
-            "pump_reversal",
-            "pump_reversal_+15%"
-          ]
-        },
-        {
-          "symbol": "META",
-          "score": 0.838,
-          "signals": [
-            "below_prior_low",
-            "pump_reversal",
-            "pump_reversal_+6%",
-            "below_prior_low"
-          ]
-        },
-        {
-          "symbol": "KLAC",
-          "score": 0.7806,
-          "signals": [
-            "topping_tail",
-            "below_prior_low",
-            "pump_reversal",
-            "pump_reversal_-13%",
-            "topping_tail",
-            "below_prior_low"
-          ]
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.7764,
-          "signals": [
-            "topping_tail",
-            "below_prior_low",
-            "pump_reversal",
-            "pump_reversal_-2%",
-            "topping_tail",
-            "below_prior_low"
-          ]
-        },
-        {
-          "symbol": "MU",
-          "score": 0.6604,
-          "signals": [
-            "pump_reversal",
-            "pump_reversal_+1%"
-          ]
-        },
-        {
-          "symbol": "INTC",
-          "score": 0.6508,
-          "signals": [
-            "pump_reversal",
-            "pump_reversal_+0%"
-          ]
-        },
-        {
-          "symbol": "SNDK",
-          "score": 0.65,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "VZ",
-          "score": 0.65,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TXN",
-          "score": 0.6378,
-          "signals": [
-            "pump_reversal",
-            "pump_reversal_+4%"
-          ]
-        },
-        {
-          "symbol": "OKTA",
-          "score": 0.6364,
-          "signals": [
-            "pump_reversal",
-            "pump_reversal_-3%"
-          ]
-        },
-        {
-          "symbol": "AAPL",
-          "score": 0.6312,
-          "signals": [
-            "pump_reversal",
-            "pump_reversal_+5%"
-          ]
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.6312,
-          "signals": [
-            "pump_reversal",
-            "pump_reversal_+2%"
-          ]
-        },
-        {
-          "symbol": "AMD",
-          "score": 0.6306,
-          "signals": [
-            "pump_reversal",
-            "pump_reversal_-2%"
-          ]
-        },
-        {
-          "symbol": "GME",
-          "score": 0.5825,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.5821,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.5819,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "WOLF",
-          "score": 0.5613,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "DAL",
-          "score": 0.5484,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MA",
-          "score": 0.5429,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LMT",
-          "score": 0.5423,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "NIO",
-          "score": 0.5192,
-          "signals": [
-            "high_vol_red",
-            "below_prior_low",
-            "pump_-1%"
-          ]
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "LITE",
-          "score": 0.8,
-          "signals": [
-            "two_day_rally",
-            "pump_reversal_+10%",
-            "exhaustion",
-            "two_day_rally_+11%"
-          ]
-        },
-        {
-          "symbol": "GEV",
-          "score": 0.7894,
-          "signals": [
-            "two_day_rally",
-            "pump_reversal_+6%",
-            "two_day_rally_+5%"
-          ]
-        },
-        {
-          "symbol": "GME",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "SNDK",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "ABBV",
-          "score": 0.497,
-          "signals": [
-            "two_day_rally"
-          ]
-        }
-      ],
-      "market_regime": {
-        "is_tradeable": true,
-        "regime": "pattern_based"
-      }
-    },
-    {
-      "timestamp": "2026-02-03T14:30:18.875010-05:00",
-      "scan_type": "pattern_auto_populated",
-      "gamma_drain": [
-        {
-          "symbol": "LITE",
-          "score": 0.95
-        },
-        {
-          "symbol": "MSTR",
-          "score": 0.95
-        },
-        {
-          "symbol": "BBBY",
-          "score": 0.8316
-        },
-        {
-          "symbol": "MRNA",
-          "score": 0.65
-        },
-        {
-          "symbol": "HIMS",
-          "score": 0.6219
-        },
-        {
-          "symbol": "LCID",
-          "score": 0.6185
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.5196
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "RCL",
-          "score": 0.95
-        },
-        {
-          "symbol": "META",
-          "score": 0.95
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.9396
-        },
-        {
-          "symbol": "SNDK",
-          "score": 0.9
-        },
-        {
-          "symbol": "VZ",
-          "score": 0.85
-        },
-        {
-          "symbol": "KLAC",
-          "score": 0.7806
-        },
-        {
-          "symbol": "MU",
-          "score": 0.7656
-        },
-        {
-          "symbol": "INTC",
-          "score": 0.7512
-        },
-        {
-          "symbol": "TXN",
-          "score": 0.7317
-        },
-        {
-          "symbol": "OKTA",
-          "score": 0.7296
-        },
-        {
-          "symbol": "AAPL",
-          "score": 0.7218
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.7218
-        },
-        {
-          "symbol": "AMD",
-          "score": 0.7209
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.7138
-        },
-        {
-          "symbol": "NIO",
-          "score": 0.6884
-        },
-        {
-          "symbol": "WOLF",
-          "score": 0.6726
-        },
-        {
-          "symbol": "GME",
-          "score": 0.5825
-        },
-        {
-          "symbol": "JBLU",
-          "score": 0.5821
-        },
-        {
-          "symbol": "INOD",
-          "score": 0.55
-        },
-        {
-          "symbol": "DAL",
-          "score": 0.5484
-        },
-        {
-          "symbol": "MA",
-          "score": 0.5429
-        },
-        {
-          "symbol": "LMT",
-          "score": 0.5423
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "LITE",
-          "score": 0.95
-        },
-        {
-          "symbol": "SNDK",
-          "score": 0.8
-        },
-        {
-          "symbol": "GEV",
-          "score": 0.7894
-        },
-        {
-          "symbol": "ABBV",
-          "score": 0.594
-        },
-        {
-          "symbol": "GME",
-          "score": 0.55
-        }
-      ]
-    },
-    {
-      "timestamp": "2026-02-03T14:30:00.076614-05:00",
-      "gamma_drain": [],
-      "distribution": [],
-      "liquidity": [],
-      "market_regime": "bullish_neutral"
-    },
-    {
-      "timestamp": "2026-02-03T14:49:46.875235-05:00",
-      "gamma_drain": [
-        {
-          "symbol": "MSTR",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "high_vol_red",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "INOD",
-          "score": 0.65,
-          "signals": [
-            "exhaustion",
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "LITE",
-          "score": 0.6206,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "NIO",
-          "score": 0.6192,
-          "signals": [
-            "high_vol_red",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "BBBY",
-          "score": 0.5772,
-          "signals": [
-            "exhaustion",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "KOSS",
-          "score": 0.5395,
-          "signals": [
-            "high_vol_run"
-          ]
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "VZ",
-          "score": 0.65,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "RCL",
-          "score": 0.65,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "SNDK",
-          "score": 0.65,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "META",
-          "score": 0.644,
-          "signals": [
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.6132,
-          "signals": [
-            "topping_tail",
-            "below_prior_low",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "KOSS",
-          "score": 0.6132,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "VRM",
-          "score": 0.6094,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.5819,
-          "signals": [
-            "topping_tail",
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "WOLF",
-          "score": 0.5613,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "MU",
-          "score": 0.5552,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "INTC",
-          "score": 0.5504,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "TXN",
-          "score": 0.5439,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "OKTA",
-          "score": 0.5432,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CVNA",
-          "score": 0.5424,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "AAPL",
-          "score": 0.5406,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.5406,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "AMD",
-          "score": 0.5403,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "NUE",
-          "score": 0.5389,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "V",
-          "score": 0.5373,
-          "signals": [
-            "pump_reversal"
-          ]
-        },
-        {
-          "symbol": "BE",
-          "score": 0.5314,
-          "signals": [
-            "pump_reversal"
-          ]
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "LITE",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "SNDK",
-          "score": 0.55,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "BMY",
-          "score": 0.5089,
-          "signals": [
-            "two_day_rally"
-          ]
-        },
-        {
-          "symbol": "ABBV",
-          "score": 0.497,
-          "signals": [
-            "two_day_rally"
-          ]
-        }
-      ],
-      "market_regime": {
-        "is_tradeable": true,
-        "regime": "pattern_based"
-      }
-    },
-    {
-      "timestamp": "2026-02-03T14:50:05.959578-05:00",
-      "scan_type": "pattern_auto_populated",
-      "gamma_drain": [
-        {
-          "symbol": "MSTR",
-          "score": 0.85
-        },
-        {
-          "symbol": "NIO",
-          "score": 0.7884
-        },
-        {
-          "symbol": "INOD",
-          "score": 0.65
-        },
-        {
-          "symbol": "LITE",
-          "score": 0.6206
-        },
-        {
-          "symbol": "BBBY",
-          "score": 0.5772
-        },
-        {
-          "symbol": "KOSS",
-          "score": 0.5395
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "SNDK",
-          "score": 0.9
-        },
-        {
-          "symbol": "RCL",
-          "score": 0.85
-        },
-        {
-          "symbol": "META",
-          "score": 0.838
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.7764
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.7138
-        },
-        {
-          "symbol": "MU",
-          "score": 0.6604
-        },
-        {
-          "symbol": "INTC",
-          "score": 0.6508
-        },
-        {
-          "symbol": "VZ",
-          "score": 0.65
-        },
-        {
-          "symbol": "OKTA",
-          "score": 0.6364
-        },
-        {
-          "symbol": "CVNA",
-          "score": 0.6348
-        },
-        {
-          "symbol": "AAPL",
-          "score": 0.6312
-        },
-        {
-          "symbol": "AMD",
-          "score": 0.6306
-        },
-        {
-          "symbol": "NUE",
-          "score": 0.6278
-        },
-        {
-          "symbol": "KOSS",
-          "score": 0.6132
-        },
-        {
-          "symbol": "BE",
-          "score": 0.6128
-        },
-        {
-          "symbol": "VRM",
-          "score": 0.6094
-        },
-        {
-          "symbol": "WOLF",
-          "score": 0.5613
-        },
-        {
-          "symbol": "MRNA",
-          "score": 0.55
-        },
-        {
-          "symbol": "TXN",
-          "score": 0.5439
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.5406
-        },
-        {
-          "symbol": "V",
-          "score": 0.5373
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "SNDK",
-          "score": 0.8
-        },
-        {
-          "symbol": "ABBV",
-          "score": 0.594
-        },
-        {
-          "symbol": "LITE",
-          "score": 0.55
-        },
-        {
-          "symbol": "BMY",
-          "score": 0.5089
-        }
-      ]
-    },
-    {
-      "timestamp": "2026-02-03T15:00:22.438696-05:00",
-      "scan_type": "pattern_auto_populated",
-      "gamma_drain": [
-        {
-          "symbol": "MSTR",
-          "score": 0.95
-        },
-        {
-          "symbol": "INOD",
-          "score": 0.85
-        },
-        {
-          "symbol": "NIO",
-          "score": 0.7884
-        },
-        {
-          "symbol": "LITE",
-          "score": 0.6206
-        },
-        {
-          "symbol": "BBBY",
-          "score": 0.5772
-        },
-        {
-          "symbol": "KOSS",
-          "score": 0.5395
-        }
-      ],
-      "distribution": [
-        {
-          "symbol": "SNDK",
-          "score": 0.95
-        },
-        {
-          "symbol": "RCL",
-          "score": 0.95
-        },
-        {
-          "symbol": "META",
-          "score": 0.95
-        },
-        {
-          "symbol": "TSLA",
-          "score": 0.9396
-        },
-        {
-          "symbol": "TMUS",
-          "score": 0.8457
-        },
-        {
-          "symbol": "MU",
-          "score": 0.7656
-        },
-        {
-          "symbol": "INTC",
-          "score": 0.7512
-        },
-        {
-          "symbol": "OKTA",
-          "score": 0.7296
-        },
-        {
-          "symbol": "AAPL",
-          "score": 0.7218
-        },
-        {
-          "symbol": "AMD",
-          "score": 0.7209
-        },
-        {
-          "symbol": "NUE",
-          "score": 0.7167
-        },
-        {
-          "symbol": "BE",
-          "score": 0.6942
-        },
-        {
-          "symbol": "VZ",
-          "score": 0.65
-        },
-        {
-          "symbol": "CVNA",
-          "score": 0.6348
-        },
-        {
-          "symbol": "CNC",
-          "score": 0.6312
-        },
-        {
-          "symbol": "V",
-          "score": 0.6246
-        },
-        {
-          "symbol": "KOSS",
-          "score": 0.6132
-        },
-        {
-          "symbol": "VRM",
-          "score": 0.6094
-        },
-        {
-          "symbol": "WOLF",
-          "score": 0.5613
-        },
-        {
-          "symbol": "MRNA",
-          "score": 0.55
-        },
-        {
-          "symbol": "TXN",
-          "score": 0.5439
-        },
-        {
-          "symbol": "LCID",
-          "score": 0.5185
-        }
-      ],
-      "liquidity": [
-        {
-          "symbol": "SNDK",
-          "score": 0.95
-        },
-        {
-          "symbol": "ABBV",
-          "score": 0.594
-        },
-        {
-          "symbol": "LITE",
-          "score": 0.55
-        },
-        {
-          "symbol": "BMY",
-          "score": 0.5089
-        }
-      ]
-    },
-    {
-      "timestamp": "2026-02-03T14:45:00.016489-05:00",
-      "gamma_drain": [],
-      "distribution": [],
-      "liquidity": [],
-      "market_regime": "bullish_neutral"
-    },
-    {
       "timestamp": "2026-02-03T15:00:00.057244-05:00",
       "gamma_drain": [],
       "distribution": [],
@@ -30178,7 +28286,5325 @@
           "score": 0.5046
         }
       ]
+    },
+    {
+      "timestamp": "2026-02-04T09:30:20.031833-05:00",
+      "scan_type": "pattern_auto_populated",
+      "gamma_drain": [
+        {
+          "symbol": "WULF",
+          "score": 0.95
+        },
+        {
+          "symbol": "BE",
+          "score": 0.95
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.95
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.95
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.95
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.95
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.95
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.95
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.9
+        },
+        {
+          "symbol": "MU",
+          "score": 0.8856
+        },
+        {
+          "symbol": "CCL",
+          "score": 0.85
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.7718
+        },
+        {
+          "symbol": "EXPE",
+          "score": 0.65
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.95
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.95
+        },
+        {
+          "symbol": "UMAC",
+          "score": 0.95
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.9216
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.8976
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.888
+        },
+        {
+          "symbol": "MP",
+          "score": 0.879
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.8739
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.8682
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.8583
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.8565
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.855
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.8418
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.8361
+        },
+        {
+          "symbol": "TSLA",
+          "score": 0.8196
+        },
+        {
+          "symbol": "DNN",
+          "score": 0.7194
+        },
+        {
+          "symbol": "SVM",
+          "score": 0.6958
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.6221
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.5799
+        },
+        {
+          "symbol": "MA",
+          "score": 0.5708
+        },
+        {
+          "symbol": "INFY",
+          "score": 0.55
+        },
+        {
+          "symbol": "SNDK",
+          "score": 0.55
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.55
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.55
+        },
+        {
+          "symbol": "COHR",
+          "score": 0.55
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.5485
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BE",
+          "score": 0.95
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.95
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.95
+        },
+        {
+          "symbol": "USB",
+          "score": 0.6818
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.6636
+        },
+        {
+          "symbol": "CRSP",
+          "score": 0.6618
+        },
+        {
+          "symbol": "BRK.B",
+          "score": 0.6092
+        },
+        {
+          "symbol": "APLD",
+          "score": 0.55
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.55
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.55
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.55
+        },
+        {
+          "symbol": "NUE",
+          "score": 0.5477
+        },
+        {
+          "symbol": "GSK",
+          "score": 0.5169
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-02-04T09:03:28.531550-05:00",
+      "gamma_drain": [
+        {
+          "symbol": "WULF",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "BE",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red"
+          ]
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.95,
+          "signals": [
+            "high_vol_run",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.9,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_+2%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "high_vol_1.7x"
+          ]
+        },
+        {
+          "symbol": "MU",
+          "score": 0.8856,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "pump_reversal_-4%",
+            "exhaustion"
+          ]
+        },
+        {
+          "symbol": "CCL",
+          "score": 0.85,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.7718,
+          "signals": [
+            "high_vol_run",
+            "pump_reversal_+2%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "high_vol_1.7x"
+          ]
+        },
+        {
+          "symbol": "EXPE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "pump_reversal_+1%"
+          ]
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+18%",
+            "pump_reversal_+18%"
+          ]
+        },
+        {
+          "symbol": "UMAC",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+2%",
+            "pump_reversal_+2%"
+          ]
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.9216,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.8976,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.888,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "MP",
+          "score": 0.879,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+4%",
+            "pump_reversal_+4%"
+          ]
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.8739,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.8682,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "topping_tail",
+            "pump_reversal_-5%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.8583,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.8565,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "topping_tail",
+            "pump_reversal_-4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.855,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "pump_reversal_-5%"
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.8418,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+4%",
+            "topping_tail",
+            "pump_reversal_+4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.8361,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "score": 0.8196,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "DNN",
+          "score": 0.7194,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-3%"
+          ]
+        },
+        {
+          "symbol": "SVM",
+          "score": 0.6958,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-10%"
+          ]
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.6221,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.5799,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "MA",
+          "score": 0.5708,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "INFY",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_-2%"
+          ]
+        },
+        {
+          "symbol": "SNDK",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_+27%"
+          ]
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_-5%"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_+14%"
+          ]
+        },
+        {
+          "symbol": "COHR",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_+6%"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.5485,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_+4%"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BE",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "USB",
+          "score": 0.6818,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+4%"
+          ]
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.6636,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+4%"
+          ]
+        },
+        {
+          "symbol": "CRSP",
+          "score": 0.6618,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+4%"
+          ]
+        },
+        {
+          "symbol": "BRK.B",
+          "score": 0.6092,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+3%"
+          ]
+        },
+        {
+          "symbol": "APLD",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "NUE",
+          "score": 0.5477,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "GSK",
+          "score": 0.5169,
+          "signals": [
+            "two_day_rally"
+          ]
+        }
+      ],
+      "market_regime": {
+        "is_tradeable": true,
+        "regime": "pattern_based"
+      }
+    },
+    {
+      "timestamp": "2026-02-04T09:35:22.799600-05:00",
+      "scan_type": "pattern_auto_populated",
+      "gamma_drain": [
+        {
+          "symbol": "WULF",
+          "score": 0.95
+        },
+        {
+          "symbol": "BE",
+          "score": 0.95
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.95
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.95
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.95
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.95
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.95
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.95
+        },
+        {
+          "symbol": "MU",
+          "score": 0.95
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.9
+        },
+        {
+          "symbol": "CCL",
+          "score": 0.85
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.7718
+        },
+        {
+          "symbol": "EXPE",
+          "score": 0.65
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.95
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.95
+        },
+        {
+          "symbol": "UMAC",
+          "score": 0.95
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.95
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.95
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.95
+        },
+        {
+          "symbol": "MP",
+          "score": 0.95
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.95
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.95
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.95
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.95
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.95
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.95
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.95
+        },
+        {
+          "symbol": "TSLA",
+          "score": 0.9428
+        },
+        {
+          "symbol": "SVM",
+          "score": 0.8187
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.7985
+        },
+        {
+          "symbol": "DNN",
+          "score": 0.7194
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.6221
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.5799
+        },
+        {
+          "symbol": "MA",
+          "score": 0.5708
+        },
+        {
+          "symbol": "INFY",
+          "score": 0.55
+        },
+        {
+          "symbol": "SNDK",
+          "score": 0.55
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.55
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.55
+        },
+        {
+          "symbol": "COHR",
+          "score": 0.55
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BE",
+          "score": 0.95
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.95
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.95
+        },
+        {
+          "symbol": "APLD",
+          "score": 0.8
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.7954
+        },
+        {
+          "symbol": "CRSP",
+          "score": 0.7927
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.7913
+        },
+        {
+          "symbol": "USB",
+          "score": 0.6818
+        },
+        {
+          "symbol": "BRK.B",
+          "score": 0.6092
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.55
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.55
+        },
+        {
+          "symbol": "NUE",
+          "score": 0.5477
+        },
+        {
+          "symbol": "GSK",
+          "score": 0.5169
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-02-04T09:03:28.531550-05:00",
+      "gamma_drain": [
+        {
+          "symbol": "WULF",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "BE",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red"
+          ]
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.95,
+          "signals": [
+            "high_vol_run",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "MU",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "pump_reversal_-4%",
+            "exhaustion"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.9,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_+2%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "high_vol_1.7x"
+          ]
+        },
+        {
+          "symbol": "CCL",
+          "score": 0.85,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.7718,
+          "signals": [
+            "high_vol_run",
+            "pump_reversal_+2%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "high_vol_1.7x"
+          ]
+        },
+        {
+          "symbol": "EXPE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "pump_reversal_+1%",
+            "pump_reversal_+1%"
+          ]
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+18%",
+            "pump_reversal_+18%",
+            "pump_reversal_+18%"
+          ]
+        },
+        {
+          "symbol": "UMAC",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+2%",
+            "pump_reversal_+2%",
+            "pump_reversal_+2%"
+          ]
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "MP",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+4%",
+            "pump_reversal_+4%",
+            "pump_reversal_+4%"
+          ]
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.95,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "topping_tail",
+            "pump_reversal_-5%",
+            "topping_tail",
+            "pump_reversal_-5%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.95,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "topping_tail",
+            "pump_reversal_-4%",
+            "topping_tail",
+            "pump_reversal_-4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "pump_reversal_-5%",
+            "pump_reversal_-5%"
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.95,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+4%",
+            "topping_tail",
+            "pump_reversal_+4%",
+            "topping_tail",
+            "pump_reversal_+4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "score": 0.9428,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "SVM",
+          "score": 0.8187,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-10%",
+            "pump_reversal_-10%"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.7985,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_+4%",
+            "pump_reversal_+4%",
+            "exhaustion",
+            "high_vol_red",
+            "high_vol_2.2x"
+          ]
+        },
+        {
+          "symbol": "DNN",
+          "score": 0.7194,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-3%"
+          ]
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.6221,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.5799,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "MA",
+          "score": 0.5708,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "INFY",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_-2%"
+          ]
+        },
+        {
+          "symbol": "SNDK",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_+27%"
+          ]
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_-5%"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_+14%"
+          ]
+        },
+        {
+          "symbol": "COHR",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_+6%"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BE",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "APLD",
+          "score": 0.8,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_-3%",
+            "two_day_rally_+8%"
+          ]
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.7954,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+4%",
+            "two_day_rally_+4%"
+          ]
+        },
+        {
+          "symbol": "CRSP",
+          "score": 0.7927,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+4%",
+            "two_day_rally_+4%"
+          ]
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.7913,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "two_day_rally_+7%"
+          ]
+        },
+        {
+          "symbol": "USB",
+          "score": 0.6818,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+4%"
+          ]
+        },
+        {
+          "symbol": "BRK.B",
+          "score": 0.6092,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+3%"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "NUE",
+          "score": 0.5477,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "GSK",
+          "score": 0.5169,
+          "signals": [
+            "two_day_rally"
+          ]
+        }
+      ],
+      "market_regime": {
+        "is_tradeable": true,
+        "regime": "pattern_based"
+      }
+    },
+    {
+      "timestamp": "2026-02-04T09:37:14.537749-05:00",
+      "scan_type": "pattern_auto_populated",
+      "gamma_drain": [
+        {
+          "symbol": "WULF",
+          "score": 0.95
+        },
+        {
+          "symbol": "BE",
+          "score": 0.95
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.95
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.95
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.95
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.95
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.95
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.95
+        },
+        {
+          "symbol": "MU",
+          "score": 0.95
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.95
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.95
+        },
+        {
+          "symbol": "CCL",
+          "score": 0.85
+        },
+        {
+          "symbol": "EXPE",
+          "score": 0.65
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.95
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.95
+        },
+        {
+          "symbol": "UMAC",
+          "score": 0.95
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.95
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.95
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.95
+        },
+        {
+          "symbol": "MP",
+          "score": 0.95
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.95
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.95
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.95
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.95
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.95
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.95
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.95
+        },
+        {
+          "symbol": "TSLA",
+          "score": 0.95
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.95
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.8299
+        },
+        {
+          "symbol": "SVM",
+          "score": 0.8187
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.8
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.75
+        },
+        {
+          "symbol": "DNN",
+          "score": 0.7194
+        },
+        {
+          "symbol": "MA",
+          "score": 0.6916
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.6221
+        },
+        {
+          "symbol": "INFY",
+          "score": 0.55
+        },
+        {
+          "symbol": "SNDK",
+          "score": 0.55
+        },
+        {
+          "symbol": "COHR",
+          "score": 0.55
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BE",
+          "score": 0.95
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.95
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.95
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.95
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.9272
+        },
+        {
+          "symbol": "APLD",
+          "score": 0.8
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.8
+        },
+        {
+          "symbol": "CRSP",
+          "score": 0.7927
+        },
+        {
+          "symbol": "USB",
+          "score": 0.6818
+        },
+        {
+          "symbol": "BRK.B",
+          "score": 0.6092
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.55
+        },
+        {
+          "symbol": "NUE",
+          "score": 0.5477
+        },
+        {
+          "symbol": "GSK",
+          "score": 0.5169
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-02-04T09:03:28.531550-05:00",
+      "gamma_drain": [
+        {
+          "symbol": "WULF",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "BE",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red"
+          ]
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.95,
+          "signals": [
+            "high_vol_run",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "MU",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "pump_reversal_-4%",
+            "exhaustion"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_+2%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "high_vol_1.7x",
+            "pump_reversal_+2%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "high_vol_1.7x"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.95,
+          "signals": [
+            "high_vol_run",
+            "pump_reversal_+2%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "high_vol_1.7x",
+            "pump_reversal_+2%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "high_vol_1.7x"
+          ]
+        },
+        {
+          "symbol": "CCL",
+          "score": 0.85,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "EXPE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "pump_reversal_+1%",
+            "pump_reversal_+1%",
+            "pump_reversal_+1%"
+          ]
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+18%",
+            "pump_reversal_+18%",
+            "pump_reversal_+18%",
+            "pump_reversal_+18%"
+          ]
+        },
+        {
+          "symbol": "UMAC",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+2%",
+            "pump_reversal_+2%",
+            "pump_reversal_+2%"
+          ]
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "MP",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+4%",
+            "pump_reversal_+4%",
+            "pump_reversal_+4%",
+            "pump_reversal_+4%"
+          ]
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.95,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "topping_tail",
+            "pump_reversal_-5%",
+            "topping_tail",
+            "pump_reversal_-5%",
+            "topping_tail",
+            "pump_reversal_-5%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.95,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "topping_tail",
+            "pump_reversal_-4%",
+            "topping_tail",
+            "pump_reversal_-4%",
+            "topping_tail",
+            "pump_reversal_-4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "pump_reversal_-5%",
+            "pump_reversal_-5%",
+            "pump_reversal_-5%"
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.95,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+4%",
+            "topping_tail",
+            "pump_reversal_+4%",
+            "topping_tail",
+            "pump_reversal_+4%",
+            "topping_tail",
+            "pump_reversal_+4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "TSLA",
+          "score": 0.95,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_+4%",
+            "pump_reversal_+4%",
+            "exhaustion",
+            "high_vol_red",
+            "high_vol_2.2x",
+            "pump_reversal_+4%",
+            "exhaustion",
+            "high_vol_red",
+            "high_vol_2.2x"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.8299,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-1%",
+            "topping_tail",
+            "two_day_rally_+5%"
+          ]
+        },
+        {
+          "symbol": "SVM",
+          "score": 0.8187,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-10%",
+            "pump_reversal_-10%"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.8,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_+14%",
+            "pump_reversal_+14%",
+            "exhaustion",
+            "high_vol_red",
+            "two_day_rally_+11%",
+            "high_vol_1.6x"
+          ]
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.75,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_-5%",
+            "pump_reversal_-5%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red"
+          ]
+        },
+        {
+          "symbol": "DNN",
+          "score": 0.7194,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-3%"
+          ]
+        },
+        {
+          "symbol": "MA",
+          "score": 0.6916,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.6221,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "INFY",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_-2%"
+          ]
+        },
+        {
+          "symbol": "SNDK",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_+27%"
+          ]
+        },
+        {
+          "symbol": "COHR",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_+6%"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BE",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "two_day_rally_+7%",
+            "pump_reversal_+8%",
+            "two_day_rally_+7%"
+          ]
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.9272,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+4%",
+            "two_day_rally_+4%",
+            "two_day_rally_+4%"
+          ]
+        },
+        {
+          "symbol": "APLD",
+          "score": 0.8,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_-3%",
+            "two_day_rally_+8%"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.8,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_-1%",
+            "topping_tail",
+            "two_day_rally_+5%"
+          ]
+        },
+        {
+          "symbol": "CRSP",
+          "score": 0.7927,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+4%",
+            "two_day_rally_+4%"
+          ]
+        },
+        {
+          "symbol": "USB",
+          "score": 0.6818,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+4%"
+          ]
+        },
+        {
+          "symbol": "BRK.B",
+          "score": 0.6092,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+3%"
+          ]
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "NUE",
+          "score": 0.5477,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "GSK",
+          "score": 0.5169,
+          "signals": [
+            "two_day_rally"
+          ]
+        }
+      ],
+      "market_regime": {
+        "is_tradeable": true,
+        "regime": "pattern_based"
+      }
+    },
+    {
+      "timestamp": "2026-02-04T09:30:00.075547-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
+    },
+    {
+      "timestamp": "2026-02-04T09:46:57.315696-05:00",
+      "gamma_drain": [
+        {
+          "symbol": "OKTA",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "KOSS",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.6485,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.6304,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.6296,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "URG",
+          "score": 0.6268,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.6255,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "GME",
+          "score": 0.6225,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "BE",
+          "score": 0.6217,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.6203,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "MU",
+          "score": 0.5952,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "CDE",
+          "score": 0.5863,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.5376,
+          "signals": [
+            "high_vol_run"
+          ]
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.5314,
+          "signals": [
+            "high_vol_run"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.5218,
+          "signals": [
+            "high_vol_run"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.5189,
+          "signals": [
+            "high_vol_run"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.65,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.65,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LTBR",
+          "score": 0.6222,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "VZ",
+          "score": 0.6183,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.6072,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.5992,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.596,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "MP",
+          "score": 0.593,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.5913,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.5894,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.5884,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "HL",
+          "score": 0.5877,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.5861,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.5855,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.585,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.5806,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "AG",
+          "score": 0.5804,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.5799,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.5799,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.5787,
+          "signals": [
+            "pump_reversal"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "FSLR",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "BE",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "TGT",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "ONDS",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "AAL",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "AA",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "LUV",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.5318,
+          "signals": [
+            "two_day_rally"
+          ]
+        }
+      ],
+      "market_regime": {
+        "is_tradeable": true,
+        "regime": "pattern_based"
+      }
+    },
+    {
+      "timestamp": "2026-02-04T10:00:26.763557-05:00",
+      "scan_type": "pattern_auto_populated",
+      "gamma_drain": [
+        {
+          "symbol": "WULF",
+          "score": 0.9
+        },
+        {
+          "symbol": "BE",
+          "score": 0.8717
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.85
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.85
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.8108
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.8092
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.801
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.7906
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.7814
+        },
+        {
+          "symbol": "MU",
+          "score": 0.7404
+        },
+        {
+          "symbol": "CDE",
+          "score": 0.7226
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.65
+        },
+        {
+          "symbol": "KOSS",
+          "score": 0.65
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.65
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.6485
+        },
+        {
+          "symbol": "URG",
+          "score": 0.6268
+        },
+        {
+          "symbol": "GME",
+          "score": 0.6225
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.5376
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.5218
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.5189
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.85
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.85
+        },
+        {
+          "symbol": "LTBR",
+          "score": 0.7944
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.7644
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.7484
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.742
+        },
+        {
+          "symbol": "MP",
+          "score": 0.736
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.7326
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.7288
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.7222
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.721
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.72
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.7112
+        },
+        {
+          "symbol": "AG",
+          "score": 0.7108
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.7074
+        },
+        {
+          "symbol": "VZ",
+          "score": 0.6183
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.5884
+        },
+        {
+          "symbol": "HL",
+          "score": 0.5877
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.5799
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.5799
+        },
+        {
+          "symbol": "EXPE",
+          "score": 0.55
+        },
+        {
+          "symbol": "SNDK",
+          "score": 0.55
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BE",
+          "score": 0.8
+        },
+        {
+          "symbol": "ONDS",
+          "score": 0.8
+        },
+        {
+          "symbol": "AA",
+          "score": 0.8
+        },
+        {
+          "symbol": "LUV",
+          "score": 0.7946
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.7933
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.7913
+        },
+        {
+          "symbol": "TGT",
+          "score": 0.7885
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.7868
+        },
+        {
+          "symbol": "AAL",
+          "score": 0.7
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.55
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.55
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.55
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.55
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.5318
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-02-04T09:46:57.315696-05:00",
+      "gamma_drain": [
+        {
+          "symbol": "WULF",
+          "score": 0.9,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "BE",
+          "score": 0.8717,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.85,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.85,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red"
+          ]
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.8108,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.8092,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.801,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.7906,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red"
+          ]
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.7814,
+          "signals": [
+            "high_vol_run",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "MU",
+          "score": 0.7404,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion"
+          ]
+        },
+        {
+          "symbol": "CDE",
+          "score": 0.7226,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_-13%",
+            "exhaustion"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "KOSS",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.6485,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "URG",
+          "score": 0.6268,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "GME",
+          "score": 0.6225,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.5376,
+          "signals": [
+            "high_vol_run"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.5218,
+          "signals": [
+            "high_vol_run"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.5189,
+          "signals": [
+            "high_vol_run"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.85,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+1%"
+          ]
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.85,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+18%"
+          ]
+        },
+        {
+          "symbol": "LTBR",
+          "score": 0.7944,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+3%"
+          ]
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.7644,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.7484,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.742,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "MP",
+          "score": 0.736,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+4%"
+          ]
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.7326,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.7288,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.7222,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.721,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.72,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-5%"
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.7112,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "AG",
+          "score": 0.7108,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-11%"
+          ]
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.7074,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "VZ",
+          "score": 0.6183,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.5884,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "HL",
+          "score": 0.5877,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.5799,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.5799,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "EXPE",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_-14%"
+          ]
+        },
+        {
+          "symbol": "SNDK",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_+27%"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BE",
+          "score": 0.8,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "ONDS",
+          "score": 0.8,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+2%",
+            "two_day_rally_+10%"
+          ]
+        },
+        {
+          "symbol": "AA",
+          "score": 0.8,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+2%",
+            "two_day_rally_+8%"
+          ]
+        },
+        {
+          "symbol": "LUV",
+          "score": 0.7946,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+6%",
+            "two_day_rally_+8%"
+          ]
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.7933,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.7913,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "two_day_rally_+7%"
+          ]
+        },
+        {
+          "symbol": "TGT",
+          "score": 0.7885,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.7868,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "AAL",
+          "score": 0.7,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+5%"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.5318,
+          "signals": [
+            "two_day_rally"
+          ]
+        }
+      ],
+      "market_regime": {
+        "is_tradeable": true,
+        "regime": "pattern_based"
+      }
+    },
+    {
+      "timestamp": "2026-02-04T09:46:57.315696-05:00",
+      "gamma_drain": [
+        {
+          "symbol": "WULF",
+          "score": 0.9,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "BE",
+          "score": 0.8717,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.85,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.85,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red"
+          ]
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.8108,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.8092,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.801,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.7906,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red"
+          ]
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.7814,
+          "signals": [
+            "high_vol_run",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "MU",
+          "score": 0.7404,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion"
+          ]
+        },
+        {
+          "symbol": "CDE",
+          "score": 0.7226,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_-13%",
+            "exhaustion"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "KOSS",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.6485,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "URG",
+          "score": 0.6268,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "GME",
+          "score": 0.6225,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.5376,
+          "signals": [
+            "high_vol_run"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.5218,
+          "signals": [
+            "high_vol_run"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.5189,
+          "signals": [
+            "high_vol_run"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.85,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+1%"
+          ]
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.85,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+18%"
+          ]
+        },
+        {
+          "symbol": "LTBR",
+          "score": 0.7944,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+3%"
+          ]
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.7644,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.7484,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.742,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "MP",
+          "score": 0.736,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+4%"
+          ]
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.7326,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.7288,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.7222,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.721,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.72,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-5%"
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.7112,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "AG",
+          "score": 0.7108,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-11%"
+          ]
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.7074,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "VZ",
+          "score": 0.6183,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.5884,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "HL",
+          "score": 0.5877,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.5799,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.5799,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "EXPE",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_-14%"
+          ]
+        },
+        {
+          "symbol": "SNDK",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_+27%"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BE",
+          "score": 0.8,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "ONDS",
+          "score": 0.8,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+2%",
+            "two_day_rally_+10%"
+          ]
+        },
+        {
+          "symbol": "AA",
+          "score": 0.8,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+2%",
+            "two_day_rally_+8%"
+          ]
+        },
+        {
+          "symbol": "LUV",
+          "score": 0.7946,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+6%",
+            "two_day_rally_+8%"
+          ]
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.7933,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.7913,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "two_day_rally_+7%"
+          ]
+        },
+        {
+          "symbol": "TGT",
+          "score": 0.7885,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.7868,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "AAL",
+          "score": 0.7,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+5%"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.5318,
+          "signals": [
+            "two_day_rally"
+          ]
+        }
+      ],
+      "market_regime": {
+        "is_tradeable": true,
+        "regime": "pattern_based"
+      }
+    },
+    {
+      "timestamp": "2026-02-04T10:08:17.562051-05:00",
+      "scan_type": "pattern_auto_populated",
+      "gamma_drain": [
+        {
+          "symbol": "WULF",
+          "score": 0.95
+        },
+        {
+          "symbol": "BE",
+          "score": 0.95
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.95
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.95
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.95
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.95
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.95
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.95
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.95
+        },
+        {
+          "symbol": "MU",
+          "score": 0.8856
+        },
+        {
+          "symbol": "GME",
+          "score": 0.795
+        },
+        {
+          "symbol": "CDE",
+          "score": 0.7226
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.65
+        },
+        {
+          "symbol": "KOSS",
+          "score": 0.65
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.65
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.6485
+        },
+        {
+          "symbol": "URG",
+          "score": 0.6268
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.5376
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.5218
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.5189
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.95
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.95
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.9216
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.8976
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.888
+        },
+        {
+          "symbol": "MP",
+          "score": 0.879
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.8739
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.8682
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.8583
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.8565
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.855
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.8418
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.8361
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.8299
+        },
+        {
+          "symbol": "LTBR",
+          "score": 0.7944
+        },
+        {
+          "symbol": "EXPE",
+          "score": 0.75
+        },
+        {
+          "symbol": "HL",
+          "score": 0.7254
+        },
+        {
+          "symbol": "AG",
+          "score": 0.7108
+        },
+        {
+          "symbol": "VZ",
+          "score": 0.6183
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.5884
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.5799
+        },
+        {
+          "symbol": "SNDK",
+          "score": 0.55
+        },
+        {
+          "symbol": "CCL",
+          "score": 0.55
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BE",
+          "score": 0.95
+        },
+        {
+          "symbol": "ONDS",
+          "score": 0.95
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.95
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.95
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.95
+        },
+        {
+          "symbol": "AA",
+          "score": 0.8
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.8
+        },
+        {
+          "symbol": "LUV",
+          "score": 0.7946
+        },
+        {
+          "symbol": "TGT",
+          "score": 0.7885
+        },
+        {
+          "symbol": "AAL",
+          "score": 0.7
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.55
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.55
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.55
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.5318
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-02-04T09:46:57.315696-05:00",
+      "gamma_drain": [
+        {
+          "symbol": "WULF",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "BE",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "OKTA",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "pump_reversal_-5%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red"
+          ]
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_+1%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low",
+            "pump_reversal_-7%",
+            "exhaustion",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.95,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "high_vol_red"
+          ]
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.95,
+          "signals": [
+            "high_vol_run",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x",
+            "pump_reversal_+3%",
+            "exhaustion",
+            "topping_tail",
+            "high_vol_red",
+            "high_vol_2.0x"
+          ]
+        },
+        {
+          "symbol": "MU",
+          "score": 0.8856,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "exhaustion",
+            "pump_reversal_-4%",
+            "exhaustion"
+          ]
+        },
+        {
+          "symbol": "GME",
+          "score": 0.795,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_+8%",
+            "exhaustion"
+          ]
+        },
+        {
+          "symbol": "CDE",
+          "score": 0.7226,
+          "signals": [
+            "exhaustion",
+            "pump_reversal",
+            "pump_reversal_-13%",
+            "exhaustion"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "KOSS",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.65,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.6485,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "URG",
+          "score": 0.6268,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "PLTR",
+          "score": 0.5376,
+          "signals": [
+            "high_vol_run"
+          ]
+        },
+        {
+          "symbol": "WIT",
+          "score": 0.5218,
+          "signals": [
+            "high_vol_run"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.5189,
+          "signals": [
+            "high_vol_run"
+          ]
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+1%",
+            "pump_reversal_+1%"
+          ]
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.95,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+18%",
+            "pump_reversal_+18%"
+          ]
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.9216,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.8976,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.888,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "MP",
+          "score": 0.879,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+4%",
+            "pump_reversal_+4%"
+          ]
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.8739,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.8682,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "topping_tail",
+            "pump_reversal_-5%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.8583,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "pump_reversal_-4%"
+          ]
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.8565,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_-4%",
+            "topping_tail",
+            "pump_reversal_-4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.855,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-5%",
+            "pump_reversal_-5%"
+          ]
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.8418,
+          "signals": [
+            "topping_tail",
+            "pump_reversal",
+            "pump_reversal_+4%",
+            "topping_tail",
+            "pump_reversal_+4%",
+            "topping_tail"
+          ]
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.8361,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-6%",
+            "pump_reversal_-6%"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.8299,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+5%",
+            "two_day_rally_+15%"
+          ]
+        },
+        {
+          "symbol": "LTBR",
+          "score": 0.7944,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_+3%"
+          ]
+        },
+        {
+          "symbol": "EXPE",
+          "score": 0.75,
+          "signals": [
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low",
+            "pump_-14%",
+            "pump_reversal_-14%",
+            "exhaustion",
+            "high_vol_red",
+            "below_prior_low"
+          ]
+        },
+        {
+          "symbol": "HL",
+          "score": 0.7254,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-10%"
+          ]
+        },
+        {
+          "symbol": "AG",
+          "score": 0.7108,
+          "signals": [
+            "pump_reversal",
+            "pump_reversal_-11%"
+          ]
+        },
+        {
+          "symbol": "VZ",
+          "score": 0.6183,
+          "signals": [
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.5884,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.5799,
+          "signals": [
+            "topping_tail",
+            "pump_reversal"
+          ]
+        },
+        {
+          "symbol": "SNDK",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_+27%"
+          ]
+        },
+        {
+          "symbol": "CCL",
+          "score": 0.55,
+          "signals": [
+            "exhaustion",
+            "topping_tail",
+            "pump_+3%"
+          ]
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "BE",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%",
+            "pump_reversal_+8%",
+            "exhaustion",
+            "two_day_rally_+11%"
+          ]
+        },
+        {
+          "symbol": "ONDS",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+2%",
+            "two_day_rally_+10%",
+            "pump_reversal_+2%",
+            "two_day_rally_+10%"
+          ]
+        },
+        {
+          "symbol": "CLS",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%",
+            "pump_reversal_-0%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "WMT",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "two_day_rally_+7%",
+            "pump_reversal_+8%",
+            "two_day_rally_+7%"
+          ]
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.95,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%",
+            "pump_reversal_+7%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "AA",
+          "score": 0.8,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+2%",
+            "two_day_rally_+8%"
+          ]
+        },
+        {
+          "symbol": "WDC",
+          "score": 0.8,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+5%",
+            "two_day_rally_+15%"
+          ]
+        },
+        {
+          "symbol": "LUV",
+          "score": 0.7946,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+6%",
+            "two_day_rally_+8%"
+          ]
+        },
+        {
+          "symbol": "TGT",
+          "score": 0.7885,
+          "signals": [
+            "two_day_rally",
+            "pump_reversal_+8%",
+            "two_day_rally_+6%"
+          ]
+        },
+        {
+          "symbol": "AAL",
+          "score": 0.7,
+          "signals": [
+            "two_day_rally",
+            "two_day_rally_+5%"
+          ]
+        },
+        {
+          "symbol": "DAL",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.55,
+          "signals": [
+            "two_day_rally"
+          ]
+        },
+        {
+          "symbol": "CMI",
+          "score": 0.5318,
+          "signals": [
+            "two_day_rally"
+          ]
+        }
+      ],
+      "market_regime": {
+        "is_tradeable": true,
+        "regime": "pattern_based"
+      }
+    },
+    {
+      "timestamp": "2026-02-04T10:00:00.085902-05:00",
+      "gamma_drain": [],
+      "distribution": [],
+      "liquidity": [],
+      "market_regime": "bullish_neutral"
+    },
+    {
+      "timestamp": "2026-02-04T10:30:22.447950-05:00",
+      "scan_type": "pattern_populated",
+      "gamma_drain": [
+        {
+          "symbol": "OKTA",
+          "score": 0.65
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.65
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.65
+        },
+        {
+          "symbol": "COHR",
+          "score": 0.65
+        },
+        {
+          "symbol": "BBBY",
+          "score": 0.65
+        },
+        {
+          "symbol": "INFY",
+          "score": 0.65
+        },
+        {
+          "symbol": "INTC",
+          "score": 0.6304
+        },
+        {
+          "symbol": "LEU",
+          "score": 0.6296
+        },
+        {
+          "symbol": "URG",
+          "score": 0.6268
+        },
+        {
+          "symbol": "MSTR",
+          "score": 0.6255
+        },
+        {
+          "symbol": "GME",
+          "score": 0.6225
+        },
+        {
+          "symbol": "BE",
+          "score": 0.6217
+        },
+        {
+          "symbol": "AMD",
+          "score": 0.6203
+        },
+        {
+          "symbol": "STX",
+          "score": 0.602
+        },
+        {
+          "symbol": "MU",
+          "score": 0.5952
+        },
+        {
+          "symbol": "WULF",
+          "score": 0.5314
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.5189
+        }
+      ],
+      "distribution": [
+        {
+          "symbol": "UUUU",
+          "score": 0.65
+        },
+        {
+          "symbol": "USAR",
+          "score": 0.65
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.6221
+        },
+        {
+          "symbol": "VZ",
+          "score": 0.6183
+        },
+        {
+          "symbol": "ASTS",
+          "score": 0.6072
+        },
+        {
+          "symbol": "WOLF",
+          "score": 0.6013
+        },
+        {
+          "symbol": "LUNR",
+          "score": 0.5992
+        },
+        {
+          "symbol": "RKLB",
+          "score": 0.596
+        },
+        {
+          "symbol": "MP",
+          "score": 0.593
+        },
+        {
+          "symbol": "UEC",
+          "score": 0.5913
+        },
+        {
+          "symbol": "CCJ",
+          "score": 0.5894
+        },
+        {
+          "symbol": "LAC",
+          "score": 0.5861
+        },
+        {
+          "symbol": "RCAT",
+          "score": 0.5855
+        },
+        {
+          "symbol": "SMR",
+          "score": 0.585
+        },
+        {
+          "symbol": "DNN",
+          "score": 0.5847
+        },
+        {
+          "symbol": "AAPL",
+          "score": 0.5806
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.5799
+        },
+        {
+          "symbol": "NNE",
+          "score": 0.5787
+        },
+        {
+          "symbol": "TSLA",
+          "score": 0.5732
+        },
+        {
+          "symbol": "SVM",
+          "score": 0.5729
+        }
+      ],
+      "liquidity": [
+        {
+          "symbol": "CLS",
+          "score": 0.55
+        },
+        {
+          "symbol": "FSLR",
+          "score": 0.55
+        },
+        {
+          "symbol": "BE",
+          "score": 0.55
+        },
+        {
+          "symbol": "JBLU",
+          "score": 0.55
+        },
+        {
+          "symbol": "WOLF",
+          "score": 0.55
+        },
+        {
+          "symbol": "RIO",
+          "score": 0.55
+        },
+        {
+          "symbol": "ALAB",
+          "score": 0.55
+        },
+        {
+          "symbol": "APLD",
+          "score": 0.55
+        },
+        {
+          "symbol": "LITE",
+          "score": 0.55
+        },
+        {
+          "symbol": "COHR",
+          "score": 0.55
+        },
+        {
+          "symbol": "LUV",
+          "score": 0.55
+        },
+        {
+          "symbol": "UAL",
+          "score": 0.55
+        },
+        {
+          "symbol": "STX",
+          "score": 0.55
+        },
+        {
+          "symbol": "ONDS",
+          "score": 0.55
+        },
+        {
+          "symbol": "MRK",
+          "score": 0.5498
+        }
+      ]
     }
   ],
-  "last_cleanup": "2026-02-04T09:03:28.753963-05:00"
+  "last_cleanup": "2026-02-04T10:14:51.204520-05:00"
 }

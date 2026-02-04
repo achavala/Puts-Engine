@@ -626,6 +626,54 @@ class DynamicUniverseManager:
         """
         self._promote(symbol, score, "liquidity", signals or [])
     
+    def inject_symbol(self, symbol: str, source: str, reason: str, score: float, 
+                      signals: list = None, ttl_days: int = 3):
+        """
+        Inject a symbol into DUI from any scanner (e.g., EWS, earnings priority).
+        
+        This is a generic injection method that allows custom sources and TTL.
+        
+        Args:
+            symbol: Ticker symbol
+            source: Source scanner name (e.g., 'early_warning', 'earnings_priority')
+            reason: Human-readable reason for injection
+            score: Score/IPI value
+            signals: List of detected signals/footprints
+            ttl_days: Time-to-live in calendar days (default 3)
+        """
+        from datetime import datetime, timedelta
+        
+        # Check minimum score (use lower threshold for EWS since IPI scale is different)
+        min_score = 0.30 if source != 'early_warning' else 0.50
+        if score < min_score:
+            return
+        
+        # Calculate expiry
+        today = datetime.now().date()
+        expires = today + timedelta(days=ttl_days)
+        
+        # Check if new or update
+        is_new = symbol not in self._dynamic_set
+        
+        # Add or update
+        self._dynamic_set[symbol] = {
+            'score': score,
+            'source': source,
+            'reason': reason,
+            'signals': signals or [],
+            'added_date': today.isoformat(),
+            'expires_date': expires.isoformat()
+        }
+        
+        # Log injection event
+        action = "INJECTED" if is_new else "UPDATED"
+        self._log_promotion(
+            f"DUI: {action} {symbol} | Source: {source} | Score: {score:.2f} | "
+            f"Reason: {reason} | Expires: {expires.isoformat()}"
+        )
+        
+        self._persist()
+    
     def _promote(self, symbol: str, score: float, source: str, signals: list):
         """Internal promotion logic with debug logging."""
         from datetime import datetime, timedelta

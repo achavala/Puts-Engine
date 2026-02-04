@@ -1,46 +1,671 @@
 {
-  "ZS": {
-    "score": 0.3,
+  "TXN": {
+    "score": 0.37,
     "source": "distribution",
     "signals": [
-      "sector_correlation",
-      "leader_CRWD_weak",
-      "sector_cloud_security"
+      "pump_dump_reversal",
+      "pump_6pct",
+      "close_below_prior_low_topping_tail"
     ],
-    "added_date": "2026-02-02",
-    "expires_date": "2026-02-07"
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
   },
-  "PANW": {
-    "score": 0.3,
-    "source": "distribution",
+  "INFY": {
+    "score": 0.9247723360072776,
+    "source": "early_warning",
+    "reason": "IPI=0.92 (3 footprints)",
     "signals": [
-      "sector_correlation",
-      "leader_CRWD_weak",
-      "sector_cloud_security"
+      "dark_pool_sequence",
+      "multi_day_distribution",
+      "quote_degradation"
     ],
-    "added_date": "2026-02-02",
-    "expires_date": "2026-02-07"
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
   },
-  "FTNT": {
-    "score": 0.3,
+  "MU": {
+    "score": 0.37,
     "source": "distribution",
     "signals": [
-      "sector_correlation",
-      "leader_CRWD_weak",
-      "sector_cloud_security"
+      "pump_dump_reversal",
+      "pump_5pct",
+      "close_below_prior_low_gap_down_after_pump"
     ],
-    "added_date": "2026-02-02",
-    "expires_date": "2026-02-07"
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
   },
-  "OKTA": {
-    "score": 0.3,
+  "BKNG": {
+    "score": 0.37,
     "source": "distribution",
     "signals": [
-      "sector_correlation",
-      "leader_CRWD_weak",
-      "sector_cloud_security"
+      "pump_dump_reversal",
+      "pump_10pct",
+      "close_below_prior_low"
     ],
-    "added_date": "2026-02-02",
-    "expires_date": "2026-02-07"
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "CRDO": {
+    "score": 0.39,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_12pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "V": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_4pct",
+      "close_below_prior_low_topping_tail"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "UMAC": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_14pct",
+      "gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "KKR": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_10pct",
+      "close_below_prior_low"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "PL": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_13pct",
+      "close_below_prior_low"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "RKLB": {
+    "score": 0.4,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_10pct",
+      "bearish_engulfing_close_below_prior_low_failed_breakout"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "MP": {
+    "score": 0.39,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_10pct",
+      "bearish_engulfing_failed_breakout"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "IREN": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_5pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "U": {
+    "score": 0.39,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_11pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "CSGP": {
+    "score": 0.38,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_17pct",
+      "topping_tail"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "APP": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_5pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "HOOD": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_4pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "ASTS": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_12pct",
+      "close_below_prior_low"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "INOD": {
+    "score": 0.38,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_8pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "ONDS": {
+    "score": 0.38,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_7pct",
+      "bearish_engulfing_close_below_prior_low"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "VRM": {
+    "score": 0.39,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_12pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "EBAY": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_4pct",
+      "close_below_prior_low"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "AMD": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_4pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "LEU": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_4pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "TTWO": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_4pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "PLUG": {
+    "score": 0.7999517438524908,
+    "source": "early_warning",
+    "reason": "IPI=0.80 (2 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "multi_day_distribution"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "GLXY": {
+    "score": 0.38,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_18pct",
+      "gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "UEC": {
+    "score": 0.41000000000000003,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_10pct",
+      "bearish_engulfing_close_below_prior_low_failed_breakout"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "WULF": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_5pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "SNDK": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_4pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "USAR": {
+    "score": 0.4,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_19pct",
+      "bearish_engulfing_close_below_prior_low"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "EPAM": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_12pct",
+      "gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "SHOP": {
+    "score": 0.39,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_10pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "GEV": {
+    "score": 0.39,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_5pct",
+      "bearish_engulfing_close_below_prior_low_failed_breakout"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "UUUU": {
+    "score": 0.4,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_18pct",
+      "bearish_engulfing_failed_breakout"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "URG": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_5pct",
+      "bearish_engulfing_close_below_prior_low"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "BILI": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_4pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "LITE": {
+    "score": 0.38,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_16pct",
+      "topping_tail"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "NOC": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_4pct",
+      "bearish_engulfing_failed_breakout"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "LAC": {
+    "score": 0.39,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_10pct",
+      "bearish_engulfing_failed_breakout"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "FCEL": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_13pct",
+      "bearish_engulfing"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "NBIS": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_4pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "RCAT": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_7pct",
+      "bearish_engulfing_close_below_prior_low"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "CIFR": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_3pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "ABBV": {
+    "score": 0.39,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_3pct",
+      "close_below_prior_low_topping_tail_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "LTBR": {
+    "score": 0.39,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_14pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "RIOT": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_6pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "RMBS": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_15pct",
+      "gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "CLS": {
+    "score": 0.37,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_5pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "HUT": {
+    "score": 0.38,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_7pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "NVO": {
+    "score": 0.4,
+    "source": "distribution",
+    "signals": [
+      "pump_dump_reversal",
+      "pump_17pct",
+      "close_below_prior_low_gap_down_after_pump"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "FISV": {
+    "score": 0.9200092091388442,
+    "source": "early_warning",
+    "reason": "IPI=0.92 (2 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "multi_day_distribution"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "OPEN": {
+    "score": 0.8206412517986731,
+    "source": "early_warning",
+    "reason": "IPI=0.82 (2 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "PYPL": {
+    "score": 0.8070325781217086,
+    "source": "early_warning",
+    "reason": "IPI=0.81 (4 footprints)",
+    "signals": [
+      "cross_asset_divergence",
+      "dark_pool_sequence",
+      "multi_day_distribution",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "AMC": {
+    "score": 0.7696651352547567,
+    "source": "early_warning",
+    "reason": "IPI=0.77 (3 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "multi_day_distribution",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "OWL": {
+    "score": 0.7597621622785132,
+    "source": "early_warning",
+    "reason": "IPI=0.76 (3 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "multi_day_distribution",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "CPRT": {
+    "score": 0.7555468612228989,
+    "source": "early_warning",
+    "reason": "IPI=0.76 (3 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "multi_day_distribution",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "IBM": {
+    "score": 0.7177890069658373,
+    "source": "early_warning",
+    "reason": "IPI=0.72 (3 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "multi_day_distribution",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "BBAI": {
+    "score": 0.7100523122809829,
+    "source": "early_warning",
+    "reason": "IPI=0.71 (4 footprints)",
+    "signals": [
+      "cross_asset_divergence",
+      "dark_pool_sequence",
+      "multi_day_distribution",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "ARES": {
+    "score": 0.7024526651421362,
+    "source": "early_warning",
+    "reason": "IPI=0.70 (2 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "multi_day_distribution"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "NCLH": {
+    "score": 0.7013604563907694,
+    "source": "early_warning",
+    "reason": "IPI=0.70 (2 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
   }
 }

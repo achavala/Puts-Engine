@@ -496,7 +496,7 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
         # Create pattern indicator column
         if is_pattern_enhanced:
             pattern_col = f"⭐ +{pattern_boost:.2f}"
-        else:
+    else:
             pattern_col = ""
         
         # =========================================================================
@@ -521,19 +521,19 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
         # These are the institutional tiers from the scoring system
         signal_strength = c.get("tier")  # First try JSON field
         if not signal_strength or signal_strength == "N/A":
-            if score >= 0.75:
+    if score >= 0.75:
                 signal_strength = "🔥 EXPLOSIVE"
             elif score >= 0.68:
                 signal_strength = "🏛️ CLASS A"
-            elif score >= 0.60:
+    elif score >= 0.60:
                 signal_strength = "💪 STRONG"
             elif score >= 0.55:
                 signal_strength = "⚡ ELEVATED"
-            elif score >= 0.45:
+    elif score >= 0.45:
                 signal_strength = "👀 MONITORING"
             elif score >= 0.35:
                 signal_strength = "🟡 CLASS B"
-            else:
+    else:
                 signal_strength = "📊 WATCHING"
         
         # =========================================================================
@@ -940,7 +940,7 @@ def render_early_warning_tab():
             pass
     
     if not early_warning_data:
-        st.info("🔄 Early warning data not yet available. Scans run at 8 AM, 12 PM, and 4:30 PM ET.")
+        st.error("⚠️ Early warning data not yet available. Scans run at 8 AM, 12 PM, 4:30 PM, 8 PM, and 10 PM ET.")
         
         # Check if there's any footprint history
         if footprint_history_file.exists():
@@ -957,14 +957,34 @@ def render_early_warning_tab():
                 pass
         return
     
-    # Show scan timestamp
+    # ===== DATA FRESHNESS INDICATOR =====
     scan_time = early_warning_data.get("timestamp", "")
+    data_age_hours = 0
     if scan_time:
         try:
             scan_dt = datetime.fromisoformat(scan_time)
-            st.caption(f"Last scan: {scan_dt.strftime('%Y-%m-%d %I:%M %p ET')}")
-        except Exception:
-            pass
+            now = datetime.now()
+            if scan_dt.tzinfo is None:
+                # Assume ET timezone
+                import pytz
+                ET = pytz.timezone('US/Eastern')
+                scan_dt = ET.localize(scan_dt)
+                now = datetime.now(ET)
+            data_age = now - scan_dt.replace(tzinfo=now.tzinfo) if scan_dt.tzinfo else now.replace(tzinfo=None) - scan_dt
+            data_age_hours = data_age.total_seconds() / 3600
+            
+            # Show freshness status
+            if data_age_hours < 1:
+                st.success(f"✅ **Data Fresh** - Last scan: {scan_dt.strftime('%Y-%m-%d %I:%M %p ET')} ({int(data_age.total_seconds() / 60)} minutes ago)")
+            elif data_age_hours < 4:
+                st.info(f"🔄 **Data Recent** - Last scan: {scan_dt.strftime('%Y-%m-%d %I:%M %p ET')} ({data_age_hours:.1f} hours ago)")
+            else:
+                st.warning(f"⚠️ **DATA STALE** - Last scan: {scan_dt.strftime('%Y-%m-%d %I:%M %p ET')} ({data_age_hours:.1f} hours ago) | Next scan scheduled automatically")
+        except Exception as e:
+            st.caption(f"Last scan: {scan_time}")
+    
+    # Auto-refresh info
+    st.caption("📡 EWS scans run automatically at 8 AM, 12 PM, 4:30 PM, 8 PM, and 10 PM ET. Dashboard auto-refreshes every 60 seconds.")
     
     # Summary metrics
     summary = early_warning_data.get("summary", {})
@@ -1070,24 +1090,32 @@ def render_early_warning_tab():
             df = pd.DataFrame(prepare_data)
             st.dataframe(df, use_container_width=True, hide_index=True)
     
-    # WATCH Level Alerts (collapsed by default)
+    # WATCH Level Alerts - Show as table (not collapsed)
     watch_alerts = [(s, a) for s, a in sorted_alerts if a.get("level") == "watch"]
     if watch_alerts:
-        with st.expander(f"👀 EARLY ACCUMULATION ({len(watch_alerts)} symbols)", expanded=False):
-            st.markdown("*Monitor for additional footprints.*")
+        st.markdown(f"### 👀 EARLY ACCUMULATION ({len(watch_alerts)} symbols)")
+        st.markdown("*Monitor for additional footprints.*")
+        
+        watch_data = []
+        for symbol, alert in watch_alerts:
+            # Extract footprint types
+            footprints = alert.get("footprints", [])
+            fp_types = ", ".join(set(fp.get("type", "").replace("_", " ").title() for fp in footprints[:3]))
+            avg_strength = sum(fp.get("strength", 0) for fp in footprints) / len(footprints) if footprints else 0
             
-            watch_data = []
-            for symbol, alert in watch_alerts:
-                watch_data.append({
-                    "Symbol": symbol,
-                    "IPI": alert.get("ipi", 0),
-                    "Footprints": alert.get("unique_footprints", 0),
-                    "Days": alert.get("days_building", 0),
-                })
-            
-            if watch_data:
-                df = pd.DataFrame(watch_data)
-                st.dataframe(df, use_container_width=True, hide_index=True)
+            watch_data.append({
+                "Symbol": symbol,
+                "IPI": f"{alert.get('ipi', 0):.3f}",
+                "# Footprints": alert.get("unique_footprints", 0),
+                "Days Building": alert.get("days_building", 0),
+                "Footprint Types": fp_types,
+                "Avg Strength": f"{avg_strength:.2f}",
+                "Status": "👀 WATCH"
+            })
+        
+        if watch_data:
+            df = pd.DataFrame(watch_data)
+            st.dataframe(df, use_container_width=True, hide_index=True, height=350)
     
     # Footprint Distribution Chart
     st.markdown("### 📊 Footprint Type Distribution")
@@ -1254,13 +1282,13 @@ def render_48hour_analysis():
     # Summary metrics
     col1, col2, col3, col4, col5 = st.columns(5)
     
-    with col1:
+            with col1:
         st.metric("📊 Unique Symbols", analysis.get("unique_symbols", 0))
     
-    with col2:
+            with col2:
         st.metric("📈 Total Appearances", analysis.get("total_appearances", 0))
     
-    with col3:
+            with col3:
         st.metric("🔥 Multi-Engine", analysis.get("multi_engine_count", 0))
     
     with col4:
@@ -1599,7 +1627,7 @@ def render_big_movers_analysis():
             return "⭐⭐⭐"  # 2+ engines = highest conviction, larger size
         elif len(engines) == 1:
             return "✅"      # 1 engine = confirmed, standard size
-        else:
+    else:
             return ""        # No confirmation
     
     # =========================================================================
@@ -1760,13 +1788,13 @@ def render_big_movers_analysis():
     
     col1, col2, col3, col4 = st.columns(4)
     
-    with col1:
+            with col1:
         st.metric("💥 Pump Reversal", len(pump_reversal), help="Pumped stocks - watch for crash")
     
-    with col2:
+            with col2:
         st.metric("↩️ 2-Day Rally", len(two_day_rally), help="Exhaustion pattern candidates")
     
-    with col3:
+            with col3:
         st.metric("📈 High Vol Run", len(high_vol_run), help="Big gains on volume - institutions exiting?")
     
     with col4:
@@ -1853,7 +1881,7 @@ def render_big_movers_analysis():
             for p in two_day_rally[:12]
         ])
         st.dataframe(df_rally, use_container_width=True, hide_index=True, height=350)
-    else:
+                        else:
         st.info("No two-day rally exhaustion candidates found.")
     
     st.divider()
@@ -1883,7 +1911,7 @@ def render_big_movers_analysis():
     else:
         st.info("No high volume run candidates found.")
     
-    st.divider()
+                st.divider()
     
     # =========================================================================
     # Pattern 4: Sector Contagion Watch

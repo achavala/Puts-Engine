@@ -1,1511 +1,1358 @@
 {
-  "timestamp": "2026-02-03T15:00:00.059182-05:00",
+  "timestamp": "2026-02-04T10:00:00.085016-05:00",
   "alerts": [
     {
-      "symbol": "U",
-      "current_price": 25.310000000000002,
-      "prev_close": 38.4,
-      "change_pct": -34.09,
-      "change_abs": -13.09,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.748996"
-    },
-    {
       "symbol": "GLXY",
-      "current_price": 21.33,
-      "prev_close": 29.96,
-      "change_pct": -28.81,
-      "change_abs": -8.63,
+      "current_price": 20.509999999999998,
+      "prev_close": 28.26,
+      "change_pct": -27.42,
+      "change_abs": -7.75,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:09.326705"
-    },
-    {
-      "symbol": "KLAC",
-      "current_price": 1330.395,
-      "prev_close": 1684.71,
-      "change_pct": -21.03,
-      "change_abs": -354.32,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:00.560239"
+      "detected_at": "2026-02-04T10:00:00.976703"
     },
     {
       "symbol": "PYPL",
-      "current_price": 41.995000000000005,
-      "prev_close": 53.11,
-      "change_pct": -20.93,
-      "change_abs": -11.11,
+      "current_price": 40.06,
+      "prev_close": 52.69,
+      "change_pct": -23.97,
+      "change_abs": -12.63,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:01.410929"
+      "detected_at": "2026-02-04T10:00:03.799434"
     },
     {
-      "symbol": "APP",
-      "current_price": 455.22,
-      "prev_close": 569.24,
-      "change_pct": -20.03,
-      "change_abs": -114.02,
+      "symbol": "U",
+      "current_price": 23.175,
+      "prev_close": 29.1,
+      "change_pct": -20.36,
+      "change_abs": -5.93,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:00.813514"
+      "detected_at": "2026-02-04T10:00:06.838788"
     },
     {
-      "symbol": "RMBS",
-      "current_price": 97.345,
-      "prev_close": 121.6,
-      "change_pct": -19.95,
-      "change_abs": -24.25,
+      "symbol": "NVO",
+      "current_price": 47.335,
+      "prev_close": 59.43,
+      "change_pct": -20.35,
+      "change_abs": -12.09,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:00.591686"
-    },
-    {
-      "symbol": "BMNR",
-      "current_price": 21.595,
-      "prev_close": 26.7,
-      "change_pct": -19.12,
-      "change_abs": -5.11,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:09.185383"
-    },
-    {
-      "symbol": "CRCL",
-      "current_price": 54.905,
-      "prev_close": 67.55,
-      "change_pct": -18.72,
-      "change_abs": -12.64,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:02.997897"
+      "detected_at": "2026-02-04T10:00:00.619035"
     },
     {
       "symbol": "CRDO",
-      "current_price": 107.24000000000001,
-      "prev_close": 129.47,
-      "change_pct": -17.17,
-      "change_abs": -22.23,
+      "current_price": 100.08500000000001,
+      "prev_close": 125.28,
+      "change_pct": -20.11,
+      "change_abs": -25.19,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.750494"
-    },
-    {
-      "symbol": "INOD",
-      "current_price": 53.305,
-      "prev_close": 63.86,
-      "change_pct": -16.53,
-      "change_abs": -10.55,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.747977"
+      "detected_at": "2026-02-04T10:00:03.844573"
     },
     {
       "symbol": "HOOD",
-      "current_price": 85.415,
-      "prev_close": 101.24,
-      "change_pct": -15.63,
-      "change_abs": -15.82,
+      "current_price": 80.465,
+      "prev_close": 99.48,
+      "change_pct": -19.11,
+      "change_abs": -19.02,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.805745"
-    },
-    {
-      "symbol": "HIMS",
-      "current_price": 25.235,
-      "prev_close": 29.87,
-      "change_pct": -15.52,
-      "change_abs": -4.64,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:03.163567"
-    },
-    {
-      "symbol": "CDE",
-      "current_price": 20.845,
-      "prev_close": 24.57,
-      "change_pct": -15.16,
-      "change_abs": -3.73,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:06.304045"
-    },
-    {
-      "symbol": "FCEL",
-      "current_price": 7.640000000000001,
-      "prev_close": 8.99,
-      "change_pct": -15.02,
-      "change_abs": -1.35,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.804612"
-    },
-    {
-      "symbol": "DOCU",
-      "current_price": 45.845,
-      "prev_close": 53.78,
-      "change_pct": -14.75,
-      "change_abs": -7.94,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:09.203444"
-    },
-    {
-      "symbol": "AI",
-      "current_price": 10.475000000000001,
-      "prev_close": 12.26,
-      "change_pct": -14.56,
-      "change_abs": -1.78,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:09.419676"
-    },
-    {
-      "symbol": "RBLX",
-      "current_price": 64.83500000000001,
-      "prev_close": 75.73,
-      "change_pct": -14.39,
-      "change_abs": -10.89,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.721071"
-    },
-    {
-      "symbol": "RDW",
-      "current_price": 10.975000000000001,
-      "prev_close": 12.81,
-      "change_pct": -14.32,
-      "change_abs": -1.83,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.748951"
-    },
-    {
-      "symbol": "BILL",
-      "current_price": 37.215,
-      "prev_close": 43.39,
-      "change_pct": -14.23,
-      "change_abs": -6.17,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:04.621665"
-    },
-    {
-      "symbol": "SNOW",
-      "current_price": 171.08499999999998,
-      "prev_close": 199.37,
-      "change_pct": -14.19,
-      "change_abs": -28.29,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:02.995277"
-    },
-    {
-      "symbol": "EXK",
-      "current_price": 11.325,
-      "prev_close": 13.16,
-      "change_pct": -13.94,
-      "change_abs": -1.84,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.750636"
-    },
-    {
-      "symbol": "AG",
-      "current_price": 21.665,
-      "prev_close": 25.17,
-      "change_pct": -13.93,
-      "change_abs": -3.51,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:09.425354"
-    },
-    {
-      "symbol": "AISP",
-      "current_price": 2.775,
-      "prev_close": 3.22,
-      "change_pct": -13.82,
-      "change_abs": -0.45,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:00.721250"
-    },
-    {
-      "symbol": "EOSE",
-      "current_price": 13.925,
-      "prev_close": 16.11,
-      "change_pct": -13.56,
-      "change_abs": -2.18,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:02.988843"
-    },
-    {
-      "symbol": "TEAM",
-      "current_price": 104.555,
-      "prev_close": 120.38,
-      "change_pct": -13.15,
-      "change_abs": -15.82,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:09.128302"
-    },
-    {
-      "symbol": "DKNG",
-      "current_price": 26.015,
-      "prev_close": 29.94,
-      "change_pct": -13.11,
-      "change_abs": -3.93,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.905746"
-    },
-    {
-      "symbol": "SVM",
-      "current_price": 10.515,
-      "prev_close": 12.1,
-      "change_pct": -13.1,
-      "change_abs": -1.58,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.790785"
-    },
-    {
-      "symbol": "TEM",
-      "current_price": 55.205,
-      "prev_close": 63.51,
-      "change_pct": -13.08,
-      "change_abs": -8.3,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:09.114345"
-    },
-    {
-      "symbol": "IONQ",
-      "current_price": 37.61,
-      "prev_close": 43.24,
-      "change_pct": -13.02,
-      "change_abs": -5.63,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:03.111217"
+      "detected_at": "2026-02-04T10:00:06.830598"
     },
     {
       "symbol": "HUBS",
-      "current_price": 245.20999999999998,
-      "prev_close": 281.53,
-      "change_pct": -12.9,
-      "change_abs": -36.32,
+      "current_price": 229.865,
+      "prev_close": 280.0,
+      "change_pct": -17.91,
+      "change_abs": -50.13,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:06.484892"
+      "detected_at": "2026-02-04T10:00:08.571256"
     },
     {
-      "symbol": "HL",
-      "current_price": 22.925,
-      "prev_close": 26.32,
-      "change_pct": -12.9,
-      "change_abs": -3.39,
+      "symbol": "APP",
+      "current_price": 390.515,
+      "prev_close": 473.11,
+      "change_pct": -17.46,
+      "change_abs": -82.6,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.841791"
+      "detected_at": "2026-02-04T10:00:00.734848"
     },
     {
-      "symbol": "SOFI",
-      "current_price": 21.244999999999997,
-      "prev_close": 24.36,
-      "change_pct": -12.79,
-      "change_abs": -3.12,
+      "symbol": "INTU",
+      "current_price": 412.05,
+      "prev_close": 498.92,
+      "change_pct": -17.41,
+      "change_abs": -86.87,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.756947"
+      "detected_at": "2026-02-04T10:00:00.737177"
     },
     {
-      "symbol": "NVAX",
-      "current_price": 8.254999999999999,
-      "prev_close": 9.44,
-      "change_pct": -12.55,
-      "change_abs": -1.19,
+      "symbol": "BILL",
+      "current_price": 35.69,
+      "prev_close": 43.17,
+      "change_pct": -17.33,
+      "change_abs": -7.48,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:01.463390"
+      "detected_at": "2026-02-04T10:00:06.875827"
     },
     {
-      "symbol": "CIFR",
-      "current_price": 15.48,
-      "prev_close": 17.7,
-      "change_pct": -12.54,
-      "change_abs": -2.22,
+      "symbol": "TRU",
+      "current_price": 65.58,
+      "prev_close": 79.02,
+      "change_pct": -17.01,
+      "change_abs": -13.44,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.837031"
+      "detected_at": "2026-02-04T10:00:05.292633"
     },
     {
-      "symbol": "IREN",
-      "current_price": 52.349999999999994,
-      "prev_close": 59.84,
-      "change_pct": -12.52,
-      "change_abs": -7.49,
+      "symbol": "EPAM",
+      "current_price": 173.72,
+      "prev_close": 208.6,
+      "change_pct": -16.72,
+      "change_abs": -34.88,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:09.224438"
+      "detected_at": "2026-02-04T10:00:02.343569"
     },
     {
-      "symbol": "TTWO",
-      "current_price": 209.48,
-      "prev_close": 239.27,
-      "change_pct": -12.45,
-      "change_abs": -29.79,
+      "symbol": "EFX",
+      "current_price": 167.78,
+      "prev_close": 201.4,
+      "change_pct": -16.69,
+      "change_abs": -33.62,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.829171"
+      "detected_at": "2026-02-04T10:00:10.566793"
     },
     {
-      "symbol": "BBAI",
-      "current_price": 4.845,
-      "prev_close": 5.52,
-      "change_pct": -12.23,
-      "change_abs": -0.67,
+      "symbol": "TEAM",
+      "current_price": 99.07,
+      "prev_close": 118.18,
+      "change_pct": -16.17,
+      "change_abs": -19.11,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:00.719497"
+      "detected_at": "2026-02-04T10:00:05.428349"
     },
     {
-      "symbol": "FSM",
-      "current_price": 10.085,
-      "prev_close": 11.49,
-      "change_pct": -12.23,
-      "change_abs": -1.4,
+      "symbol": "SHOP",
+      "current_price": 110.00999999999999,
+      "prev_close": 131.23,
+      "change_pct": -16.17,
+      "change_abs": -21.22,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:03.105539"
+      "detected_at": "2026-02-04T10:00:05.278168"
     },
     {
-      "symbol": "CLSK",
-      "current_price": 11.055,
-      "prev_close": 12.59,
-      "change_pct": -12.19,
-      "change_abs": -1.54,
+      "symbol": "CRCL",
+      "current_price": 53.74,
+      "prev_close": 63.93,
+      "change_pct": -15.94,
+      "change_abs": -10.19,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:03.061038"
+      "detected_at": "2026-02-04T10:00:02.539989"
     },
     {
-      "symbol": "TDOC",
-      "current_price": 5.015,
-      "prev_close": 5.7,
-      "change_pct": -12.02,
-      "change_abs": -0.69,
+      "symbol": "CSGP",
+      "current_price": 51.72,
+      "prev_close": 61.5,
+      "change_pct": -15.9,
+      "change_abs": -9.78,
       "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:06.484949"
-    },
-    {
-      "symbol": "MARA",
-      "current_price": 8.695,
-      "prev_close": 9.86,
-      "change_pct": -11.82,
-      "change_abs": -1.16,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:03.090387"
-    },
-    {
-      "symbol": "PAAS",
-      "current_price": 55.894999999999996,
-      "prev_close": 63.29,
-      "change_pct": -11.68,
-      "change_abs": -7.4,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:06.218003"
-    },
-    {
-      "symbol": "TWLO",
-      "current_price": 109.41499999999999,
-      "prev_close": 123.72,
-      "change_pct": -11.56,
-      "change_abs": -14.31,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.673313"
-    },
-    {
-      "symbol": "RIOT",
-      "current_price": 15.015,
-      "prev_close": 16.97,
-      "change_pct": -11.52,
-      "change_abs": -1.95,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:04.638349"
-    },
-    {
-      "symbol": "VRM",
-      "current_price": 19.035,
-      "prev_close": 21.5,
-      "change_pct": -11.47,
-      "change_abs": -2.46,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.787245"
-    },
-    {
-      "symbol": "OKLO",
-      "current_price": 76.19,
-      "prev_close": 86.04,
-      "change_pct": -11.45,
-      "change_abs": -9.85,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:00.719848"
-    },
-    {
-      "symbol": "COIN",
-      "current_price": 176.485,
-      "prev_close": 199.18,
-      "change_pct": -11.39,
-      "change_abs": -22.69,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:06.285061"
-    },
-    {
-      "symbol": "LUNR",
-      "current_price": 18.6,
-      "prev_close": 20.99,
-      "change_pct": -11.39,
-      "change_abs": -2.39,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:06.234737"
-    },
-    {
-      "symbol": "CRWV",
-      "current_price": 88.33,
-      "prev_close": 99.53,
-      "change_pct": -11.25,
-      "change_abs": -11.2,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:04.640954"
-    },
-    {
-      "symbol": "SOUN",
-      "current_price": 8.065000000000001,
-      "prev_close": 9.08,
-      "change_pct": -11.18,
-      "change_abs": -1.01,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:04.692802"
-    },
-    {
-      "symbol": "RGTI",
-      "current_price": 17.655,
-      "prev_close": 19.85,
-      "change_pct": -11.06,
-      "change_abs": -2.2,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:04.766224"
-    },
-    {
-      "symbol": "PL",
-      "current_price": 23.475,
-      "prev_close": 26.35,
-      "change_pct": -10.91,
-      "change_abs": -2.88,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:07.748907"
-    },
-    {
-      "symbol": "BILI",
-      "current_price": 31.665,
-      "prev_close": 35.44,
-      "change_pct": -10.65,
-      "change_abs": -3.77,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:04.662513"
-    },
-    {
-      "symbol": "PLUG",
-      "current_price": 2.0949999999999998,
-      "prev_close": 2.34,
-      "change_pct": -10.47,
-      "change_abs": -0.25,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:02.989310"
-    },
-    {
-      "symbol": "QBTS",
-      "current_price": 20.795,
-      "prev_close": 23.22,
-      "change_pct": -10.44,
-      "change_abs": -2.42,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:06.197494"
-    },
-    {
-      "symbol": "MRNA",
-      "current_price": 42.144999999999996,
-      "prev_close": 46.86,
-      "change_pct": -10.06,
-      "change_abs": -4.72,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:04.721958"
-    },
-    {
-      "symbol": "LMND",
-      "current_price": 82.11,
-      "prev_close": 91.28,
-      "change_pct": -10.05,
-      "change_abs": -9.17,
-      "severity": "CRITICAL",
-      "detected_at": "2026-02-03T15:00:03.101111"
+      "detected_at": "2026-02-04T10:00:10.645230"
     },
     {
       "symbol": "MSTR",
-      "current_price": 129.125,
-      "prev_close": 143.19,
-      "change_pct": -9.82,
-      "change_abs": -14.06,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:07.763981"
+      "current_price": 125.91499999999999,
+      "prev_close": 149.71,
+      "change_pct": -15.89,
+      "change_abs": -23.8,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:00.701196"
     },
     {
-      "symbol": "XPEV",
-      "current_price": 16.775,
-      "prev_close": 18.59,
-      "change_pct": -9.76,
-      "change_abs": -1.82,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.485027"
+      "symbol": "SNOW",
+      "current_price": 162.35500000000002,
+      "prev_close": 192.7,
+      "change_pct": -15.75,
+      "change_abs": -30.34,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:00.693334"
     },
     {
-      "symbol": "SMR",
-      "current_price": 17.130000000000003,
-      "prev_close": 18.92,
-      "change_pct": -9.46,
-      "change_abs": -1.79,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.695807"
+      "symbol": "BMNR",
+      "current_price": 21.175,
+      "prev_close": 25.1,
+      "change_pct": -15.64,
+      "change_abs": -3.93,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:02.190846"
     },
     {
-      "symbol": "ILMN",
-      "current_price": 135.59,
-      "prev_close": 149.69,
-      "change_pct": -9.42,
-      "change_abs": -14.1,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.217909"
+      "symbol": "ARES",
+      "current_price": 126.355,
+      "prev_close": 149.67,
+      "change_pct": -15.58,
+      "change_abs": -23.31,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:06.875154"
     },
     {
-      "symbol": "SPCE",
-      "current_price": 2.6550000000000002,
-      "prev_close": 2.93,
-      "change_pct": -9.39,
-      "change_abs": -0.27,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.236344"
+      "symbol": "EXPE",
+      "current_price": 224.93,
+      "prev_close": 264.84,
+      "change_pct": -15.07,
+      "change_abs": -39.91,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:03.807801"
     },
     {
-      "symbol": "ORCL",
-      "current_price": 153.155,
-      "prev_close": 169.01,
-      "change_pct": -9.38,
-      "change_abs": -15.85,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.139799"
+      "symbol": "FDS",
+      "current_price": 216.975,
+      "prev_close": 254.36,
+      "change_pct": -14.7,
+      "change_abs": -37.39,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:08.496909"
+    },
+    {
+      "symbol": "SPGI",
+      "current_price": 450.55,
+      "prev_close": 527.79,
+      "change_pct": -14.63,
+      "change_abs": -77.24,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:10.640067"
+    },
+    {
+      "symbol": "RMBS",
+      "current_price": 98.06,
+      "prev_close": 113.83,
+      "change_pct": -13.85,
+      "change_abs": -15.77,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:05.508934"
+    },
+    {
+      "symbol": "DOCU",
+      "current_price": 45.265,
+      "prev_close": 52.54,
+      "change_pct": -13.85,
+      "change_abs": -7.27,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:02.309783"
+    },
+    {
+      "symbol": "MMYT",
+      "current_price": 53.82,
+      "prev_close": 62.38,
+      "change_pct": -13.72,
+      "change_abs": -8.56,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:06.830051"
+    },
+    {
+      "symbol": "LMND",
+      "current_price": 74.87,
+      "prev_close": 86.73,
+      "change_pct": -13.67,
+      "change_abs": -11.86,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:05.278893"
+    },
+    {
+      "symbol": "MDB",
+      "current_price": 320.88,
+      "prev_close": 371.33,
+      "change_pct": -13.59,
+      "change_abs": -50.45,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:02.376933"
+    },
+    {
+      "symbol": "OWL",
+      "current_price": 11.795,
+      "prev_close": 13.64,
+      "change_pct": -13.53,
+      "change_abs": -1.85,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:02.395068"
+    },
+    {
+      "symbol": "RDW",
+      "current_price": 10.215,
+      "prev_close": 11.75,
+      "change_pct": -13.06,
+      "change_abs": -1.54,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:05.277810"
+    },
+    {
+      "symbol": "TWLO",
+      "current_price": 105.31,
+      "prev_close": 120.46,
+      "change_pct": -12.58,
+      "change_abs": -15.15,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:03.930354"
+    },
+    {
+      "symbol": "BILI",
+      "current_price": 29.765,
+      "prev_close": 34.04,
+      "change_pct": -12.56,
+      "change_abs": -4.27,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:06.852926"
+    },
+    {
+      "symbol": "KKR",
+      "current_price": 99.935,
+      "prev_close": 114.26,
+      "change_pct": -12.54,
+      "change_abs": -14.33,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:03.818956"
+    },
+    {
+      "symbol": "COIN",
+      "current_price": 170.45499999999998,
+      "prev_close": 194.74,
+      "change_pct": -12.47,
+      "change_abs": -24.29,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:10.527443"
+    },
+    {
+      "symbol": "DDOG",
+      "current_price": 113.205,
+      "prev_close": 129.32,
+      "change_pct": -12.46,
+      "change_abs": -16.11,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:00.611594"
+    },
+    {
+      "symbol": "AMD",
+      "current_price": 207.24,
+      "prev_close": 236.73,
+      "change_pct": -12.46,
+      "change_abs": -29.49,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:10.653441"
+    },
+    {
+      "symbol": "CLSK",
+      "current_price": 10.415,
+      "prev_close": 11.84,
+      "change_pct": -12.04,
+      "change_abs": -1.43,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:03.791157"
+    },
+    {
+      "symbol": "TEM",
+      "current_price": 52.685,
+      "prev_close": 59.82,
+      "change_pct": -11.93,
+      "change_abs": -7.13,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:00.644114"
+    },
+    {
+      "symbol": "MCO",
+      "current_price": 454.17999999999995,
+      "prev_close": 515.56,
+      "change_pct": -11.91,
+      "change_abs": -61.38,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:06.862317"
+    },
+    {
+      "symbol": "IREN",
+      "current_price": 47.459999999999994,
+      "prev_close": 53.74,
+      "change_pct": -11.69,
+      "change_abs": -6.28,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:02.322489"
+    },
+    {
+      "symbol": "INOD",
+      "current_price": 49.085,
+      "prev_close": 55.44,
+      "change_pct": -11.46,
+      "change_abs": -6.35,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:08.842209"
     },
     {
       "symbol": "CRM",
-      "current_price": 194.01,
-      "prev_close": 214.08,
-      "change_pct": -9.38,
-      "change_abs": -20.07,
+      "current_price": 188.13,
+      "prev_close": 212.29,
+      "change_pct": -11.38,
+      "change_abs": -24.16,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:00.734973"
+    },
+    {
+      "symbol": "EOSE",
+      "current_price": 13.004999999999999,
+      "prev_close": 14.64,
+      "change_pct": -11.17,
+      "change_abs": -1.64,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:02.343758"
+    },
+    {
+      "symbol": "ORCL",
+      "current_price": 146.465,
+      "prev_close": 164.58,
+      "change_pct": -11.01,
+      "change_abs": -18.12,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:05.340296"
+    },
+    {
+      "symbol": "BITF",
+      "current_price": 2.085,
+      "prev_close": 2.34,
+      "change_pct": -10.9,
+      "change_abs": -0.25,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:05.289201"
+    },
+    {
+      "symbol": "ZS",
+      "current_price": 178.355,
+      "prev_close": 200.01,
+      "change_pct": -10.83,
+      "change_abs": -21.66,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:06.762470"
+    },
+    {
+      "symbol": "MARA",
+      "current_price": 8.475000000000001,
+      "prev_close": 9.5,
+      "change_pct": -10.79,
+      "change_abs": -1.02,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:02.313251"
+    },
+    {
+      "symbol": "ACN",
+      "current_price": 235.635,
+      "prev_close": 263.64,
+      "change_pct": -10.62,
+      "change_abs": -28.0,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:06.926619"
+    },
+    {
+      "symbol": "AISP",
+      "current_price": 2.795,
+      "prev_close": 3.11,
+      "change_pct": -10.13,
+      "change_abs": -0.31,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:08.871210"
+    },
+    {
+      "symbol": "CIFR",
+      "current_price": 14.344999999999999,
+      "prev_close": 15.96,
+      "change_pct": -10.12,
+      "change_abs": -1.62,
+      "severity": "CRITICAL",
+      "detected_at": "2026-02-04T10:00:05.366833"
+    },
+    {
+      "symbol": "GLBE",
+      "current_price": 32.9,
+      "prev_close": 36.55,
+      "change_pct": -9.99,
+      "change_abs": -3.65,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:07.767130"
+      "detected_at": "2026-02-04T10:00:06.747948"
+    },
+    {
+      "symbol": "OKLO",
+      "current_price": 71.685,
+      "prev_close": 79.62,
+      "change_pct": -9.97,
+      "change_abs": -7.94,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:02.370811"
+    },
+    {
+      "symbol": "IONQ",
+      "current_price": 36.045,
+      "prev_close": 39.98,
+      "change_pct": -9.84,
+      "change_abs": -3.93,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:05.284957"
+    },
+    {
+      "symbol": "BIDU",
+      "current_price": 138.24,
+      "prev_close": 153.18,
+      "change_pct": -9.75,
+      "change_abs": -14.94,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:08.532226"
+    },
+    {
+      "symbol": "WDAY",
+      "current_price": 158.51,
+      "prev_close": 175.63,
+      "change_pct": -9.75,
+      "change_abs": -17.12,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:02.222365"
+    },
+    {
+      "symbol": "RIOT",
+      "current_price": 13.965,
+      "prev_close": 15.47,
+      "change_pct": -9.73,
+      "change_abs": -1.51,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:00.710988"
+    },
+    {
+      "symbol": "NOW",
+      "current_price": 105.65,
+      "prev_close": 117.01,
+      "change_pct": -9.71,
+      "change_abs": -11.36,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:03.745036"
+    },
+    {
+      "symbol": "PANW",
+      "current_price": 159.79500000000002,
+      "prev_close": 176.97,
+      "change_pct": -9.71,
+      "change_abs": -17.17,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:06.818119"
+    },
+    {
+      "symbol": "BX",
+      "current_price": 128.915,
+      "prev_close": 142.42,
+      "change_pct": -9.48,
+      "change_abs": -13.5,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:08.533401"
+    },
+    {
+      "symbol": "BKNG",
+      "current_price": 4535.335,
+      "prev_close": 5001.84,
+      "change_pct": -9.33,
+      "change_abs": -466.51,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:05.522384"
+    },
+    {
+      "symbol": "ADBE",
+      "current_price": 266.125,
+      "prev_close": 293.25,
+      "change_pct": -9.25,
+      "change_abs": -27.12,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:05.305808"
+    },
+    {
+      "symbol": "TDOC",
+      "current_price": 4.955,
+      "prev_close": 5.45,
+      "change_pct": -9.08,
+      "change_abs": -0.5,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:08.701255"
+    },
+    {
+      "symbol": "CTSH",
+      "current_price": 74.64500000000001,
+      "prev_close": 82.06,
+      "change_pct": -9.04,
+      "change_abs": -7.41,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:00.739138"
+    },
+    {
+      "symbol": "TTWO",
+      "current_price": 200.69,
+      "prev_close": 220.3,
+      "change_pct": -8.9,
+      "change_abs": -19.61,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:06.740941"
+    },
+    {
+      "symbol": "CRWD",
+      "current_price": 402.985,
+      "prev_close": 441.405,
+      "change_pct": -8.7,
+      "change_abs": -38.42,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:06.776100"
+    },
+    {
+      "symbol": "IBM",
+      "current_price": 280.52,
+      "prev_close": 306.7,
+      "change_pct": -8.54,
+      "change_abs": -26.18,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:05.306278"
+    },
+    {
+      "symbol": "KTOS",
+      "current_price": 94.25999999999999,
+      "prev_close": 103.01,
+      "change_pct": -8.49,
+      "change_abs": -8.75,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:06.854417"
+    },
+    {
+      "symbol": "SOFI",
+      "current_price": 20.875,
+      "prev_close": 22.81,
+      "change_pct": -8.48,
+      "change_abs": -1.93,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:04.007758"
+    },
+    {
+      "symbol": "PL",
+      "current_price": 22.854999999999997,
+      "prev_close": 24.97,
+      "change_pct": -8.47,
+      "change_abs": -2.12,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:07.061018"
+    },
+    {
+      "symbol": "FISV",
+      "current_price": 58.445,
+      "prev_close": 63.73,
+      "change_pct": -8.29,
+      "change_abs": -5.28,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:05.414313"
     },
     {
       "symbol": "FOUR",
-      "current_price": 53.870000000000005,
-      "prev_close": 59.4,
-      "change_pct": -9.31,
-      "change_abs": -5.53,
+      "current_price": 54.33,
+      "prev_close": 59.04,
+      "change_pct": -7.98,
+      "change_abs": -4.71,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.181095"
-    },
-    {
-      "symbol": "PATH",
-      "current_price": 12.024999999999999,
-      "prev_close": 13.25,
-      "change_pct": -9.25,
-      "change_abs": -1.23,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.203353"
+      "detected_at": "2026-02-04T10:00:06.846371"
     },
     {
       "symbol": "IQ",
       "current_price": 1.915,
-      "prev_close": 2.11,
-      "change_pct": -9.24,
-      "change_abs": -0.19,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:07.747572"
-    },
-    {
-      "symbol": "BKNG",
-      "current_price": 4645.93,
-      "prev_close": 5113.32,
-      "change_pct": -9.14,
-      "change_abs": -467.39,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.287549"
-    },
-    {
-      "symbol": "GLBE",
-      "current_price": 33.515,
-      "prev_close": 36.82,
-      "change_pct": -8.98,
-      "change_abs": -3.3,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.311487"
-    },
-    {
-      "symbol": "NNE",
-      "current_price": 29.23,
-      "prev_close": 32.11,
-      "change_pct": -8.97,
-      "change_abs": -2.88,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:00.916775"
-    },
-    {
-      "symbol": "RKLB",
-      "current_price": 78.02000000000001,
-      "prev_close": 85.68,
-      "change_pct": -8.94,
-      "change_abs": -7.66,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.645856"
-    },
-    {
-      "symbol": "MRVL",
-      "current_price": 74.11,
-      "prev_close": 81.34,
-      "change_pct": -8.89,
-      "change_abs": -7.23,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:07.774520"
-    },
-    {
-      "symbol": "UPST",
-      "current_price": 37.894999999999996,
-      "prev_close": 41.53,
-      "change_pct": -8.75,
-      "change_abs": -3.64,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:01.244122"
-    },
-    {
-      "symbol": "AMWL",
-      "current_price": 4.25,
-      "prev_close": 4.65,
-      "change_pct": -8.6,
-      "change_abs": -0.4,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.198719"
-    },
-    {
-      "symbol": "WDAY",
-      "current_price": 159.695,
-      "prev_close": 174.66,
-      "change_pct": -8.57,
-      "change_abs": -14.97,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:02.814458"
-    },
-    {
-      "symbol": "BIDU",
-      "current_price": 144.01999999999998,
-      "prev_close": 157.51,
-      "change_pct": -8.56,
-      "change_abs": -13.49,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.023165"
-    },
-    {
-      "symbol": "OSCR",
-      "current_price": 13.655000000000001,
-      "prev_close": 14.93,
-      "change_pct": -8.54,
-      "change_abs": -1.27,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.010406"
-    },
-    {
-      "symbol": "MDB",
-      "current_price": 342.62,
-      "prev_close": 374.02,
-      "change_pct": -8.4,
-      "change_abs": -31.4,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.151645"
-    },
-    {
-      "symbol": "BITF",
-      "current_price": 2.245,
-      "prev_close": 2.45,
-      "change_pct": -8.37,
-      "change_abs": -0.21,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.360369"
-    },
-    {
-      "symbol": "LEU",
-      "current_price": 276.59000000000003,
-      "prev_close": 301.5,
-      "change_pct": -8.26,
-      "change_abs": -24.91,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.905415"
-    },
-    {
-      "symbol": "RR",
-      "current_price": 3.6950000000000003,
-      "prev_close": 4.02,
-      "change_pct": -8.08,
-      "change_abs": -0.32,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.203280"
-    },
-    {
-      "symbol": "LCID",
-      "current_price": 10.415,
-      "prev_close": 11.33,
-      "change_pct": -8.08,
-      "change_abs": -0.92,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:00.720479"
-    },
-    {
-      "symbol": "NEM",
-      "current_price": 116.685,
-      "prev_close": 126.93,
-      "change_pct": -8.07,
-      "change_abs": -10.25,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.609030"
-    },
-    {
-      "symbol": "SKLZ",
-      "current_price": 3.485,
-      "prev_close": 3.79,
-      "change_pct": -8.05,
-      "change_abs": -0.31,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:00.803038"
-    },
-    {
-      "symbol": "BNTX",
-      "current_price": 107.505,
-      "prev_close": 116.77,
+      "prev_close": 2.08,
       "change_pct": -7.93,
-      "change_abs": -9.27,
+      "change_abs": -0.17,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.356617"
+      "detected_at": "2026-02-04T10:00:06.845047"
     },
     {
-      "symbol": "ABNB",
-      "current_price": 121.35499999999999,
-      "prev_close": 131.77,
-      "change_pct": -7.9,
-      "change_abs": -10.42,
+      "symbol": "FCEL",
+      "current_price": 7.545,
+      "prev_close": 8.19,
+      "change_pct": -7.88,
+      "change_abs": -0.64,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.203007"
+      "detected_at": "2026-02-04T10:00:02.190969"
     },
     {
-      "symbol": "BLDP",
-      "current_price": 2.295,
-      "prev_close": 2.49,
-      "change_pct": -7.83,
-      "change_abs": -0.2,
+      "symbol": "ZG",
+      "current_price": 57.39,
+      "prev_close": 62.24,
+      "change_pct": -7.79,
+      "change_abs": -4.85,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.642860"
-    },
-    {
-      "symbol": "TQQQ",
-      "current_price": 51.695,
-      "prev_close": 56.04,
-      "change_pct": -7.75,
-      "change_abs": -4.34,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:01.510932"
-    },
-    {
-      "symbol": "LRCX",
-      "current_price": 228.93,
-      "prev_close": 248.17,
-      "change_pct": -7.75,
-      "change_abs": -19.24,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.638760"
-    },
-    {
-      "symbol": "NBIS",
-      "current_price": 87.655,
-      "prev_close": 94.91,
-      "change_pct": -7.64,
-      "change_abs": -7.25,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:07.706245"
-    },
-    {
-      "symbol": "LAC",
-      "current_price": 5.015,
-      "prev_close": 5.43,
-      "change_pct": -7.64,
-      "change_abs": -0.42,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.908403"
-    },
-    {
-      "symbol": "AMAT",
-      "current_price": 315.425,
-      "prev_close": 341.34,
-      "change_pct": -7.59,
-      "change_abs": -25.91,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.236784"
-    },
-    {
-      "symbol": "NVDA",
-      "current_price": 177.95,
-      "prev_close": 192.51,
-      "change_pct": -7.56,
-      "change_abs": -14.56,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.063684"
-    },
-    {
-      "symbol": "QUBT",
-      "current_price": 9.415,
-      "prev_close": 10.18,
-      "change_pct": -7.51,
-      "change_abs": -0.77,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.187958"
-    },
-    {
-      "symbol": "BBBY",
-      "current_price": 5.825,
-      "prev_close": 6.29,
-      "change_pct": -7.39,
-      "change_abs": -0.46,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.334619"
-    },
-    {
-      "symbol": "SERV",
-      "current_price": 10.47,
-      "prev_close": 11.3,
-      "change_pct": -7.35,
-      "change_abs": -0.83,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.217536"
-    },
-    {
-      "symbol": "TLN",
-      "current_price": 335.62,
-      "prev_close": 362.2,
-      "change_pct": -7.34,
-      "change_abs": -26.58,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:07.695400"
-    },
-    {
-      "symbol": "CCJ",
-      "current_price": 123.88499999999999,
-      "prev_close": 133.67,
-      "change_pct": -7.32,
-      "change_abs": -9.78,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.736460"
-    },
-    {
-      "symbol": "PLTK",
-      "current_price": 3.365,
-      "prev_close": 3.63,
-      "change_pct": -7.3,
-      "change_abs": -0.26,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.001334"
-    },
-    {
-      "symbol": "DDOG",
-      "current_price": 118.84,
-      "prev_close": 128.18,
-      "change_pct": -7.29,
-      "change_abs": -9.34,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.225762"
-    },
-    {
-      "symbol": "ASTS",
-      "current_price": 113.205,
-      "prev_close": 122.09,
-      "change_pct": -7.28,
-      "change_abs": -8.89,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:01.360534"
-    },
-    {
-      "symbol": "ZS",
-      "current_price": 186.14,
-      "prev_close": 200.63,
-      "change_pct": -7.22,
-      "change_abs": -14.49,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.240790"
-    },
-    {
-      "symbol": "NET",
-      "current_price": 167.37,
-      "prev_close": 180.39,
-      "change_pct": -7.22,
-      "change_abs": -13.02,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.740589"
-    },
-    {
-      "symbol": "APLD",
-      "current_price": 35.325,
-      "prev_close": 38.07,
-      "change_pct": -7.21,
-      "change_abs": -2.74,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.163954"
-    },
-    {
-      "symbol": "DIS",
-      "current_price": 103.645,
-      "prev_close": 111.58,
-      "change_pct": -7.11,
-      "change_abs": -7.94,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.908499"
+      "detected_at": "2026-02-04T10:00:08.842517"
     },
     {
       "symbol": "CEG",
-      "current_price": 267.13,
-      "prev_close": 287.45,
-      "change_pct": -7.07,
-      "change_abs": -20.32,
+      "current_price": 258.815,
+      "prev_close": 280.68,
+      "change_pct": -7.79,
+      "change_abs": -21.87,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:07.673535"
+      "detected_at": "2026-02-04T10:00:03.994375"
     },
     {
-      "symbol": "KTOS",
-      "current_price": 100.555,
-      "prev_close": 108.16,
-      "change_pct": -7.03,
-      "change_abs": -7.6,
+      "symbol": "SOUN",
+      "current_price": 7.805,
+      "prev_close": 8.46,
+      "change_pct": -7.74,
+      "change_abs": -0.66,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.278219"
+      "detected_at": "2026-02-04T10:00:02.363703"
     },
     {
-      "symbol": "BB",
-      "current_price": 3.4050000000000002,
-      "prev_close": 3.66,
-      "change_pct": -6.97,
-      "change_abs": -0.25,
+      "symbol": "SKLZ",
+      "current_price": 3.415,
+      "prev_close": 3.7,
+      "change_pct": -7.7,
+      "change_abs": -0.29,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:00.719695"
+      "detected_at": "2026-02-04T10:00:02.284173"
     },
     {
-      "symbol": "HUT",
-      "current_price": 57.254999999999995,
-      "prev_close": 61.53,
-      "change_pct": -6.95,
-      "change_abs": -4.28,
+      "symbol": "FIS",
+      "current_price": 51.05500000000001,
+      "prev_close": 55.25,
+      "change_pct": -7.59,
+      "change_abs": -4.19,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.402864"
+      "detected_at": "2026-02-04T10:00:02.190631"
     },
     {
-      "symbol": "BABA",
-      "current_price": 162.23,
-      "prev_close": 174.25,
-      "change_pct": -6.9,
-      "change_abs": -12.02,
+      "symbol": "LEU",
+      "current_price": 257.245,
+      "prev_close": 278.28,
+      "change_pct": -7.56,
+      "change_abs": -21.03,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:00.720290"
+      "detected_at": "2026-02-04T10:00:10.494547"
     },
     {
-      "symbol": "NTLA",
-      "current_price": 12.96,
-      "prev_close": 13.9,
-      "change_pct": -6.76,
-      "change_abs": -0.94,
+      "symbol": "MSCI",
+      "current_price": 563.255,
+      "prev_close": 609.22,
+      "change_pct": -7.54,
+      "change_abs": -45.97,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.296344"
+      "detected_at": "2026-02-04T10:00:06.863316"
     },
     {
-      "symbol": "META",
-      "current_price": 688.985,
-      "prev_close": 738.31,
-      "change_pct": -6.68,
-      "change_abs": -49.32,
+      "symbol": "SPCE",
+      "current_price": 2.635,
+      "prev_close": 2.85,
+      "change_pct": -7.54,
+      "change_abs": -0.22,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.334498"
-    },
-    {
-      "symbol": "PANW",
-      "current_price": 164.485,
-      "prev_close": 176.2,
-      "change_pct": -6.65,
-      "change_abs": -11.71,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.184053"
-    },
-    {
-      "symbol": "ADBE",
-      "current_price": 272.38,
-      "prev_close": 291.65,
-      "change_pct": -6.61,
-      "change_abs": -19.27,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.725852"
-    },
-    {
-      "symbol": "RIVN",
-      "current_price": 14.175,
-      "prev_close": 15.17,
-      "change_pct": -6.56,
-      "change_abs": -0.99,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.607523"
-    },
-    {
-      "symbol": "ARKK",
-      "current_price": 72.63499999999999,
-      "prev_close": 77.64,
-      "change_pct": -6.45,
-      "change_abs": -5.01,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.128171"
-    },
-    {
-      "symbol": "EVTL",
-      "current_price": 4.609999999999999,
-      "prev_close": 4.92,
-      "change_pct": -6.3,
-      "change_abs": -0.31,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.303630"
-    },
-    {
-      "symbol": "NOW",
-      "current_price": 109.43,
-      "prev_close": 116.73,
-      "change_pct": -6.25,
-      "change_abs": -7.3,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.000686"
-    },
-    {
-      "symbol": "RCAT",
-      "current_price": 14.0,
-      "prev_close": 14.93,
-      "change_pct": -6.23,
-      "change_abs": -0.93,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:07.828935"
-    },
-    {
-      "symbol": "UEC",
-      "current_price": 17.445,
-      "prev_close": 18.6,
-      "change_pct": -6.21,
-      "change_abs": -1.16,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:07.713391"
-    },
-    {
-      "symbol": "ON",
-      "current_price": 58.34,
-      "prev_close": 62.2,
-      "change_pct": -6.21,
-      "change_abs": -3.86,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:02.814669"
-    },
-    {
-      "symbol": "JOBY",
-      "current_price": 10.465,
-      "prev_close": 11.14,
-      "change_pct": -6.06,
-      "change_abs": -0.68,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:00.795016"
-    },
-    {
-      "symbol": "CRWD",
-      "current_price": 417.685,
-      "prev_close": 444.62,
-      "change_pct": -6.06,
-      "change_abs": -26.94,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.206118"
-    },
-    {
-      "symbol": "URG",
-      "current_price": 1.7850000000000001,
-      "prev_close": 1.9,
-      "change_pct": -6.05,
-      "change_abs": -0.11,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:07.755160"
-    },
-    {
-      "symbol": "VST",
-      "current_price": 152.89,
-      "prev_close": 162.58,
-      "change_pct": -5.96,
-      "change_abs": -9.69,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.638670"
-    },
-    {
-      "symbol": "ALB",
-      "current_price": 169.975,
-      "prev_close": 180.7,
-      "change_pct": -5.94,
-      "change_abs": -10.72,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.243695"
-    },
-    {
-      "symbol": "NIO",
-      "current_price": 4.495,
-      "prev_close": 4.77,
-      "change_pct": -5.77,
-      "change_abs": -0.27,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:00.790573"
-    },
-    {
-      "symbol": "RCL",
-      "current_price": 326.78499999999997,
-      "prev_close": 345.98,
-      "change_pct": -5.55,
-      "change_abs": -19.2,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.293319"
-    },
-    {
-      "symbol": "CLOV",
-      "current_price": 2.145,
-      "prev_close": 2.27,
-      "change_pct": -5.51,
-      "change_abs": -0.12,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.319230"
-    },
-    {
-      "symbol": "AMSC",
-      "current_price": 29.744999999999997,
-      "prev_close": 31.45,
-      "change_pct": -5.42,
-      "change_abs": -1.71,
-      "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:00.927593"
+      "detected_at": "2026-02-04T10:00:00.612568"
     },
     {
       "symbol": "ISRG",
-      "current_price": 480.12,
-      "prev_close": 507.55,
-      "change_pct": -5.4,
-      "change_abs": -27.43,
+      "current_price": 466.275,
+      "prev_close": 504.22,
+      "change_pct": -7.53,
+      "change_abs": -37.95,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:01.392521"
+      "detected_at": "2026-02-04T10:00:00.602017"
     },
     {
-      "symbol": "MSFT",
-      "current_price": 410.08000000000004,
-      "prev_close": 433.5,
-      "change_pct": -5.4,
-      "change_abs": -23.42,
+      "symbol": "PATH",
+      "current_price": 11.645,
+      "prev_close": 12.59,
+      "change_pct": -7.51,
+      "change_abs": -0.95,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:03.074603"
+      "detected_at": "2026-02-04T10:00:10.211683"
     },
     {
-      "symbol": "AVGO",
-      "current_price": 313.11,
-      "prev_close": 330.73,
-      "change_pct": -5.33,
-      "change_abs": -17.62,
+      "symbol": "BBAI",
+      "current_price": 4.665,
+      "prev_close": 5.04,
+      "change_pct": -7.44,
+      "change_abs": -0.38,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:00.726840"
+      "detected_at": "2026-02-04T10:00:00.720177"
     },
     {
-      "symbol": "ACHR",
-      "current_price": 7.035,
-      "prev_close": 7.43,
-      "change_pct": -5.32,
-      "change_abs": -0.39,
+      "symbol": "VST",
+      "current_price": 146.755,
+      "prev_close": 158.35,
+      "change_pct": -7.32,
+      "change_abs": -11.59,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:06.304448"
+      "detected_at": "2026-02-04T10:00:06.854166"
     },
     {
-      "symbol": "DNN",
-      "current_price": 4.015,
-      "prev_close": 4.24,
-      "change_pct": -5.31,
-      "change_abs": -0.23,
+      "symbol": "NVDA",
+      "current_price": 177.535,
+      "prev_close": 191.13,
+      "change_pct": -7.11,
+      "change_abs": -13.59,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.612128"
+      "detected_at": "2026-02-04T10:00:02.343527"
     },
     {
-      "symbol": "GSAT",
-      "current_price": 61.254999999999995,
-      "prev_close": 64.65,
-      "change_pct": -5.25,
-      "change_abs": -3.4,
+      "symbol": "XPEV",
+      "current_price": 16.71,
+      "prev_close": 17.98,
+      "change_pct": -7.06,
+      "change_abs": -1.27,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.181235"
+      "detected_at": "2026-02-04T10:00:00.688429"
     },
     {
-      "symbol": "BEAM",
-      "current_price": 27.775,
-      "prev_close": 29.29,
-      "change_pct": -5.17,
-      "change_abs": -1.52,
+      "symbol": "HIMS",
+      "current_price": 25.240000000000002,
+      "prev_close": 27.09,
+      "change_pct": -6.83,
+      "change_abs": -1.85,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:07.720962"
+      "detected_at": "2026-02-04T10:00:08.842610"
     },
     {
-      "symbol": "ASML",
-      "current_price": 1380.41,
-      "prev_close": 1455.16,
-      "change_pct": -5.14,
-      "change_abs": -74.75,
+      "symbol": "PLTK",
+      "current_price": 3.375,
+      "prev_close": 3.62,
+      "change_pct": -6.77,
+      "change_abs": -0.25,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:09.139919"
+      "detected_at": "2026-02-04T10:00:00.605704"
     },
     {
-      "symbol": "ARM",
-      "current_price": 102.9,
-      "prev_close": 108.43,
-      "change_pct": -5.1,
-      "change_abs": -5.53,
+      "symbol": "HUT",
+      "current_price": 52.08,
+      "prev_close": 55.83,
+      "change_pct": -6.72,
+      "change_abs": -3.75,
       "severity": "HIGH",
-      "detected_at": "2026-02-03T15:00:04.695709"
+      "detected_at": "2026-02-04T10:00:05.446772"
     },
     {
-      "symbol": "OKTA",
-      "current_price": 81.5,
-      "prev_close": 85.69,
-      "change_pct": -4.89,
-      "change_abs": -4.19,
-      "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:06.285621"
+      "symbol": "TLN",
+      "current_price": 325.15,
+      "prev_close": 348.36,
+      "change_pct": -6.66,
+      "change_abs": -23.21,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:02.386378"
     },
     {
-      "symbol": "MU",
-      "current_price": 414.66999999999996,
-      "prev_close": 435.79,
-      "change_pct": -4.85,
-      "change_abs": -21.12,
-      "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:02.812064"
+      "symbol": "LUNR",
+      "current_price": 17.75,
+      "prev_close": 18.99,
+      "change_pct": -6.53,
+      "change_abs": -1.24,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:06.844455"
+    },
+    {
+      "symbol": "ABBV",
+      "current_price": 208.485,
+      "prev_close": 223.01,
+      "change_pct": -6.51,
+      "change_abs": -14.52,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:03.953828"
+    },
+    {
+      "symbol": "OPEN",
+      "current_price": 4.8149999999999995,
+      "prev_close": 5.15,
+      "change_pct": -6.5,
+      "change_abs": -0.34,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:10.631310"
+    },
+    {
+      "symbol": "ABNB",
+      "current_price": 120.99000000000001,
+      "prev_close": 129.37,
+      "change_pct": -6.48,
+      "change_abs": -8.38,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:10.544514"
     },
     {
       "symbol": "TME",
-      "current_price": 16.345,
-      "prev_close": 17.17,
-      "change_pct": -4.8,
-      "change_abs": -0.83,
-      "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:09.191800"
+      "current_price": 15.715,
+      "prev_close": 16.78,
+      "change_pct": -6.35,
+      "change_abs": -1.07,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:02.541513"
     },
     {
-      "symbol": "QCOM",
-      "current_price": 145.04500000000002,
-      "prev_close": 152.22,
-      "change_pct": -4.71,
-      "change_abs": -7.17,
+      "symbol": "BB",
+      "current_price": 3.3449999999999998,
+      "prev_close": 3.57,
+      "change_pct": -6.3,
+      "change_abs": -0.23,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:08.474419"
+    },
+    {
+      "symbol": "ILMN",
+      "current_price": 135.72,
+      "prev_close": 144.81,
+      "change_pct": -6.28,
+      "change_abs": -9.09,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:06.822779"
+    },
+    {
+      "symbol": "META",
+      "current_price": 671.97,
+      "prev_close": 716.5,
+      "change_pct": -6.21,
+      "change_abs": -44.53,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:05.298730"
+    },
+    {
+      "symbol": "OSCR",
+      "current_price": 13.475000000000001,
+      "prev_close": 14.35,
+      "change_pct": -6.1,
+      "change_abs": -0.87,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:08.689980"
+    },
+    {
+      "symbol": "UPST",
+      "current_price": 36.864999999999995,
+      "prev_close": 39.25,
+      "change_pct": -6.08,
+      "change_abs": -2.39,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:06.862677"
+    },
+    {
+      "symbol": "CLOV",
+      "current_price": 2.105,
+      "prev_close": 2.24,
+      "change_pct": -6.03,
+      "change_abs": -0.14,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:03.986982"
+    },
+    {
+      "symbol": "DIS",
+      "current_price": 106.015,
+      "prev_close": 112.8,
+      "change_pct": -6.02,
+      "change_abs": -6.78,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:00.726818"
+    },
+    {
+      "symbol": "COMP",
+      "current_price": 11.774999999999999,
+      "prev_close": 12.52,
+      "change_pct": -5.95,
+      "change_abs": -0.75,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:05.427924"
+    },
+    {
+      "symbol": "TQQQ",
+      "current_price": 50.864999999999995,
+      "prev_close": 54.0,
+      "change_pct": -5.81,
+      "change_abs": -3.14,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:03.920105"
+    },
+    {
+      "symbol": "CRWV",
+      "current_price": 87.825,
+      "prev_close": 93.19,
+      "change_pct": -5.76,
+      "change_abs": -5.36,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:02.195314"
+    },
+    {
+      "symbol": "EBAY",
+      "current_price": 85.97,
+      "prev_close": 91.22,
+      "change_pct": -5.76,
+      "change_abs": -5.25,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:02.343128"
+    },
+    {
+      "symbol": "TCOM",
+      "current_price": 57.89,
+      "prev_close": 61.37,
+      "change_pct": -5.67,
+      "change_abs": -3.48,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:03.799596"
+    },
+    {
+      "symbol": "ARKK",
+      "current_price": 70.66499999999999,
+      "prev_close": 74.87,
+      "change_pct": -5.62,
+      "change_abs": -4.21,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:08.639415"
+    },
+    {
+      "symbol": "LCID",
+      "current_price": 10.45,
+      "prev_close": 11.07,
+      "change_pct": -5.6,
+      "change_abs": -0.62,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:00.703151"
+    },
+    {
+      "symbol": "MRVL",
+      "current_price": 74.575,
+      "prev_close": 78.92,
+      "change_pct": -5.51,
+      "change_abs": -4.34,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:10.480056"
+    },
+    {
+      "symbol": "OKTA",
+      "current_price": 79.83,
+      "prev_close": 84.48,
+      "change_pct": -5.5,
+      "change_abs": -4.65,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:05.278132"
+    },
+    {
+      "symbol": "GSAT",
+      "current_price": 58.239999999999995,
+      "prev_close": 61.62,
+      "change_pct": -5.49,
+      "change_abs": -3.38,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:08.842422"
+    },
+    {
+      "symbol": "RBLX",
+      "current_price": 62.165,
+      "prev_close": 65.76,
+      "change_pct": -5.47,
+      "change_abs": -3.6,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:05.366600"
+    },
+    {
+      "symbol": "NVAX",
+      "current_price": 8.370000000000001,
+      "prev_close": 8.845,
+      "change_pct": -5.37,
+      "change_abs": -0.47,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:07.015212"
+    },
+    {
+      "symbol": "QBTS",
+      "current_price": 20.09,
+      "prev_close": 21.22,
+      "change_pct": -5.33,
+      "change_abs": -1.13,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:02.343482"
+    },
+    {
+      "symbol": "INFY",
+      "current_price": 16.645,
+      "prev_close": 17.58,
+      "change_pct": -5.32,
+      "change_abs": -0.93,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:05.476259"
+    },
+    {
+      "symbol": "AVGO",
+      "current_price": 313.745,
+      "prev_close": 331.3,
+      "change_pct": -5.3,
+      "change_abs": -17.56,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:03.790982"
+    },
+    {
+      "symbol": "BABA",
+      "current_price": 160.675,
+      "prev_close": 169.56,
+      "change_pct": -5.24,
+      "change_abs": -8.88,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:02.449580"
+    },
+    {
+      "symbol": "TRIP",
+      "current_price": 12.594999999999999,
+      "prev_close": 13.29,
+      "change_pct": -5.23,
+      "change_abs": -0.7,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:08.488792"
+    },
+    {
+      "symbol": "RGTI",
+      "current_price": 17.22,
+      "prev_close": 18.17,
+      "change_pct": -5.23,
+      "change_abs": -0.95,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:08.546593"
+    },
+    {
+      "symbol": "RKLB",
+      "current_price": 75.99,
+      "prev_close": 80.07,
+      "change_pct": -5.1,
+      "change_abs": -4.08,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:10.638880"
+    },
+    {
+      "symbol": "KLAC",
+      "current_price": 1356.005,
+      "prev_close": 1427.94,
+      "change_pct": -5.04,
+      "change_abs": -71.93,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:00.721842"
+    },
+    {
+      "symbol": "NIO",
+      "current_price": 4.465,
+      "prev_close": 4.7,
+      "change_pct": -5.0,
+      "change_abs": -0.24,
+      "severity": "HIGH",
+      "detected_at": "2026-02-04T10:00:05.434847"
+    },
+    {
+      "symbol": "EVTL",
+      "current_price": 4.475,
+      "prev_close": 4.71,
+      "change_pct": -4.99,
+      "change_abs": -0.24,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:09.107859"
+      "detected_at": "2026-02-04T10:00:07.261345"
+    },
+    {
+      "symbol": "NET",
+      "current_price": 168.72,
+      "prev_close": 177.35,
+      "change_pct": -4.87,
+      "change_abs": -8.63,
+      "severity": "MEDIUM",
+      "detected_at": "2026-02-04T10:00:10.237421"
+    },
+    {
+      "symbol": "MSFT",
+      "current_price": 409.69500000000005,
+      "prev_close": 430.29,
+      "change_pct": -4.79,
+      "change_abs": -20.59,
+      "severity": "MEDIUM",
+      "detected_at": "2026-02-04T10:00:05.280330"
     },
     {
       "symbol": "ZM",
-      "current_price": 88.37,
-      "prev_close": 92.58,
-      "change_pct": -4.55,
-      "change_abs": -4.21,
+      "current_price": 87.7,
+      "prev_close": 92.1,
+      "change_pct": -4.78,
+      "change_abs": -4.4,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:06.352784"
+      "detected_at": "2026-02-04T10:00:07.068751"
     },
     {
-      "symbol": "SQM",
-      "current_price": 78.23,
-      "prev_close": 81.64,
-      "change_pct": -4.18,
-      "change_abs": -3.41,
+      "symbol": "BNTX",
+      "current_price": 108.33500000000001,
+      "prev_close": 113.75,
+      "change_pct": -4.76,
+      "change_abs": -5.41,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:07.748803"
+      "detected_at": "2026-02-04T10:00:08.719344"
     },
     {
-      "symbol": "CLS",
-      "current_price": 287.48,
-      "prev_close": 300.0,
-      "change_pct": -4.17,
-      "change_abs": -12.52,
+      "symbol": "APO",
+      "current_price": 128.22,
+      "prev_close": 134.54,
+      "change_pct": -4.7,
+      "change_abs": -6.32,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:06.207510"
+      "detected_at": "2026-02-04T10:00:05.277927"
     },
     {
       "symbol": "CVNA",
-      "current_price": 409.62,
-      "prev_close": 427.44,
-      "change_pct": -4.17,
-      "change_abs": -17.82,
+      "current_price": 382.745,
+      "prev_close": 401.11,
+      "change_pct": -4.58,
+      "change_abs": -18.37,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:00.720411"
+      "detected_at": "2026-02-04T10:00:06.826034"
     },
     {
-      "symbol": "AMD",
-      "current_price": 241.89499999999998,
-      "prev_close": 252.18,
-      "change_pct": -4.08,
-      "change_abs": -10.29,
+      "symbol": "NNE",
+      "current_price": 28.055,
+      "prev_close": 29.395,
+      "change_pct": -4.56,
+      "change_abs": -1.34,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:00.957547"
-    },
-    {
-      "symbol": "JD",
-      "current_price": 27.895,
-      "prev_close": 29.07,
-      "change_pct": -4.04,
-      "change_abs": -1.18,
-      "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:07.803029"
-    },
-    {
-      "symbol": "XLK",
-      "current_price": 140.945,
-      "prev_close": 146.87,
-      "change_pct": -4.03,
-      "change_abs": -5.93,
-      "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:00.591921"
-    },
-    {
-      "symbol": "UUUU",
-      "current_price": 23.884999999999998,
-      "prev_close": 24.88,
-      "change_pct": -4.0,
-      "change_abs": -1.0,
-      "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:04.908303"
-    },
-    {
-      "symbol": "FTNT",
-      "current_price": 78.295,
-      "prev_close": 81.51,
-      "change_pct": -3.94,
-      "change_abs": -3.22,
-      "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:03.238860"
-    },
-    {
-      "symbol": "NU",
-      "current_price": 18.025,
-      "prev_close": 18.76,
-      "change_pct": -3.92,
-      "change_abs": -0.74,
-      "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:06.343459"
+      "detected_at": "2026-02-04T10:00:08.617371"
     },
     {
       "symbol": "NFLX",
-      "current_price": 80.025,
-      "prev_close": 83.16,
-      "change_pct": -3.77,
-      "change_abs": -3.13,
+      "current_price": 79.795,
+      "prev_close": 83.49,
+      "change_pct": -4.43,
+      "change_abs": -3.69,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:09.269784"
+      "detected_at": "2026-02-04T10:00:02.313379"
     },
     {
-      "symbol": "ALAB",
-      "current_price": 154.505,
-      "prev_close": 160.46,
-      "change_pct": -3.71,
-      "change_abs": -5.96,
+      "symbol": "GPN",
+      "current_price": 68.63,
+      "prev_close": 71.74,
+      "change_pct": -4.34,
+      "change_abs": -3.11,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:06.284806"
+      "detected_at": "2026-02-04T10:00:03.814682"
     },
     {
-      "symbol": "ONDS",
-      "current_price": 10.855,
-      "prev_close": 11.27,
-      "change_pct": -3.68,
-      "change_abs": -0.41,
+      "symbol": "FTNT",
+      "current_price": 77.8,
+      "prev_close": 81.26,
+      "change_pct": -4.26,
+      "change_abs": -3.46,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:00.795244"
+      "detected_at": "2026-02-04T10:00:02.343285"
     },
     {
-      "symbol": "WOLF",
-      "current_price": 16.7,
-      "prev_close": 17.33,
-      "change_pct": -3.64,
-      "change_abs": -0.63,
+      "symbol": "LRCX",
+      "current_price": 223.66500000000002,
+      "prev_close": 233.46,
+      "change_pct": -4.2,
+      "change_abs": -9.79,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:01.406574"
+      "detected_at": "2026-02-04T10:00:02.343719"
     },
     {
-      "symbol": "ELV",
-      "current_price": 334.685,
-      "prev_close": 346.98,
-      "change_pct": -3.54,
-      "change_abs": -12.3,
+      "symbol": "AMWL",
+      "current_price": 4.359999999999999,
+      "prev_close": 4.55,
+      "change_pct": -4.18,
+      "change_abs": -0.19,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:06.265355"
+      "detected_at": "2026-02-04T10:00:08.600097"
     },
     {
-      "symbol": "SMCI",
-      "current_price": 29.085,
-      "prev_close": 30.12,
-      "change_pct": -3.44,
-      "change_abs": -1.04,
+      "symbol": "CYH",
+      "current_price": 3.085,
+      "prev_close": 3.21,
+      "change_pct": -3.89,
+      "change_abs": -0.12,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:03.043928"
+      "detected_at": "2026-02-04T10:00:02.195535"
     },
     {
-      "symbol": "UMAC",
-      "current_price": 14.760000000000002,
-      "prev_close": 15.28,
-      "change_pct": -3.4,
-      "change_abs": -0.52,
+      "symbol": "JD",
+      "current_price": 27.415,
+      "prev_close": 28.48,
+      "change_pct": -3.74,
+      "change_abs": -1.07,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:07.830314"
+      "detected_at": "2026-02-04T10:00:03.798606"
     },
     {
-      "symbol": "AFRM",
-      "current_price": 60.665000000000006,
-      "prev_close": 62.8,
-      "change_pct": -3.4,
-      "change_abs": -2.13,
+      "symbol": "SMR",
+      "current_price": 16.83,
+      "prev_close": 17.48,
+      "change_pct": -3.72,
+      "change_abs": -0.65,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:00.927707"
+      "detected_at": "2026-02-04T10:00:03.901607"
     },
     {
-      "symbol": "GOLD",
-      "current_price": 51.72,
-      "prev_close": 53.53,
-      "change_pct": -3.38,
-      "change_abs": -1.81,
-      "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:00.813747"
-    },
-    {
-      "symbol": "WULF",
-      "current_price": 14.065000000000001,
-      "prev_close": 14.54,
-      "change_pct": -3.27,
+      "symbol": "NTLA",
+      "current_price": 12.675,
+      "prev_close": 13.15,
+      "change_pct": -3.61,
       "change_abs": -0.47,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:04.722347"
+      "detected_at": "2026-02-04T10:00:02.322370"
     },
     {
-      "symbol": "UNH",
-      "current_price": 282.885,
-      "prev_close": 292.29,
+      "symbol": "NU",
+      "current_price": 17.145,
+      "prev_close": 17.75,
+      "change_pct": -3.41,
+      "change_abs": -0.61,
+      "severity": "MEDIUM",
+      "detected_at": "2026-02-04T10:00:06.896186"
+    },
+    {
+      "symbol": "MRNA",
+      "current_price": 42.605000000000004,
+      "prev_close": 44.07,
+      "change_pct": -3.32,
+      "change_abs": -1.46,
+      "severity": "MEDIUM",
+      "detected_at": "2026-02-04T10:00:02.366092"
+    },
+    {
+      "symbol": "CG",
+      "current_price": 56.845,
+      "prev_close": 58.78,
+      "change_pct": -3.29,
+      "change_abs": -1.94,
+      "severity": "MEDIUM",
+      "detected_at": "2026-02-04T10:00:10.526933"
+    },
+    {
+      "symbol": "UEC",
+      "current_price": 16.685000000000002,
+      "prev_close": 17.24,
       "change_pct": -3.22,
-      "change_abs": -9.41,
+      "change_abs": -0.55,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:02.834963"
+      "detected_at": "2026-02-04T10:00:08.637990"
     },
     {
-      "symbol": "ENPH",
-      "current_price": 37.04,
-      "prev_close": 38.25,
-      "change_pct": -3.16,
-      "change_abs": -1.21,
+      "symbol": "BLDP",
+      "current_price": 2.255,
+      "prev_close": 2.33,
+      "change_pct": -3.22,
+      "change_abs": -0.08,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:04.632400"
+      "detected_at": "2026-02-04T10:00:08.688539"
     },
     {
-      "symbol": "CRSP",
-      "current_price": 51.675,
-      "prev_close": 53.35,
+      "symbol": "ASTS",
+      "current_price": 107.72,
+      "prev_close": 111.21,
       "change_pct": -3.14,
-      "change_abs": -1.68,
+      "change_abs": -3.49,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:04.617802"
+      "detected_at": "2026-02-04T10:00:10.495378"
     },
     {
-      "symbol": "AXP",
-      "current_price": 347.57500000000005,
-      "prev_close": 358.5,
+      "symbol": "XLK",
+      "current_price": 139.49,
+      "prev_close": 143.88,
       "change_pct": -3.05,
-      "change_abs": -10.92,
+      "change_abs": -4.39,
       "severity": "MEDIUM",
-      "detected_at": "2026-02-03T15:00:04.908592"
+      "detected_at": "2026-02-04T10:00:05.280454"
+    },
+    {
+      "symbol": "AI",
+      "current_price": 10.675,
+      "prev_close": 11.01,
+      "change_pct": -3.04,
+      "change_abs": -0.33,
+      "severity": "MEDIUM",
+      "detected_at": "2026-02-04T10:00:03.901472"
     }
   ],
-  "critical_count": 57,
-  "high_count": 82,
-  "medium_count": 28
+  "critical_count": 51,
+  "high_count": 74,
+  "medium_count": 25
 }

@@ -2143,7 +2143,7 @@ class PutsEngineScheduler:
             results = await run_early_warning_scan(
                 self._alpaca, 
                 self._polygon, 
-                self._unusual_whales,
+                self._uw,
                 symbols
             )
             
