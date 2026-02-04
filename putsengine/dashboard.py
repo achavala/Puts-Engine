@@ -496,7 +496,7 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
         # Create pattern indicator column
         if is_pattern_enhanced:
             pattern_col = f"⭐ +{pattern_boost:.2f}"
-    else:
+        else:
             pattern_col = ""
         
         # =========================================================================
@@ -521,19 +521,19 @@ def format_validated_candidates(candidates: List[Dict], engine_type: str) -> Lis
         # These are the institutional tiers from the scoring system
         signal_strength = c.get("tier")  # First try JSON field
         if not signal_strength or signal_strength == "N/A":
-    if score >= 0.75:
+            if score >= 0.75:
                 signal_strength = "🔥 EXPLOSIVE"
             elif score >= 0.68:
                 signal_strength = "🏛️ CLASS A"
-    elif score >= 0.60:
+            elif score >= 0.60:
                 signal_strength = "💪 STRONG"
             elif score >= 0.55:
                 signal_strength = "⚡ ELEVATED"
-    elif score >= 0.45:
+            elif score >= 0.45:
                 signal_strength = "👀 MONITORING"
             elif score >= 0.35:
                 signal_strength = "🟡 CLASS B"
-    else:
+            else:
                 signal_strength = "📊 WATCHING"
         
         # =========================================================================
@@ -1254,13 +1254,13 @@ def render_48hour_analysis():
     # Summary metrics
     col1, col2, col3, col4, col5 = st.columns(5)
     
-            with col1:
+    with col1:
         st.metric("📊 Unique Symbols", analysis.get("unique_symbols", 0))
     
-            with col2:
+    with col2:
         st.metric("📈 Total Appearances", analysis.get("total_appearances", 0))
     
-            with col3:
+    with col3:
         st.metric("🔥 Multi-Engine", analysis.get("multi_engine_count", 0))
     
     with col4:
@@ -1599,7 +1599,7 @@ def render_big_movers_analysis():
             return "⭐⭐⭐"  # 2+ engines = highest conviction, larger size
         elif len(engines) == 1:
             return "✅"      # 1 engine = confirmed, standard size
-    else:
+        else:
             return ""        # No confirmation
     
     # =========================================================================
@@ -1760,13 +1760,13 @@ def render_big_movers_analysis():
     
     col1, col2, col3, col4 = st.columns(4)
     
-            with col1:
+    with col1:
         st.metric("💥 Pump Reversal", len(pump_reversal), help="Pumped stocks - watch for crash")
     
-            with col2:
+    with col2:
         st.metric("↩️ 2-Day Rally", len(two_day_rally), help="Exhaustion pattern candidates")
     
-            with col3:
+    with col3:
         st.metric("📈 High Vol Run", len(high_vol_run), help="Big gains on volume - institutions exiting?")
     
     with col4:
@@ -1853,7 +1853,7 @@ def render_big_movers_analysis():
             for p in two_day_rally[:12]
         ])
         st.dataframe(df_rally, use_container_width=True, hide_index=True, height=350)
-                        else:
+    else:
         st.info("No two-day rally exhaustion candidates found.")
     
     st.divider()
@@ -1883,7 +1883,7 @@ def render_big_movers_analysis():
     else:
         st.info("No high volume run candidates found.")
     
-                st.divider()
+    st.divider()
     
     # =========================================================================
     # Pattern 4: Sector Contagion Watch
