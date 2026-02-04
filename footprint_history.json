@@ -138,6 +138,37 @@
         "avg_down_volume": 72666531,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:03:17.844292",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 40,
+        "spread_pct": 0.017,
+        "signals": [
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:18.435632",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 19171974,
+        "avg_down_volume": 72666531,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "TSLA": [
@@ -290,6 +321,36 @@
         "avg_down_volume": 14177825,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:00:35.173971",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 40,
+        "spread_pct": 0.043,
+        "signals": [
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:00:35.793793",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 59776525,
+        "avg_down_volume": 14763568,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "AMZN": [
@@ -387,6 +448,21 @@
         "down_days": 2,
         "up_days": 3,
         "avg_up_volume": 7200687,
+        "avg_down_volume": 10559877,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:21.023935",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 2,
+        "up_days": 3,
+        "avg_up_volume": 7999952,
         "avg_down_volume": 10559877,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -614,6 +690,20 @@
         ],
         "note": "Market makers reducing exposure"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:01:36.793875",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 120,
+        "ask_size": 320,
+        "spread_pct": 0.035,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
     }
   ],
   "V": [
@@ -768,6 +858,36 @@
         "down_days": 2,
         "up_days": 3,
         "avg_up_volume": 3556032,
+        "avg_down_volume": 5007091,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:00:52.679466",
+      "strength": 0.6,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 120,
+        "spread_pct": 0.093,
+        "signals": [
+          "bid_imbalance",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:00:53.285516",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 2,
+        "up_days": 3,
+        "avg_up_volume": 3742045,
         "avg_down_volume": 5007091,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -1019,6 +1139,22 @@
         "peers_checked": 4,
         "note": "Symbol diverging from sector peers"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:34.774872",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 18606465,
+        "avg_down_volume": 55244669,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "HIMS": [
@@ -1154,6 +1290,38 @@
         "avg_down_volume": 7486321,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:03:02.103652",
+      "strength": 0.8,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 200,
+        "spread_pct": 0.102,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:02.759251",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 4581001,
+        "avg_down_volume": 7810142,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "UMAC": [
@@ -1169,6 +1337,22 @@
         "up_days": 3,
         "avg_up_volume": 2171733,
         "avg_down_volume": 2981154,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:42.337597",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 2159694,
+        "avg_down_volume": 2608724,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -1385,6 +1569,22 @@
         "up_days": 1,
         "avg_up_volume": 74660023,
         "avg_down_volume": 98534153,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:29.972349",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 74660023,
+        "avg_down_volume": 106307457,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -1691,6 +1891,22 @@
         "avg_down_volume": 3416335,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:31:10.377806",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 3777215,
+        "avg_down_volume": 3416335,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "NVDA": [
@@ -1832,6 +2048,21 @@
         "avg_down_volume": 18097833,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:02:35.155731",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 1,
+        "up_days": 4,
+        "avg_up_volume": 14329664,
+        "avg_down_volume": 18097833,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "COMP": [
@@ -1905,6 +2136,22 @@
         "avg_down_volume": 14780560,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:43.651271",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 18652077,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "OWL": [
@@ -1974,6 +2221,22 @@
         "avg_down_volume": 35377910,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:02:02.311845",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 32365689,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "MSTR": [
@@ -2036,6 +2299,22 @@
         "up_days": 1,
         "avg_up_volume": 22767984,
         "avg_down_volume": 23271341,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:27.506418",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 22767984,
+        "avg_down_volume": 24649172,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -2343,6 +2622,23 @@
         "avg_down_volume": 3207961,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:02:47.212579",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 1521866,
+        "avg_down_volume": 3675661,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "IREN": [
@@ -2359,6 +2655,22 @@
         "up_days": 2,
         "avg_up_volume": 42458814,
         "avg_down_volume": 44513851,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:25.817927",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 40910344,
+        "avg_down_volume": 49724099,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -2565,6 +2877,22 @@
         "avg_down_volume": 1301909,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:18.064735",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 1015241,
+        "avg_down_volume": 1713604,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "RCL": [
@@ -2625,6 +2953,35 @@
         "down_days": 2,
         "up_days": 3,
         "avg_up_volume": 3387475,
+        "avg_down_volume": 2822898,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:04:44.181793",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 80,
+        "spread_pct": 0.091,
+        "signals": [
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:44.713347",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "lower_highs"
+        ],
+        "down_days": 2,
+        "up_days": 3,
+        "avg_up_volume": 3458515,
         "avg_down_volume": 2822898,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -2764,6 +3121,22 @@
           "spread_widening"
         ],
         "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:31:42.173199",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 4381990,
+        "avg_down_volume": 6140871,
+        "note": "Classic Wyckoff distribution pattern"
       }
     }
   ],
@@ -2941,6 +3314,36 @@
         "avg_down_volume": 82216395,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:28.106629",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 2,
+        "up_days": 3,
+        "avg_up_volume": 34591881,
+        "avg_down_volume": 52874218,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:31:17.531282",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 2,
+        "up_days": 3,
+        "avg_up_volume": 34591881,
+        "avg_down_volume": 64501838,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "LTHM": [
@@ -3077,6 +3480,22 @@
         "up_days": 2,
         "avg_up_volume": 5274041,
         "avg_down_volume": 9285281,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:00:08.356820",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 7627726,
+        "avg_down_volume": 8127191,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -3417,6 +3836,23 @@
         "avg_down_volume": 1734080,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:31.330512",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 1086439,
+        "avg_down_volume": 2227954,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "CDE": [
@@ -3482,6 +3918,22 @@
         "avg_down_volume": 32842396,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:02:27.672830",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 26154402,
+        "avg_down_volume": 34179274,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "MARA": [
@@ -3543,6 +3995,21 @@
         "down_days": 2,
         "up_days": 3,
         "avg_up_volume": 2831383,
+        "avg_down_volume": 5166790,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:00.292980",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 2,
+        "up_days": 3,
+        "avg_up_volume": 3153212,
         "avg_down_volume": 5166790,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -3619,6 +4086,23 @@
         "down_days": 4,
         "up_days": 1,
         "avg_up_volume": 870467,
+        "avg_down_volume": 3862460,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:07.589227",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 1481259,
         "avg_down_volume": 3862460,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -3970,6 +4454,22 @@
         "avg_down_volume": 84182459,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:02:19.950290",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 101208162,
+        "avg_down_volume": 90976719,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "VRTX": [
@@ -4048,6 +4548,22 @@
         "down_days": 3,
         "up_days": 2,
         "avg_up_volume": 460610,
+        "avg_down_volume": 1246523,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:01:47.569240",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 529156,
         "avg_down_volume": 1246523,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -4158,6 +4674,36 @@
         "down_days": 3,
         "up_days": 2,
         "avg_up_volume": 1493002,
+        "avg_down_volume": 4150956,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:03:52.456631",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 80,
+        "ask_size": 120,
+        "spread_pct": 0.039,
+        "signals": [
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:53.068543",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 1806410,
         "avg_down_volume": 4150956,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -4325,6 +4871,38 @@
         "avg_down_volume": 7635019,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:00:55.082102",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 13500,
+        "ask_size": 39700,
+        "spread_pct": 0.292,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:00:55.701937",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 5484627,
+        "avg_down_volume": 7635019,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "BITF": [
@@ -4342,6 +4920,21 @@
         "avg_up_volume": 0,
         "avg_down_volume": 35827720,
         "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:01:54.321885",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 27600,
+        "ask_size": 87600,
+        "spread_pct": 0.495,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening"
+        ],
+        "note": "Market makers reducing exposure"
       }
     }
   ],
@@ -4464,6 +5057,18 @@
         "peers_checked": 5,
         "note": "Symbol diverging from sector peers"
       }
+    },
+    {
+      "footprint_type": "cross_asset_divergence",
+      "timestamp": "2026-02-04T16:30:03.547979",
+      "strength": 0.7854343797078942,
+      "details": {
+        "symbol_change_pct": 2.43,
+        "avg_peer_change_pct": -5.42,
+        "divergence_pct": 7.85,
+        "peers_checked": 5,
+        "note": "Symbol diverging from sector peers"
+      }
     }
   ],
   "CEG": [
@@ -4542,6 +5147,37 @@
         "up_days": 0,
         "avg_up_volume": 0,
         "avg_down_volume": 2939755,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:03:22.627907",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 120,
+        "ask_size": 600,
+        "spread_pct": 0.147,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:23.250330",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 3228535,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -4773,6 +5409,22 @@
         "up_days": 2,
         "avg_up_volume": 32528433,
         "avg_down_volume": 54461800,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:02:04.833210",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 32528433,
+        "avg_down_volume": 58073360,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -5071,6 +5723,21 @@
         "down_days": 2,
         "up_days": 3,
         "avg_up_volume": 224083,
+        "avg_down_volume": 452450,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:15.342178",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 2,
+        "up_days": 3,
+        "avg_up_volume": 357904,
         "avg_down_volume": 452450,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -5486,6 +6153,37 @@
         "avg_down_volume": 3046185,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:01:49.345922",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 400,
+        "spread_pct": 0.134,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:01:50.062386",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 3363201,
+        "avg_down_volume": 3231115,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "MOH": [
@@ -5532,6 +6230,37 @@
         "down_days": 3,
         "up_days": 2,
         "avg_up_volume": 647325,
+        "avg_down_volume": 1377416,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:02:48.986603",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 300,
+        "spread_pct": 0.421,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:02:49.569325",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 758516,
         "avg_down_volume": 1377416,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -5621,6 +6350,23 @@
         "up_days": 3,
         "avg_up_volume": 16196024,
         "avg_down_volume": 43145383,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:12.823988",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 14373533,
+        "avg_down_volume": 38073797,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -5723,6 +6469,37 @@
         "avg_down_volume": 16333404,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:03:42.084116",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 3000,
+        "spread_pct": 0.062,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:42.666233",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 11012215,
+        "avg_down_volume": 17166063,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "AN": [
@@ -5748,6 +6525,36 @@
         "divergence_pct": 3.22,
         "peers_checked": 3,
         "note": "Symbol diverging from sector peers"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:01:56.933411",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 300,
+        "spread_pct": 0.457,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:01:57.512461",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 2,
+        "up_days": 3,
+        "avg_up_volume": 428864,
+        "avg_down_volume": 635474,
+        "note": "Classic Wyckoff distribution pattern"
       }
     }
   ],
@@ -5854,6 +6661,20 @@
         "peers_checked": 5,
         "note": "Symbol diverging from sector peers"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:04:36.788926",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 300,
+        "spread_pct": 0.062,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
     }
   ],
   "QUBT": [
@@ -5890,6 +6711,22 @@
         "print_count": 3,
         "total_size": 55060,
         "price_range": "$9.17 - $9.23"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:41.199313",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 13418932,
+        "avg_down_volume": 17317733,
+        "note": "Classic Wyckoff distribution pattern"
       }
     }
   ],
@@ -6096,6 +6933,22 @@
         "avg_down_volume": 1872738,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:36.246773",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 2063316,
+        "avg_down_volume": 2316792,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "ZM": [
@@ -6192,6 +7045,21 @@
         "avg_up_volume": 3812479,
         "avg_down_volume": 6185668,
         "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:00:05.362606",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 300,
+        "spread_pct": 0.306,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening"
+        ],
+        "note": "Market makers reducing exposure"
       }
     }
   ],
@@ -6305,6 +7173,21 @@
         "spread_pct": 0.149,
         "signals": [
           "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:01:21.620337",
+      "strength": 0.6,
+      "details": {
+        "bid_size": 80,
+        "ask_size": 680,
+        "spread_pct": 0.091,
+        "signals": [
+          "bid_imbalance",
           "thin_bid"
         ],
         "note": "Market makers reducing exposure"
@@ -6737,6 +7620,36 @@
         "avg_down_volume": 7924599,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:03:49.598649",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 200,
+        "ask_size": 900,
+        "spread_pct": 0.06,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:50.229715",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 7958071,
+        "avg_down_volume": 8201967,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "ASML": [
@@ -6799,6 +7712,23 @@
         "avg_down_volume": 1951065,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:53.413205",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 1765881,
+        "avg_down_volume": 2461731,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "XLK": [
@@ -6850,6 +7780,23 @@
         "avg_down_volume": 20997181,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:12.708336",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 16243938,
+        "avg_down_volume": 29979608,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "SKLZ": [
@@ -6882,6 +7829,22 @@
         "up_days": 0,
         "avg_up_volume": 0,
         "avg_down_volume": 69277,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:31:19.925668",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 80834,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -7188,6 +8151,52 @@
         "avg_down_volume": 12008363,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:04:04.529713",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 400,
+        "spread_pct": 0.062,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:05.149215",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 6075402,
+        "avg_down_volume": 12008363,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:07.935338",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 8766889,
+        "avg_down_volume": 12008363,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "ACHR": [
@@ -7269,6 +8278,22 @@
         "up_days": 1,
         "avg_up_volume": 10285692,
         "avg_down_volume": 6194446,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:09.948782",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 10285692,
+        "avg_down_volume": 6625222,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -7392,6 +8417,37 @@
         "up_days": 1,
         "avg_up_volume": 7020998,
         "avg_down_volume": 25197471,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:03:04.568268",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 500,
+        "spread_pct": 0.164,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:05.128410",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 22658634,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -7544,6 +8600,35 @@
         "avg_down_volume": 3264787,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:03:10.484677",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 80,
+        "spread_pct": 0.076,
+        "signals": [
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:11.116029",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 1,
+        "up_days": 4,
+        "avg_up_volume": 2543767,
+        "avg_down_volume": 3264787,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "ACN": [
@@ -7573,6 +8658,21 @@
         "down_days": 2,
         "up_days": 3,
         "avg_up_volume": 3485090,
+        "avg_down_volume": 8672948,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:00:20.687109",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 2,
+        "up_days": 3,
+        "avg_up_volume": 3987447,
         "avg_down_volume": 8672948,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -7619,6 +8719,20 @@
         "spread_pct": 0.115,
         "signals": [
           "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:02:06.517020",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 80,
+        "ask_size": 120,
+        "spread_pct": 0.071,
+        "signals": [
           "thin_bid"
         ],
         "note": "Market makers reducing exposure"
@@ -7906,6 +9020,21 @@
         ],
         "note": "Market makers reducing exposure"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:04:16.727497",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 25,
+        "ask_size": 2,
+        "spread_pct": 0.264,
+        "signals": [
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
     }
   ],
   "TME": [
@@ -7986,6 +9115,22 @@
         "down_days": 4,
         "up_days": 1,
         "avg_up_volume": 635998,
+        "avg_down_volume": 2841405,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:57.872818",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 1468981,
         "avg_down_volume": 2841405,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -8228,6 +9373,22 @@
         "down_days": 4,
         "up_days": 1,
         "avg_up_volume": 691027,
+        "avg_down_volume": 3471828,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:31:44.784383",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 6795686,
         "avg_down_volume": 3471828,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -8561,6 +9722,40 @@
         "up_days": 1,
         "avg_up_volume": 7621045,
         "avg_down_volume": 9195794,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:00:15.805143",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 7621045,
+        "avg_down_volume": 9770785,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:48.411167",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 7621045,
+        "avg_down_volume": 11618486,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -9029,6 +10224,22 @@
         "avg_down_volume": 1259256,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:00.319072",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 734218,
+        "avg_down_volume": 1428712,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "WDAY": [
@@ -9060,6 +10271,22 @@
         "down_days": 3,
         "up_days": 2,
         "avg_up_volume": 3473865,
+        "avg_down_volume": 6880734,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:02.770777",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 4361600,
         "avg_down_volume": 6880734,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -9175,6 +10402,22 @@
         "avg_down_volume": 13520382,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:00:43.011745",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 14037440,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "XLI": [
@@ -9190,6 +10433,21 @@
           "bid_imbalance"
         ],
         "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:10.364000",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 1,
+        "up_days": 4,
+        "avg_up_volume": 13956815,
+        "avg_down_volume": 21324501,
+        "note": "Classic Wyckoff distribution pattern"
       }
     }
   ],
@@ -9292,6 +10550,23 @@
         "down_days": 3,
         "up_days": 2,
         "avg_up_volume": 2281605,
+        "avg_down_volume": 5191399,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:00:40.670768",
+      "strength": 1.0,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 3020587,
         "avg_down_volume": 5191399,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -9407,6 +10682,35 @@
         "avg_down_volume": 4744217,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:02:24.723598",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 80,
+        "ask_size": 160,
+        "spread_pct": 0.069,
+        "signals": [
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:02:25.281427",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 1,
+        "up_days": 4,
+        "avg_up_volume": 3919284,
+        "avg_down_volume": 4744217,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "LAD": [
@@ -9503,6 +10807,22 @@
         "up_days": 0,
         "avg_up_volume": 0,
         "avg_down_volume": 2043823,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:02:09.552330",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 2174265,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -9675,6 +10995,38 @@
         "avg_down_volume": 4896532,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:00:33.384331",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 3228864,
+        "avg_down_volume": 4161503,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:50.980668",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 3228864,
+        "avg_down_volume": 4644413,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "OKTA": [
@@ -9807,6 +11159,22 @@
         "divergence_pct": 1.98,
         "peers_checked": 5,
         "note": "Symbol diverging from sector peers"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:01:42.271939",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 14502604,
+        "avg_down_volume": 13754332,
+        "note": "Classic Wyckoff distribution pattern"
       }
     }
   ],
@@ -10082,6 +11450,22 @@
         "avg_down_volume": 5987756,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:40.165049",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 6363172,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "BLDP": [
@@ -10341,6 +11725,22 @@
         "peers_checked": 5,
         "note": "Symbol diverging from sector peers"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:00:58.231498",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 3447563,
+        "avg_down_volume": 4447941,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "REGN": [
@@ -10402,6 +11802,36 @@
         "down_days": 2,
         "up_days": 3,
         "avg_up_volume": 521501,
+        "avg_down_volume": 1121834,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:04:24.480979",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 80,
+        "spread_pct": 0.203,
+        "signals": [
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:04:25.098281",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 2,
+        "up_days": 3,
+        "avg_up_volume": 557345,
         "avg_down_volume": 1121834,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -10503,6 +11933,37 @@
         "down_days": 3,
         "up_days": 2,
         "avg_up_volume": 4114388,
+        "avg_down_volume": 6695900,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:01:24.056517",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 40,
+        "ask_size": 80,
+        "spread_pct": 0.118,
+        "signals": [
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:01:24.686753",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 4905625,
         "avg_down_volume": 6695900,
         "note": "Classic Wyckoff distribution pattern"
       }
@@ -10655,6 +12116,21 @@
         "peers_checked": 3,
         "note": "Symbol diverging from sector peers"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:02:57.917555",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 2,
+        "up_days": 3,
+        "avg_up_volume": 2040722,
+        "avg_down_volume": 3230152,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "MSCI": [
@@ -10779,6 +12255,18 @@
         "peers_checked": 5,
         "note": "Symbol diverging from sector peers"
       }
+    },
+    {
+      "footprint_type": "cross_asset_divergence",
+      "timestamp": "2026-02-04T12:01:35.464390",
+      "strength": 1.0,
+      "details": {
+        "symbol_change_pct": 34.68,
+        "avg_peer_change_pct": -7.58,
+        "divergence_pct": 42.26,
+        "peers_checked": 5,
+        "note": "Symbol diverging from sector peers"
+      }
     }
   ],
   "GEV": [
@@ -10810,6 +12298,21 @@
           "thin_bid"
         ],
         "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:23.333972",
+      "strength": 0.4,
+      "details": {
+        "signals": [
+          "volume_distribution"
+        ],
+        "down_days": 1,
+        "up_days": 4,
+        "avg_up_volume": 3821674,
+        "avg_down_volume": 4994256,
+        "note": "Classic Wyckoff distribution pattern"
       }
     }
   ],
@@ -10858,6 +12361,22 @@
         "up_days": 0,
         "avg_up_volume": 0,
         "avg_down_volume": 10554749,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:31:37.258745",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 13131803,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -10954,6 +12473,36 @@
         "up_days": 1,
         "avg_up_volume": 6491313,
         "avg_down_volume": 4542205,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:03:37.107945",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 700,
+        "spread_pct": 0.075,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:03:37.716236",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 6491313,
+        "avg_down_volume": 4803827,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -11118,6 +12667,22 @@
         "avg_down_volume": 724912,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:01:39.796718",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 798441,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "MRNA": [
@@ -11182,6 +12747,22 @@
         "up_days": 2,
         "avg_up_volume": 26230423,
         "avg_down_volume": 31554556,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:01:45.159526",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 26230423,
+        "avg_down_volume": 33031530,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -11304,6 +12885,36 @@
         "avg_down_volume": 26827973,
         "note": "Classic Wyckoff distribution pattern"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:01:14.464694",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 200,
+        "ask_size": 5100,
+        "spread_pct": 0.083,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:01:15.029937",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "lower_highs",
+          "multiple_down_days"
+        ],
+        "down_days": 5,
+        "up_days": 0,
+        "avg_up_volume": 0,
+        "avg_down_volume": 29666150,
+        "note": "Classic Wyckoff distribution pattern"
+      }
     }
   ],
   "VZ": [
@@ -11391,6 +13002,21 @@
     {
       "footprint_type": "quote_degradation",
       "timestamp": "2026-02-04T10:42:14.331350",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 1,
+        "ask_size": 1,
+        "spread_pct": 2.23,
+        "signals": [
+          "spread_widening",
+          "thin_bid"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:04:31.717260",
       "strength": 0.5,
       "details": {
         "bid_size": 1,
@@ -11492,6 +13118,22 @@
         "up_days": 2,
         "avg_up_volume": 4401757,
         "avg_down_volume": 5327458,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    },
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:02:30.275865",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 3,
+        "up_days": 2,
+        "avg_up_volume": 4401757,
+        "avg_down_volume": 5657004,
         "note": "Classic Wyckoff distribution pattern"
       }
     }
@@ -11658,6 +13300,20 @@
         "total_size": 67314,
         "price_range": "$32.03 - $32.67"
       }
+    },
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:04:19.120288",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 500,
+        "spread_pct": 0.032,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
     }
   ],
   "AG": [
@@ -11733,6 +13389,125 @@
         "print_count": 17,
         "total_size": 61535,
         "price_range": "$73.13 - $74.53"
+      }
+    }
+  ],
+  "LTBR": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:01:09.586241",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 300,
+        "spread_pct": 0.996,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "NNE": [
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T12:01:12.646288",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 1589670,
+        "avg_down_volume": 2001372,
+        "note": "Classic Wyckoff distribution pattern"
+      }
+    }
+  ],
+  "WOLF": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:02:14.236387",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 300,
+        "spread_pct": 0.706,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "KTOS": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:02:36.848736",
+      "strength": 0.5,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 300,
+        "spread_pct": 0.302,
+        "signals": [
+          "bid_imbalance",
+          "spread_widening"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "HL": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:03:06.891576",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 1000,
+        "spread_pct": 0.044,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "GOOGL": [
+    {
+      "footprint_type": "quote_degradation",
+      "timestamp": "2026-02-04T12:04:48.926612",
+      "strength": 0.3,
+      "details": {
+        "bid_size": 100,
+        "ask_size": 400,
+        "spread_pct": 0.006,
+        "signals": [
+          "bid_imbalance"
+        ],
+        "note": "Market makers reducing exposure"
+      }
+    }
+  ],
+  "SQM": [
+    {
+      "footprint_type": "multi_day_distribution",
+      "timestamp": "2026-02-04T16:30:20.766350",
+      "strength": 0.6000000000000001,
+      "details": {
+        "signals": [
+          "volume_distribution",
+          "multiple_down_days"
+        ],
+        "down_days": 4,
+        "up_days": 1,
+        "avg_up_volume": 1683729,
+        "avg_down_volume": 2159895,
+        "note": "Classic Wyckoff distribution pattern"
       }
     }
   ]
