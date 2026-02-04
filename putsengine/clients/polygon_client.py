@@ -1,6 +1,18 @@
 """
 Polygon.io API Client for market data.
-Primary data provider for minute bars, VWAP, and technical analysis data.
+
+FEB 2, 2026 UPDATE - SUBSCRIPTION STATUS:
+==================================================
+User has MASSIVE OPTIONS ADVANCED plan ($199/month):
+- ✅ UNLIMITED OPTIONS API calls
+- ✅ Real-time OPTIONS data
+- ✅ Greeks, IV, Open Interest
+- ⚠️ STOCKS aggregates may have separate rate limit
+
+RECOMMENDATION:
+- Use Polygon for: OPTIONS data, IV, Greeks, OI
+- Use Alpaca for: Stock prices, quotes (real-time)
+==================================================
 """
 
 import asyncio
@@ -14,17 +26,25 @@ from putsengine.models import PriceBar, OptionsContract, DarkPoolPrint
 
 
 class PolygonClient:
-    """Client for Polygon.io Market Data API."""
+    """
+    Client for Polygon.io Market Data API.
+    
+    Subscription: OPTIONS ADVANCED ($199/month)
+    - Unlimited API Calls
+    - Real-time Data
+    - 5+ Years Historical Data
+    - Greeks, IV, & Open Interest
+    """
 
     BASE_URL = "https://api.polygon.io"
 
     def __init__(self, settings: Settings):
         self.settings = settings
         self.api_key = settings.polygon_api_key
-        self.rate_limit = settings.polygon_rate_limit
+        self.rate_limit = settings.polygon_rate_limit  # Default 100 for paid plans
         self._session: Optional[aiohttp.ClientSession] = None
         self._last_request_time = 0.0
-        self._request_interval = 1.0 / self.rate_limit  # seconds between requests
+        self._request_interval = 1.0 / max(self.rate_limit, 10)  # Minimum 10 req/sec
 
     async def _get_session(self) -> aiohttp.ClientSession:
         """Get or create aiohttp session."""
@@ -60,21 +80,37 @@ class PolygonClient:
         params["apiKey"] = self.api_key
 
         session = await self._get_session()
-        try:
-            async with session.get(url, params=params) as response:
-                if response.status == 200:
-                    return await response.json()
-                elif response.status == 429:
-                    logger.warning("Polygon rate limit hit, waiting 60 seconds...")
-                    await asyncio.sleep(60)
-                    return await self._request(endpoint, params)
-                else:
-                    error_text = await response.text()
-                    logger.error(f"Polygon API error {response.status}: {error_text}")
-                    return {}
-        except Exception as e:
-            logger.error(f"Polygon request failed: {e}")
-            return {}
+        max_retries = 3
+        
+        for attempt in range(max_retries):
+            try:
+                async with session.get(url, params=params) as response:
+                    if response.status == 200:
+                        return await response.json()
+                    elif response.status == 429:
+                        # For paid plans (unlimited), this should be rare
+                        # Use exponential backoff: 2s, 4s, 8s
+                        wait_time = 2 ** (attempt + 1)
+                        logger.warning(f"Polygon rate limit (attempt {attempt+1}/{max_retries}), waiting {wait_time}s...")
+                        await asyncio.sleep(wait_time)
+                        continue
+                    elif response.status == 403:
+                        logger.error("Polygon API key invalid or subscription issue")
+                        return {}
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"Polygon API error {response.status}: {error_text}")
+                        return {}
+            except asyncio.TimeoutError:
+                logger.warning(f"Polygon request timeout (attempt {attempt+1}/{max_retries})")
+                await asyncio.sleep(1)
+                continue
+            except Exception as e:
+                logger.error(f"Polygon request failed: {e}")
+                return {}
+        
+        logger.error(f"Polygon request failed after {max_retries} retries")
+        return {}
 
     # ==================== Aggregates / Bars ====================
 

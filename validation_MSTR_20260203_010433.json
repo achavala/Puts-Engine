@@ -1,0 +1,147 @@
+{
+  "symbol": "MSTR",
+  "timestamp": "2026-02-03T01:03:28.439076",
+  "data_sources": {
+    "alpaca_quote": {
+      "bid": 141.7,
+      "ask": 142.0,
+      "mid_price": 141.85,
+      "bid_size": 80,
+      "ask_size": 3160,
+      "timestamp": "2026-02-03T00:59:59.563611361Z",
+      "source": "Alpaca get_latest_quote",
+      "endpoint": "/v2/stocks/MSTR/quotes/latest"
+    },
+    "alpaca_daily_bars": {
+      "last_bar_date": "2026-01-30",
+      "open": 139.995,
+      "high": 151.15,
+      "low": 139.9,
+      "close": 149.71,
+      "volume": 22767966,
+      "bars_returned": 5,
+      "source": "Alpaca get_daily_bars",
+      "endpoint": "/v2/stocks/MSTR/bars (1Day)"
+    },
+    "alpaca_intraday_change": {
+      "current_price": 141.85,
+      "prev_close": 158.45,
+      "change_pct": -10.476491006626693,
+      "is_bearish": true,
+      "source": "Alpaca get_intraday_change (real-time)",
+      "endpoint": "Combined: quotes + daily bars"
+    },
+    "alpaca_borrow_status": {
+      "symbol": "MSTR",
+      "easy_to_borrow": true,
+      "shortable": true,
+      "marginable": true,
+      "squeeze_risk": false,
+      "borrow_status": "easy_to_borrow"
+    },
+    "polygon_rsi": {
+      "latest_value": 37.31667156671993,
+      "timestamp": 1757476800000,
+      "source": "Polygon RSI indicator",
+      "endpoint": "/v1/indicators/rsi/MSTR"
+    },
+    "polygon_earnings": {
+      "has_recent_earnings": true,
+      "is_pre_earnings": false,
+      "is_post_earnings": true,
+      "days_to_earnings": null,
+      "days_since_earnings": 0,
+      "guidance_sentiment": "neutral",
+      "earnings_keywords_found": [
+        "earnings",
+        "earnings",
+        "forecast",
+        "miss"
+      ]
+    },
+    "uw_options_flow": {
+      "flow_count": 50,
+      "total_premium": 143818.0,
+      "put_count": 12,
+      "call_count": 38,
+      "recent_timestamps": [
+        "2026-02-02T20:59:59.275264+00:00",
+        "2026-02-02T20:59:59.271371+00:00",
+        "2026-02-02T20:59:59.271369+00:00"
+      ],
+      "source": "Unusual Whales flow-recent",
+      "endpoint": "/api/stock/MSTR/flow-recent"
+    },
+    "uw_gex": {
+      "net_gex": 0.0,
+      "call_gex": 256520.7492,
+      "put_gex": -139786.2678,
+      "dealer_delta": 0.0,
+      "put_wall": null,
+      "call_wall": null,
+      "gex_flip_level": null,
+      "source": "Unusual Whales GEX",
+      "endpoint": "/api/stock/MSTR/greek-exposure"
+    },
+    "uw_iv_rank": {
+      "iv_rank": null,
+      "iv_percentile": null,
+      "source": "Unusual Whales IV rank",
+      "endpoint": "/api/stock/MSTR/iv-rank"
+    }
+  },
+  "decision_factors": {
+    "distribution": {
+      "score": 0.08399999999999999,
+      "signals": {
+        "flat_price_rising_volume": "False",
+        "failed_breakout": false,
+        "lower_highs_flat_rsi": false,
+        "vwap_loss": false,
+        "high_rvol_red_day": false,
+        "gap_down_no_recovery": true,
+        "gap_up_reversal": false,
+        "multi_day_weakness": false,
+        "call_selling_at_bid": false,
+        "put_buying_at_ask": false,
+        "rising_put_oi": false,
+        "skew_steepening": false,
+        "repeated_sell_blocks": false,
+        "c_level_selling": false,
+        "insider_cluster": false,
+        "congress_selling": false,
+        "is_pre_earnings": false,
+        "is_post_earnings_negative": false,
+        "handoff_candidate": false,
+        "failure_mode": null
+      },
+      "flat_price_rising_volume": "False",
+      "failed_breakout": false,
+      "vwap_loss": false,
+      "call_selling_at_bid": false,
+      "put_buying_at_ask": false,
+      "repeated_sell_blocks": false
+    },
+    "liquidity": {
+      "score": 0.25,
+      "bid_collapsing": false,
+      "spread_widening": "True",
+      "volume_no_progress": false,
+      "vwap_retest_failed": false
+    },
+    "acceleration": {
+      "is_valid": false,
+      "is_late_entry": false,
+      "price_below_vwap": false,
+      "price_below_ema20": false,
+      "net_delta_negative": false,
+      "gamma_flipping_short": false,
+      "iv_reasonable": false,
+      "engine_type": "none"
+    }
+  },
+  "issues_found": [
+    "No Polygon daily bars"
+  ],
+  "recommendations": []
+}

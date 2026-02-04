@@ -160,10 +160,113 @@ class AlpacaClient:
                 ))
         return bars
 
+    async def get_daily_bars(
+        self,
+        symbol: str,
+        limit: int = 30,
+        from_date: Optional[date] = None
+    ) -> List[PriceBar]:
+        """
+        Get daily price bars for a symbol.
+        
+        ADDED FEB 2, 2026: Missing method that was causing scan failures!
+        This is a wrapper around get_bars() with daily timeframe.
+        """
+        if from_date is None:
+            start = datetime.now() - timedelta(days=limit + 5)
+        else:
+            start = datetime.combine(from_date, datetime.min.time())
+        
+        return await self.get_bars(
+            symbol=symbol,
+            timeframe="1Day",
+            start=start,
+            limit=limit
+        )
+    
+    async def get_latest_bar(self, symbol: str) -> Optional[PriceBar]:
+        """
+        Get the latest daily bar for a symbol.
+        
+        ADDED FEB 2, 2026: Missing method that was causing AH scan failures!
+        Uses get_daily_bars fallback since Alpaca's latest bar endpoint is for intraday.
+        """
+        try:
+            # Get most recent daily bar
+            bars = await self.get_daily_bars(symbol, limit=2)
+            return bars[-1] if bars else None
+        except Exception as e:
+            logger.debug(f"get_latest_bar failed for {symbol}: {e}")
+            return None
+
     async def get_latest_quote(self, symbol: str) -> Dict[str, Any]:
         """Get latest quote for a symbol."""
         url = f"{self.data_url}/stocks/{symbol}/quotes/latest"
         return await self._request("GET", url)
+    
+    async def get_current_price(self, symbol: str) -> Optional[float]:
+        """
+        Get the REAL-TIME current price for a symbol.
+        
+        ADDED FEB 2, 2026: This uses quotes for real-time data instead of
+        daily bars which are only updated after market close.
+        
+        Returns the mid-price from bid/ask spread.
+        """
+        try:
+            quote = await self.get_latest_quote(symbol)
+            if quote and 'quote' in quote:
+                q = quote['quote']
+                bid = float(q.get('bp', 0) or 0)
+                ask = float(q.get('ap', 0) or 0)
+                
+                if bid > 0 and ask > 0:
+                    return (bid + ask) / 2
+                elif ask > 0:
+                    return ask
+                elif bid > 0:
+                    return bid
+            return None
+        except Exception as e:
+            logger.debug(f"get_current_price failed for {symbol}: {e}")
+            return None
+    
+    async def get_intraday_change(self, symbol: str) -> Optional[Dict[str, Any]]:
+        """
+        Get the intraday price change for a symbol.
+        
+        ADDED FEB 2, 2026: Calculates change from previous close to current price.
+        This is critical for detecting same-day drops like HOOD -9.62%.
+        
+        Returns dict with: current_price, prev_close, change_pct, change_abs
+        """
+        try:
+            # Get current price from quote
+            current = await self.get_current_price(symbol)
+            if not current:
+                return None
+            
+            # Get previous close from daily bars
+            bars = await self.get_daily_bars(symbol, limit=2)
+            if not bars or len(bars) < 1:
+                return None
+            
+            # The last bar is previous day's close (today's bar not complete)
+            prev_close = bars[-1].close
+            
+            change_abs = current - prev_close
+            change_pct = (change_abs / prev_close) * 100 if prev_close > 0 else 0
+            
+            return {
+                "current_price": current,
+                "prev_close": prev_close,
+                "change_pct": change_pct,
+                "change_abs": change_abs,
+                "is_bearish": change_pct < -3.0  # Flag significant drops
+            }
+        except Exception as e:
+            logger.debug(f"get_intraday_change failed for {symbol}: {e}")
+            return None
 
     async def get_latest_trade(self, symbol: str) -> Dict[str, Any]:
         """Get latest trade for a symbol."""

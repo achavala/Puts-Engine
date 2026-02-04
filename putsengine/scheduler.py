@@ -87,6 +87,7 @@ from putsengine.multiday_weakness_scanner import run_multiday_weakness_scan, Mul
 from putsengine.pump_dump_scanner import run_pump_dump_scan, inject_pump_dumps_to_dui
 from putsengine.pre_earnings_flow import run_pre_earnings_flow_scan, inject_pre_earnings_to_dui
 from putsengine.volume_price_divergence import run_volume_price_scan, inject_divergence_to_dui
+from putsengine.intraday_scanner import run_intraday_scan, IntradayScanner
 
 # EARLY WARNING SYSTEM (Feb 1, 2026) - Detect institutional footprints 1-3 days before breakdown
 from putsengine.early_warning_system import (
@@ -105,6 +106,9 @@ from putsengine.flash_alerts import check_for_flash_alerts_in_ews_scan, get_flas
 
 # EWS ATTRIBUTION (Feb 1, 2026) - Observation & measurement phase
 from putsengine.ews_attribution import log_ews_detection
+
+# EARNINGS PRIORITY SCANNER (Feb 3, 2026 FIX) - 14/15 crashes were earnings-related
+from putsengine.earnings_priority_scanner import run_earnings_priority_scan, EarningsPriorityScanner
 
 # Email Reporter for daily 3 PM scan
 from putsengine.email_reporter import run_daily_report_scan, send_email_report, save_report_to_file
@@ -414,6 +418,35 @@ class PutsEngineScheduler:
         )
         
         # ============================================================================
+        # FEB 3, 2026 FIX: EARNINGS PRIORITY SCANNER
+        # 14/15 crashes were earnings-related - need dedicated scanner
+        # Runs 3x daily: 7:00 AM, 12:00 PM, 4:30 PM ET
+        # ============================================================================
+        self.scheduler.add_job(
+            self._run_earnings_priority_scan_wrapper,
+            CronTrigger(hour=7, minute=0, timezone=EST),
+            id="earnings_priority_7am",
+            name="Earnings Priority Scan (7:00 AM ET) - Pre-Market",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_earnings_priority_scan_wrapper,
+            CronTrigger(hour=12, minute=0, timezone=EST),
+            id="earnings_priority_12pm",
+            name="Earnings Priority Scan (12:00 PM ET) - Midday",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_earnings_priority_scan_wrapper,
+            CronTrigger(hour=16, minute=30, timezone=EST),
+            id="earnings_priority_430pm",
+            name="Earnings Priority Scan (4:30 PM ET) - Post-Market",
+            replace_existing=True
+        )
+        
+        # ============================================================================
         # ARCHITECT-4 LEAD/DISCOVERY SCANNERS
         # These detect moves 1-2 days BEFORE they happen via DUI injection
         # MP → USAR → LAC cascade would have been caught by these
@@ -564,6 +597,59 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
+        # INTRADAY BIG MOVER SCANNER (NEW FEB 2, 2026)
+        # CRITICAL: Uses REAL-TIME quotes, not stale daily bars
+        # This would have caught HOOD -9.62%, RMBS -15.50%, DIS -7.32% TODAY
+        # Runs every hour during market hours
+        
+        self.scheduler.add_job(
+            self._run_intraday_scan_wrapper,
+            CronTrigger(hour=10, minute=0, timezone=EST),
+            id="intraday_10am",
+            name="🚨 Intraday Big Mover Scan (10:00 AM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_intraday_scan_wrapper,
+            CronTrigger(hour=11, minute=0, timezone=EST),
+            id="intraday_11am",
+            name="🚨 Intraday Big Mover Scan (11:00 AM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_intraday_scan_wrapper,
+            CronTrigger(hour=12, minute=0, timezone=EST),
+            id="intraday_12pm",
+            name="🚨 Intraday Big Mover Scan (12:00 PM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_intraday_scan_wrapper,
+            CronTrigger(hour=13, minute=0, timezone=EST),
+            id="intraday_1pm",
+            name="🚨 Intraday Big Mover Scan (1:00 PM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_intraday_scan_wrapper,
+            CronTrigger(hour=14, minute=0, timezone=EST),
+            id="intraday_2pm",
+            name="🚨 Intraday Big Mover Scan (2:00 PM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_intraday_scan_wrapper,
+            CronTrigger(hour=15, minute=0, timezone=EST),
+            id="intraday_3pm",
+            name="🚨 Intraday Big Mover Scan (3:00 PM ET)",
+            replace_existing=True
+        )
+        
         # ============================================================================
         # EARLY WARNING SYSTEM (Feb 1, 2026) - Institutional Footprint Detection
         # Detects the 7 institutional footprints 1-3 days BEFORE breakdown:
@@ -600,6 +686,45 @@ class PutsEngineScheduler:
             CronTrigger(hour=16, minute=30, timezone=EST),
             id="early_warning_430pm",
             name="🚨 Early Warning Scan (4:30 PM ET) - Post-Market Footprints",
+            replace_existing=True
+        )
+        
+        # ============================================================================
+        # NEW: EVENING/OVERNIGHT EARLY WARNING SCANS (Feb 3, 2026)
+        # These fill the gap between 8:00 PM and 4:00 AM
+        # Critical for catching overnight news, earnings, and global events
+        # ============================================================================
+        
+        # Late evening EWS scan - Catch after-hours earnings impact
+        self.scheduler.add_job(
+            self._run_early_warning_scan_wrapper,
+            CronTrigger(hour=20, minute=0, timezone=EST),
+            id="early_warning_8pm",
+            name="🚨 Early Warning Scan (8:00 PM ET) - Evening Footprints",
+            replace_existing=True
+        )
+        
+        # Overnight scan - Final check before next trading day
+        # Catches late news, global market moves, and overnight distributions
+        self.scheduler.add_job(
+            self._run_early_warning_scan_wrapper,
+            CronTrigger(hour=22, minute=0, timezone=EST),
+            id="early_warning_10pm",
+            name="🚨 Early Warning Scan (10:00 PM ET) - Overnight Footprints",
+            replace_existing=True
+        )
+        
+        # ============================================================================
+        # NEW: OVERNIGHT FULL SCAN (Feb 3, 2026)
+        # Runs all 3 engines at 10:00 PM to catch overnight developments
+        # This ensures data freshness before next pre-market session
+        # ============================================================================
+        self.scheduler.add_job(
+            self._run_scan_wrapper,
+            CronTrigger(hour=22, minute=0, timezone=EST),
+            args=["overnight"],
+            id="overnight_scan_10pm",
+            name="🌙 Overnight Full Scan (10:00 PM ET)",
             replace_existing=True
         )
         
@@ -652,71 +777,105 @@ class PutsEngineScheduler:
         
         logger.info("All scheduled jobs configured (including NEW scanners for 90% coverage + pattern scan every 30 min)")
     
+    def _safe_async_run(self, coro, name: str = "scan"):
+        """
+        FIXED: Safe async execution that prevents event loop crashes.
+        
+        The previous implementation had issues:
+        1. asyncio.run() creates a NEW event loop, conflicting with APScheduler
+        2. Event loop could get into closed/corrupted state
+        3. Memory leaks from unclosed sessions
+        
+        This implementation:
+        1. Uses the scheduler's loop directly
+        2. Wraps the coro with error handling
+        3. Cleans up resources properly
+        4. Collects garbage after completion
+        """
+        import gc
+        
+        async def wrapped_coro():
+            """Wrapper that handles errors and cleanup."""
+            try:
+                await coro
+            except Exception as e:
+                logger.error(f"Error in {name}: {e}")
+            finally:
+                # Force garbage collection to prevent memory leaks
+                gc.collect()
+        
+        try:
+            # Try to get the running loop (APScheduler's loop)
+            loop = asyncio.get_running_loop()
+            if loop.is_running():
+                # Schedule on the running loop - this is the correct way
+                loop.create_task(wrapped_coro())
+            else:
+                # Loop exists but not running (shouldn't happen)
+                loop.run_until_complete(wrapped_coro())
+        except RuntimeError:
+            # No running loop - we need to create one safely
+            try:
+                # Create a new loop and run the coro
+                new_loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(new_loop)
+                try:
+                    new_loop.run_until_complete(wrapped_coro())
+                finally:
+                    # Clean up the loop properly
+                    try:
+                        # Cancel all pending tasks
+                        pending = asyncio.all_tasks(new_loop)
+                        for task in pending:
+                            task.cancel()
+                        # Run the loop briefly to allow tasks to cancel
+                        if pending:
+                            new_loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+                    except Exception:
+                        pass
+                    new_loop.close()
+                    gc.collect()
+            except Exception as e:
+                logger.error(f"Failed to run {name} in new loop: {e}")
+    
     def _run_scan_wrapper(self, scan_type: str):
         """Wrapper to run async scan in scheduler context."""
-        # Get or create event loop and run the coroutine
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_scan(scan_type), loop=loop)
-        except RuntimeError:
-            # No running loop - create a new one
-            asyncio.run(self.run_scan(scan_type))
+        self._safe_async_run(self.run_scan(scan_type), f"scan_{scan_type}")
     
     def _run_afterhours_scan_wrapper(self):
         """Wrapper to run after-hours scan in scheduler context."""
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_afterhours_scan(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_afterhours_scan())
+        self._safe_async_run(self.run_afterhours_scan(), "afterhours_scan")
     
     def _run_earnings_check_wrapper(self):
         """Wrapper to run earnings calendar check in scheduler context."""
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_earnings_check(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_earnings_check())
+        self._safe_async_run(self.run_earnings_check(), "earnings_check")
     
     def _run_precatalyst_scan_wrapper(self):
         """Wrapper to run pre-catalyst scan in scheduler context."""
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_precatalyst_scan(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_precatalyst_scan())
+        self._safe_async_run(self.run_precatalyst_scan(), "precatalyst_scan")
+    
+    def _run_earnings_priority_scan_wrapper(self):
+        """
+        Wrapper to run earnings priority scan in scheduler context.
+        FEB 3, 2026 FIX: 14/15 crashes were earnings-related.
+        """
+        self._safe_async_run(self.run_earnings_priority_scan(), "earnings_priority_scan")
     
     def _run_premarket_gap_scan_wrapper(self):
         """Wrapper to run pre-market gap scan in scheduler context."""
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_premarket_gap_scan(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_premarket_gap_scan())
+        self._safe_async_run(self.run_premarket_gap_scan(), "premarket_gap_scan")
     
     def _run_multiday_weakness_scan_wrapper(self):
         """Wrapper to run multi-day weakness scan in scheduler context."""
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_multiday_weakness_scan(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_multiday_weakness_scan())
+        self._safe_async_run(self.run_multiday_weakness_scan(), "multiday_weakness_scan")
     
     def _run_sector_correlation_scan_wrapper(self):
         """Wrapper to run sector correlation scan in scheduler context."""
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_sector_correlation_scan(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_sector_correlation_scan())
+        self._safe_async_run(self.run_sector_correlation_scan(), "sector_correlation_scan")
     
     def _run_daily_report_scan_wrapper(self):
         """Wrapper to run daily report scan (3 PM EST) with email."""
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_daily_report_scan(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_daily_report_scan())
+        self._safe_async_run(self.run_daily_report_scan(), "daily_report_scan")
     
     def _run_pattern_scan_wrapper(self):
         """Wrapper to run pattern scan (pump-reversal, two-day rally, high vol run)."""
@@ -739,27 +898,24 @@ class PutsEngineScheduler:
     
     def _run_pump_dump_scan_wrapper(self):
         """Wrapper to run pump-dump reversal scan."""
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_pump_dump_scan(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_pump_dump_scan())
+        self._safe_async_run(self.run_pump_dump_scan(), "pump_dump_scan")
     
     def _run_pre_earnings_flow_wrapper(self):
         """Wrapper to run pre-earnings flow scan."""
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_pre_earnings_flow_scan(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_pre_earnings_flow_scan())
+        self._safe_async_run(self.run_pre_earnings_flow_scan(), "pre_earnings_flow_scan")
     
     def _run_volume_price_scan_wrapper(self):
         """Wrapper to run volume-price divergence scan."""
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_volume_price_scan(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_volume_price_scan())
+        self._safe_async_run(self.run_volume_price_scan(), "volume_price_scan")
+    
+    def _run_intraday_scan_wrapper(self):
+        """
+        Wrapper to run REAL-TIME intraday big mover scan.
+        
+        FEB 2, 2026: Critical fix - uses quotes for live prices, not daily bars.
+        This catches same-day drops that other scanners miss.
+        """
+        self._safe_async_run(self.run_intraday_scan(), "intraday_scan")
     
     def _run_early_warning_scan_wrapper(self):
         """
@@ -768,11 +924,7 @@ class PutsEngineScheduler:
         This is the KEY scan for 1-3 day early detection.
         It runs at 8 AM, 12 PM, and 4:30 PM ET.
         """
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_early_warning_scan(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_early_warning_scan())
+        self._safe_async_run(self.run_early_warning_scan(), "early_warning_scan")
     
     def _run_zero_hour_scan_wrapper(self):
         """
@@ -781,11 +933,7 @@ class PutsEngineScheduler:
         ARCHITECT-4 VALIDATED: Highest ROI remaining addition.
         Runs at 9:15 AM ET to confirm Day 0 execution of Day -1 pressure.
         """
-        try:
-            loop = asyncio.get_running_loop()
-            asyncio.ensure_future(self.run_zero_hour_scan(), loop=loop)
-        except RuntimeError:
-            asyncio.run(self.run_zero_hour_scan())
+        self._safe_async_run(self.run_zero_hour_scan(), "zero_hour_scan")
     
     async def run_scan(self, scan_type: str = "manual"):
         """
@@ -1014,6 +1162,43 @@ class PutsEngineScheduler:
         except Exception as e:
             logger.error(f"Scan error: {e}")
             raise
+        finally:
+            # MEMORY LEAK FIX: Force garbage collection after each scan
+            # This prevents memory buildup over long-running daemon sessions
+            import gc
+            gc.collect()
+            logger.debug("Post-scan garbage collection completed")
+    
+    async def cleanup_resources(self):
+        """
+        MEMORY LEAK FIX: Cleanup all resources to prevent memory buildup.
+        
+        This should be called periodically (e.g., after every 10 scans) to
+        reset API client sessions and clear caches.
+        """
+        import gc
+        
+        logger.info("Running resource cleanup...")
+        
+        # Close and recreate API clients to reset sessions
+        try:
+            await self.close_clients()
+            
+            # Clear any caches
+            if hasattr(self, '_market_regime_layer') and self._market_regime_layer:
+                # Clear regime cache
+                if hasattr(self._market_regime_layer, '_cache'):
+                    self._market_regime_layer._cache = {}
+            
+            # Force garbage collection
+            gc.collect()
+            
+            # Reinitialize clients
+            await self._init_clients()
+            
+            logger.info("Resource cleanup completed successfully")
+        except Exception as e:
+            logger.error(f"Error during cleanup: {e}")
     
     def _load_dui_tickers(self) -> List[str]:
         """Load Dynamic Universe Injection tickers from JSON file."""
@@ -1357,6 +1542,62 @@ class PutsEngineScheduler:
             
         except Exception as e:
             logger.error(f"Pre-catalyst scan error: {e}")
+            return {}
+    
+    async def run_earnings_priority_scan(self):
+        """
+        Run earnings priority scan - FEB 3, 2026 FIX.
+        
+        14/15 Feb 3 crashes were earnings-related!
+        This scanner prioritizes stocks with upcoming earnings:
+        - Put OI accumulation (quiet building)
+        - IV term structure inversion
+        - Dark pool selling surge
+        - Call selling at bid (hedge unwinding)
+        - Unusual put sweeps
+        - Negative GEX
+        
+        Runs 3x daily: 7:00 AM, 12:00 PM, 4:30 PM ET
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("🎯 EARNINGS PRIORITY SCAN (FEB 3 FIX)")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Scanning stocks with upcoming earnings for distribution signals...")
+        logger.info("=" * 60)
+        
+        try:
+            await self._init_clients()
+            
+            # Run earnings priority scan
+            results = await run_earnings_priority_scan(self._uw, self._alpaca)
+            
+            # Log results
+            summary = results.get("summary", {})
+            logger.info(f"Earnings Priority Scan Complete:")
+            logger.info(f"  Total alerts: {summary.get('total_alerts', 0)}")
+            logger.info(f"  Injected to DUI: {summary.get('injected_to_dui', 0)}")
+            
+            # Log today's alerts (D-0)
+            for alert in results.get("today", []):
+                logger.warning(
+                    f"  🚨 EARNINGS TODAY: {alert.symbol} | "
+                    f"Score: {alert.score:.2f} | Signals: {', '.join(alert.signals_detected)}"
+                )
+            
+            # Log tomorrow's alerts (D-1)
+            for alert in results.get("tomorrow", []):
+                logger.info(
+                    f"  ⚠️ EARNINGS TOMORROW: {alert.symbol} | "
+                    f"Score: {alert.score:.2f} | Signals: {', '.join(alert.signals_detected)}"
+                )
+            
+            logger.info("=" * 60)
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Earnings priority scan error: {e}")
             return {}
     
     # ==========================================================================
@@ -1728,6 +1969,76 @@ class PutsEngineScheduler:
             
         except Exception as e:
             logger.error(f"Volume-price scan error: {e}")
+            return {}
+    
+    async def run_intraday_scan(self):
+        """
+        Run REAL-TIME intraday big mover scan.
+        
+        CRITICAL FEB 2, 2026 FIX:
+        This scanner uses get_current_price() (quotes) instead of get_daily_bars()
+        to detect SAME-DAY drops in real-time.
+        
+        Previous scanners only had data through previous close, missing:
+        - HOOD: -9.62% (detected as -12.73% with real-time)
+        - RMBS: -15.50% (detected as -22.75% with real-time)
+        - DIS: -7.32% (detected as -4.29% with real-time)
+        - BMNR: -8.94% (detected as -21.67% with real-time)
+        
+        Thresholds:
+        - CRITICAL: > 10% drop
+        - HIGH: 5-10% drop
+        - MEDIUM: 3-5% drop
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("🚨 INTRADAY BIG MOVER SCAN (REAL-TIME)")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Detecting SAME-DAY drops using live quotes...")
+        logger.info("=" * 60)
+        
+        try:
+            # Get all tickers to scan
+            symbols = list(EngineConfig.get_all_tickers())
+            
+            # Run intraday scan
+            alerts = await run_intraday_scan(symbols)
+            
+            # Log results
+            critical = [a for a in alerts if a.get("severity") == "CRITICAL"]
+            high = [a for a in alerts if a.get("severity") == "HIGH"]
+            medium = [a for a in alerts if a.get("severity") == "MEDIUM"]
+            
+            logger.info(f"Intraday Scan Complete:")
+            logger.info(f"  Symbols scanned: {len(symbols)}")
+            logger.info(f"  Total alerts: {len(alerts)}")
+            logger.info(f"  🚨 CRITICAL (>10%): {len(critical)}")
+            logger.info(f"  ⚠️  HIGH (5-10%): {len(high)}")
+            logger.info(f"  📊 MEDIUM (3-5%): {len(medium)}")
+            
+            # Log critical alerts
+            if critical:
+                logger.warning("CRITICAL INTRADAY DROPS:")
+                for a in critical[:10]:
+                    logger.warning(f"  {a['symbol']}: {a['change_pct']:+.2f}% @ ${a['current_price']:.2f}")
+            
+            # Save to file for dashboard
+            import json
+            with open("intraday_alerts.json", "w") as f:
+                json.dump({
+                    "timestamp": now_et.isoformat(),
+                    "alerts": alerts,
+                    "critical_count": len(critical),
+                    "high_count": len(high),
+                    "medium_count": len(medium)
+                }, f, indent=2)
+            
+            logger.info("=" * 60)
+            
+            return {"alerts": alerts, "critical": critical, "high": high}
+            
+        except Exception as e:
+            logger.error(f"Intraday scan error: {e}")
             return {}
     
     async def run_daily_report_scan(self):

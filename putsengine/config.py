@@ -33,7 +33,7 @@ class Settings(BaseSettings):
 
     # Unusual Whales API
     unusual_whales_api_key: str = Field(..., description="Unusual Whales API key")
-    
+
     # FinViz API (Elite subscription)
     finviz_api_key: Optional[str] = Field(default=None, description="FinViz Elite API key")
 
@@ -78,7 +78,8 @@ class Settings(BaseSettings):
 
     # API Rate Limits
     uw_daily_limit: int = Field(default=5000, description="Unusual Whales daily API limit")
-    polygon_rate_limit: int = Field(default=5, description="Polygon requests per second")
+    # FEB 2, 2026: Updated for Options Advanced ($199/mo) plan - UNLIMITED API calls
+    polygon_rate_limit: int = Field(default=100, description="Polygon requests per second (unlimited for paid plans)")
 
     # Logging
     log_level: str = Field(default="INFO")
@@ -210,10 +211,10 @@ class EngineConfig:
             "MRNA", "BNTX", "NVAX", "VRTX", "REGN", "ILMN", "CRSP", "EDIT",
             "NTLA", "BEAM", "EXAS", "ISRG"
         ],
-        # Crypto Related (11) - Added BMNR (BitMine Immersion)
+        # Crypto Related (12) - Added BMNR, CRCL (Circle Internet - missed -7.91% Feb 2)
         "crypto": [
             "MSTR", "COIN", "MARA", "RIOT", "HUT", "CLSK", "CIFR", "GLXY",
-            "BITF", "WULF", "BMNR"
+            "BITF", "WULF", "BMNR", "CRCL"
         ],
         # Semiconductors (27) - Added TXN, SNDK, LITE, COHR
         "semiconductors": [
@@ -288,6 +289,73 @@ class EngineConfig:
         # China ADRs (10) - NEW SECTOR - volatile on tariff news
         "china_adr": [
             "BABA", "JD", "PDD", "BIDU", "NIO", "XPEV", "LI", "BILI", "TME", "IQ"
+        ],
+        # ========================================================================
+        # FEB 3, 2026 CRASH FIX: MISSING SECTORS THAT CAUSED 186% OPPORTUNITY LOSS
+        # ========================================================================
+        # CONSULTING / IT SERVICES - missed ACN -9.71%
+        "consulting": [
+            "ACN",    # Accenture - MISSED -9.71% Feb 3!
+            "IBM",    # IBM
+            "INFY",   # Infosys
+            "WIT",    # Wipro
+            "CTSH",   # Cognizant
+            "EPAM",   # EPAM Systems
+        ],
+        # PRIVATE EQUITY / ALT ASSET MANAGERS - missed KKR -9.68%
+        "alt_asset_mgmt": [
+            "KKR",    # KKR & Co - MISSED -9.68% Feb 3!
+            "BX",     # Blackstone
+            "APO",    # Apollo Global
+            "ARES",   # Ares Management
+            "CG",     # Carlyle Group
+            "OWL",    # Blue Owl Capital
+        ],
+        # CREDIT BUREAUS / DATA SERVICES - missed TRU -12.56%
+        "credit_data": [
+            "TRU",    # TransUnion - MISSED -12.56% Feb 3!
+            "EFX",    # Equifax
+            "EXPN",   # Experian
+            "FDS",    # FactSet
+            "SPGI",   # S&P Global
+            "MCO",    # Moody's
+            "MSCI",   # MSCI
+        ],
+        # INTERNATIONAL PHARMA ADRs - missed NVO -14.35%
+        "pharma_adr": [
+            "NVO",    # Novo Nordisk - MISSED -14.35% Feb 3!
+            "AZN",    # AstraZeneca
+            "SNY",    # Sanofi
+            "GSK",    # GSK
+            "RHHBY",  # Roche
+            "TAK",    # Takeda
+        ],
+        # REAL ESTATE TECH - missed CSGP -15.02%
+        "realestate_tech": [
+            "CSGP",   # CoStar Group - MISSED -15.02% Feb 3!
+            "ZG",     # Zillow
+            "RDFN",   # Redfin
+            "OPEN",   # Opendoor
+            "COMP",   # Compass
+            "RL",     # RealtyMogul
+        ],
+        # E-COMMERCE / PAYMENTS EXPANSION - missed SHOP -9.89%, INTU -11.13%
+        "ecommerce_payments": [
+            "SHOP",   # Shopify - MISSED -9.89% Feb 3!
+            "INTU",   # Intuit - MISSED -11.13% Feb 3!
+            "FIS",    # Fidelity National
+            "FISV",   # Fiserv
+            "GPN",    # Global Payments
+            "ADYEN",  # Adyen (if traded)
+            "PYPL",   # Already in fintech but critical
+        ],
+        # TRAVEL OTAs - missed EXPE -15.26%
+        "travel_ota": [
+            "EXPE",   # Expedia - MISSED -15.26% Feb 3!
+            "BKNG",   # Booking Holdings
+            "TRIP",   # TripAdvisor
+            "TCOM",   # Trip.com
+            "MMYT",   # MakeMyTrip
         ],
     }
 
@@ -392,6 +460,17 @@ class EngineConfig:
         "gaming": ["U", "RBLX", "EA", "TTWO", "SKLZ", "PLTK"],
         # AI/Data Center - NEW Jan 30 (APP -15%, NBIS -10%, IREN -9% - all crashed together!)
         "ai_datacenter": ["APP", "NBIS", "IREN", "AI", "BBAI", "SOUN", "PLTR"],
+        # ========================================================================
+        # FEB 3, 2026 CRASH FIX: EARNINGS CLUSTER CORRELATION GROUPS
+        # ========================================================================
+        # SaaS earnings cluster (HUBS, SNOW, CRWD crash together)
+        "saas_earnings": ["HUBS", "SNOW", "DDOG", "MDB", "CRWD", "ZS", "OKTA", "NET"],
+        # Fintech earnings cluster (PYPL, SHOP, INTU crash together)
+        "fintech_earnings": ["PYPL", "SHOP", "INTU", "SQ", "AFRM", "SOFI", "HOOD"],
+        # Travel earnings cluster (EXPE, ABNB, BKNG crash together)
+        "travel_earnings": ["EXPE", "ABNB", "BKNG", "MAR", "HLT", "TRIP"],
+        # Semiconductor earnings (AMD, RMBS, LITE crash together)
+        "semi_earnings": ["AMD", "RMBS", "LITE", "MU", "NVDA", "AVGO", "MRVL"],
     }
     
     # Flatten all high-beta tickers for quick lookup

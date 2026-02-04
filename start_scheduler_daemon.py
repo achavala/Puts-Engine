@@ -80,6 +80,25 @@ def remove_pid():
         PID_FILE.unlink()
 
 
+def start_watchdog():
+    """Start the watchdog process that monitors and auto-restarts the daemon."""
+    try:
+        watchdog_script = PROJECT_ROOT / "putsengine" / "scheduler_watchdog.py"
+        if watchdog_script.exists():
+            subprocess.Popen(
+                [sys.executable, str(watchdog_script), "start"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                cwd=str(PROJECT_ROOT),
+                start_new_session=True
+            )
+            print("   🐕 Watchdog started (auto-restart on failure)")
+            return True
+    except Exception as e:
+        print(f"   ⚠️  Could not start watchdog: {e}")
+    return False
+
+
 def start_daemon():
     """Start the scheduler daemon in the background."""
     # Check if already running
@@ -133,6 +152,11 @@ def start_daemon():
         print(f"   PID: {process.pid}")
         print(f"   Log: {LOG_FILE}")
         print(f"")
+        
+        # Start watchdog for auto-restart
+        start_watchdog()
+        
+        print(f"")
         print(f"📋 Scheduled scans will run at:")
         print(f"   Pre-market:  4:15, 6:15, 8:15, 9:15 AM ET")
         print(f"   Regular:     10:15, 11:15 AM, 12:45, 1:45, 2:45, 3:15 PM ET")
@@ -149,8 +173,26 @@ def start_daemon():
         return False
 
 
+def stop_watchdog():
+    """Stop the watchdog process."""
+    watchdog_pid_file = PROJECT_ROOT / "watchdog.pid"
+    if watchdog_pid_file.exists():
+        try:
+            with open(watchdog_pid_file) as f:
+                pid = int(f.read().strip())
+            os.kill(pid, signal.SIGTERM)
+            time.sleep(1)
+            watchdog_pid_file.unlink()
+            print("   🐕 Watchdog stopped")
+        except Exception as e:
+            pass  # Watchdog may not be running
+
+
 def stop_daemon():
-    """Stop the scheduler daemon."""
+    """Stop the scheduler daemon and watchdog."""
+    # Stop watchdog first to prevent auto-restart
+    stop_watchdog()
+    
     pid = get_pid()
     if not pid:
         print("ℹ️  Scheduler daemon is not running")
@@ -190,7 +232,7 @@ def stop_daemon():
 
 
 def check_status():
-    """Check status of the scheduler daemon."""
+    """Check status of the scheduler daemon and watchdog."""
     pid = get_pid()
     
     print("=" * 60)
@@ -198,13 +240,52 @@ def check_status():
     print("=" * 60)
     
     if pid:
-        print(f"✅ Status: RUNNING")
-        print(f"   PID: {pid}")
+        print(f"✅ Scheduler: RUNNING (PID: {pid})")
+        
+        # Check memory usage if psutil available
+        try:
+            import psutil
+            proc = psutil.Process(pid)
+            mem_mb = proc.memory_info().rss / (1024 * 1024)
+            print(f"   Memory: {mem_mb:.1f} MB")
+        except:
+            pass
     else:
-        print(f"❌ Status: NOT RUNNING")
+        print(f"❌ Scheduler: NOT RUNNING")
     
+    # Check watchdog status
+    watchdog_pid_file = PROJECT_ROOT / "watchdog.pid"
+    if watchdog_pid_file.exists():
+        try:
+            with open(watchdog_pid_file) as f:
+                watchdog_pid = int(f.read().strip())
+            try:
+                os.kill(watchdog_pid, 0)
+                print(f"🐕 Watchdog: RUNNING (PID: {watchdog_pid})")
+            except OSError:
+                print(f"⚠️  Watchdog: STALE PID FILE")
+        except:
+            print(f"⚠️  Watchdog: ERROR READING PID")
+    else:
+        print(f"🐕 Watchdog: NOT RUNNING")
+    
+    print(f"\n📁 Files:")
     print(f"   PID File: {PID_FILE}")
     print(f"   Log File: {LOG_FILE}")
+    
+    # Show health status if available
+    health_file = PROJECT_ROOT / "scheduler_health.json"
+    if health_file.exists():
+        try:
+            import json
+            with open(health_file) as f:
+                health = json.load(f)
+            print(f"\n🏥 Health Status:")
+            print(f"   Status: {health.get('status', 'Unknown')}")
+            print(f"   Memory: {health.get('memory_mb', 'N/A')} MB")
+            print(f"   Last Check: {health.get('timestamp', 'N/A')}")
+        except:
+            pass
     
     # Show last few log lines if available
     if LOG_FILE.exists():

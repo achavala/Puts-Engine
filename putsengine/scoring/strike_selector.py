@@ -344,12 +344,12 @@ class StrikeSelector:
         Select optimal put contract for a candidate.
         
         Implements full institutional-grade selection logic.
-        
+
         Args:
             candidate: PutCandidate with price data populated
             atr: 14-day ATR for adaptive strike selection
             dte_adjustment: Days to add to DTE range (from Vega Gate)
-            
+
         Returns:
             Optimal OptionsContract or None if no suitable contract found
         """
@@ -381,7 +381,7 @@ class StrikeSelector:
             dte_min += dte_adjustment
             dte_max += dte_adjustment
             logger.info(f"  Vega Gate: DTE adjusted by +{dte_adjustment} days (elevated IV)")
-        
+
         logger.info(
             f"Selecting put for {symbol} | "
             f"Price: ${current_price:.2f} | Tier: {tier.value} | "
@@ -519,7 +519,7 @@ class StrikeSelector:
     ) -> Optional[OptionsContract]:
         """
         Rank contracts and select the best one.
-        
+
         Ranking criteria:
         1. Delta closest to sweet spot (-0.325)
         2. Liquidity (tighter spread better)
@@ -531,7 +531,7 @@ class StrikeSelector:
             return None
 
         rules = STRIKE_RULES[tier]
-        
+
         def score_contract(c: OptionsContract) -> float:
             score = 0.0
 
@@ -670,13 +670,13 @@ class StrikeSelector:
         
         Class A: Up to 5 contracts
         Class B: 1-2 contracts max
-        
+
         Args:
             contract: Selected options contract
             account_value: Total account value
             max_risk_pct: Maximum risk per trade (default 2%)
             candidate_class: "A" or "B"
-            
+
         Returns:
             Number of contracts to trade
         """
@@ -714,14 +714,14 @@ class StrikeSelector:
     ) -> Tuple[bool, str]:
         """
         Final validation before entry.
-        
+
         Checks:
         - Contract still valid
         - Spread acceptable
         - Still OTM
         - Delta in range
         - Reasonable bid/ask
-        
+
         Returns:
             Tuple of (is_valid, reason)
         """

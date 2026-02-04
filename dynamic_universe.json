@@ -11,48 +11,48 @@
     "expires_date": "2026-02-03"
   },
   "ZS": {
-    "score": 0.322,
+    "score": 0.3,
     "source": "distribution",
     "signals": [
       "sector_correlation",
-      "leader_NET_weak",
+      "leader_CRWD_weak",
       "sector_cloud_security"
     ],
-    "added_date": "2026-01-29",
-    "expires_date": "2026-02-03"
+    "added_date": "2026-02-02",
+    "expires_date": "2026-02-07"
   },
   "PANW": {
-    "score": 0.322,
+    "score": 0.3,
     "source": "distribution",
     "signals": [
       "sector_correlation",
-      "leader_NET_weak",
+      "leader_CRWD_weak",
       "sector_cloud_security"
     ],
-    "added_date": "2026-01-29",
-    "expires_date": "2026-02-03"
+    "added_date": "2026-02-02",
+    "expires_date": "2026-02-07"
   },
   "FTNT": {
-    "score": 0.322,
+    "score": 0.3,
     "source": "distribution",
     "signals": [
       "sector_correlation",
-      "leader_NET_weak",
+      "leader_CRWD_weak",
       "sector_cloud_security"
     ],
-    "added_date": "2026-01-29",
-    "expires_date": "2026-02-03"
+    "added_date": "2026-02-02",
+    "expires_date": "2026-02-07"
   },
   "OKTA": {
-    "score": 0.322,
+    "score": 0.3,
     "source": "distribution",
     "signals": [
       "sector_correlation",
-      "leader_NET_weak",
+      "leader_CRWD_weak",
       "sector_cloud_security"
     ],
-    "added_date": "2026-01-29",
-    "expires_date": "2026-02-03"
+    "added_date": "2026-02-02",
+    "expires_date": "2026-02-07"
   },
   "ACHR": {
     "score": 0.4000000000000001,

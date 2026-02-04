@@ -1,0 +1,150 @@
+[
+  {
+    "symbol": "PYPL",
+    "drop": -19.86,
+    "sector": "fintech",
+    "in_universe": true,
+    "signals_detected": [
+      "LOWER_HIGHS_3DAY",
+      "VOLUME_ON_RED_DAY"
+    ],
+    "would_have_caught": true,
+    "data_available": true
+  },
+  {
+    "symbol": "GLXY",
+    "drop": -16.75,
+    "sector": "crypto",
+    "in_universe": true,
+    "signals_detected": [
+      "LOWER_HIGHS_3DAY"
+    ],
+    "would_have_caught": false,
+    "data_available": true
+  },
+  {
+    "symbol": "EXPE",
+    "drop": -15.26,
+    "sector": "travel",
+    "in_universe": true,
+    "signals_detected": [
+      "LARGE_PUT_PREMIUM_$462,000"
+    ],
+    "would_have_caught": false,
+    "data_available": true
+  },
+  {
+    "symbol": "CSGP",
+    "drop": -15.02,
+    "sector": "realestate_data",
+    "in_universe": true,
+    "signals_detected": [
+      "LOWER_HIGHS_3DAY",
+      "VOLUME_ON_RED_DAY"
+    ],
+    "would_have_caught": true,
+    "data_available": true
+  },
+  {
+    "symbol": "NVO",
+    "drop": -14.35,
+    "sector": "pharma",
+    "in_universe": true,
+    "signals_detected": [
+      "LOWER_HIGHS_3DAY"
+    ],
+    "would_have_caught": false,
+    "data_available": true
+  },
+  {
+    "symbol": "RMBS",
+    "drop": -14.59,
+    "sector": "semiconductors",
+    "in_universe": true,
+    "signals_detected": [],
+    "would_have_caught": false,
+    "data_available": true
+  },
+  {
+    "symbol": "TRU",
+    "drop": -12.56,
+    "sector": "credit_data",
+    "in_universe": true,
+    "signals_detected": [
+      "VOLUME_ON_RED_DAY"
+    ],
+    "would_have_caught": false,
+    "data_available": true
+  },
+  {
+    "symbol": "INTU",
+    "drop": -11.13,
+    "sector": "fintech",
+    "in_universe": true,
+    "signals_detected": [
+      "LOWER_HIGHS_3DAY",
+      "VOLUME_ON_RED_DAY",
+      "LARGE_PUT_PREMIUM_$64,379"
+    ],
+    "would_have_caught": true,
+    "data_available": true
+  },
+  {
+    "symbol": "HUBS",
+    "drop": -10.64,
+    "sector": "cloud_saas",
+    "in_universe": true,
+    "signals_detected": [
+      "LOWER_HIGHS_3DAY",
+      "VOLUME_ON_RED_DAY",
+      "PUT_HEAVY_FLOW",
+      "LARGE_PUT_PREMIUM_$237,380"
+    ],
+    "would_have_caught": true,
+    "data_available": true
+  },
+  {
+    "symbol": "U",
+    "drop": -10.57,
+    "sector": "gaming",
+    "in_universe": true,
+    "signals_detected": [
+      "LOWER_HIGHS_3DAY",
+      "VOLUME_ON_RED_DAY"
+    ],
+    "would_have_caught": true,
+    "data_available": true
+  },
+  {
+    "symbol": "SHOP",
+    "drop": -9.89,
+    "sector": "ecommerce",
+    "in_universe": true,
+    "signals_detected": [],
+    "would_have_caught": false,
+    "data_available": true
+  },
+  {
+    "symbol": "ACN",
+    "drop": -9.71,
+    "sector": "it_services",
+    "in_universe": true,
+    "signals_detected": [
+      "LOWER_HIGHS_3DAY",
+      "VOLUME_ON_RED_DAY"
+    ],
+    "would_have_caught": true,
+    "data_available": true
+  },
+  {
+    "symbol": "KKR",
+    "drop": -9.68,
+    "sector": "financials",
+    "in_universe": true,
+    "signals_detected": [
+      "VOLUME_ON_RED_DAY"
+    ],
+    "would_have_caught": false,
+    "data_available": true
+  }
+]

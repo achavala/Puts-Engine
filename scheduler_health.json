@@ -1,0 +1,12 @@
+{
+  "is_running": true,
+  "pid": 23288,
+  "memory_mb": 4.42,
+  "cpu_percent": 0.0,
+  "last_activity": "2026-02-03T01:23:31.356421",
+  "process_age_seconds": 2787.0,
+  "in_grace_period": false,
+  "status": "UNRESPONSIVE",
+  "timestamp": "2026-02-03T01:54:04.483905",
+  "watchdog_pid": 23414
+}
