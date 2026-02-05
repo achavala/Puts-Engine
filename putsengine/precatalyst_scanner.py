@@ -159,16 +159,16 @@ class PreCatalystScanner:
         PreCatalystSignal.DISTRIBUTION_DAY: 0.10,
     }
     
-    def __init__(self, uw_client, alpaca_client):
+    def __init__(self, uw_client, price_client):
         """
         Initialize pre-catalyst scanner.
         
         Args:
             uw_client: UnusualWhalesClient for options data
-            alpaca_client: AlpacaClient for price data
+            price_client: PolygonClient (preferred) or AlpacaClient for price data
         """
         self.uw_client = uw_client
-        self.alpaca_client = alpaca_client
+        self.price_client = price_client
         self._last_scan_time: Optional[datetime] = None
         self._alerts: Dict[str, PreCatalystAlert] = {}
     
@@ -253,7 +253,7 @@ class PreCatalystScanner:
             
             # 5. DISTRIBUTION DAY DETECTION (Volume divergence)
             try:
-                bars = await self.alpaca_client.get_daily_bars(symbol, limit=20)
+                bars = await self.price_client.get_daily_bars(symbol, limit=20)
                 if bars and len(bars) >= 5:
                     recent_bar = bars[-1]
                     avg_volume = sum(b.volume for b in bars[:-1]) / (len(bars) - 1)
@@ -402,17 +402,21 @@ class PreCatalystScanner:
         return injected
 
 
-async def run_precatalyst_scan(uw_client, alpaca_client) -> Dict:
+async def run_precatalyst_scan(uw_client, price_client) -> Dict:
     """
     Run evening pre-catalyst distribution scan.
     
     This should be called at 6:00 PM ET daily.
     This is what would have caught UNH the day before.
     
+    Args:
+        uw_client: UnusualWhalesClient for options data
+        price_client: PolygonClient (preferred) or AlpacaClient for price data
+    
     Returns:
         Scan results with injected count
     """
-    scanner = PreCatalystScanner(uw_client, alpaca_client)
+    scanner = PreCatalystScanner(uw_client, price_client)
     
     # Run the scan
     results = await scanner.run_full_scan()

@@ -100,14 +100,14 @@ class GapScanner:
     # Gap up thresholds (for potential reversal plays)
     GAP_UP_REVERSAL_THRESHOLD = 0.05  # +5% gap up -> watch for reversal
     
-    def __init__(self, alpaca_client):
+    def __init__(self, price_client):
         """
         Initialize gap scanner.
         
         Args:
-            alpaca_client: AlpacaClient instance for price data
+            price_client: PolygonClient (preferred) or AlpacaClient for price data
         """
-        self.alpaca_client = alpaca_client
+        self.price_client = price_client
         self._last_scan_time: Optional[datetime] = None
         self._gap_cache: Dict[str, Dict] = {}  # {symbol: {gap_pct, prior_close, current_price}}
         
@@ -199,7 +199,7 @@ class GapScanner:
         """
         try:
             # Get latest bar (may be pre-market or regular hours)
-            bar = await self.alpaca_client.get_latest_bar(symbol)
+            bar = await self.price_client.get_latest_bar(symbol)
             if not bar:
                 return None
             
@@ -218,7 +218,7 @@ class GapScanner:
             rvol = 1.0  # Default
             try:
                 # Get 20-day average volume for RVOL calculation
-                bars_history = await self.alpaca_client.get_daily_bars(symbol, limit=21)
+                bars_history = await self.price_client.get_daily_bars(symbol, limit=21)
                 if bars_history and len(bars_history) >= 20 and current_volume > 0:
                     avg_volume = sum(b.volume for b in bars_history[-20:]) / 20
                     if avg_volume > 0:
@@ -253,7 +253,7 @@ class GapScanner:
         """Get prior trading day's closing price."""
         try:
             # Get daily bars for last 2 days
-            bars = await self.alpaca_client.get_daily_bars(symbol, limit=2)
+            bars = await self.price_client.get_daily_bars(symbol, limit=2)
             if bars and len(bars) >= 1:
                 # Return the most recent complete day's close
                 return bars[-1].close
@@ -317,9 +317,12 @@ class GapScanner:
         return injected
 
 
-async def run_premarket_gap_scan(alpaca_client) -> Dict:
+async def run_premarket_gap_scan(price_client) -> Dict:
     """
     Run pre-market gap scan and inject results into DUI.
+    
+    Args:
+        price_client: PolygonClient (preferred) or AlpacaClient for price data
     
     This should be called at:
     - 4:00 AM ET (overnight news)
@@ -330,7 +333,7 @@ async def run_premarket_gap_scan(alpaca_client) -> Dict:
     Returns:
         Scan results with injected count
     """
-    scanner = GapScanner(alpaca_client)
+    scanner = GapScanner(price_client)
     
     # Run the scan
     results = await scanner.scan_premarket_gaps()

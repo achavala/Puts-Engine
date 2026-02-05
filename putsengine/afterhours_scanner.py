@@ -69,14 +69,14 @@ class AfterHoursScanner:
     # Minimum volume filter
     MIN_AH_VOLUME = 10000  # Minimum after-hours volume
     
-    def __init__(self, alpaca_client):
+    def __init__(self, price_client):
         """
         Initialize after-hours scanner.
         
         Args:
-            alpaca_client: AlpacaClient for price data
+            price_client: PolygonClient or AlpacaClient for price data
         """
-        self.alpaca_client = alpaca_client
+        self.price_client = price_client
         self._alerts: Dict[str, AfterHoursAlert] = {}
     
     async def scan_single(self, symbol: str) -> Optional[AfterHoursAlert]:
@@ -91,21 +91,24 @@ class AfterHoursScanner:
         """
         try:
             # Get latest bar (includes extended hours if available)
-            bar = await self.alpaca_client.get_latest_bar(symbol)
+            bar = await self.price_client.get_latest_bar(symbol)
             if not bar:
                 return None
             
             close_price = bar.close
             
             # Get extended hours quote
-            quote = await self.alpaca_client.get_latest_quote(symbol)
+            quote = await self.price_client.get_latest_quote(symbol)
             if not quote:
                 return None
             
             # Use ask price as AH price (more reliable than last trade)
-            ah_price = quote.get("ap", close_price)
+            # Compatible with both Polygon and Alpaca response formats
+            ah_price = quote.get("ask", quote.get("ap", close_price))
             if ah_price == 0:
-                ah_price = quote.get("bp", close_price)
+                ah_price = quote.get("bid", quote.get("bp", close_price))
+            if ah_price == 0:
+                ah_price = quote.get("price", close_price)  # Polygon's last trade price
             
             if ah_price == 0 or close_price == 0:
                 return None
@@ -255,7 +258,7 @@ class AfterHoursScanner:
         return injected
 
 
-async def run_afterhours_scan(alpaca_client, universe: Set[str] = None) -> Dict:
+async def run_afterhours_scan(price_client, universe: Set[str] = None) -> Dict:
     """
     Run after-hours scan.
     
@@ -265,7 +268,7 @@ async def run_afterhours_scan(alpaca_client, universe: Set[str] = None) -> Dict:
     - 8:00 PM ET
     
     Args:
-        alpaca_client: AlpacaClient instance
+        price_client: PolygonClient (preferred) or AlpacaClient for price data
         universe: Set of tickers to scan (default: all tickers from config)
         
     Returns:
@@ -276,7 +279,7 @@ async def run_afterhours_scan(alpaca_client, universe: Set[str] = None) -> Dict:
     if universe is None:
         universe = set(EngineConfig.get_all_tickers())
     
-    scanner = AfterHoursScanner(alpaca_client)
+    scanner = AfterHoursScanner(price_client)
     
     # Run the scan
     results = await scanner.run_full_scan(universe)

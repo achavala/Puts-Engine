@@ -248,6 +248,22 @@ class EngineConfig:
             # Hospital / Healthcare Services
             "HCA", "THC", "UHS", "CYH",
         ],
+        # MEDICAL DEVICES - NEW SECTOR Feb 4 (missed BSX -17.69%!)
+        "medical_devices": [
+            "BSX",    # Boston Scientific - MISSED -17.69% Feb 4!
+            "MDT",    # Medtronic
+            "ABT",    # Abbott Labs
+            "SYK",    # Stryker
+            "ISRG",   # Intuitive Surgical
+            "EW",     # Edwards Lifesciences
+            "ZBH",    # Zimmer Biomet
+            "BDX",    # Becton Dickinson
+            "HOLX",   # Hologic
+            "BAX",    # Baxter
+            "ALGN",   # Align Technology
+            "DXCM",   # Dexcom
+            "PODD",   # Insulet
+        ],
         # Industrials / Clean Energy (14) - Added EOSE, SERV
         "industrials": [
             "INOD", "BE", "PLUG", "FCEL", "BLDP", "TLN", "GEV", "AMSC", "LTBR",
@@ -348,6 +364,33 @@ class EngineConfig:
             "GPN",    # Global Payments
             "ADYEN",  # Adyen (if traded)
             "PYPL",   # Already in fintech but critical
+        ],
+        # E-COMMERCE RETAIL - NEW SECTOR Feb 4 (missed W -13.03%!)
+        "ecommerce_retail": [
+            "W",      # Wayfair - MISSED -13.03% Feb 4!
+            "ETSY",   # Etsy
+            "CHWY",   # Chewy
+            "WISH",   # ContextLogic
+            "FVRR",   # Fiverr
+            "UPWK",   # Upwork
+            "RVLV",   # Revolve
+            "REAL",   # TheRealReal
+            "PRTS",   # CarParts
+            "FLWS",   # 1-800-Flowers
+            "OSTK",   # Overstock
+        ],
+        # ELECTRONICS MANUFACTURING - NEW SECTOR Feb 4 (missed TTMI -10.37%!)
+        "electronics_mfg": [
+            "TTMI",   # TTM Technologies - MISSED -10.37% Feb 4!
+            "FLEX",   # Flex Ltd
+            "JABIL",  # Jabil
+            "SANM",   # Sanmina
+            "PLXS",   # Plexus
+            "CGNX",   # Cognex
+            "MKSI",   # MKS Instruments
+            "ENTG",   # Entegris
+            "LRCX",   # Lam Research
+            "KLAC",   # KLA Corp
         ],
         # TRAVEL OTAs - missed EXPE -15.26%
         "travel_ota": [
@@ -460,6 +503,15 @@ class EngineConfig:
         "gaming": ["U", "RBLX", "EA", "TTWO", "SKLZ", "PLTK"],
         # AI/Data Center - NEW Jan 30 (APP -15%, NBIS -10%, IREN -9% - all crashed together!)
         "ai_datacenter": ["APP", "NBIS", "IREN", "AI", "BBAI", "SOUN", "PLTR"],
+        # ========================================================================
+        # FEB 4, 2026 CRASH FIX: NEW CORRELATION GROUPS
+        # ========================================================================
+        # Medical Devices - correlated (BSX -17.69%, MDT, ABT, SYK move together)
+        "medical_devices": ["BSX", "MDT", "ABT", "SYK", "ISRG", "EW", "ZBH", "DXCM"],
+        # E-Commerce Retail - correlated (W -13.03%, ETSY, CHWY move together)
+        "ecommerce_retail": ["W", "ETSY", "CHWY", "WISH", "RVLV", "OSTK"],
+        # Electronics Mfg - correlated (TTMI -10.37%, FLEX, JABIL move together)
+        "electronics_mfg": ["TTMI", "FLEX", "JABIL", "SANM", "CGNX", "MKSI"],
         # ========================================================================
         # FEB 3, 2026 CRASH FIX: EARNINGS CLUSTER CORRELATION GROUPS
         # ========================================================================

@@ -91,14 +91,14 @@ class ZeroHourScanner:
     SPREAD_WARNING_PCT = 0.5   # 0.5% spread = concerning
     SPREAD_CRITICAL_PCT = 1.0  # 1.0% spread = critical
     
-    def __init__(self, alpaca_client):
+    def __init__(self, price_client):
         """
         Initialize zero-hour scanner.
         
         Args:
-            alpaca_client: AlpacaClient for pre-market quotes
+            price_client: PolygonClient (preferred) or AlpacaClient for price data
         """
-        self.alpaca = alpaca_client
+        self.price_client = price_client
     
     def load_ews_alerts(self) -> Dict[str, Dict]:
         """
@@ -144,7 +144,7 @@ class ZeroHourScanner:
         """
         try:
             # Get prior close
-            bars = await self.alpaca.get_daily_bars(
+            bars = await self.price_client.get_daily_bars(
                 symbol=symbol,
                 start=date.today() - timedelta(days=5),
                 end=date.today()
@@ -156,7 +156,7 @@ class ZeroHourScanner:
             prior_close = bars[-1].close
             
             # Get pre-market quote
-            quote = await self.alpaca.get_latest_quote(symbol)
+            quote = await self.price_client.get_latest_quote(symbol)
             
             if not quote or "quote" not in quote:
                 return None
@@ -349,17 +349,17 @@ class ZeroHourScanner:
         return results
 
 
-async def run_zero_hour_scan(alpaca_client) -> Dict[str, Any]:
+async def run_zero_hour_scan(price_client) -> Dict[str, Any]:
     """
     Run zero-hour scan.
     
     Args:
-        alpaca_client: AlpacaClient instance
+        price_client: PolygonClient (preferred) or AlpacaClient for price data
         
     Returns:
         Dict with scan results
     """
-    scanner = ZeroHourScanner(alpaca_client)
+    scanner = ZeroHourScanner(price_client)
     return await scanner.run_full_scan()
 
 

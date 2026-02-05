@@ -27,6 +27,9 @@ from putsengine.models import PutCandidate, MarketRegimeData, BlockReason
 from putsengine.scan_history import get_48hour_frequency_analysis, initialize_history_from_current_scan, add_scan_to_history, load_scan_history
 from putsengine.big_movers_scanner import analyze_historical_movers, SECTOR_MAPPING, get_sector
 
+# New isolated Market Direction tab (Feb 4, 2026)
+from putsengine.dashboard_market_direction_tab import render_market_direction_tab
+
 st.set_page_config(page_title="PutsEngine", page_icon="📉", layout="wide", initial_sidebar_state="expanded")
 
 # ============================================================================
@@ -718,6 +721,26 @@ def render_sidebar():
     with st.sidebar:
         st.markdown('<p class="sidebar-title">📊 Dashboard</p>', unsafe_allow_html=True)
         page = st.radio("Navigation", ["📊 Dashboard", "📜 Trade History", "📋 System Logs", "📉 Puts Scanner"], label_visibility="collapsed")
+        st.divider()
+        
+        # ===== TOOLS SECTION - Moved from tabs =====
+        st.markdown('<p class="sidebar-title">🛠️ Tools</p>', unsafe_allow_html=True)
+        
+        # Initialize sidebar view state
+        if "sidebar_view" not in st.session_state:
+            st.session_state.sidebar_view = None
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            if st.button("📒", key="btn_ledger", help="Ledger"):
+                st.session_state.sidebar_view = "ledger"
+        with col2:
+            if st.button("📈", key="btn_backtest", help="Backtest"):
+                st.session_state.sidebar_view = "backtest"
+        with col3:
+            if st.button("⚙️", key="btn_config", help="Config"):
+                st.session_state.sidebar_view = "config"
+        
         st.divider()
         st.markdown('<p class="sidebar-title">📉 Puts Settings</p>', unsafe_allow_html=True)
         st.markdown('<p class="sidebar-section">Position Sizing</p>', unsafe_allow_html=True)
@@ -2106,17 +2129,40 @@ def main():
     mins_to_refresh = max(0, int(time_to_refresh // 60))
     secs_to_refresh = max(0, int(time_to_refresh % 60))
 
-    if "Dashboard" in page or "Puts Scanner" in page:
-        tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
-            "🔥 Gamma Drain Engine", 
-            "📉 Distribution Engine", 
-            "💧 Liquidity Engine", 
+    # Check if sidebar tool view is active
+    sidebar_view = st.session_state.get("sidebar_view", None)
+    
+    if sidebar_view == "ledger":
+        st.markdown("### 📒 Trade Ledger")
+        if st.button("← Back to Dashboard", key="back_from_ledger"):
+            st.session_state.sidebar_view = None
+            st.rerun()
+        render_ledger_view()
+    
+    elif sidebar_view == "backtest":
+        st.markdown("### 📈 Backtest")
+        if st.button("← Back to Dashboard", key="back_from_backtest"):
+            st.session_state.sidebar_view = None
+            st.rerun()
+        render_backtest_view()
+    
+    elif sidebar_view == "config":
+        st.markdown("### ⚙️ Configuration")
+        if st.button("← Back to Dashboard", key="back_from_config"):
+            st.session_state.sidebar_view = None
+            st.rerun()
+        render_config_view()
+    
+    elif "Dashboard" in page or "Puts Scanner" in page:
+        # Main tabs - now with more space (7 tabs instead of 10)
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+            "🔥 Gamma Drain", 
+            "📉 Distribution", 
+            "💧 Liquidity", 
             "🚨 Early Warning",
-            "📊 48-Hour Analysis",
-            "🎯 Big Movers Analysis",
-            "📒 Ledger",
-            "📈 Backtest",
-            "⚙️ Config"
+            "📊 48-Hour",
+            "🎯 Big Movers",
+            "🎯 Market Direction"
         ])
 
         with tab1:
@@ -2156,13 +2202,8 @@ def main():
             render_big_movers_analysis()
 
         with tab7:
-            render_ledger_view()
-
-        with tab8:
-            render_backtest_view()
-
-        with tab9:
-            render_config_view()
+            # Market Direction tab
+            render_market_direction_tab()
 
     elif "Trade History" in page:
         render_ledger_view()

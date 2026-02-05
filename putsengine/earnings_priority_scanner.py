@@ -90,16 +90,16 @@ class EarningsPriorityScanner:
         "sector_contagion": 0.05,        # Peers already crashed
     }
     
-    def __init__(self, uw_client, alpaca_client):
+    def __init__(self, uw_client, price_client):
         """
         Initialize earnings priority scanner.
         
         Args:
             uw_client: UnusualWhalesClient
-            alpaca_client: AlpacaClient
+            price_client: PolygonClient (preferred) or AlpacaClient for price data
         """
         self.uw_client = uw_client
-        self.alpaca_client = alpaca_client
+        self.price_client = price_client
         self._earnings_cache: Dict[str, EarningsEvent] = {}
         self._cache_timestamp: Optional[datetime] = None
         self._alerts: List[EarningsPriorityAlert] = []
@@ -459,7 +459,7 @@ class EarningsPriorityScanner:
         return injected
 
 
-async def run_earnings_priority_scan(uw_client, alpaca_client) -> Dict:
+async def run_earnings_priority_scan(uw_client, price_client) -> Dict:
     """
     Run earnings priority scan (scheduled job wrapper).
     
@@ -467,8 +467,12 @@ async def run_earnings_priority_scan(uw_client, alpaca_client) -> Dict:
     - 7:00 AM ET (pre-market)
     - 12:00 PM ET (midday)
     - 4:30 PM ET (post-market)
+    
+    Args:
+        uw_client: UnusualWhalesClient for options data
+        price_client: PolygonClient (preferred) or AlpacaClient for price data
     """
-    scanner = EarningsPriorityScanner(uw_client, alpaca_client)
+    scanner = EarningsPriorityScanner(uw_client, price_client)
     
     # Run scan
     results = await scanner.run_earnings_priority_scan()

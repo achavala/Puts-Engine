@@ -76,8 +76,12 @@ class PumpDumpScanner:
     MAX_PUMP_DAYS = 3   # Maximum days for pump (fresh pump)
     MIN_RVOL = 1.3      # Minimum relative volume for confirmation
     
-    def __init__(self, alpaca_client):
-        self.alpaca_client = alpaca_client
+    def __init__(self, price_client):
+        """
+        Args:
+            price_client: PolygonClient (preferred) or AlpacaClient for price data
+        """
+        self.price_client = price_client
     
     async def detect_pump(self, symbol: str, bars: List = None) -> Optional[Dict]:
         """
@@ -92,7 +96,7 @@ class PumpDumpScanner:
         """
         if bars is None:
             try:
-                bars = await self.alpaca_client.get_daily_bars(symbol, limit=15)
+                bars = await self.price_client.get_daily_bars(symbol, limit=15)
             except Exception as e:
                 logger.debug(f"Failed to get bars for {symbol}: {e}")
                 return None
@@ -310,18 +314,18 @@ class PumpDumpScanner:
         return min(confidence, 1.0)
 
 
-async def run_pump_dump_scan(alpaca_client, symbols: List[str]) -> Dict:
+async def run_pump_dump_scan(price_client, symbols: List[str]) -> Dict:
     """
     Run pump-and-dump scan on symbols.
     
     Args:
-        alpaca_client: AlpacaClient instance
+        price_client: PolygonClient (preferred) or AlpacaClient for price data
         symbols: List of symbols to scan
         
     Returns:
         Dict with alerts and summary
     """
-    scanner = PumpDumpScanner(alpaca_client)
+    scanner = PumpDumpScanner(price_client)
     return await scanner.scan_for_pump_dumps(symbols)
 
 

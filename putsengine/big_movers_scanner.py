@@ -129,8 +129,12 @@ class BigMoversScanner:
     SUDDEN_CRASH_MIN_PCT = 7.0  # Big sudden move
     FLAT_THRESHOLD = 3.0  # < 3% move = "flat"
     
-    def __init__(self, alpaca_client=None):
-        self.alpaca_client = alpaca_client
+    def __init__(self, price_client=None):
+        """
+        Args:
+            price_client: PolygonClient (preferred) or AlpacaClient for price data
+        """
+        self.price_client = price_client
         self.et = pytz.timezone('US/Eastern')
     
     async def analyze_symbol(self, symbol: str, bars: List = None) -> Optional[BigMoverPattern]:
@@ -144,9 +148,9 @@ class BigMoversScanner:
         Returns:
             BigMoverPattern if detected, else None
         """
-        if bars is None and self.alpaca_client:
+        if bars is None and self.price_client:
             try:
-                bars = await self.alpaca_client.get_daily_bars(symbol, limit=15)
+                bars = await self.price_client.get_daily_bars(symbol, limit=15)
             except Exception as e:
                 logger.debug(f"Failed to get bars for {symbol}: {e}")
                 return None
@@ -542,18 +546,18 @@ def analyze_historical_movers(movers_data: Dict) -> Dict:
     return patterns
 
 
-async def run_big_movers_scan(alpaca_client, symbols: List[str]) -> Dict:
+async def run_big_movers_scan(price_client, symbols: List[str]) -> Dict:
     """
     Run big movers scan on symbols.
     
     Args:
-        alpaca_client: AlpacaClient instance
+        price_client: PolygonClient (preferred) or AlpacaClient for price data
         symbols: List of symbols to scan
     
     Returns:
         Dict with patterns and summary
     """
-    scanner = BigMoversScanner(alpaca_client)
+    scanner = BigMoversScanner(price_client)
     return await scanner.scan_universe(symbols)
 
 

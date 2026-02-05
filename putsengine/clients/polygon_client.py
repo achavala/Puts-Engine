@@ -1,17 +1,16 @@
 """
 Polygon.io API Client for market data.
 
-FEB 2, 2026 UPDATE - SUBSCRIPTION STATUS:
+FEB 4, 2026 UPDATE - SUBSCRIPTION STATUS:
 ==================================================
-User has MASSIVE OPTIONS ADVANCED plan ($199/month):
-- ✅ UNLIMITED OPTIONS API calls
-- ✅ Real-time OPTIONS data
-- ✅ Greeks, IV, Open Interest
-- ⚠️ STOCKS aggregates may have separate rate limit
+User has MASSIVE (Polygon) PAID subscription:
+- ✅ UNLIMITED API calls
+- ✅ Real-time stock AND options data
+- ✅ Greeks, IV, Open Interest, GEX
+- ✅ Technical indicators (SMA, EMA, RSI, MACD)
+- ✅ Snapshots for real-time quotes
 
-RECOMMENDATION:
-- Use Polygon for: OPTIONS data, IV, Greeks, OI
-- Use Alpaca for: Stock prices, quotes (real-time)
+PRIMARY DATA SOURCE for all scans (replacing Alpaca)
 ==================================================
 """
 
@@ -193,6 +192,109 @@ class PolygonClient:
             to_date=to_date,
             limit=limit
         )
+
+    async def get_latest_quote(self, symbol: str) -> Optional[Dict[str, Any]]:
+        """
+        Get latest quote (bid/ask) for a symbol using Polygon snapshot.
+        Compatible with Alpaca's get_latest_quote() interface.
+        
+        Returns:
+            Dict with 'bid', 'ask', 'bid_size', 'ask_size', 'price' keys
+        """
+        try:
+            snapshot = await self.get_snapshot(symbol)
+            if not snapshot or "ticker" not in snapshot:
+                return None
+            
+            ticker_data = snapshot.get("ticker", {})
+            last_quote = ticker_data.get("lastQuote", {})
+            last_trade = ticker_data.get("lastTrade", {})
+            
+            return {
+                "bid": last_quote.get("p", 0),  # bid price
+                "ask": last_quote.get("P", 0),  # ask price
+                "bid_size": last_quote.get("s", 0),
+                "ask_size": last_quote.get("S", 0),
+                "price": last_trade.get("p", 0),  # last trade price
+                "volume": ticker_data.get("day", {}).get("v", 0),
+                "timestamp": last_trade.get("t", None)
+            }
+        except Exception as e:
+            logger.error(f"Error getting latest quote for {symbol}: {e}")
+            return None
+
+    async def get_latest_bar(self, symbol: str) -> Optional[PriceBar]:
+        """
+        Get the most recent bar for a symbol.
+        Compatible with Alpaca's get_latest_bar() interface.
+        
+        Returns:
+            PriceBar with today's OHLCV data
+        """
+        try:
+            snapshot = await self.get_snapshot(symbol)
+            if not snapshot or "ticker" not in snapshot:
+                return None
+            
+            ticker_data = snapshot.get("ticker", {})
+            day_data = ticker_data.get("day", {})
+            prev_day = ticker_data.get("prevDay", {})
+            
+            if not day_data:
+                return None
+            
+            return PriceBar(
+                timestamp=datetime.now(),
+                open=float(day_data.get("o", prev_day.get("c", 0))),
+                high=float(day_data.get("h", 0)),
+                low=float(day_data.get("l", 0)),
+                close=float(day_data.get("c", 0)),
+                volume=int(day_data.get("v", 0)),
+                vwap=float(day_data.get("vw", 0))
+            )
+        except Exception as e:
+            logger.error(f"Error getting latest bar for {symbol}: {e}")
+            return None
+
+    async def get_current_price(self, symbol: str) -> Optional[float]:
+        """
+        Get the current price for a symbol (real-time).
+        
+        Returns:
+            Current price as float, or None if unavailable
+        """
+        try:
+            snapshot = await self.get_snapshot(symbol)
+            if not snapshot or "ticker" not in snapshot:
+                return None
+            
+            ticker_data = snapshot.get("ticker", {})
+            last_trade = ticker_data.get("lastTrade", {})
+            
+            return float(last_trade.get("p", 0))
+        except Exception as e:
+            logger.error(f"Error getting current price for {symbol}: {e}")
+            return None
+
+    async def get_intraday_change(self, symbol: str) -> Optional[float]:
+        """
+        Get intraday price change percentage.
+        
+        Returns:
+            Change percentage (e.g., -5.2 for -5.2%)
+        """
+        try:
+            snapshot = await self.get_snapshot(symbol)
+            if not snapshot or "ticker" not in snapshot:
+                return None
+            
+            ticker_data = snapshot.get("ticker", {})
+            today_change = ticker_data.get("todaysChangePerc", None)
+            
+            return float(today_change) if today_change is not None else None
+        except Exception as e:
+            logger.error(f"Error getting intraday change for {symbol}: {e}")
+            return None
 
     # ==================== Snapshots ====================
 

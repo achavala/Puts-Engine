@@ -87,8 +87,12 @@ class VolumePriceDivergenceScanner:
     MIN_DISTRIBUTION_DAYS = 2
     LOOKBACK_DAYS = 5
     
-    def __init__(self, alpaca_client):
-        self.alpaca_client = alpaca_client
+    def __init__(self, price_client):
+        """
+        Args:
+            price_client: PolygonClient (preferred) or AlpacaClient for price data
+        """
+        self.price_client = price_client
     
     async def analyze_symbol(self, symbol: str, bars: List = None) -> Optional[VolumePriceDivergenceAlert]:
         """
@@ -103,7 +107,7 @@ class VolumePriceDivergenceScanner:
         """
         if bars is None:
             try:
-                bars = await self.alpaca_client.get_daily_bars(symbol, limit=30)
+                bars = await self.price_client.get_daily_bars(symbol, limit=30)
             except Exception as e:
                 logger.debug(f"Failed to get bars for {symbol}: {e}")
                 return None
@@ -280,18 +284,18 @@ class VolumePriceDivergenceScanner:
         }
 
 
-async def run_volume_price_scan(alpaca_client, symbols: List[str]) -> Dict:
+async def run_volume_price_scan(price_client, symbols: List[str]) -> Dict:
     """
     Run volume-price divergence scan on symbols.
     
     Args:
-        alpaca_client: AlpacaClient instance
+        price_client: PolygonClient (preferred) or AlpacaClient for price data
         symbols: List of symbols to scan
         
     Returns:
         Dict with alerts and summary
     """
-    scanner = VolumePriceDivergenceScanner(alpaca_client)
+    scanner = VolumePriceDivergenceScanner(price_client)
     return await scanner.scan_universe(symbols)
 
 

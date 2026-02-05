@@ -24,7 +24,7 @@ from dataclasses import dataclass
 from loguru import logger
 
 from putsengine.config import Settings, get_settings
-from putsengine.clients.alpaca_client import AlpacaClient
+from putsengine.clients.polygon_client import PolygonClient
 
 
 @dataclass
@@ -57,7 +57,7 @@ class IntradayScanner:
     
     def __init__(self, settings: Optional[Settings] = None):
         self.settings = settings or get_settings()
-        self.alpaca = AlpacaClient(self.settings)
+        self.polygon = PolygonClient(self.settings)  # Using Polygon/Massive for real-time data
         
         # Detection thresholds
         self.critical_threshold = -10.0  # > 10% drop
@@ -66,7 +66,7 @@ class IntradayScanner:
     
     async def close(self):
         """Close client connections."""
-        await self.alpaca.close()
+        await self.polygon.close()
     
     async def scan_symbol(self, symbol: str) -> Optional[IntradayAlert]:
         """
@@ -75,12 +75,10 @@ class IntradayScanner:
         Returns IntradayAlert if significant drop detected, None otherwise.
         """
         try:
-            change = await self.alpaca.get_intraday_change(symbol)
+            change_pct = await self.polygon.get_intraday_change(symbol)
             
-            if not change:
+            if change_pct is None:
                 return None
-            
-            change_pct = change["change_pct"]
             
             # Only interested in significant drops
             if change_pct >= self.medium_threshold:

@@ -104,8 +104,12 @@ class MultiDayWeaknessScanner:
         "accelerating_weakness": 0.20, # NEW pattern
     }
     
-    def __init__(self, alpaca_client):
-        self.alpaca_client = alpaca_client
+    def __init__(self, price_client):
+        """
+        Args:
+            price_client: PolygonClient (preferred) or AlpacaClient for price data
+        """
+        self.price_client = price_client
     
     async def analyze_symbol(self, symbol: str, bars: List = None) -> WeaknessReport:
         """
@@ -121,7 +125,7 @@ class MultiDayWeaknessScanner:
         # Fetch bars if not provided
         if bars is None:
             try:
-                bars = await self.alpaca_client.get_daily_bars(
+                bars = await self.price_client.get_daily_bars(
                     symbol=symbol,
                     limit=20
                 )
@@ -344,18 +348,18 @@ class MultiDayWeaknessScanner:
         return results
 
 
-async def run_multiday_weakness_scan(alpaca_client, symbols: List[str]) -> Dict:
+async def run_multiday_weakness_scan(price_client, symbols: List[str]) -> Dict:
     """
     Run multi-day weakness scan on symbols.
     
     Args:
-        alpaca_client: AlpacaClient instance
+        price_client: PolygonClient (preferred) or AlpacaClient for price data
         symbols: List of symbols to scan
         
     Returns:
         Dict with actionable candidates and full results
     """
-    scanner = MultiDayWeaknessScanner(alpaca_client)
+    scanner = MultiDayWeaknessScanner(price_client)
     
     results = await scanner.scan_universe(symbols)
     

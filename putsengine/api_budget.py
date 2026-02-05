@@ -115,17 +115,24 @@ class APIBudgetManager:
     _priority_cache: Dict[str, TickerPriority] = field(default_factory=dict)
     
     # Minimum time between UW calls for same ticker (seconds)
+    # CRITICAL FIX: Reduced from 300/900/1800 to allow more frequent scanning
+    # Previous settings blocked ALL data collection (system was blind!)
     TICKER_COOLDOWN = {
-        TickerPriority.PRIORITY_1: 300,   # 5 minutes
-        TickerPriority.PRIORITY_2: 900,   # 15 minutes
-        TickerPriority.PRIORITY_3: 1800,  # 30 minutes
+        TickerPriority.PRIORITY_1: 60,    # 1 minute (was 5 min)
+        TickerPriority.PRIORITY_2: 180,   # 3 minutes (was 15 min)
+        TickerPriority.PRIORITY_3: 300,   # 5 minutes (was 30 min!)
     }
     
+    # Allow multiple calls within a "scan window" for same ticker
+    # This fixes the bug where 2nd API call for same ticker was blocked
+    SCAN_WINDOW_SECONDS = 30  # Allow all calls within 30 seconds
+    
     # Max UW calls per ticker per day
+    # INCREASED to support multiple scans - system was getting 0 data before!
     MAX_CALLS_PER_TICKER = {
-        TickerPriority.PRIORITY_1: 20,  # Index ETFs, active signals
-        TickerPriority.PRIORITY_2: 8,   # High-beta, watching
-        TickerPriority.PRIORITY_3: 3,   # Low priority
+        TickerPriority.PRIORITY_1: 50,   # Index ETFs, active signals (was 20)
+        TickerPriority.PRIORITY_2: 25,   # High-beta, watching (was 8)
+        TickerPriority.PRIORITY_3: 10,   # Low priority (was 3!)
     }
     
     def __post_init__(self):
@@ -254,13 +261,21 @@ class APIBudgetManager:
                 return False
         
         # Check ticker cooldown
+        # CRITICAL FIX: Allow calls within SCAN_WINDOW to support multi-call analysis
         last_call = self._ticker_last_call.get(symbol)
         if last_call:
-            cooldown = self.TICKER_COOLDOWN.get(priority, 1800)
             elapsed = (datetime.now() - last_call).total_seconds()
-            if elapsed < cooldown:
-                logger.debug(f"API Budget: {symbol} on cooldown ({int(cooldown - elapsed)}s remaining)")
-                return False
+            
+            # Allow calls within scan window (supports multiple API calls per analysis)
+            if elapsed < self.SCAN_WINDOW_SECONDS:
+                # Within scan window - allow the call (same scan session)
+                pass
+            else:
+                # After scan window - check cooldown between scan sessions
+                cooldown = self.TICKER_COOLDOWN.get(priority, 300)
+                if elapsed < cooldown:
+                    logger.debug(f"API Budget: {symbol} on cooldown ({int(cooldown - elapsed)}s remaining)")
+                    return False
         
         # Check ticker daily max
         ticker_calls = self._ticker_call_count.get(symbol, 0)

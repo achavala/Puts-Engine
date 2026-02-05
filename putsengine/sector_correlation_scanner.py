@@ -127,8 +127,13 @@ class SectorCorrelationScanner:
     # Score boost for correlated peers
     BASE_CORRELATION_BOOST = 0.10
     
-    def __init__(self, alpaca_client, uw_client):
-        self.alpaca_client = alpaca_client
+    def __init__(self, price_client, uw_client):
+        """
+        Args:
+            price_client: PolygonClient (preferred) or AlpacaClient for price data
+            uw_client: UnusualWhalesClient for options data
+        """
+        self.price_client = price_client
         self.uw_client = uw_client
         self._alerts: Dict[str, SectorAlert] = {}
     

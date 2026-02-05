@@ -1,231 +1,50 @@
 {
-  "BKNG": {
-    "score": 0.41000000000000003,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_10pct",
-      "close_below_prior_low"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "CRDO": {
-    "score": 0.45,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_12pct",
-      "close_below_prior_low_high_vol_red_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "RKLB": {
-    "score": 0.4,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_10pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "MP": {
-    "score": 0.41000000000000003,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_10pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
   "APP": {
-    "score": 0.43000000000000005,
-    "source": "distribution",
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_5pct",
-      "close_below_prior_low_high_vol_red_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "INOD": {
-    "score": 0.38,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_8pct",
-      "close_below_prior_low_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "ONDS": {
-    "score": 0.38,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_7pct",
-      "bearish_engulfing_close_below_prior_low"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "VRM": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_12pct",
-      "close_below_prior_low_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "EBAY": {
-    "score": 0.42999999999999994,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_4pct",
-      "close_below_prior_low_high_vol_red"
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
   "AMD": {
-    "score": 0.45,
-    "source": "distribution",
+    "score": 0.45239046981128006,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_4pct",
-      "close_below_prior_low_high_vol_red_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "PLUG": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_4pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
+      "rising_volume_red",
+      "failed_vwap_reclaim",
+      "accelerating_weakness"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
   "GLXY": {
-    "score": 0.4,
-    "source": "distribution",
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_18pct",
-      "close_below_prior_low_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "SHOP": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_10pct",
-      "close_below_prior_low_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "GEV": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_5pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "UUUU": {
-    "score": 0.42000000000000004,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_18pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "BILI": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_4pct",
-      "close_below_prior_low_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "LITE": {
-    "score": 0.42000000000000004,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_16pct",
-      "high_vol_red"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "ABBV": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_3pct",
-      "close_below_prior_low_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "LTBR": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_14pct",
-      "close_below_prior_low_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "HUT": {
-    "score": 0.38,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_7pct",
-      "close_below_prior_low_gap_down_after_pump"
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
   "NVO": {
-    "score": 0.46,
-    "source": "distribution",
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_17pct",
-      "close_below_prior_low_high_vol_red_gap_down_after_pump"
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
@@ -241,312 +60,806 @@
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
-  "CRWD": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_4pct",
-      "close_below_prior_low_topping_tail_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
   "VST": {
-    "score": 0.42999999999999994,
-    "source": "distribution",
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_4pct",
-      "close_below_prior_low_high_vol_red"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "EXPE": {
-    "score": 0.38,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_20pct",
-      "topping_tail"
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
   "PLTR": {
-    "score": 0.41000000000000003,
-    "source": "distribution",
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_5pct",
-      "close_below_prior_low_high_vol_red"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "C": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_3pct",
-      "bearish_engulfing_failed_breakout_topping_tail"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "UEC": {
-    "score": 0.41000000000000003,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_10pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "CAT": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_5pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "COHR": {
-    "score": 0.41000000000000003,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_5pct",
-      "close_below_prior_low_high_vol_red"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "ARKK": {
-    "score": 0.41000000000000003,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_3pct",
-      "close_below_prior_low_high_vol_red"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "USAR": {
-    "score": 0.4,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_19pct",
-      "bearish_engulfing_close_below_prior_low"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "LAC": {
-    "score": 0.41000000000000003,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_10pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
+      "weak_closes_2day",
+      "rising_volume_red",
+      "failed_vwap_reclaim",
+      "accelerating_weakness"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
   "MCO": {
-    "score": 0.41000000000000003,
-    "source": "distribution",
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_7pct",
-      "close_below_prior_low_high_vol_red"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "DAL": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_4pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
+      "lower_highs_3day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "accelerating_weakness"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
   "ZG": {
-    "score": 0.42999999999999994,
-    "source": "distribution",
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_6pct",
-      "close_below_prior_low_high_vol_red"
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
   "INFY": {
-    "score": 0.41000000000000003,
-    "source": "distribution",
+    "score": 0.7443762597773019,
+    "source": "early_warning",
+    "reason": "IPI=0.74 (3 footprints)",
     "signals": [
-      "pump_dump_reversal",
-      "pump_5pct",
-      "close_below_prior_low_gap_down_after_pump"
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
     ],
     "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
+    "expires_date": "2026-02-06"
   },
   "HOOD": {
-    "score": 0.43000000000000005,
-    "source": "distribution",
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_4pct",
-      "close_below_prior_low_high_vol_red_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "MMYT": {
-    "score": 0.42000000000000004,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_17pct",
-      "high_vol_red"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "CI": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_4pct",
-      "failed_breakout_gap_down_after_pump"
-    ],
-    "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
-  },
-  "UMAC": {
-    "score": 0.39,
-    "source": "distribution",
-    "signals": [
-      "pump_dump_reversal",
-      "pump_14pct",
-      "close_below_prior_low_gap_down_after_pump"
+      "lower_highs_3day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
   "SNOW": {
-    "score": 0.43999999999999995,
-    "source": "distribution",
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_10pct",
-      "close_below_prior_low_high_vol_red"
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
-  "SPGI": {
-    "score": 0.42000000000000004,
-    "source": "distribution",
+  "EA": {
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_8pct",
-      "close_below_prior_low"
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
-  "NNE": {
-    "score": 0.38,
-    "source": "distribution",
+  "TDOC": {
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_9pct",
-      "bearish_engulfing_close_below_prior_low"
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim",
+      "accelerating_weakness"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
-  "CMI": {
-    "score": 0.39,
-    "source": "distribution",
+  "ORCL": {
+    "score": 0.5,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_4pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "ILMN": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "NVDA": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "COIN": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "TCOM": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "TTWO": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "CEG": {
+    "score": 0.8561284145405075,
+    "source": "early_warning",
+    "reason": "IPI=0.86 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "BBBY": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "NET": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "MSCI": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "rising_volume_red",
+      "lower_lows_highs_3day",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "OSCR": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "lower_lows_highs_3day",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "XLK": {
+    "score": 0.930920185718634,
+    "source": "early_warning",
+    "reason": "IPI=0.93 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "META": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "NFLX": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "PYPL": {
+    "score": 1.0,
+    "source": "early_warning",
+    "reason": "IPI=1.00 (4 footprints)",
+    "signals": [
+      "cross_asset_divergence",
+      "dark_pool_sequence",
+      "multi_day_distribution",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "SHOP": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "weak_closes_2day",
+      "rising_volume_red",
+      "lower_lows_highs_3day"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "MSTR": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "lower_lows_highs_3day",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "IONQ": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "lower_lows_highs_3day",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "CLOV": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "lower_lows_highs_3day",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "GOOG": {
+    "score": 0.5,
+    "source": "liquidity",
+    "signals": [
+      "weak_closes_2day",
+      "rising_volume_red",
+      "failed_vwap_reclaim",
+      "accelerating_weakness"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "FIS": {
+    "score": 0.46799999999999997,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "SKLZ": {
+    "score": 0.46799999999999997,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "DDOG": {
+    "score": 0.7288517950251426,
+    "source": "early_warning",
+    "reason": "IPI=0.73 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "ASML": {
+    "score": 0.46799999999999997,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "EVTL": {
+    "score": 0.46799999999999997,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "MRVL": {
+    "score": 0.46799999999999997,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "MU": {
+    "score": 0.46799999999999997,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "lower_lows_highs_3day",
+      "failed_vwap_reclaim"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "TLN": {
+    "score": 0.46359921146822086,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "rising_volume_red",
+      "lower_lows_highs_3day"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "TEM": {
+    "score": 0.46149734753925686,
+    "source": "liquidity",
+    "signals": [
+      "lower_highs_3day",
+      "rising_volume_red",
+      "lower_lows_highs_3day"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
   "MDB": {
-    "score": 0.38,
-    "source": "distribution",
+    "score": 0.4587969310384506,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_8pct",
-      "close_below_prior_low"
+      "lower_highs_3day",
+      "rising_volume_red",
+      "lower_lows_highs_3day"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
-  "FCX": {
-    "score": 0.4,
-    "source": "distribution",
+  "BILI": {
+    "score": 0.4503256371603376,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_8pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
+      "lower_highs_3day",
+      "rising_volume_red",
+      "lower_lows_highs_3day"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
   },
-  "FCEL": {
-    "score": 0.39,
-    "source": "distribution",
+  "WOLF": {
+    "score": 0.6,
+    "source": "liquidity",
     "signals": [
-      "pump_dump_reversal",
-      "pump_13pct",
-      "bearish_engulfing_close_below_prior_low"
+      "ah_drop_13.1pct",
+      "after_hours_critical"
     ],
     "added_date": "2026-02-04",
     "expires_date": "2026-02-09"
+  },
+  "QCOM": {
+    "score": 0.6,
+    "source": "liquidity",
+    "signals": [
+      "ah_drop_9.6pct",
+      "after_hours_critical"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "ARM": {
+    "score": 0.6,
+    "source": "liquidity",
+    "signals": [
+      "ah_drop_7.1pct",
+      "after_hours_critical"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "TTMI": {
+    "score": 0.6,
+    "source": "liquidity",
+    "signals": [
+      "ah_drop_5.3pct",
+      "after_hours_critical"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "REAL": {
+    "score": 0.6,
+    "source": "liquidity",
+    "signals": [
+      "ah_drop_5.1pct",
+      "after_hours_critical"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-09"
+  },
+  "IBM": {
+    "score": 1.0,
+    "source": "early_warning",
+    "reason": "IPI=1.00 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "PLUG": {
+    "score": 1.0,
+    "source": "early_warning",
+    "reason": "IPI=1.00 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
   },
   "OWL": {
-    "score": 0.4,
-    "source": "distribution",
+    "score": 0.9306584797095573,
+    "source": "early_warning",
+    "reason": "IPI=0.93 (3 footprints)",
     "signals": [
-      "pump_dump_reversal",
-      "pump_9pct",
-      "high_vol_red"
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
     ],
     "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
+    "expires_date": "2026-02-06"
   },
-  "AA": {
-    "score": 0.39,
-    "source": "distribution",
+  "PATH": {
+    "score": 0.917974706309705,
+    "source": "early_warning",
+    "reason": "IPI=0.92 (3 footprints)",
     "signals": [
-      "pump_dump_reversal",
-      "pump_7pct",
-      "bearish_engulfing_close_below_prior_low_failed_breakout"
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
     ],
     "added_date": "2026-02-04",
-    "expires_date": "2026-02-09"
+    "expires_date": "2026-02-06"
+  },
+  "TWLO": {
+    "score": 0.8953848276204627,
+    "source": "early_warning",
+    "reason": "IPI=0.90 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "SOUN": {
+    "score": 0.8901298719851677,
+    "source": "early_warning",
+    "reason": "IPI=0.89 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "FISV": {
+    "score": 0.8855989765382813,
+    "source": "early_warning",
+    "reason": "IPI=0.89 (3 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "multi_day_distribution",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "OPEN": {
+    "score": 0.8843964005077306,
+    "source": "early_warning",
+    "reason": "IPI=0.88 (2 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "CPRT": {
+    "score": 0.8608401419338726,
+    "source": "early_warning",
+    "reason": "IPI=0.86 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "BBAI": {
+    "score": 0.8577636136538607,
+    "source": "early_warning",
+    "reason": "IPI=0.86 (4 footprints)",
+    "signals": [
+      "cross_asset_divergence",
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "REGN": {
+    "score": 0.8350676739290191,
+    "source": "early_warning",
+    "reason": "IPI=0.84 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "NU": {
+    "score": 0.8314836386794281,
+    "source": "early_warning",
+    "reason": "IPI=0.83 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "CVNA": {
+    "score": 0.8003320093386767,
+    "source": "early_warning",
+    "reason": "IPI=0.80 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "AMC": {
+    "score": 0.7855732264187194,
+    "source": "early_warning",
+    "reason": "IPI=0.79 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "CCL": {
+    "score": 0.7667124656296989,
+    "source": "early_warning",
+    "reason": "IPI=0.77 (2 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "JD": {
+    "score": 0.7533749923613264,
+    "source": "early_warning",
+    "reason": "IPI=0.75 (2 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "multi_day_distribution"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "VALE": {
+    "score": 0.7490799330632492,
+    "source": "early_warning",
+    "reason": "IPI=0.75 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "RCL": {
+    "score": 0.7436963232674192,
+    "source": "early_warning",
+    "reason": "IPI=0.74 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "RBLX": {
+    "score": 0.733347496694947,
+    "source": "early_warning",
+    "reason": "IPI=0.73 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "COMP": {
+    "score": 0.7177565533597956,
+    "source": "early_warning",
+    "reason": "IPI=0.72 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "NCLH": {
+    "score": 0.7176356183591458,
+    "source": "early_warning",
+    "reason": "IPI=0.72 (2 footprints)",
+    "signals": [
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "AXP": {
+    "score": 0.7042648098324696,
+    "source": "early_warning",
+    "reason": "IPI=0.70 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
+  },
+  "HIMS": {
+    "score": 0.7023536378492742,
+    "source": "early_warning",
+    "reason": "IPI=0.70 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-04",
+    "expires_date": "2026-02-06"
   }
 }

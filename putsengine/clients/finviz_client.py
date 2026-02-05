@@ -436,6 +436,89 @@ class FinVizClient:
             logger.error(f"Error calculating technical rating for {symbol}: {e}")
             return None
             
+    # ==================== News & Sentiment ====================
+    
+    async def get_market_news(self, limit: int = 20) -> List[Dict[str, Any]]:
+        """
+        Get market news headlines from FinViz.
+        
+        FinViz Elite provides news sentiment and market headlines.
+        Returns list of news items with title, source, sentiment.
+        """
+        # FinViz news endpoint
+        url = "https://finviz.com/news.ashx"
+        
+        params = {
+            "v": 3  # Full news view
+        }
+        
+        result = await self._request(url, params)
+        
+        if not result:
+            return []
+            
+        # Parse news data
+        return self._parse_news_data(result.get("raw", ""))
+    
+    def _parse_news_data(self, data: str) -> List[Dict[str, Any]]:
+        """Parse news data from FinViz response."""
+        news_items = []
+        
+        if not data:
+            return news_items
+            
+        try:
+            # FinViz returns HTML - we'll parse basic headlines
+            # For a production system, you'd use BeautifulSoup here
+            import re
+            
+            # Look for headline patterns
+            headline_pattern = r'<a[^>]*class="tab-link-news"[^>]*>([^<]+)</a>'
+            matches = re.findall(headline_pattern, data, re.IGNORECASE)
+            
+            for title in matches[:20]:
+                # Basic sentiment analysis
+                title_lower = title.lower()
+                
+                bearish_keywords = ["crash", "plunge", "tumble", "selloff", "fears", "downgrade", "miss", "weak"]
+                bullish_keywords = ["surge", "rally", "soar", "beat", "strong", "upgrade"]
+                
+                sentiment = "neutral"
+                for kw in bearish_keywords:
+                    if kw in title_lower:
+                        sentiment = "bearish"
+                        break
+                for kw in bullish_keywords:
+                    if kw in title_lower:
+                        sentiment = "bullish"
+                        break
+                
+                news_items.append({
+                    "title": title.strip(),
+                    "sentiment": sentiment,
+                    "source": "FinViz"
+                })
+                
+        except Exception as e:
+            logger.debug(f"Error parsing FinViz news: {e}")
+            
+        return news_items
+    
+    async def get_insider_activity_summary(self) -> Dict[str, Any]:
+        """
+        Get insider trading activity summary.
+        
+        Returns summary of recent insider buying/selling across market.
+        """
+        # Get insider selling screen
+        sellers = await self.screen_insider_selling()
+        
+        return {
+            "insider_sellers": len(sellers),
+            "top_sellers": sellers[:10] if sellers else [],
+            "interpretation": f"{len(sellers)} stocks with insider selling detected"
+        }
+    
     # ==================== Sector Analysis ====================
     
     async def get_sector_performance(self) -> Dict[str, float]:

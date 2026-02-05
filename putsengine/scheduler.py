@@ -87,6 +87,10 @@ from putsengine.multiday_weakness_scanner import run_multiday_weakness_scan, Mul
 from putsengine.pump_dump_scanner import run_pump_dump_scan, inject_pump_dumps_to_dui
 from putsengine.pre_earnings_flow import run_pre_earnings_flow_scan, inject_pre_earnings_to_dui
 from putsengine.volume_price_divergence import run_volume_price_scan, inject_divergence_to_dui
+
+# MarketPulse Engine (Feb 5, 2026) - Regime awareness, not prediction
+# Consolidated from Architect-2,3,4,5 feedback
+from putsengine.market_pulse_engine import analyze_market_direction, format_result
 from putsengine.intraday_scanner import run_intraday_scan, IntradayScanner
 
 # EARLY WARNING SYSTEM (Feb 1, 2026) - Detect institutional footprints 1-3 days before breakdown
@@ -244,120 +248,47 @@ class PutsEngineScheduler:
         12  5:00 PM     End of Day
         """
         # Pre-market scans (4 scans at :15)
+        # ============================================================================
+        # OPTIMIZED SCHEDULE (Feb 4, 2026)
+        # ============================================================================
+        # REMOVED: 8:00 AM Pre-Market Full Scan - redundant with 9:00 AM scan
+        # Saves ~1,000 UW API calls/day
+        # ============================================================================
+        
+        # ============================================================================
+        # PRE-MARKET FINAL SCAN - 9:00 AM ET (Feb 4, 2026)
+        # ============================================================================
+        # 30 minutes before market open - FINAL institutional positioning check
+        # Uses full UW API (dark pool, options flow, IV, GEX)
+        # Purpose: Same-day trading decisions based on overnight/pre-market trend
+        # ============================================================================
         self.scheduler.add_job(
             self._run_scan_wrapper,
-            CronTrigger(hour=4, minute=15, timezone=EST),
-            args=["pre_market_1"],
-            id="pre_market_1",
-            name="Pre-Market Scan #1 (4:15 AM ET)",
+            CronTrigger(hour=9, minute=0, timezone=EST),
+            args=["pre_market_final"],
+            id="pre_market_final_9am",
+            name="🎯 Pre-Market Final Scan (9:00 AM ET) - 361 tickers - UW API",
             replace_existing=True
         )
         
-        self.scheduler.add_job(
-            self._run_scan_wrapper,
-            CronTrigger(hour=6, minute=15, timezone=EST),
-            args=["pre_market_2"],
-            id="pre_market_2",
-            name="Pre-Market Scan #2 (6:15 AM ET)",
-            replace_existing=True
-        )
+        # REMOVED: Pre-Market Scans #1-4 (4:15, 6:15, 8:15, 9:15 AM) - redundant
+        # REMOVED: Regular Scans (10:15, 11:15, 12:45, 1:45, 2:45, 3:15) - heavy UW usage
+        # REMOVED: Market Close Scan (4:00 PM) - redundant with After-Hours
+        # REMOVED: End of Day Scan (5:00 PM) - redundant with EWS at 10 PM
         
+        # ============================================================================
+        # MARKET PULSE SCAN - Power Hour (Feb 4, 2026)
+        # ============================================================================
+        # 3:00 PM ET - Critical for next-day trading decisions
+        # Uses full UW API (dark pool, options flow, IV, GEX)
+        # Captures power hour institutional activity
+        # ============================================================================
         self.scheduler.add_job(
             self._run_scan_wrapper,
-            CronTrigger(hour=8, minute=15, timezone=EST),
-            args=["pre_market_3"],
-            id="pre_market_3",
-            name="Pre-Market Scan #3 (8:15 AM ET)",
-            replace_existing=True
-        )
-        
-        self.scheduler.add_job(
-            self._run_scan_wrapper,
-            CronTrigger(hour=9, minute=15, timezone=EST),
-            args=["pre_market_4"],
-            id="pre_market_4",
-            name="Pre-Market Scan #4 (9:15 AM ET)",
-            replace_existing=True
-        )
-        
-        # Regular scans during market hours (6 scans)
-        # 10:15 AM
-        self.scheduler.add_job(
-            self._run_scan_wrapper,
-            CronTrigger(hour=10, minute=15, timezone=EST),
-            args=["regular"],
-            id="regular_1015",
-            name="Regular Scan (10:15 AM ET)",
-            replace_existing=True
-        )
-        
-        # 11:15 AM
-        self.scheduler.add_job(
-            self._run_scan_wrapper,
-            CronTrigger(hour=11, minute=15, timezone=EST),
-            args=["regular"],
-            id="regular_1115",
-            name="Regular Scan (11:15 AM ET)",
-            replace_existing=True
-        )
-        
-        # 12:45 PM
-        self.scheduler.add_job(
-            self._run_scan_wrapper,
-            CronTrigger(hour=12, minute=45, timezone=EST),
-            args=["regular"],
-            id="regular_1245",
-            name="Regular Scan (12:45 PM ET)",
-            replace_existing=True
-        )
-        
-        # 1:45 PM
-        self.scheduler.add_job(
-            self._run_scan_wrapper,
-            CronTrigger(hour=13, minute=45, timezone=EST),
-            args=["regular"],
-            id="regular_1345",
-            name="Regular Scan (1:45 PM ET)",
-            replace_existing=True
-        )
-        
-        # 2:45 PM
-        self.scheduler.add_job(
-            self._run_scan_wrapper,
-            CronTrigger(hour=14, minute=45, timezone=EST),
-            args=["regular"],
-            id="regular_1445",
-            name="Regular Scan (2:45 PM ET)",
-            replace_existing=True
-        )
-        
-        # 3:15 PM
-        self.scheduler.add_job(
-            self._run_scan_wrapper,
-            CronTrigger(hour=15, minute=15, timezone=EST),
-            args=["regular"],
-            id="regular_1515",
-            name="Regular Scan (3:15 PM ET)",
-            replace_existing=True
-        )
-        
-        # Market close scan (4:00 PM)
-        self.scheduler.add_job(
-            self._run_scan_wrapper,
-            CronTrigger(hour=16, minute=0, timezone=EST),
-            args=["market_close"],
-            id="market_close",
-            name="Market Close Scan (4:00 PM ET)",
-            replace_existing=True
-        )
-        
-        # End of Day scan (5:00 PM)
-        self.scheduler.add_job(
-            self._run_scan_wrapper,
-            CronTrigger(hour=17, minute=0, timezone=EST),
-            args=["end_of_day"],
-            id="end_of_day",
-            name="End of Day Scan (5:00 PM ET)",
+            CronTrigger(hour=15, minute=0, timezone=EST),
+            args=["market_pulse"],
+            id="market_pulse_3pm",
+            name="📊 Market Pulse Full Scan (3:00 PM ET) - 361 tickers - UW API",
             replace_existing=True
         )
         
@@ -447,6 +378,27 @@ class PutsEngineScheduler:
         )
         
         # ============================================================================
+        # MARKET DIRECTION ENGINE (Feb 4, 2026)
+        # Predicts market direction using GEX, VIX, dark pool, options flow
+        # Runs at 8:00 AM and 9:00 AM ET for trading decisions
+        # ============================================================================
+        self.scheduler.add_job(
+            self._run_market_direction_wrapper,
+            CronTrigger(hour=8, minute=0, timezone=EST),
+            id="market_direction_8am",
+            name="🎯 Market Direction Analysis (8:00 AM ET)",
+            replace_existing=True
+        )
+        
+        self.scheduler.add_job(
+            self._run_market_direction_wrapper,
+            CronTrigger(hour=9, minute=0, timezone=EST),
+            id="market_direction_9am",
+            name="🎯 Market Direction Analysis (9:00 AM ET) - Pre-Open",
+            replace_existing=True
+        )
+        
+        # ============================================================================
         # ARCHITECT-4 LEAD/DISCOVERY SCANNERS
         # These detect moves 1-2 days BEFORE they happen via DUI injection
         # MP → USAR → LAC cascade would have been caught by these
@@ -467,6 +419,16 @@ class PutsEngineScheduler:
             CronTrigger(hour=6, minute=0, timezone=EST),
             id="gap_scan_6am",
             name="Pre-Market Gap Scan (6:00 AM ET)",
+            replace_existing=True
+        )
+        
+        # 7:00 AM Gap Scan - CRITICAL for catching overnight earnings moves
+        # FEB 4 FIX: AMD, BSX, APP crashed pre-market, need earlier detection
+        self.scheduler.add_job(
+            self._run_premarket_gap_scan_wrapper,
+            CronTrigger(hour=7, minute=0, timezone=EST),
+            id="gap_scan_7am",
+            name="Pre-Market Gap Scan (7:00 AM ET) - Early Earnings Detection",
             replace_existing=True
         )
         
@@ -662,71 +624,26 @@ class PutsEngineScheduler:
         # 7. Cross-Asset Divergence - Correlation breakdown
         # ============================================================================
         
-        # Morning early warning scan (before market opens) - HIGHEST PRIORITY
-        self.scheduler.add_job(
-            self._run_early_warning_scan_wrapper,
-            CronTrigger(hour=8, minute=0, timezone=EST),
-            id="early_warning_8am",
-            name="🚨 Early Warning Scan (8:00 AM ET) - Pre-Market Footprints",
-            replace_existing=True
-        )
-        
-        # Mid-day early warning scan - Catch developing distribution
-        self.scheduler.add_job(
-            self._run_early_warning_scan_wrapper,
-            CronTrigger(hour=12, minute=0, timezone=EST),
-            id="early_warning_12pm",
-            name="🚨 Early Warning Scan (12:00 PM ET) - Mid-Day Footprints",
-            replace_existing=True
-        )
-        
-        # Evening early warning scan - Accumulate end-of-day footprints
-        self.scheduler.add_job(
-            self._run_early_warning_scan_wrapper,
-            CronTrigger(hour=16, minute=30, timezone=EST),
-            id="early_warning_430pm",
-            name="🚨 Early Warning Scan (4:30 PM ET) - Post-Market Footprints",
-            replace_existing=True
-        )
-        
         # ============================================================================
-        # NEW: EVENING/OVERNIGHT EARLY WARNING SCANS (Feb 3, 2026)
-        # These fill the gap between 8:00 PM and 4:00 AM
-        # Critical for catching overnight news, earnings, and global events
+        # EARLY WARNING SYSTEM - OPTIMIZED (Feb 4, 2026)
+        # ============================================================================
+        # OPTIMIZATION: Only ONE EWS scan makes UW API calls (10 PM)
+        # This saves ~4,000 UW API calls/day for use in Pre-Market and Regular scans
+        # Dashboard reads from cached early_warning_alerts.json for real-time display
         # ============================================================================
         
-        # Late evening EWS scan - Catch after-hours earnings impact
-        self.scheduler.add_job(
-            self._run_early_warning_scan_wrapper,
-            CronTrigger(hour=20, minute=0, timezone=EST),
-            id="early_warning_8pm",
-            name="🚨 Early Warning Scan (8:00 PM ET) - Evening Footprints",
-            replace_existing=True
-        )
-        
-        # Overnight scan - Final check before next trading day
-        # Catches late news, global market moves, and overnight distributions
+        # SINGLE EWS scan that makes actual UW API calls - runs at 10 PM
+        # Scans 361 tickers for institutional footprints
         self.scheduler.add_job(
             self._run_early_warning_scan_wrapper,
             CronTrigger(hour=22, minute=0, timezone=EST),
             id="early_warning_10pm",
-            name="🚨 Early Warning Scan (10:00 PM ET) - Overnight Footprints",
+            name="🚨 Early Warning Scan (10:00 PM ET) - FULL UW SCAN (361 tickers)",
             replace_existing=True
         )
         
-        # ============================================================================
-        # NEW: OVERNIGHT FULL SCAN (Feb 3, 2026)
-        # Runs all 3 engines at 10:00 PM to catch overnight developments
-        # This ensures data freshness before next pre-market session
-        # ============================================================================
-        self.scheduler.add_job(
-            self._run_scan_wrapper,
-            CronTrigger(hour=22, minute=0, timezone=EST),
-            args=["overnight"],
-            id="overnight_scan_10pm",
-            name="🌙 Overnight Full Scan (10:00 PM ET)",
-            replace_existing=True
-        )
+        # REMOVED: Overnight Full Scan (10:00 PM) - Redundant with EWS at 10 PM
+        # The EWS scan at 10 PM now handles all overnight detection
         
         # ============================================================================
         # ZERO-HOUR GAP SCANNER (Feb 1, 2026) - Day 0 Execution Confirmation
@@ -751,31 +668,20 @@ class PutsEngineScheduler:
         )
         
         # =========================================================================
-        # PATTERN SCAN - Every 30 minutes during market hours (9:30 AM - 4:00 PM ET)
+        # PATTERN SCAN - OPTIMIZED (Feb 4, 2026)
+        # REMOVED: 14 pattern scans every 30 mins (9:30 AM - 4:00 PM)
+        # KEPT: Just 1 pattern scan at 4:00 PM (post-market)
+        # Reason: Pattern scans use Alpaca only, but still consume resources
         # =========================================================================
-        for hour in range(9, 16):
-            for minute in [0, 30]:
-                # Skip 9:00 (before market open)
-                if hour == 9 and minute == 0:
-                    continue
-                self.scheduler.add_job(
-                    self._run_pattern_scan_wrapper,
-                    CronTrigger(hour=hour, minute=minute, timezone=EST),
-                    id=f"pattern_scan_{hour}_{minute:02d}",
-                    name=f"Pattern Scan ({hour}:{minute:02d} ET)",
-                    replace_existing=True
-                )
-        
-        # Also run pattern scan at 4:00 PM after market close
         self.scheduler.add_job(
             self._run_pattern_scan_wrapper,
             CronTrigger(hour=16, minute=0, timezone=EST),
             id="pattern_scan_16_00",
-            name="Pattern Scan (4:00 PM ET - Post Market)",
+            name="Pattern Scan (4:00 PM ET - Post Market) - 361 tickers",
             replace_existing=True
         )
         
-        logger.info("All scheduled jobs configured (including NEW scanners for 90% coverage + pattern scan every 30 min)")
+        logger.info("All scheduled jobs configured (OPTIMIZED Feb 4 - reduced UW API usage)")
     
     def _safe_async_run(self, coro, name: str = "scan"):
         """
@@ -860,6 +766,10 @@ class PutsEngineScheduler:
         FEB 3, 2026 FIX: 14/15 crashes were earnings-related.
         """
         self._safe_async_run(self.run_earnings_priority_scan(), "earnings_priority_scan")
+    
+    def _run_market_direction_wrapper(self):
+        """Wrapper to run market direction analysis in scheduler context."""
+        self._safe_async_run(self.run_market_direction_analysis(), "market_direction_analysis")
     
     def _run_premarket_gap_scan_wrapper(self):
         """Wrapper to run pre-market gap scan in scheduler context."""
@@ -1421,8 +1331,8 @@ class PutsEngineScheduler:
             # Get universe
             universe = set(EngineConfig.get_all_tickers())
             
-            # Run after-hours scan
-            results = await run_afterhours_scan(self._alpaca, universe)
+            # Run after-hours scan (using Polygon/Massive for real-time data)
+            results = await run_afterhours_scan(self._polygon, universe)
             
             # Log results
             summary = results.get("summary", {})
@@ -1511,8 +1421,8 @@ class PutsEngineScheduler:
         try:
             await self._init_clients()
             
-            # Run pre-catalyst scan
-            results = await run_precatalyst_scan(self._uw, self._alpaca)
+            # Run pre-catalyst scan (using Polygon/Massive for price data)
+            results = await run_precatalyst_scan(self._uw, self._polygon)
             
             # Log results
             summary = results.get("summary", {})
@@ -1570,7 +1480,7 @@ class PutsEngineScheduler:
             await self._init_clients()
             
             # Run earnings priority scan
-            results = await run_earnings_priority_scan(self._uw, self._alpaca)
+            results = await run_earnings_priority_scan(self._uw, self._polygon)
             
             # Log results
             summary = results.get("summary", {})
@@ -1601,6 +1511,104 @@ class PutsEngineScheduler:
             return {}
     
     # ==========================================================================
+    # MARKET DIRECTION ENGINE (Feb 4, 2026)
+    # ==========================================================================
+    
+    async def run_market_direction_analysis(self):
+        """
+        Run Market Direction Analysis.
+        
+        Uses GEX, VIX, dark pool, and options flow to predict market direction.
+        Outputs 8 best plays based on direction.
+        
+        Schedule: 8:00 AM and 9:00 AM ET
+        """
+        now_et = datetime.now(EST)
+        logger.info("=" * 60)
+        logger.info("🌊 MARKETPULSE PRE-MARKET REGIME ANALYSIS")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info("Regime awareness, not prediction. Edge: 52-58%")
+        logger.info("=" * 60)
+        
+        try:
+            # Import and run the analysis from market_pulse_engine
+            from putsengine.market_pulse_engine import MarketPulseEngine
+            engine = MarketPulseEngine()
+            result = await engine.analyze()
+            await engine.close()
+            
+            # Log results
+            logger.info(f"Regime: {result.regime.value}")
+            logger.info(f"Score: {result.regime_score:.2f}")
+            logger.info(f"Confidence: {result.confidence_pct:.0f}% ({result.confidence.value})")
+            logger.info(f"Tradeability: {result.tradeability.value}")
+            
+            # Log component scores
+            logger.info("-" * 40)
+            logger.info("COMPONENT SCORES:")
+            logger.info(f"  Futures (30%):   {result.futures_score:.2f}")
+            logger.info(f"  VIX (25%):       {result.vix_score:.2f}")
+            logger.info(f"  Gamma (20%):     {result.gamma_score:.2f}")
+            logger.info(f"  Breadth (15%):   {result.breadth_score:.2f}")
+            logger.info(f"  Sentiment (10%): {result.sentiment_score:.2f}")
+            
+            # Log notes
+            logger.info("-" * 40)
+            logger.info("KEY OBSERVATIONS:")
+            for note in result.notes:
+                logger.info(f"  {note}")
+            
+            # Log conditional picks if any
+            if result.conditional_picks:
+                logger.info("-" * 40)
+                logger.info("CONDITIONAL PUT CANDIDATES:")
+                for i, pick in enumerate(result.conditional_picks, 1):
+                    logger.info(f"  {i}. {pick['symbol']:6} | {pick['reason']}")
+            
+            logger.info("=" * 60)
+            
+            # Save to file for dashboard
+            import json
+            from pathlib import Path
+            output_file = Path("logs/market_direction.json")
+            output_file.parent.mkdir(exist_ok=True)
+            with open(output_file, "w") as f:
+                json.dump({
+                    "timestamp": result.timestamp.isoformat(),
+                    "regime": result.regime.value,
+                    "regime_score": result.regime_score,
+                    "confidence": result.confidence.value,
+                    "confidence_pct": result.confidence_pct,
+                    "tradeability": result.tradeability.value,
+                    "futures_score": result.futures_score,
+                    "vix_score": result.vix_score,
+                    "gamma_score": result.gamma_score,
+                    "breadth_score": result.breadth_score,
+                    "sentiment_score": result.sentiment_score,
+                    "notes": result.notes,
+                    "conditional_picks": result.conditional_picks,
+                    "raw_data": result.raw_data,
+                    # Legacy compatibility fields
+                    "direction": result.regime.value,
+                    "spy_signal": result.raw_data.get("futures", {}).get("spy_change", 0),
+                    "qqq_signal": result.raw_data.get("futures", {}).get("qqq_change", 0),
+                    "vix_signal": result.raw_data.get("vix", {}).get("vix_level", 20),
+                    "gex_regime": result.raw_data.get("gamma", {}).get("gamma_regime", "NEUTRAL"),
+                    "gex_value": result.raw_data.get("gamma", {}).get("gex_value", 0),
+                    "best_plays": result.conditional_picks,
+                    "avoid_plays": []
+                }, f, indent=2, default=str)
+            
+            logger.info(f"MarketPulse results saved to {output_file}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"MarketPulse analysis error: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+    
+    # ==========================================================================
     # ARCHITECT-4 LEAD/DISCOVERY SCANNERS
     # These detect moves 1-2 days BEFORE they happen
     # They inject into DUI for confirmation, NOT direct trades
@@ -1629,7 +1637,7 @@ class PutsEngineScheduler:
             await self._init_clients()
             
             # Run pre-market gap scan
-            results = await run_premarket_gap_scan(self._alpaca)
+            results = await run_premarket_gap_scan(self._polygon)
             
             # Log results
             summary = results.get("summary", {})
@@ -1692,7 +1700,7 @@ class PutsEngineScheduler:
             symbols = list(EngineConfig.get_all_tickers())
             
             # Run multi-day weakness scan
-            results = await run_multiday_weakness_scan(self._alpaca, symbols)
+            results = await run_multiday_weakness_scan(self._polygon, symbols)
             
             # Log results
             actionable = results.get("actionable", {})
@@ -1839,7 +1847,7 @@ class PutsEngineScheduler:
             symbols = list(EngineConfig.get_all_tickers())
             
             # Run pump-dump scan
-            results = await run_pump_dump_scan(self._alpaca, symbols)
+            results = await run_pump_dump_scan(self._polygon, symbols)
             
             # Log results
             summary = results.get("summary", {})
@@ -1946,7 +1954,7 @@ class PutsEngineScheduler:
             symbols = list(EngineConfig.get_all_tickers())
             
             # Run volume-price scan
-            results = await run_volume_price_scan(self._alpaca, symbols)
+            results = await run_volume_price_scan(self._polygon, symbols)
             
             # Log results
             summary = results.get("summary", {})
@@ -2293,7 +2301,7 @@ class PutsEngineScheduler:
             await self._init_clients()
             
             # Run zero-hour scan
-            results = await run_zero_hour_scan(self._alpaca)
+            results = await run_zero_hour_scan(self._polygon)
             
             # Log summary
             summary = results.get("summary", {})

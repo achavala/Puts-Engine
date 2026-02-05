@@ -1,17 +1,15 @@
 {
-  "cache_time": "2026-02-04T10:08:01.934630",
+  "cache_time": "2026-02-04T22:26:53.470689",
   "regime_data": {
-    "timestamp": "2026-02-04T10:08:01.934168",
-    "regime": "bullish_neutral",
-    "spy_below_vwap": false,
+    "timestamp": "2026-02-04T22:26:53.470565",
+    "regime": "bearish_neutral",
+    "spy_below_vwap": true,
     "qqq_below_vwap": false,
     "index_gex": 0.0,
-    "vix_level": 26.37,
-    "vix_change": 0.04311708860759493,
-    "is_tradeable": false,
-    "block_reasons": [
-      "index_pinned"
-    ],
+    "vix_level": 26.75,
+    "vix_change": 0.014410314751611641,
+    "is_tradeable": true,
+    "block_reasons": [],
     "is_passive_inflow_window": false,
     "passive_inflow_reason": "",
     "below_zero_gamma": false
