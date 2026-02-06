@@ -731,30 +731,55 @@ class PutsEngineScheduler:
         )
         
         # =========================================================================
-        # MARKET WEATHER ENGINE v5 (Feb 6, 2026) — Two daily "Weather Reports"
+        # MARKET WEATHER ENGINE v5.2 (Feb 6, 2026) — 30-Min Refresh Cycle
         # Architect 2-5 Consolidated: Gamma Flip Distance, Opening Flow Bias,
         # Liquidity Violence Score, storm_score (not probability), AM/PM modes
+        #
+        # FULL RUNS (9 AM, 3 PM): Live UW API + Polygon + EWS → save UW cache
+        # REFRESH RUNS (every 30 min): Cached UW + fresh Polygon + fresh EWS
+        #   → Reuses existing scan data, ZERO extra UW API calls
+        #   → Polygon is unlimited, so fresh price/technical data every 30 min
+        #   → Reads latest EWS alerts from other scheduled EWS scans
         # =========================================================================
         
-        # 9:00 AM ET — "Open Risk Forecast" (same-day trading decisions)
-        # Uses EWS IPI (cached) + Polygon (unlimited) + UW GEX/flow (minimal)
+        # 9:00 AM ET — FULL AM "Open Risk Forecast" (live UW API calls)
         self.scheduler.add_job(
             self._run_market_weather_am_wrapper,
             CronTrigger(hour=9, minute=0, timezone=EST),
             id="market_weather_0900",
-            name="🌪️ Market Weather AM (9:00 AM ET) — Open Risk Forecast",
+            name="🌪️ Market Weather AM (9:00 AM ET) — FULL Open Risk Forecast",
             replace_existing=True
         )
         
-        # 3:00 PM ET — "Overnight Storm Build" (next-day preparation)
-        # Captures power hour + late-day institutional prints
+        # 3:00 PM ET — FULL PM "Overnight Storm Build" (live UW API calls)
         self.scheduler.add_job(
             self._run_market_weather_pm_wrapper,
             CronTrigger(hour=15, minute=0, timezone=EST),
             id="market_weather_1500",
-            name="🌪️ Market Weather PM (3:00 PM ET) — Overnight Storm Build",
+            name="🌪️ Market Weather PM (3:00 PM ET) — FULL Overnight Storm Build",
             replace_existing=True
         )
+        
+        # =========================================================================
+        # 30-MINUTE WEATHER REFRESH CYCLE (9:30 AM — 3:30 PM ET)
+        # Uses CACHED UW data + fresh Polygon (unlimited) + fresh EWS
+        # NO additional UW API calls — reuses data from full runs + EWS scans
+        # =========================================================================
+        weather_refresh_times = [
+            (9, 30), (10, 0), (10, 30), (11, 0), (11, 30),
+            (12, 0), (12, 30), (13, 0), (13, 30),
+            (14, 0), (14, 30), (15, 30),
+        ]
+        for hour, minute in weather_refresh_times:
+            time_str = f"{hour}:{minute:02d}"
+            job_id = f"weather_refresh_{hour:02d}{minute:02d}"
+            self.scheduler.add_job(
+                self._run_market_weather_refresh_wrapper,
+                CronTrigger(hour=hour, minute=minute, timezone=EST),
+                id=job_id,
+                name=f"🔄 Market Weather Refresh ({time_str} ET) — Cached UW + Fresh Polygon",
+                replace_existing=True
+            )
         
         # 5:30 PM ET — Attribution Backfill (after market close)
         # Fills in T+1/T+2 actual outcomes for past weather forecasts
@@ -915,25 +940,40 @@ class PutsEngineScheduler:
     
     def _run_market_weather_am_wrapper(self):
         """
-        Wrapper to run Market Weather AM report (9:00 AM ET).
+        Wrapper to run Market Weather AM FULL report (9:00 AM ET).
         
-        v5 Architect 2-5 Consolidated:
+        FULL run: Live UW API + Polygon + EWS → saves UW cache for refreshes.
         - 4 independent layers + gamma flip + flow quality + liquidity violence
         - Writes to logs/market_weather/latest_am.json
         - Same-day trading decisions
         """
-        self._safe_async_run(self.run_market_weather_report("am"), "market_weather_am")
+        self._safe_async_run(self.run_market_weather_report("am", refresh=False), "market_weather_am")
     
     def _run_market_weather_pm_wrapper(self):
         """
-        Wrapper to run Market Weather PM report (3:00 PM ET).
+        Wrapper to run Market Weather PM FULL report (3:00 PM ET).
         
-        v5 Architect 2-5 Consolidated:
+        FULL run: Live UW API + Polygon + EWS → saves UW cache for refreshes.
         - 4 independent layers + gamma flip + flow quality + liquidity violence
         - Writes to logs/market_weather/latest_pm.json
         - Next-day preparation (overnight storm build)
         """
-        self._safe_async_run(self.run_market_weather_report("pm"), "market_weather_pm")
+        self._safe_async_run(self.run_market_weather_report("pm", refresh=False), "market_weather_pm")
+    
+    def _run_market_weather_refresh_wrapper(self):
+        """
+        Wrapper to run Market Weather REFRESH (every 30 min during market hours).
+        
+        v5.2: REFRESH mode — NO new UW API calls.
+        - Reuses cached UW data (gamma flip + flow) from last full run
+        - Fresh Polygon data (unlimited API) for latest prices + technicals
+        - Fresh EWS data from latest scheduled EWS scans
+        - Auto-detects AM/PM mode based on time of day
+        """
+        from datetime import datetime
+        now_et = datetime.now(EST)
+        mode = "pm" if now_et.hour >= 15 else "am"
+        self._safe_async_run(self.run_market_weather_report(mode, refresh=True), f"market_weather_refresh_{mode}")
     
     def _run_attribution_backfill_wrapper(self):
         """
@@ -975,9 +1015,12 @@ class PutsEngineScheduler:
             import traceback
             logger.error(traceback.format_exc())
     
-    async def run_market_weather_report(self, mode: str = "am"):
+    async def run_market_weather_report(self, mode: str = "am", refresh: bool = False):
         """
-        Run Market Weather Report (v5 + Architect operational fixes).
+        Run Market Weather Report (v5.2 + 30-min refresh support).
+        
+        refresh=False: FULL run — live UW API + Polygon + EWS
+        refresh=True:  REFRESH — cached UW + fresh Polygon + fresh EWS (no UW API waste)
         
         Non-negotiable guards:
         - If not a trading day (weekend + holidays) → exit
@@ -986,9 +1029,11 @@ class PutsEngineScheduler:
         """
         now_et = datetime.now(EST)
         mode_label = "AM — Open Risk Forecast" if mode == "am" else "PM — Overnight Storm Build"
+        run_type = "REFRESH (cached UW + fresh Polygon)" if refresh else "FULL (live UW + Polygon)"
         
         logger.info("=" * 70)
-        logger.info(f"🌪️ MARKET WEATHER ENGINE v5 — {mode_label}")
+        logger.info(f"🌪️ MARKET WEATHER ENGINE v5.2 — {mode_label}")
+        logger.info(f"Run Type: {run_type}")
         logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
         logger.info(f"Timezone: America/New_York (DST-aware)")
         logger.info(f"Python: {sys.executable}")
@@ -1007,16 +1052,16 @@ class PutsEngineScheduler:
             report_mode = ReportMode.PM if mode == "pm" else ReportMode.AM
             engine = MarketWeatherEngine(
                 polygon_client=self._polygon,
-                uw_client=self._uw,
+                uw_client=self._uw if not refresh else None,  # No UW client on refresh
                 settings=self.settings
             )
-            result = await engine.run(report_mode)
+            result = await engine.run(report_mode, refresh=refresh)
             
             # Health-check log line
             summary = result.get('summary', {})
             n_picks = len(result.get('forecasts', []))
             freshness = result.get('data_freshness', {})
-            logger.info(f"✅ Weather v5 [{mode.upper()}] HEALTH CHECK:")
+            logger.info(f"✅ Weather v5.2 [{mode.upper()}] [{run_type}] HEALTH CHECK:")
             logger.info(f"  Report generated: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
             logger.info(f"  Picks: {n_picks} | Status: {result.get('status', 'unknown')}")
             logger.info(f"  🌪️ Warnings: {summary.get('storm_warnings', 0)} | "
@@ -1041,7 +1086,7 @@ class PutsEngineScheduler:
             return result
             
         except Exception as e:
-            logger.error(f"Market Weather v5 [{mode.upper()}] error: {e}")
+            logger.error(f"Market Weather v5.2 [{mode.upper()}] [{run_type}] error: {e}")
             import traceback
             logger.error(traceback.format_exc())
             
@@ -1050,13 +1095,13 @@ class PutsEngineScheduler:
             degraded = {
                 "timestamp": now_et.isoformat(),
                 "generated_at_utc": datetime.utcnow().isoformat(),
-                "engine_version": "v5_weather",
+                "engine_version": "v5.2_weather",
                 "report_mode": mode,
                 "status": "degraded",
                 "error": str(e),
                 "forecasts": [],
                 "summary": {},
-                "data_freshness": {}
+                "data_freshness": {"run_type": "REFRESH" if refresh else "FULL"}
             }
             weather_dir = Path("logs/market_weather")
             weather_dir.mkdir(parents=True, exist_ok=True)

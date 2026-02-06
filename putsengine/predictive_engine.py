@@ -236,6 +236,7 @@ class MarketWeatherEngine:
     # Output directories
     WEATHER_DIR = Path("logs/market_weather")
     LEGACY_OUTPUT = Path("logs/predictive_analysis.json")
+    UW_CACHE_PATH = Path("logs/market_weather/uw_ticker_cache.json")
     
     def __init__(self, polygon_client=None, uw_client=None, settings=None):
         self.polygon = polygon_client
@@ -246,6 +247,7 @@ class MarketWeatherEngine:
         self.ews_data = {}
         self.ews_timestamp = None
         self.footprint_history = {}
+        self._uw_ticker_cache = {}  # Per-ticker UW data cache (gamma flip + flow)
     
     def _load_ews_data(self):
         """Load EWS institutional pressure data (already cached from scheduled scans)"""
@@ -264,10 +266,59 @@ class MarketWeatherEngine:
                 self.footprint_history = json.load(f)
     
     # =========================================================================
+    # UW DATA CACHE — Avoids redundant UW API calls on 30-min refreshes
+    # Full runs (9 AM, 3 PM) write fresh UW data per ticker to cache.
+    # Refresh runs (every 30 min) read from cache instead of calling UW API.
+    # =========================================================================
+    
+    def _load_uw_cache(self):
+        """Load cached UW data (gamma flip + flow) from last full run."""
+        try:
+            if self.UW_CACHE_PATH.exists():
+                with open(self.UW_CACHE_PATH) as f:
+                    self._uw_ticker_cache = json.load(f)
+                logger.debug(f"UW cache loaded: {len(self._uw_ticker_cache)} tickers cached")
+            else:
+                self._uw_ticker_cache = {}
+        except Exception as e:
+            logger.debug(f"UW cache load failed: {e}")
+            self._uw_ticker_cache = {}
+    
+    def _save_uw_cache(self):
+        """Save per-ticker UW data to cache file for 30-min refreshes."""
+        try:
+            self.UW_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+            cache_data = {
+                **self._uw_ticker_cache,
+                "_meta": {
+                    "saved_at": datetime.now().isoformat(),
+                    "ticker_count": len([k for k in self._uw_ticker_cache if not k.startswith("_")])
+                }
+            }
+            with open(self.UW_CACHE_PATH, 'w') as f:
+                json.dump(cache_data, f, indent=2)
+            logger.debug(f"UW cache saved: {len(self._uw_ticker_cache)} tickers")
+        except Exception as e:
+            logger.debug(f"UW cache save failed: {e}")
+    
+    def _cache_uw_ticker(self, symbol: str, gamma_data: tuple, flow_data: str):
+        """Cache UW-derived data for a single ticker."""
+        self._uw_ticker_cache[symbol] = {
+            "gamma_flip_distance": gamma_data[0],
+            "gamma_flip_fragile": gamma_data[1],
+            "opening_flow_bias": flow_data,
+            "cached_at": datetime.now().isoformat()
+        }
+    
+    def _get_cached_uw_ticker(self, symbol: str) -> Optional[dict]:
+        """Get cached UW data for a ticker, or None if not cached."""
+        return self._uw_ticker_cache.get(symbol)
+    
+    # =========================================================================
     # MAIN ENTRY POINT
     # =========================================================================
     
-    async def analyze_universe(self, mode: ReportMode = ReportMode.AM) -> List[WeatherForecast]:
+    async def analyze_universe(self, mode: ReportMode = ReportMode.AM, refresh: bool = False) -> List[WeatherForecast]:
         """
         Analyze all tickers with institutional pressure.
         Returns ranked list of weather forecasts (top 10).
@@ -275,10 +326,18 @@ class MarketWeatherEngine:
         Mode:
         - AM: Focus on same-day signals (more weight on technical + catalyst)
         - PM: Focus on next-day signals (more weight on structural + institutional)
+        
+        refresh:
+        - False (default): Full run — calls UW API for gamma flip + flow, caches results
+        - True: Refresh run — uses cached UW data, fresh Polygon + EWS only
+          This enables 30-min updates without wasting UW API calls.
         """
         # Load cached data from existing scans (NO new API calls for UW)
         self._load_ews_data()
         self._load_footprint_history()
+        
+        # Load UW cache for refresh mode (or as fallback for full mode)
+        self._load_uw_cache()
         
         if not self.ews_data:
             logger.warning("No EWS data available for weather analysis")
@@ -290,13 +349,14 @@ class MarketWeatherEngine:
             if data.get('ipi', 0) >= self.MIN_IPI_THRESHOLD
         }
         
-        logger.info(f"Weather Engine v5 [{mode.value.upper()}]: Analyzing {len(candidates)} candidates with IPI >= {self.MIN_IPI_THRESHOLD}")
+        run_type = "REFRESH (cached UW)" if refresh else "FULL (live UW)"
+        logger.info(f"Weather Engine v5 [{mode.value.upper()}] [{run_type}]: Analyzing {len(candidates)} candidates with IPI >= {self.MIN_IPI_THRESHOLD}")
         
         # Analyze each candidate across all 4 layers
         forecasts = []
         for symbol, ews in candidates.items():
             try:
-                forecast = await self._analyze_ticker(symbol, ews, mode)
+                forecast = await self._analyze_ticker(symbol, ews, mode, refresh=refresh)
                 if forecast and forecast.layers_active >= 1:
                     forecasts.append(forecast)
             except Exception as e:
@@ -312,37 +372,66 @@ class MarketWeatherEngine:
             reverse=True
         )
         
+        # On full runs, save UW cache for future refresh cycles
+        if not refresh:
+            self._save_uw_cache()
+            logger.info(f"UW cache saved for {len(self._uw_ticker_cache)} tickers (used by 30-min refreshes)")
+        
         # Return top 10
         return forecasts[:10]
     
-    async def _analyze_ticker(self, symbol: str, ews_data: Dict, mode: ReportMode) -> Optional[WeatherForecast]:
-        """Analyze a single ticker across all 4 weather layers + v5 additions."""
+    async def _analyze_ticker(self, symbol: str, ews_data: Dict, mode: ReportMode, refresh: bool = False) -> Optional[WeatherForecast]:
+        """Analyze a single ticker across all 4 weather layers + v5 additions.
+        
+        refresh=True: Skip UW API calls for gamma flip + flow, use cached values.
+                      Still makes Polygon calls (unlimited) for fresh price/technical data.
+        """
         # Layer 2: INSTITUTIONAL (from existing EWS data — no API calls)
         institutional = self._score_institutional(symbol, ews_data)
         
-        # Layers 1, 3, 4: From Polygon (UNLIMITED API calls)
+        # ── Check UW cache for refresh mode ──
+        # In refresh mode, we reuse gamma flip + flow data from the last full run
+        uw_cached = self._get_cached_uw_ticker(symbol) if refresh else None
+        
+        # Layers 1, 3, 4: From Polygon (UNLIMITED API calls) — always fresh
         # v5: Also get gamma flip, flow quality, liquidity
         if self.polygon:
             try:
+                # Polygon tasks (always run — unlimited API)
                 tasks = [
                     self._score_structural(symbol),
                     self._score_technical(symbol),
                     self._score_catalyst(symbol),
-                    self._get_gamma_flip_distance(symbol),
-                    self._get_liquidity_violence(symbol),
+                    self._get_liquidity_violence(symbol),  # Polygon quotes — unlimited
                 ]
-                # v5: Opening flow bias if UW client available
-                if self.uw:
-                    tasks.append(self._get_opening_flow_bias(symbol))
+                
+                # UW tasks: only on FULL runs (not refresh)
+                if not refresh:
+                    tasks.append(self._get_gamma_flip_distance(symbol))  # UW API
+                    if self.uw:
+                        tasks.append(self._get_opening_flow_bias(symbol))  # UW API
                 
                 results = await asyncio.gather(*tasks, return_exceptions=True)
                 
                 structural = results[0] if not isinstance(results[0], Exception) else LayerScore("Structural", 0, False)
                 technical = results[1] if not isinstance(results[1], Exception) else LayerScore("Technical", 0, False)
                 catalyst = results[2] if not isinstance(results[2], Exception) else LayerScore("Catalyst", 0, False)
-                gamma_result = results[3] if not isinstance(results[3], Exception) else (None, False)
-                liquidity_result = results[4] if not isinstance(results[4], Exception) else (0.0, "NORMAL")
-                flow_result = results[5] if len(results) > 5 and not isinstance(results[5], Exception) else "UNKNOWN"
+                liquidity_result = results[3] if not isinstance(results[3], Exception) else (0.0, "NORMAL")
+                
+                if not refresh:
+                    # Full run: get gamma + flow from live UW results
+                    gamma_result = results[4] if not isinstance(results[4], Exception) else (None, False)
+                    flow_result = results[5] if len(results) > 5 and not isinstance(results[5], Exception) else "UNKNOWN"
+                    # Cache UW data for future refreshes
+                    self._cache_uw_ticker(symbol, gamma_result, flow_result if isinstance(flow_result, str) else "UNKNOWN")
+                else:
+                    # Refresh: use cached UW data
+                    if uw_cached:
+                        gamma_result = (uw_cached.get("gamma_flip_distance"), uw_cached.get("gamma_flip_fragile", False))
+                        flow_result = uw_cached.get("opening_flow_bias", "UNKNOWN")
+                    else:
+                        gamma_result = (None, False)
+                        flow_result = "UNKNOWN"
                 
             except Exception:
                 structural = LayerScore("Structural", 0, False)
@@ -1166,9 +1255,13 @@ class MarketWeatherEngine:
     # PUBLIC API — AM/PM REPORTS
     # =========================================================================
     
-    async def run(self, mode: ReportMode = ReportMode.AM) -> Dict:
+    async def run(self, mode: ReportMode = ReportMode.AM, refresh: bool = False) -> Dict:
         """
         Run the weather engine and return complete forecast.
+        
+        v5.2: 30-minute refresh support.
+        - refresh=False (default): Full run — live UW API + Polygon + EWS → saves UW cache
+        - refresh=True: Refresh run — cached UW + fresh Polygon + fresh EWS → no UW API waste
         
         v5.1: Adds generated_at_utc, data_freshness, regime_context,
               permission_light per pick, and attribution logger.
@@ -1176,10 +1269,10 @@ class MarketWeatherEngine:
         Writes to:
         - logs/market_weather/report_YYYYMMDD_0900.json (or 1500)
         - logs/market_weather/latest_am.json (or latest_pm.json)
-        - logs/market_weather/attribution/YYYYMMDD_mode.json (for T+1/T+2 tracking)
+        - logs/market_weather/attribution/YYYYMMDD_mode.json (only on FULL runs)
         - logs/predictive_analysis.json (legacy, always latest)
         """
-        forecasts = await self.analyze_universe(mode)
+        forecasts = await self.analyze_universe(mode, refresh=refresh)
         
         # Count by forecast level
         storm_warnings = len([f for f in forecasts if f.forecast == ForecastLevel.STORM_WARNING])
@@ -1200,18 +1293,21 @@ class MarketWeatherEngine:
         regime_context = self._load_regime_context()
         
         # ── v5.1: Data freshness stamps per provider ──
+        uw_cache_meta = self._uw_ticker_cache.get("_meta", {})
+        uw_status = "live" if (not refresh and self.uw) else f"cached ({uw_cache_meta.get('saved_at', 'N/A')})" if uw_cache_meta else ("MISSING" if not self.uw else "live")
         data_freshness = {
             "ews": self.ews_timestamp if self.ews_timestamp else "MISSING",
             "polygon": now.isoformat(),  # always fresh (unlimited)
-            "uw": "available" if self.uw else "MISSING",
+            "uw": uw_status,
             "regime": regime_context.get("cache_time", "MISSING"),
+            "run_type": "REFRESH" if refresh else "FULL",
         }
         
         result = {
             "timestamp": now.isoformat(),
             "generated_at_utc": now_utc.isoformat(),
             "ews_timestamp": self.ews_timestamp,
-            "engine_version": "v5.1_weather",
+            "engine_version": "v5.2_weather",
             "report_mode": mode.value,
             "report_label": "Open Risk Forecast" if mode == ReportMode.AM else "Overnight Storm Build",
             "methodology": "Multi-Layer Convergence v5.1 (Architect Operational Fixes)",
@@ -1238,8 +1334,9 @@ class MarketWeatherEngine:
                 "data_sources": {
                     "ews_alerts_count": len(self.ews_data),
                     "polygon_calls": "Unlimited (technical + news + price)",
-                    "uw_calls": "GEX/flow only for gamma flip + flow quality",
-                    "footprint_history_tickers": len(self.footprint_history)
+                    "uw_calls": "CACHED (from last full run)" if refresh else "GEX/flow for gamma flip + flow quality",
+                    "footprint_history_tickers": len(self.footprint_history),
+                    "run_type": "REFRESH" if refresh else "FULL"
                 }
             },
             "status": "ok"
@@ -1265,9 +1362,12 @@ class MarketWeatherEngine:
             json.dump(result, f, indent=2)
         
         # 4. v5.1: Attribution Logger — save snapshot for T+1/T+2 outcome tracking
-        self._save_attribution_snapshot(result, mode, now)
+        #    Only on FULL runs (9 AM, 3 PM) — not on 30-min refreshes
+        if not refresh:
+            self._save_attribution_snapshot(result, mode, now)
         
-        logger.info(f"Weather v5.1 [{mode.value.upper()}] saved to {report_path} + {latest_path}")
+        run_label = "REFRESH" if refresh else "FULL"
+        logger.info(f"Weather v5.2 [{mode.value.upper()}] [{run_label}] saved to {report_path} + {latest_path}")
         
         return result
     
@@ -1394,7 +1494,7 @@ class MarketWeatherEngine:
         
         lines = [
             "=" * 78,
-            f"🌪️  MARKET WEATHER ENGINE v5.1 — {label} [{mode}]",
+            f"🌪️  MARKET WEATHER ENGINE v5.2 — {label} [{mode}]",
             "=" * 78,
             f"Methodology: Multi-Layer Convergence v5.1 (Architect Operational Fixes)",
             f"EWS Data: {result.get('ews_timestamp', 'Unknown')}",

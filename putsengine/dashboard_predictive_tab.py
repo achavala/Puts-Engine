@@ -123,7 +123,7 @@ def get_forecast_bg(forecast: str) -> str:
 
 
 def render_predictive_tab():
-    """Render the Market Weather Forecast tab — v5"""
+    """Render the Market Weather Forecast tab — v5.2 (30-min refresh)"""
     
     # ── Styles ──
     st.markdown("""
@@ -170,17 +170,17 @@ def render_predictive_tab():
     # ── Header ──
     st.markdown("""
     <div class="weather-header">
-        <div class="weather-title">🌪️ MARKET WEATHER FORECAST v5.1</div>
+        <div class="weather-title">🌪️ MARKET WEATHER FORECAST v5.2</div>
         <div class="weather-subtitle">
-            Architect Operational Fixes — Storm Score (not probability) · Regime Panel · Pressure Systems · 
+            30-Min Auto-Refresh · Storm Score · Regime Panel · Pressure Systems · 
             Permission Lights (🟢/🟡/🔴) · Data Freshness · Attribution Logger<br>
-            Two daily reports: 9:00 AM (same-day) & 3:00 PM (next-day) · Top 8 actionable picks
+            Full Runs: 9:00 AM & 3:00 PM (live UW) · Refreshes: Every 30 min (cached UW + fresh Polygon) · Top 8 picks
         </div>
     </div>
     """, unsafe_allow_html=True)
     
     # ── How it works (collapsible) ──
-    with st.expander("🌤️ How This Works — v5.1 Architect Operational Fixes", expanded=False):
+    with st.expander("🌤️ How This Works — v5.2 (30-Min Auto-Refresh)", expanded=False):
         st.markdown("""
         **4 independent data layers** + **institutional-grade overlays**:
         
@@ -309,6 +309,27 @@ def render_predictive_tab():
     regime_ctx = data.get('regime_context', {})
     data_fresh = data.get('data_freshness', {})
     perm_lights = summary.get('permission_lights', {})
+    run_type = data_fresh.get('run_type', 'FULL')
+    
+    # ── Freshness Banner ──
+    run_type_color = "#44cc44" if run_type == "FULL" else "#44aaff"
+    run_type_icon = "🔴" if run_type == "FULL" else "🔄"
+    uw_fresh = data_fresh.get('uw', 'N/A')
+    st.markdown(f"""
+    <div style="background: #0a0a1a; padding: 10px 16px; border-radius: 8px; border: 1px solid #2a2a4a; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="color: #aaa; font-size: 12px;">
+            📊 <b style="color: {run_type_color};">{run_type_icon} {run_type}</b> · 
+            Mode: <b>{report_mode.upper()}</b> · 
+            Updated: <b>{age_str}</b> · 
+            EWS: {ews_timestamp[:19] if len(str(ews_timestamp)) > 19 else ews_timestamp}
+        </span>
+        <span style="color: #aaa; font-size: 11px;">
+            UW: <b style="color: {'#44cc44' if 'live' in str(uw_fresh) else '#44aaff'};">{uw_fresh}</b> · 
+            Polygon: <b style="color: #44cc44;">Live</b> · 
+            EWS: <b style="color: #44cc44;">Cached</b>
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
     
     # ══════════════════════════════════════════════════════════════════════
     # 1) REGIME PANEL — "What kind of day is it?"
