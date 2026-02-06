@@ -706,7 +706,33 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        logger.info("All scheduled jobs configured (OPTIMIZED Feb 4 - reduced UW API usage)")
+        # =========================================================================
+        # MARKET WEATHER ENGINE v5 (Feb 6, 2026) — Two daily "Weather Reports"
+        # Architect 2-5 Consolidated: Gamma Flip Distance, Opening Flow Bias,
+        # Liquidity Violence Score, storm_score (not probability), AM/PM modes
+        # =========================================================================
+        
+        # 9:00 AM ET — "Open Risk Forecast" (same-day trading decisions)
+        # Uses EWS IPI (cached) + Polygon (unlimited) + UW GEX/flow (minimal)
+        self.scheduler.add_job(
+            self._run_market_weather_am_wrapper,
+            CronTrigger(hour=9, minute=0, timezone=EST),
+            id="market_weather_0900",
+            name="🌪️ Market Weather AM (9:00 AM ET) — Open Risk Forecast",
+            replace_existing=True
+        )
+        
+        # 3:00 PM ET — "Overnight Storm Build" (next-day preparation)
+        # Captures power hour + late-day institutional prints
+        self.scheduler.add_job(
+            self._run_market_weather_pm_wrapper,
+            CronTrigger(hour=15, minute=0, timezone=EST),
+            id="market_weather_1500",
+            name="🌪️ Market Weather PM (3:00 PM ET) — Overnight Storm Build",
+            replace_existing=True
+        )
+        
+        logger.info("All scheduled jobs configured (OPTIMIZED Feb 6 — v5 Weather Engine added)")
     
     def _safe_async_run(self, coro, name: str = "scan"):
         """
@@ -851,6 +877,106 @@ class PutsEngineScheduler:
         This catches same-day drops that other scanners miss.
         """
         self._safe_async_run(self.run_intraday_scan(), "intraday_scan")
+    
+    def _run_market_weather_am_wrapper(self):
+        """
+        Wrapper to run Market Weather AM report (9:00 AM ET).
+        
+        v5 Architect 2-5 Consolidated:
+        - 4 independent layers + gamma flip + flow quality + liquidity violence
+        - Writes to logs/market_weather/latest_am.json
+        - Same-day trading decisions
+        """
+        self._safe_async_run(self.run_market_weather_report("am"), "market_weather_am")
+    
+    def _run_market_weather_pm_wrapper(self):
+        """
+        Wrapper to run Market Weather PM report (3:00 PM ET).
+        
+        v5 Architect 2-5 Consolidated:
+        - 4 independent layers + gamma flip + flow quality + liquidity violence
+        - Writes to logs/market_weather/latest_pm.json
+        - Next-day preparation (overnight storm build)
+        """
+        self._safe_async_run(self.run_market_weather_report("pm"), "market_weather_pm")
+    
+    async def run_market_weather_report(self, mode: str = "am"):
+        """
+        Run Market Weather Report (v5).
+        
+        Non-negotiable guards:
+        - If not a trading day → exit
+        - If data is stale / APIs fail → write status="degraded"
+        """
+        now_et = datetime.now(EST)
+        mode_label = "AM — Open Risk Forecast" if mode == "am" else "PM — Overnight Storm Build"
+        
+        logger.info("=" * 70)
+        logger.info(f"🌪️ MARKET WEATHER ENGINE v5 — {mode_label}")
+        logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info(f"Python: {sys.executable}")
+        logger.info("=" * 70)
+        
+        # Guard: trading day check
+        if now_et.weekday() >= 5:  # Saturday or Sunday
+            logger.info("Not a trading day (weekend). Skipping weather report.")
+            return None
+        
+        try:
+            await self._init_clients()
+            
+            from putsengine.predictive_engine import MarketWeatherEngine, ReportMode
+            
+            report_mode = ReportMode.PM if mode == "pm" else ReportMode.AM
+            engine = MarketWeatherEngine(
+                polygon_client=self._polygon,
+                uw_client=self._uw,
+                settings=self.settings
+            )
+            result = await engine.run(report_mode)
+            
+            # Log summary
+            summary = result.get('summary', {})
+            logger.info(f"Weather v5 [{mode.upper()}] complete:")
+            logger.info(f"  🌪️ Storm Warnings: {summary.get('storm_warnings', 0)}")
+            logger.info(f"  ⛈️ Storm Watches: {summary.get('storm_watches', 0)}")
+            logger.info(f"  🌧️ Advisories: {summary.get('advisories', 0)}")
+            logger.info(f"  ☁️ Monitoring: {summary.get('monitoring', 0)}")
+            logger.info(f"  Status: {result.get('status', 'unknown')}")
+            
+            # Log top 3 forecasts
+            for i, fc in enumerate(result.get('forecasts', [])[:3], 1):
+                logger.info(
+                    f"  #{i} {fc['forecast']}: {fc['symbol']} | "
+                    f"Storm: {fc['storm_score']:.2f} | Layers: {fc['layers_active']}/4 | "
+                    f"Conf: {fc.get('confidence', 'LOW')}"
+                )
+            
+            logger.info("=" * 70)
+            return result
+            
+        except Exception as e:
+            logger.error(f"Market Weather v5 [{mode.upper()}] error: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            
+            # Write degraded status so dashboard knows pipes are broken
+            from pathlib import Path
+            degraded = {
+                "timestamp": now_et.isoformat(),
+                "engine_version": "v5_weather",
+                "report_mode": mode,
+                "status": "degraded",
+                "error": str(e),
+                "forecasts": [],
+                "summary": {}
+            }
+            weather_dir = Path("logs/market_weather")
+            weather_dir.mkdir(parents=True, exist_ok=True)
+            with open(weather_dir / f"latest_{mode}.json", 'w') as f:
+                json.dump(degraded, f, indent=2)
+            
+            return None
     
     def _run_early_warning_scan_wrapper(self):
         """
