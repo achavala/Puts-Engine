@@ -756,7 +756,18 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        logger.info("All scheduled jobs configured (OPTIMIZED Feb 6 — v5 Weather Engine added)")
+        # 5:30 PM ET — Attribution Backfill (after market close)
+        # Fills in T+1/T+2 actual outcomes for past weather forecasts
+        # This is how we calibrate storm_score → actual probability over time
+        self.scheduler.add_job(
+            self._run_attribution_backfill_wrapper,
+            CronTrigger(hour=17, minute=30, timezone=EST),
+            id="weather_attribution_backfill",
+            name="📊 Weather Attribution Backfill (5:30 PM ET) — Calibration Data",
+            replace_existing=True
+        )
+        
+        logger.info("All scheduled jobs configured (OPTIMIZED Feb 6 — v5 Weather Engine + Attribution Backfill)")
     
     def _safe_async_run(self, coro, name: str = "scan"):
         """
@@ -923,6 +934,46 @@ class PutsEngineScheduler:
         - Next-day preparation (overnight storm build)
         """
         self._safe_async_run(self.run_market_weather_report("pm"), "market_weather_pm")
+    
+    def _run_attribution_backfill_wrapper(self):
+        """
+        Wrapper to run Weather Attribution Backfill (5:30 PM ET).
+        
+        Fills in T+1/T+2 actual outcomes for past weather forecasts.
+        This is the "did it actually rain?" calibration loop.
+        
+        - Fetches actual close prices from Polygon
+        - Computes T+1 return, T+2 return, max adverse excursion
+        - Flags did_drop_5pct, did_drop_10pct
+        - Generates calibration_summary.json
+        """
+        self._safe_async_run(self._run_attribution_backfill(), "attribution_backfill")
+    
+    async def _run_attribution_backfill(self):
+        """Run the attribution backfill engine."""
+        now_et = datetime.now(EST)
+        
+        # Guard: trading day check
+        if now_et.weekday() >= 5:
+            logger.info("Not a trading day (weekend). Skipping attribution backfill.")
+            return
+        
+        try:
+            from putsengine.weather_attribution_backfill import backfill_attribution
+            result = await backfill_attribution()
+            
+            status = result.get("status", "unknown")
+            files_updated = result.get("files_updated", 0)
+            picks_backfilled = result.get("picks_backfilled", 0)
+            
+            logger.info(
+                f"📊 Attribution Backfill complete: "
+                f"status={status}, files={files_updated}, picks={picks_backfilled}"
+            )
+        except Exception as e:
+            logger.error(f"Attribution Backfill error: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
     async def run_market_weather_report(self, mode: str = "am"):
         """
