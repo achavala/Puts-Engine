@@ -118,8 +118,32 @@ from putsengine.earnings_priority_scanner import run_earnings_priority_scan, Ear
 from putsengine.email_reporter import run_daily_report_scan, send_email_report, save_report_to_file
 
 
-# Constants
-EST = pytz.timezone('US/Eastern')
+# Constants — timezone MUST be America/New_York (handles DST correctly)
+EST = pytz.timezone('America/New_York')
+
+# US market holidays (no market hours — skip weather reports)
+US_MARKET_HOLIDAYS_2026 = {
+    date(2026, 1, 1),   # New Year's Day
+    date(2026, 1, 19),  # MLK Day
+    date(2026, 2, 16),  # Presidents' Day
+    date(2026, 4, 3),   # Good Friday
+    date(2026, 5, 25),  # Memorial Day
+    date(2026, 7, 3),   # Independence Day (observed)
+    date(2026, 9, 7),   # Labor Day
+    date(2026, 11, 26), # Thanksgiving
+    date(2026, 12, 25), # Christmas
+}
+
+
+def is_trading_day(d: date = None) -> bool:
+    """Check if a given date is a US market trading day."""
+    if d is None:
+        d = datetime.now(EST).date()
+    if d.weekday() >= 5:  # Saturday or Sunday
+        return False
+    if d in US_MARKET_HOLIDAYS_2026:
+        return False
+    return True
 RESULTS_FILE = Path("scheduled_scan_results.json")
 SCAN_LOG_FILE = Path("logs/scheduled_scans.log")
 
@@ -902,11 +926,12 @@ class PutsEngineScheduler:
     
     async def run_market_weather_report(self, mode: str = "am"):
         """
-        Run Market Weather Report (v5).
+        Run Market Weather Report (v5 + Architect operational fixes).
         
         Non-negotiable guards:
-        - If not a trading day → exit
+        - If not a trading day (weekend + holidays) → exit
         - If data is stale / APIs fail → write status="degraded"
+        - Health-check log line with data freshness summary
         """
         now_et = datetime.now(EST)
         mode_label = "AM — Open Risk Forecast" if mode == "am" else "PM — Overnight Storm Build"
@@ -914,12 +939,13 @@ class PutsEngineScheduler:
         logger.info("=" * 70)
         logger.info(f"🌪️ MARKET WEATHER ENGINE v5 — {mode_label}")
         logger.info(f"Time: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+        logger.info(f"Timezone: America/New_York (DST-aware)")
         logger.info(f"Python: {sys.executable}")
         logger.info("=" * 70)
         
-        # Guard: trading day check
-        if now_et.weekday() >= 5:  # Saturday or Sunday
-            logger.info("Not a trading day (weekend). Skipping weather report.")
+        # Guard: trading day check (weekends + US market holidays)
+        if not is_trading_day(now_et.date()):
+            logger.info("Not a trading day (weekend or holiday). Skipping weather report.")
             return None
         
         try:
@@ -935,19 +961,27 @@ class PutsEngineScheduler:
             )
             result = await engine.run(report_mode)
             
-            # Log summary
+            # Health-check log line
             summary = result.get('summary', {})
-            logger.info(f"Weather v5 [{mode.upper()}] complete:")
-            logger.info(f"  🌪️ Storm Warnings: {summary.get('storm_warnings', 0)}")
-            logger.info(f"  ⛈️ Storm Watches: {summary.get('storm_watches', 0)}")
-            logger.info(f"  🌧️ Advisories: {summary.get('advisories', 0)}")
-            logger.info(f"  ☁️ Monitoring: {summary.get('monitoring', 0)}")
-            logger.info(f"  Status: {result.get('status', 'unknown')}")
+            n_picks = len(result.get('forecasts', []))
+            freshness = result.get('data_freshness', {})
+            logger.info(f"✅ Weather v5 [{mode.upper()}] HEALTH CHECK:")
+            logger.info(f"  Report generated: {now_et.strftime('%Y-%m-%d %H:%M:%S ET')}")
+            logger.info(f"  Picks: {n_picks} | Status: {result.get('status', 'unknown')}")
+            logger.info(f"  🌪️ Warnings: {summary.get('storm_warnings', 0)} | "
+                        f"⛈️ Watches: {summary.get('storm_watches', 0)} | "
+                        f"🌧️ Advisories: {summary.get('advisories', 0)} | "
+                        f"☁️ Monitoring: {summary.get('monitoring', 0)}")
+            logger.info(f"  Data freshness: EWS={freshness.get('ews', 'N/A')} | "
+                        f"Polygon={freshness.get('polygon', 'N/A')} | "
+                        f"UW={freshness.get('uw', 'N/A')} | "
+                        f"Regime={freshness.get('regime', 'N/A')}")
             
-            # Log top 3 forecasts
+            # Log top 3 forecasts with permission lights
             for i, fc in enumerate(result.get('forecasts', [])[:3], 1):
+                perm = fc.get('permission_light', '⚪')
                 logger.info(
-                    f"  #{i} {fc['forecast']}: {fc['symbol']} | "
+                    f"  #{i} {perm} {fc['forecast']}: {fc['symbol']} | "
                     f"Storm: {fc['storm_score']:.2f} | Layers: {fc['layers_active']}/4 | "
                     f"Conf: {fc.get('confidence', 'LOW')}"
                 )
@@ -964,12 +998,14 @@ class PutsEngineScheduler:
             from pathlib import Path
             degraded = {
                 "timestamp": now_et.isoformat(),
+                "generated_at_utc": datetime.utcnow().isoformat(),
                 "engine_version": "v5_weather",
                 "report_mode": mode,
                 "status": "degraded",
                 "error": str(e),
                 "forecasts": [],
-                "summary": {}
+                "summary": {},
+                "data_freshness": {}
             }
             weather_dir = Path("logs/market_weather")
             weather_dir.mkdir(parents=True, exist_ok=True)

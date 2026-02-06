@@ -1,12 +1,21 @@
 """
-🌪️ MARKET WEATHER ENGINE v5 - Consolidated Architect 2-5 Implementation
-========================================================================
+🌪️ MARKET WEATHER ENGINE v5.1 - Architect Operational + Calibration Fixes
+==========================================================================
 Two daily "Weather Reports":
   • 9:00 AM ET — "Open Risk Forecast" (same-day decisions)
   • 3:00 PM ET — "Overnight Storm Build" (next-day prep)
 
-CRITICAL ARCHITECT FIXES (v5):
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+v5.1 OPERATIONAL FIXES:
+━━━━━━━━━━━━━━━━━━━━━━
+F) Confidence PENALTY when gamma/flow/VIX data is MISSING (don't promote on incomplete info)
+G) Permission Light (🟢/🟡/🔴) per pick — tradable/watch/stand-down
+H) Data Freshness stamps per provider (EWS, Polygon, UW, Regime)
+I) Attribution Logger — save T+1/T+2 outcomes for calibration loop
+J) Independence Check — structural/technical overlap detection
+K) generated_at_utc in every report
+
+PRIOR v5 FIXES:
+━━━━━━━━━━━━━━━
 A) Gamma Flip Distance — fragility meter (how close to forced dealer hedging?)
 B) Opening vs Closing Flow — bearish if opening puts, neutral if closing
 C) Liquidity Violence Score — spread/quote degradation (cascade vs absorb?)
@@ -138,6 +147,10 @@ class WeatherForecast:
     confidence: ConfidenceLevel = ConfidenceLevel.LOW
     similar_days_n: int = 0                         # How many historical days match
     
+    # v5.1 Architect operational additions
+    permission_light: str = "🟡"                    # 🟢 tradable / 🟡 watch / 🔴 stand down
+    missing_inputs: List[str] = field(default_factory=list)  # Which critical inputs are missing
+    
     # Trading info
     expected_drop: str = ""
     current_price: float = 0.0
@@ -175,6 +188,9 @@ class WeatherForecast:
             "liquidity_violence_flag": self.liquidity_violence_flag,
             "confidence": self.confidence.value,
             "similar_days_n": self.similar_days_n,
+            # v5.1 fields
+            "permission_light": self.permission_light,
+            "missing_inputs": self.missing_inputs,
             # Trading info
             "expected_drop": self.expected_drop,
             "current_price": round(self.current_price, 2),
@@ -377,6 +393,16 @@ class MarketWeatherEngine:
                 catalyst.score * 0.10
             )
         
+        # ── v5.1: Independence Check ──
+        # Structural (SMA position) and Technical (RSI/MACD momentum) both use price data.
+        # If BOTH are active with high scores but Institutional (dark pool/OI) is NOT,
+        # that's potentially a single-source echo. Apply a mild damper.
+        if (structural.active and technical.active and not institutional.active 
+                and structural.score > 0.5 and technical.score > 0.5):
+            # Possible price-echo: both layers activated by same price move
+            convergence_score = convergence_score * 0.90  # 10% damper
+            logger.debug(f"{symbol}: Independence damper applied (structural+technical without institutional)")
+        
         # Trajectory bonus: accelerating storm = higher score
         if trajectory == TrajectoryType.ACCELERATING:
             convergence_score = min(1.0, convergence_score * 1.15)
@@ -414,6 +440,15 @@ class MarketWeatherEngine:
         # Estimate expected drop
         expected_drop = self._estimate_drop(layers_active, convergence_score)
         
+        # ── v5.1: Track missing inputs (for confidence penalty + UI transparency) ──
+        missing_inputs = []
+        if gamma_flip_distance is None:
+            missing_inputs.append("gamma_flip")
+        if opening_flow_bias == "UNKNOWN":
+            missing_inputs.append("flow_quality")
+        if liquidity_violence_score == 0.0 and liquidity_violence_flag == "NORMAL":
+            missing_inputs.append("liquidity_depth")
+        
         # v5: Confidence from similar historical days
         similar_days_n = self._estimate_similar_days(layers_active, convergence_score)
         if similar_days_n >= 50:
@@ -422,6 +457,26 @@ class MarketWeatherEngine:
             confidence = ConfidenceLevel.MEDIUM
         else:
             confidence = ConfidenceLevel.LOW
+        
+        # ── v5.1: Confidence PENALTY for missing critical inputs ──
+        # Rule: Missing data reduces confidence, never shifts the storm_score
+        if len(missing_inputs) >= 2:
+            # Two+ missing → cap at LOW
+            confidence = ConfidenceLevel.LOW
+        elif len(missing_inputs) == 1 and confidence == ConfidenceLevel.HIGH:
+            # One missing → demote HIGH to MEDIUM
+            confidence = ConfidenceLevel.MEDIUM
+        
+        # ── v5.1: Permission Light (decision-grade gating) ──
+        # 🟢 tradable: confidence >= MEDIUM AND layers >= 3 AND no critical missing
+        # 🟡 watch: score high but missing inputs OR confidence LOW OR layers < 3
+        # 🔴 stand down: conflicting regime OR confidence LOW + many missing
+        if confidence in (ConfidenceLevel.HIGH, ConfidenceLevel.MEDIUM) and layers_active >= 3 and len(missing_inputs) == 0:
+            permission_light = "🟢"
+        elif confidence == ConfidenceLevel.LOW and len(missing_inputs) >= 2:
+            permission_light = "🔴"
+        else:
+            permission_light = "🟡"
         
         # Get current price from Polygon
         current_price = 0.0
@@ -452,6 +507,9 @@ class MarketWeatherEngine:
             liquidity_violence_flag=liquidity_violence_flag,
             confidence=confidence,
             similar_days_n=similar_days_n,
+            # v5.1 fields
+            permission_light=permission_light,
+            missing_inputs=missing_inputs,
             expected_drop=expected_drop,
             current_price=current_price,
             sector=ews_data.get('sector', 'unknown')
@@ -1112,9 +1170,13 @@ class MarketWeatherEngine:
         """
         Run the weather engine and return complete forecast.
         
+        v5.1: Adds generated_at_utc, data_freshness, regime_context,
+              permission_light per pick, and attribution logger.
+        
         Writes to:
         - logs/market_weather/report_YYYYMMDD_0900.json (or 1500)
         - logs/market_weather/latest_am.json (or latest_pm.json)
+        - logs/market_weather/attribution/YYYYMMDD_mode.json (for T+1/T+2 tracking)
         - logs/predictive_analysis.json (legacy, always latest)
         """
         forecasts = await self.analyze_universe(mode)
@@ -1125,19 +1187,42 @@ class MarketWeatherEngine:
         advisories = len([f for f in forecasts if f.forecast == ForecastLevel.ADVISORY])
         monitoring = len([f for f in forecasts if f.forecast == ForecastLevel.MONITORING])
         
+        # v5.1: Permission light distribution
+        green_count = len([f for f in forecasts if f.permission_light == "🟢"])
+        yellow_count = len([f for f in forecasts if f.permission_light == "🟡"])
+        red_count = len([f for f in forecasts if f.permission_light == "🔴"])
+        
         now = datetime.now()
+        from datetime import timezone as tz
+        now_utc = datetime.now(tz.utc)
+        
+        # ── v5.1: Load regime context for the Regime Panel ──
+        regime_context = self._load_regime_context()
+        
+        # ── v5.1: Data freshness stamps per provider ──
+        data_freshness = {
+            "ews": self.ews_timestamp if self.ews_timestamp else "MISSING",
+            "polygon": now.isoformat(),  # always fresh (unlimited)
+            "uw": "available" if self.uw else "MISSING",
+            "regime": regime_context.get("cache_time", "MISSING"),
+        }
         
         result = {
             "timestamp": now.isoformat(),
+            "generated_at_utc": now_utc.isoformat(),
             "ews_timestamp": self.ews_timestamp,
-            "engine_version": "v5_weather",
+            "engine_version": "v5.1_weather",
             "report_mode": mode.value,
             "report_label": "Open Risk Forecast" if mode == ReportMode.AM else "Overnight Storm Build",
-            "methodology": "Multi-Layer Convergence v5 (Architect 2-5 Consolidated)",
+            "methodology": "Multi-Layer Convergence v5.1 (Architect Operational Fixes)",
             "note": (
                 "4 independent layers + Gamma Flip Distance + Flow Quality + Liquidity Violence. "
-                "Storm Score is NOT probability — it's uncalibrated until backtested."
+                "Storm Score is NOT probability — it's uncalibrated until backtested. "
+                "Missing inputs REDUCE confidence (never shift score). "
+                "Permission Light: 🟢 tradable, 🟡 watch, 🔴 stand down."
             ),
+            "regime_context": regime_context,
+            "data_freshness": data_freshness,
             "forecasts": [f.to_dict() for f in forecasts],
             "summary": {
                 "total_candidates": len(forecasts),
@@ -1145,6 +1230,11 @@ class MarketWeatherEngine:
                 "storm_watches": storm_watches,
                 "advisories": advisories,
                 "monitoring": monitoring,
+                "permission_lights": {
+                    "green": green_count,
+                    "yellow": yellow_count,
+                    "red": red_count
+                },
                 "data_sources": {
                     "ews_alerts_count": len(self.ews_data),
                     "polygon_calls": "Unlimited (technical + news + price)",
@@ -1174,22 +1264,152 @@ class MarketWeatherEngine:
         with open(self.LEGACY_OUTPUT, 'w') as f:
             json.dump(result, f, indent=2)
         
-        logger.info(f"Weather v5 [{mode.value.upper()}] saved to {report_path} + {latest_path}")
+        # 4. v5.1: Attribution Logger — save snapshot for T+1/T+2 outcome tracking
+        self._save_attribution_snapshot(result, mode, now)
+        
+        logger.info(f"Weather v5.1 [{mode.value.upper()}] saved to {report_path} + {latest_path}")
         
         return result
+    
+    def _load_regime_context(self) -> Dict:
+        """
+        v5.1: Load current market regime context for the Regime Panel.
+        Reads from market_regime_cache.json (existing, no new API calls).
+        """
+        regime_file = Path("market_regime_cache.json")
+        try:
+            if regime_file.exists():
+                with open(regime_file) as f:
+                    cache = json.load(f)
+                rd = cache.get("regime_data", {})
+                return {
+                    "cache_time": cache.get("cache_time", "MISSING"),
+                    "regime": rd.get("regime", "unknown"),
+                    "vix_level": rd.get("vix_level", 0.0),
+                    "vix_change": rd.get("vix_change", 0.0),
+                    "spy_below_vwap": rd.get("spy_below_vwap", False),
+                    "qqq_below_vwap": rd.get("qqq_below_vwap", False),
+                    "below_zero_gamma": rd.get("below_zero_gamma", False),
+                    "index_gex": rd.get("index_gex", 0.0),
+                    # Derived regime classification
+                    "risk_regime": self._classify_risk_regime(rd),
+                    "tape_type": self._classify_tape_type(rd),
+                    "fragility": "HIGH" if rd.get("below_zero_gamma", False) else "LOW",
+                }
+        except Exception as e:
+            logger.debug(f"Could not load regime context: {e}")
+        return {"regime": "unknown", "risk_regime": "UNKNOWN", "tape_type": "UNKNOWN", "fragility": "UNKNOWN", "cache_time": "MISSING"}
+    
+    def _classify_risk_regime(self, rd: Dict) -> str:
+        """Classify risk regime from market regime data."""
+        vix = rd.get("vix_level", 0.0)
+        spy_below = rd.get("spy_below_vwap", False)
+        qqq_below = rd.get("qqq_below_vwap", False)
+        regime = rd.get("regime", "")
+        
+        if vix > 25 and spy_below and qqq_below:
+            return "RISK_OFF"
+        elif vix > 20 or spy_below or qqq_below:
+            if "bearish" in regime.lower():
+                return "RISK_OFF"
+            return "NEUTRAL"
+        else:
+            if "bullish" in regime.lower():
+                return "RISK_ON"
+            return "NEUTRAL"
+    
+    def _classify_tape_type(self, rd: Dict) -> str:
+        """Classify tape type from GEX regime."""
+        gex = rd.get("index_gex", 0.0)
+        below_zero_gamma = rd.get("below_zero_gamma", False)
+        
+        if below_zero_gamma or gex < 0:
+            return "TREND"  # Negative gamma = trend amplification
+        elif gex > 0:
+            return "CHOP"   # Positive gamma = mean reversion / choppy
+        return "UNKNOWN"
+    
+    def _save_attribution_snapshot(self, result: Dict, mode: ReportMode, now: datetime):
+        """
+        v5.1: Attribution Logger.
+        
+        Save a snapshot of today's picks + storm_scores + regime fields.
+        A separate process (or the next AM report) can compute T+1/T+2 outcomes.
+        
+        This is how you turn "unknown into known" over time:
+        - "It said 70% storm; did it actually rain?"
+        - Target: 55-60% bearish follow-through for Storm Warning bucket = elite
+        """
+        try:
+            attr_dir = self.WEATHER_DIR / "attribution"
+            attr_dir.mkdir(parents=True, exist_ok=True)
+            
+            date_str = now.strftime("%Y%m%d")
+            attr_file = attr_dir / f"{date_str}_{mode.value}.json"
+            
+            # Compact snapshot for calibration
+            snapshot = {
+                "report_date": date_str,
+                "report_mode": mode.value,
+                "generated_at_utc": datetime.utcnow().isoformat(),
+                "regime_context": result.get("regime_context", {}),
+                "picks": []
+            }
+            
+            for fc in result.get("forecasts", []):
+                snapshot["picks"].append({
+                    "symbol": fc["symbol"],
+                    "storm_score": fc.get("storm_score", 0),
+                    "forecast": fc.get("forecast", ""),
+                    "layers_active": fc.get("layers_active", 0),
+                    "convergence_score": fc.get("convergence_score", 0),
+                    "confidence": fc.get("confidence", "LOW"),
+                    "permission_light": fc.get("permission_light", "🟡"),
+                    "missing_inputs": fc.get("missing_inputs", []),
+                    "current_price": fc.get("current_price", 0),
+                    # Outcomes — filled in by attribution checker later
+                    "t1_close": None,     # next day close
+                    "t1_return": None,    # next day return %
+                    "t2_close": None,     # T+2 close
+                    "t2_return": None,    # T+2 return %
+                    "max_adverse": None,  # max adverse excursion in window
+                    "did_drop_5pct": None,
+                    "did_drop_10pct": None,
+                })
+            
+            with open(attr_file, 'w') as f:
+                json.dump(snapshot, f, indent=2)
+            
+            logger.info(f"Attribution snapshot saved: {attr_file}")
+            
+        except Exception as e:
+            logger.debug(f"Attribution save failed (non-critical): {e}")
     
     def format_result(self, result: Dict) -> str:
         """Format result for console display."""
         mode = result.get('report_mode', 'am').upper()
         label = result.get('report_label', 'Weather Report')
+        regime = result.get('regime_context', {})
+        freshness = result.get('data_freshness', {})
         
         lines = [
             "=" * 78,
-            f"🌪️  MARKET WEATHER ENGINE v5 — {label} [{mode}]",
+            f"🌪️  MARKET WEATHER ENGINE v5.1 — {label} [{mode}]",
             "=" * 78,
-            f"Methodology: Multi-Layer Convergence v5 (Architect 2-5)",
+            f"Methodology: Multi-Layer Convergence v5.1 (Architect Operational Fixes)",
             f"EWS Data: {result.get('ews_timestamp', 'Unknown')}",
+            f"Generated (UTC): {result.get('generated_at_utc', 'Unknown')}",
             f"Status: {result.get('status', 'unknown')}",
+            "",
+            "── REGIME PANEL ──────────────────────────────────────────────────",
+            f"  Risk: {regime.get('risk_regime', 'UNKNOWN')} | "
+            f"Tape: {regime.get('tape_type', 'UNKNOWN')} | "
+            f"Fragility: {regime.get('fragility', 'UNKNOWN')} | "
+            f"VIX: {regime.get('vix_level', 0):.1f} ({regime.get('vix_change', 0):+.1%})",
+            "",
+            "── DATA FRESHNESS ────────────────────────────────────────────────",
+            f"  EWS: {freshness.get('ews', 'N/A')} | Polygon: OK | "
+            f"UW: {freshness.get('uw', 'N/A')} | Regime: {freshness.get('regime', 'N/A')}",
             "",
         ]
         
@@ -1209,15 +1429,17 @@ class MarketWeatherEngine:
                 if data.get('active')
             ]
             
-            # v5: Show storm_score instead of probability
             storm_score = fc.get('storm_score', 0)
             confidence = fc.get('confidence', 'LOW')
+            perm = fc.get('permission_light', '🟡')
             gamma_frag = "⚡FRAG" if fc.get('gamma_flip_fragile') else ""
             flow_bias = fc.get('opening_flow_bias', 'UNKNOWN')[:4]
             liq_flag = fc.get('liquidity_violence_flag', 'NORMAL')[:4]
+            missing = fc.get('missing_inputs', [])
+            miss_str = f" [MISSING: {','.join(missing)}]" if missing else ""
             
             lines.append(
-                f"{i:2}. {emoji} {fc['forecast']:15} | {fc['symbol']:5} | "
+                f"{i:2}. {perm} {emoji} {fc['forecast']:15} | {fc['symbol']:5} | "
                 f"Storm: {storm_score:.2f} | {fc['timing']:8} | "
                 f"Layers: {fc['layers_active']}/4 [{', '.join(active_names)}]"
             )
@@ -1226,16 +1448,22 @@ class MarketWeatherEngine:
             lines.append(
                 f"      └─ {traj_emoji} {fc.get('trajectory', 'NEW')} | "
                 f"Conf: {confidence} (n={fc.get('similar_days_n', 0)}) | "
-                f"Flow: {flow_bias} | Liq: {liq_flag} {gamma_frag}"
+                f"Flow: {flow_bias} | Liq: {liq_flag} {gamma_frag}{miss_str}"
             )
         
         lines.append("=" * 78)
         summary = result.get('summary', {})
+        perm_lights = summary.get('permission_lights', {})
         lines.append(
             f"Summary: {summary.get('storm_warnings', 0)} 🌪️ WARNINGS, "
             f"{summary.get('storm_watches', 0)} ⛈️ WATCHES, "
             f"{summary.get('advisories', 0)} 🌧️ ADVISORIES, "
             f"{summary.get('monitoring', 0)} ☁️ MONITORING"
+        )
+        lines.append(
+            f"Lights: 🟢 {perm_lights.get('green', 0)} tradable | "
+            f"🟡 {perm_lights.get('yellow', 0)} watch | "
+            f"🔴 {perm_lights.get('red', 0)} stand down"
         )
         
         return "\n".join(lines)

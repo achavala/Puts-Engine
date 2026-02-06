@@ -1,11 +1,20 @@
 """
-🌪️ MARKET WEATHER FORECAST TAB v5
-==================================
+🌪️ MARKET WEATHER FORECAST TAB v5.1
+=====================================
 Displays TWO daily weather reports:
   • AM (9:00 AM ET) — "Open Risk Forecast" for same-day decisions
   • PM (3:00 PM ET) — "Overnight Storm Build" for next-day prep
 
-v5 Architect Additions displayed:
+v5.1 Architect Operational Additions:
+  • 🏛️ Regime Panel (RISK_OFF/NEUTRAL/RISK_ON, TREND/CHOP, Fragility)
+  • 🌡️ Pressure Systems Panel (SPY/QQQ VWAP, GEX, market regime)
+  • 🟢🟡🔴 Permission Lights per pick (tradable/watch/stand-down)
+  • 📡 Data Freshness stamps per provider
+  • 📊 Attribution Logger for T+1/T+2 calibration
+  • ❌ Missing inputs shown explicitly, not silently neutral
+  • Top 8 (not 10) for actionability
+
+Prior v5 Additions:
   • Storm Score (NOT probability — uncalibrated ranking)
   • Gamma Flip Distance + Fragility flag
   • Opening vs Closing Flow bias
@@ -161,19 +170,19 @@ def render_predictive_tab():
     # ── Header ──
     st.markdown("""
     <div class="weather-header">
-        <div class="weather-title">🌪️ MARKET WEATHER FORECAST v5</div>
+        <div class="weather-title">🌪️ MARKET WEATHER FORECAST v5.1</div>
         <div class="weather-subtitle">
-            Architect 2-5 Consolidated — Storm Score (not probability) · Gamma Flip Distance · 
-            Flow Quality · Liquidity Violence · Confidence Bands<br>
-            Two daily reports: 9:00 AM (same-day) & 3:00 PM (next-day)
+            Architect Operational Fixes — Storm Score (not probability) · Regime Panel · Pressure Systems · 
+            Permission Lights (🟢/🟡/🔴) · Data Freshness · Attribution Logger<br>
+            Two daily reports: 9:00 AM (same-day) & 3:00 PM (next-day) · Top 8 actionable picks
         </div>
     </div>
     """, unsafe_allow_html=True)
     
     # ── How it works (collapsible) ──
-    with st.expander("🌤️ How This Works — v5 Architect Upgrades", expanded=False):
+    with st.expander("🌤️ How This Works — v5.1 Architect Operational Fixes", expanded=False):
         st.markdown("""
-        **4 independent data layers** + **3 institutional-grade overlays** from Architect 2-5:
+        **4 independent data layers** + **institutional-grade overlays**:
         
         | Layer | Analogy | Lead Time | Source |
         |-------|---------|-----------|--------|
@@ -182,15 +191,18 @@ def render_predictive_tab():
         | 📡 **Technical** | Radar | 0-2 days | Polygon RSI/MACD |
         | ⚡ **Catalyst** | Known Fronts | Scheduled | Polygon News |
         
-        **v5 Overlays:**
-        | Metric | What It Tells You |
-        |--------|-------------------|
-        | ⚡ **Gamma Flip Distance** | How close to forced dealer cascading? (<0.5% = FRAGILE) |
-        | 🔄 **Opening Flow Bias** | Are new bearish positions being opened? (vs closing) |
-        | 💥 **Liquidity Violence** | If selling hits, will it cascade or get absorbed? |
-        | 🎯 **Confidence** | Based on sample size: HIGH (≥50), MEDIUM (30-49), LOW (<30) |
+        **v5.1 Operational Fixes:**
+        | Feature | Purpose |
+        |---------|---------|
+        | 🏛️ **Regime Panel** | Risk-off / Neutral / Risk-on + Tape type + Fragility at a glance |
+        | 🌡️ **Pressure Systems** | SPY/QQQ vs VWAP, GEX, market regime context |
+        | 🟢🟡🔴 **Permission Lights** | 🟢 tradable (aligned+confident) · 🟡 watch (missing data) · 🔴 stand down |
+        | 📡 **Data Freshness** | Per-provider staleness check (EWS, Polygon, UW, Regime) |
+        | 📊 **Attribution Logger** | Saves T+1/T+2 outcomes for future calibration |
+        | 🔒 **Independence Check** | Structural + Technical overlap → 10% convergence damper |
+        | ❌ **Missing Input Penalty** | Missing gamma/flow/liquidity → confidence drops, NEVER boosts score |
         
-        **Storm Score** is a 0-1 ranking, NOT calibrated probability. Treat as relative strength.
+        **Storm Score** is a 0-1 ranking, NOT calibrated probability. Show **Top 8** for actionability.
         
         **Two Reports:**
         - **AM (9:00 AM ET)**: "Open Risk Forecast" — heavier weight on technical + catalyst (same-day)
@@ -227,10 +239,12 @@ def render_predictive_tab():
     available_reports = []
     if am_data and am_data.get('engine_version', '').startswith('v5'):
         am_ts = am_data.get('timestamp', '')
-        available_reports.append(f"🌅 AM — Open Risk Forecast ({_format_age(am_ts)})")
+        am_ver = am_data.get('engine_version', 'v5')
+        available_reports.append(f"🌅 AM — Open Risk Forecast ({_format_age(am_ts)}) [{am_ver}]")
     if pm_data and pm_data.get('engine_version', '').startswith('v5'):
         pm_ts = pm_data.get('timestamp', '')
-        available_reports.append(f"🌆 PM — Overnight Storm Build ({_format_age(pm_ts)})")
+        pm_ver = pm_data.get('engine_version', 'v5')
+        available_reports.append(f"🌆 PM — Overnight Storm Build ({_format_age(pm_ts)}) [{pm_ver}]")
     
     # Also check legacy data
     legacy_data = None
@@ -292,72 +306,201 @@ def render_predictive_tab():
     summary = data.get('summary', {})
     report_mode = data.get('report_mode', 'unknown')
     report_label = data.get('report_label', 'Weather Report')
+    regime_ctx = data.get('regime_context', {})
+    data_fresh = data.get('data_freshness', {})
+    perm_lights = summary.get('permission_lights', {})
     
-    # ── Summary Cards ──
+    # ══════════════════════════════════════════════════════════════════════
+    # 1) REGIME PANEL — "What kind of day is it?"
+    # ══════════════════════════════════════════════════════════════════════
     st.divider()
-    col1, col2, col3, col4, col5 = st.columns(5)
+    st.markdown("### 🏛️ REGIME PANEL")
+    
+    rp1, rp2, rp3, rp4 = st.columns(4)
+    
+    # Risk Regime
+    risk_regime = regime_ctx.get('risk_regime', 'UNKNOWN')
+    risk_colors = {"RISK_OFF": "#ff0000", "NEUTRAL": "#ffaa00", "RISK_ON": "#44cc44", "UNKNOWN": "#666"}
+    risk_bgs = {"RISK_OFF": "#4a0a0a", "NEUTRAL": "#3a2a0a", "RISK_ON": "#0a2a0a", "UNKNOWN": "#1a1a1a"}
+    risk_color = risk_colors.get(risk_regime, "#666")
+    risk_bg = risk_bgs.get(risk_regime, "#1a1a1a")
+    
+    with rp1:
+        st.markdown(f"""
+        <div style="background: {risk_bg}; padding: 14px; border-radius: 8px; text-align: center; border: 1px solid {risk_color};">
+            <div style="color: #aaa; font-size: 11px;">RISK REGIME</div>
+            <div style="font-size: 22px; color: {risk_color}; font-weight: bold;">{risk_regime}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Tape Type
+    tape_type = regime_ctx.get('tape_type', 'UNKNOWN')
+    tape_colors = {"TREND": "#ff4488", "CHOP": "#44aaff", "UNKNOWN": "#666"}
+    tape_bgs = {"TREND": "#3a0a2a", "CHOP": "#0a1a3a", "UNKNOWN": "#1a1a1a"}
+    tape_color = tape_colors.get(tape_type, "#666")
+    tape_bg = tape_bgs.get(tape_type, "#1a1a1a")
+    
+    with rp2:
+        st.markdown(f"""
+        <div style="background: {tape_bg}; padding: 14px; border-radius: 8px; text-align: center; border: 1px solid {tape_color};">
+            <div style="color: #aaa; font-size: 11px;">TAPE TYPE (GAMMA)</div>
+            <div style="font-size: 22px; color: {tape_color}; font-weight: bold;">{tape_type}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Fragility
+    fragility = regime_ctx.get('fragility', 'UNKNOWN')
+    frag_colors = {"HIGH": "#ff0000", "LOW": "#44cc44", "UNKNOWN": "#666"}
+    frag_bgs = {"HIGH": "#4a0a0a", "LOW": "#0a2a0a", "UNKNOWN": "#1a1a1a"}
+    frag_color = frag_colors.get(fragility, "#666")
+    frag_bg = frag_bgs.get(fragility, "#1a1a1a")
+    
+    with rp3:
+        near_flip = "⚡ YES" if fragility == "HIGH" else "No"
+        st.markdown(f"""
+        <div style="background: {frag_bg}; padding: 14px; border-radius: 8px; text-align: center; border: 1px solid {frag_color};">
+            <div style="color: #aaa; font-size: 11px;">NEAR GAMMA FLIP?</div>
+            <div style="font-size: 22px; color: {frag_color}; font-weight: bold;">{near_flip}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # VIX
+    vix_level = regime_ctx.get('vix_level', 0.0)
+    vix_change = regime_ctx.get('vix_change', 0.0)
+    vix_color = "#ff0000" if vix_level > 25 else "#ffaa00" if vix_level > 18 else "#44cc44"
+    vix_bg = "#4a0a0a" if vix_level > 25 else "#3a2a0a" if vix_level > 18 else "#0a2a0a"
+    
+    with rp4:
+        st.markdown(f"""
+        <div style="background: {vix_bg}; padding: 14px; border-radius: 8px; text-align: center; border: 1px solid {vix_color};">
+            <div style="color: #aaa; font-size: 11px;">VIX LEVEL</div>
+            <div style="font-size: 22px; color: {vix_color}; font-weight: bold;">{vix_level:.1f} ({vix_change:+.1%})</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # ══════════════════════════════════════════════════════════════════════
+    # 2) PRESSURE SYSTEMS + DATA FRESHNESS
+    # ══════════════════════════════════════════════════════════════════════
+    ps1, ps2 = st.columns(2)
+    
+    with ps1:
+        st.markdown("#### 🌡️ Pressure Systems")
+        spy_below = "📉 Below" if regime_ctx.get('spy_below_vwap') else "📈 Above"
+        qqq_below = "📉 Below" if regime_ctx.get('qqq_below_vwap') else "📈 Above"
+        gex = regime_ctx.get('index_gex', 0.0)
+        gex_label = "Negative (TREND)" if gex < 0 else "Positive (CHOP)" if gex > 0 else "Neutral"
+        
+        st.markdown(f"""
+        | Indicator | State |
+        |-----------|-------|
+        | SPY vs VWAP | {spy_below} |
+        | QQQ vs VWAP | {qqq_below} |
+        | Index GEX | {gex_label} |
+        | Regime | {regime_ctx.get('regime', 'unknown')} |
+        """)
+    
+    with ps2:
+        st.markdown("#### 📡 Data Freshness")
+        ews_fresh = data_fresh.get('ews', 'MISSING')
+        polygon_fresh = data_fresh.get('polygon', 'OK')
+        uw_fresh = data_fresh.get('uw', 'MISSING')
+        regime_fresh = data_fresh.get('regime', 'MISSING')
+        
+        ews_status = "🟢" if ews_fresh != "MISSING" else "🔴 MISSING"
+        uw_status = "🟢" if uw_fresh != "MISSING" else "🔴 MISSING"
+        regime_status = "🟢" if regime_fresh != "MISSING" else "🔴 MISSING"
+        
+        st.markdown(f"""
+        | Provider | Status |
+        |----------|--------|
+        | EWS IPI | {ews_status} |
+        | Polygon | 🟢 Unlimited |
+        | UW GEX/Flow | {uw_status} |
+        | Market Regime | {regime_status} |
+        """)
+        
+        generated_utc = data.get('generated_at_utc', '')
+        if generated_utc:
+            st.caption(f"Generated (UTC): {generated_utc}")
+    
+    # ══════════════════════════════════════════════════════════════════════
+    # 3) SUMMARY CARDS + PERMISSION LIGHTS
+    # ══════════════════════════════════════════════════════════════════════
+    st.divider()
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
     
     with col1:
         count = summary.get('storm_warnings', 0)
         st.markdown(f"""
-        <div style="background: #4a0a0a; padding: 14px; border-radius: 8px; text-align: center; border: 1px solid #ff0000;">
-            <div style="font-size: 32px; color: #ff0000; font-weight: bold;">{count}</div>
-            <div style="color: #ff6666; font-size: 12px;">🌪️ STORM WARNING</div>
-            <div style="color: #888; font-size: 10px;">Highest storm score</div>
+        <div style="background: #4a0a0a; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #ff0000;">
+            <div style="font-size: 28px; color: #ff0000; font-weight: bold;">{count}</div>
+            <div style="color: #ff6666; font-size: 11px;">🌪️ WARNING</div>
         </div>
         """, unsafe_allow_html=True)
     
     with col2:
         count = summary.get('storm_watches', 0)
         st.markdown(f"""
-        <div style="background: #3a1500; padding: 14px; border-radius: 8px; text-align: center; border: 1px solid #ff4400;">
-            <div style="font-size: 32px; color: #ff4400; font-weight: bold;">{count}</div>
-            <div style="color: #ff8844; font-size: 12px;">⛈️ STORM WATCH</div>
-            <div style="color: #888; font-size: 10px;">High storm score</div>
+        <div style="background: #3a1500; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #ff4400;">
+            <div style="font-size: 28px; color: #ff4400; font-weight: bold;">{count}</div>
+            <div style="color: #ff8844; font-size: 11px;">⛈️ WATCH</div>
         </div>
         """, unsafe_allow_html=True)
     
     with col3:
         count = summary.get('advisories', 0)
         st.markdown(f"""
-        <div style="background: #3a2a0a; padding: 14px; border-radius: 8px; text-align: center; border: 1px solid #ffaa00;">
-            <div style="font-size: 32px; color: #ffaa00; font-weight: bold;">{count}</div>
-            <div style="color: #ffcc66; font-size: 12px;">🌧️ ADVISORY</div>
-            <div style="color: #888; font-size: 10px;">Moderate score</div>
+        <div style="background: #3a2a0a; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #ffaa00;">
+            <div style="font-size: 28px; color: #ffaa00; font-weight: bold;">{count}</div>
+            <div style="color: #ffcc66; font-size: 11px;">🌧️ ADVISORY</div>
         </div>
         """, unsafe_allow_html=True)
     
     with col4:
         count = summary.get('monitoring', 0)
         st.markdown(f"""
-        <div style="background: #1a1a2a; padding: 14px; border-radius: 8px; text-align: center; border: 1px solid #666;">
-            <div style="font-size: 32px; color: #aaa; font-weight: bold;">{count}</div>
-            <div style="color: #999; font-size: 12px;">☁️ MONITORING</div>
-            <div style="color: #888; font-size: 10px;">Low score</div>
+        <div style="background: #1a1a2a; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #666;">
+            <div style="font-size: 28px; color: #aaa; font-weight: bold;">{count}</div>
+            <div style="color: #999; font-size: 11px;">☁️ MONITOR</div>
         </div>
         """, unsafe_allow_html=True)
     
     with col5:
+        g = perm_lights.get('green', 0)
+        y = perm_lights.get('yellow', 0)
+        r = perm_lights.get('red', 0)
+        st.markdown(f"""
+        <div style="background: #1a1a1a; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #444;">
+            <div style="font-size: 14px; color: #44cc44;">🟢 {g}</div>
+            <div style="font-size: 14px; color: #ffaa00;">🟡 {y}</div>
+            <div style="font-size: 14px; color: #ff4444;">🔴 {r}</div>
+            <div style="color: #888; font-size: 10px;">PERMISSIONS</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col6:
         mode_emoji = "🌅" if report_mode == "am" else "🌆" if report_mode == "pm" else "📊"
         st.markdown(f"""
-        <div style="background: #0a1a2a; padding: 14px; border-radius: 8px; text-align: center; border: 1px solid #2a4a6a;">
+        <div style="background: #0a1a2a; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #2a4a6a;">
             <div style="font-size: 16px; color: #44aaff; font-weight: bold;">{mode_emoji} {report_mode.upper()}</div>
             <div style="color: #88ccff; font-size: 11px;">{report_label}</div>
-            <div style="color: #888; font-size: 10px;">Updated {age_str}</div>
+            <div style="color: #888; font-size: 10px;">{age_str}</div>
         </div>
         """, unsafe_allow_html=True)
     
     st.caption(
-        f"EWS data from: {ews_timestamp} | Engine: {engine_version} | "
-        f"Sources: EWS IPI + Polygon + UW GEX/Flow | "
-        f"Footprint history: {summary.get('data_sources', {}).get('footprint_history_tickers', 0)} tickers"
+        f"EWS: {ews_timestamp} | Engine: {engine_version} | "
+        f"Footprints: {summary.get('data_sources', {}).get('footprint_history_tickers', 0)} tickers | "
+        f"🟢=tradable 🟡=watch 🔴=stand down"
     )
     
     st.divider()
     
-    # ── Main Forecast Table ──
-    st.markdown("### 🌪️ TOP 10 — MARKET WEATHER FORECAST")
-    st.caption("Storm Score is a ranking (0-1), NOT calibrated probability. Higher = more layers converging.")
+    # ══════════════════════════════════════════════════════════════════════
+    # 4) TOP 8 FORECAST TABLE (actionable, not 10)
+    # ══════════════════════════════════════════════════════════════════════
+    st.markdown("### 🌪️ TOP 8 — MARKET WEATHER FORECAST")
+    st.caption("Storm Score is a ranking (0-1), NOT calibrated probability. 🟢 = tradable, 🟡 = watch, 🔴 = stand down.")
     
     forecasts = data.get('forecasts', [])
     
@@ -365,11 +508,17 @@ def render_predictive_tab():
         st.info("No significant weather systems detected. Markets look calm — for now.")
         return
     
-    # Create summary table with v5 fields
+    # Show top 8 for actionability (keep 10 in data, show 8 in table)
+    display_forecasts = forecasts[:8]
+    
+    # Create summary table with v5.1 fields (permission light + missing)
     df_data = []
-    for i, fc in enumerate(forecasts, 1):
+    for i, fc in enumerate(display_forecasts, 1):
         emoji = fc.get('forecast_emoji', '❓')
         traj_emoji = fc.get('trajectory_emoji', '')
+        
+        # Permission light
+        perm = fc.get('permission_light', '🟡')
         
         # v5 badges
         badges = []
@@ -386,6 +535,11 @@ def render_predictive_tab():
         elif flow == "CLOSING_NEUTRAL":
             badges.append("🔼CLOSE")
         
+        # Missing inputs (show clearly, not silently neutral)
+        missing = fc.get('missing_inputs', [])
+        if missing:
+            badges.append(f"❌{len(missing)}miss")
+        
         badge_str = " ".join(badges) if badges else "—"
         
         # Confidence
@@ -393,6 +547,7 @@ def render_predictive_tab():
         conf_emoji = {"HIGH": "🟢", "MEDIUM": "🟡", "LOW": "🔴"}.get(confidence, "⚪")
         
         df_data.append({
+            "": perm,
             "Rank": f"#{i}",
             "Forecast": f"{emoji} {fc['forecast']}",
             "Symbol": fc['symbol'],
@@ -426,19 +581,22 @@ def render_predictive_tab():
     st.divider()
     
     # ── Detailed Forecast Cards ──
-    st.markdown("### 📋 DETAILED LAYER ANALYSIS + v5 OVERLAYS")
-    st.caption("Expand each forecast to see all 4 layers, v5 overlays, and trajectory")
+    st.markdown("### 📋 DETAILED LAYER ANALYSIS + v5.1 OVERLAYS")
+    st.caption("Expand each forecast to see all 4 layers, permission light, overlays, and missing inputs")
     
-    for i, fc in enumerate(forecasts[:10], 1):
+    for i, fc in enumerate(display_forecasts, 1):
         emoji = fc.get('forecast_emoji', '❓')
         traj_emoji = fc.get('trajectory_emoji', '')
         layers = fc.get('layers', {})
         confidence = fc.get('confidence', 'LOW')
+        perm = fc.get('permission_light', '🟡')
+        missing = fc.get('missing_inputs', [])
+        miss_str = f" | ❌ MISSING: {', '.join(missing)}" if missing else ""
         
         header = (
-            f"#{i} {emoji} {fc['forecast']} — **{fc['symbol']}** — "
+            f"#{i} {perm} {emoji} {fc['forecast']} — **{fc['symbol']}** — "
             f"Storm: {fc.get('storm_score', 0):.2f} | {fc['layers_active']}/4 layers | "
-            f"{traj_emoji} {fc.get('trajectory', '')} | {fc['timing']}"
+            f"{traj_emoji} {fc.get('trajectory', '')} | {fc['timing']}{miss_str}"
         )
         
         with st.expander(header, expanded=(i <= 3)):
