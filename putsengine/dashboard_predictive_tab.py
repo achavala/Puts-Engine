@@ -730,29 +730,28 @@ def render_predictive_tab():
     
     # ── Weather Legend ──
     st.divider()
-    st.markdown("""
-    <div style="background: #0a0a1a; padding: 20px; border-radius: 10px; border: 1px solid #2a2a4a;">
-        <div style="color: #8888ff; font-weight: bold; font-size: 16px; margin-bottom: 10px;">
-            🌤️ WEATHER FORECAST LEGEND (v5)
-        </div>
-        <div style="color: #aaa; font-size: 12px; line-height: 2;">
-            <b>Forecast Levels:</b><br>
-            🌪️ <span style="color:#ff0000;">STORM WARNING</span> = 4/4 layers converging — All models agree<br>
-            ⛈️ <span style="color:#ff4400;">STORM WATCH</span> = 3/4 layers — Strong convergence<br>
-            🌧️ <span style="color:#ffaa00;">ADVISORY</span> = 2/4 layers — Moderate signals<br>
-            ☁️ <span style="color:#aaa;">MONITORING</span> = 1/4 layers — Early signals<br><br>
-            
-            <b>v5 Overlays:</b><br>
-            ⚡ <span style="color:#ff4488;">Gamma Flip Distance</span> — % to forced dealer cascade (FRAGILE if ≤0.5%)<br>
-            🔻 <span style="color:#ff4444;">Opening Flow</span> — New bearish positions (vs closing / short covering)<br>
-            💥 <span style="color:#ff0000;">Liquidity Violence</span> — Will selling cascade (VIOLENT) or get absorbed (NORMAL)?<br>
-            🎯 <span style="color:#44ff44;">Confidence</span> — HIGH (≥50 similar days), MEDIUM (30-49), LOW (<30)<br><br>
-            
-            <b>⚠️ IMPORTANT:</b> Storm Score is a <u>ranking</u>, not a calibrated probability.<br>
-            Treat as relative strength until backtested against actual outcomes.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    legend_html = (
+        '<div style="background:#0a0a1a; padding:20px; border-radius:10px; border:1px solid #2a2a4a;">'
+        '<div style="color:#8888ff; font-weight:bold; font-size:16px; margin-bottom:10px;">'
+        '🌤️ WEATHER FORECAST LEGEND (v5)'
+        '</div>'
+        '<div style="color:#aaa; font-size:12px; line-height:2;">'
+        '<b>Forecast Levels:</b><br>'
+        '🌪️ <span style="color:#ff0000;">STORM WARNING</span> = 4/4 layers converging — All models agree<br>'
+        '⛈️ <span style="color:#ff4400;">STORM WATCH</span> = 3/4 layers — Strong convergence<br>'
+        '🌧️ <span style="color:#ffaa00;">ADVISORY</span> = 2/4 layers — Moderate signals<br>'
+        '☁️ <span style="color:#aaa;">MONITORING</span> = 1/4 layers — Early signals<br><br>'
+        '<b>v5 Overlays:</b><br>'
+        '⚡ <span style="color:#ff4488;">Gamma Flip Distance</span> — % to forced dealer cascade (FRAGILE if ≤0.5%)<br>'
+        '🔻 <span style="color:#ff4444;">Opening Flow</span> — New bearish positions (vs closing / short covering)<br>'
+        '💥 <span style="color:#ff0000;">Liquidity Violence</span> — Will selling cascade (VIOLENT) or get absorbed (NORMAL)?<br>'
+        '🎯 <span style="color:#44ff44;">Confidence</span> — HIGH (≥50 similar days), MEDIUM (30-49), LOW (&lt;30)<br><br>'
+        '<b>⚠️ IMPORTANT:</b> Storm Score is a <u>ranking</u>, not a calibrated probability.<br>'
+        'Treat as relative strength until backtested against actual outcomes.'
+        '</div>'
+        '</div>'
+    )
+    st.markdown(legend_html, unsafe_allow_html=True)
 
 
 def _format_age(timestamp_str: str) -> str:
