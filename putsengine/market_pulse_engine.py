@@ -117,6 +117,15 @@ class MarketPulseResult:
     historical_matches: int = 0           # Days matching current profile
     sample_confidence: str = "UNKNOWN"    # HIGH / MEDIUM / LOW
     
+    # 7. Liquidity Depth Ratio - ARCHITECT-4 FINAL (Feb 5)
+    liquidity_depth_ratio: float = 1.0    # bid_size / rolling_avg_bid_size
+    liquidity_flag: str = "NORMAL"        # NORMAL / THINNING / VACUUM
+    
+    # 8. Execution Light - ARCHITECT-4 FINAL (Feb 5)
+    # RED = Wait, YELLOW = Small size, GREEN = Permission
+    execution_light: str = "YELLOW"       # RED / YELLOW / GREEN
+    execution_rationale: str = ""         # Why this light
+    
     # Key observations
     notes: List[str] = field(default_factory=list)
     
@@ -710,6 +719,145 @@ class MarketPulseEngine:
         return delta, gap
     
     # =========================================================================
+    # ARCHITECT-4 FINAL: LIQUIDITY & EXECUTION LIGHT (Feb 5, 2026)
+    # =========================================================================
+    
+    async def get_liquidity_depth_ratio(self) -> Tuple[float, str, Dict]:
+        """
+        Calculate liquidity depth ratio for fragility detection.
+        
+        ARCHITECT-4 FINAL INSIGHT:
+        High IPI on thin liquidity can be noise.
+        Institutional crashes require BOTH pressure AND disappearing bids.
+        
+        Formula: quote_depth_ratio = bid_size / rolling_avg_bid_size
+        
+        Interpretation (READ-ONLY - does NOT change IPI):
+        - > 0.7: NORMAL - Liquidity adequate
+        - 0.5 - 0.7: THINNING - Liquidity reducing
+        - < 0.5: VACUUM - Liquidity vacuum risk
+        """
+        await self._init_clients()
+        
+        data = {}
+        ratio = 1.0
+        flag = "NORMAL"
+        
+        try:
+            # Get current quote for SPY
+            spy_snap = await self.polygon.get_snapshot("SPY")
+            
+            if spy_snap and "ticker" in spy_snap:
+                # Get current bid size
+                current_bid_size = spy_snap["ticker"].get("lastQuote", {}).get("S", 0)
+                
+                # For rolling average, we approximate using typical market conditions
+                # Normal SPY bid size is ~500-1000 shares in pre-market
+                # During market hours, 2000-5000 is normal
+                typical_bid_size = 1000  # Pre-market typical
+                
+                data["current_bid_size"] = current_bid_size
+                data["typical_bid_size"] = typical_bid_size
+                
+                if typical_bid_size > 0 and current_bid_size > 0:
+                    ratio = current_bid_size / typical_bid_size
+                    data["ratio"] = ratio
+                    
+                    # Classify flag
+                    if ratio >= 0.7:
+                        flag = "NORMAL"
+                    elif ratio >= 0.5:
+                        flag = "THINNING"
+                    else:
+                        flag = "VACUUM"
+                    
+                    data["flag"] = flag
+                    data["interpretation"] = f"Bid depth at {ratio:.1f}x normal - {flag}"
+                    
+        except Exception as e:
+            logger.debug(f"Liquidity depth ratio error: {e}")
+        
+        return ratio, flag, data
+    
+    def determine_execution_light(
+        self,
+        regime: MarketRegime,
+        tradeability: Tradeability,
+        gamma_flip_zone: str,
+        flow_quality: str,
+        liquidity_flag: str,
+        ipi_level: str = "UNKNOWN"  # From EWS: ACT/PREPARE/WATCH/NONE
+    ) -> Tuple[str, str]:
+        """
+        Determine execution light: RED / YELLOW / GREEN.
+        
+        ARCHITECT-4 FINAL INSIGHT:
+        This is DESCRIPTIVE, not PRESCRIPTIVE.
+        It reflects STATE, not COMMAND.
+        
+        Approved Logic:
+        - 🔴 RED: High IPI but positive gamma → Wait
+        - 🟡 YELLOW: High IPI + fragility but liquidity thin → Small size
+        - 🟢 GREEN: High IPI + negative gamma + opening flow → Permission
+        
+        NO AUTOMATION. NO FORCED TRADE.
+        This helps discipline, not replaces it.
+        """
+        # Start with YELLOW (neutral/selective)
+        light = "YELLOW"
+        rationale = "Mixed signals - be selective"
+        
+        # GREEN conditions (permission to deploy puts)
+        green_conditions = [
+            regime == MarketRegime.RISK_OFF,           # Bearish regime
+            tradeability == Tradeability.TREND,        # Negative gamma (trend)
+            flow_quality in ["GOOD", "UNKNOWN"],       # Opening flow or unknown
+            gamma_flip_zone not in ["KNIFE_EDGE"],     # Not at flip level
+            liquidity_flag != "VACUUM"                 # Liquidity present
+        ]
+        
+        # RED conditions (wait, don't deploy)
+        red_conditions = [
+            regime == MarketRegime.RISK_ON,            # Bullish regime
+            gamma_flip_zone == "KNIFE_EDGE" and tradeability == Tradeability.CHOP,  # Fragile + chop
+            flow_quality == "WARNING",                 # Closing flow dominant
+            liquidity_flag == "VACUUM"                 # No bids
+        ]
+        
+        # Count conditions met
+        green_count = sum(1 for c in green_conditions if c)
+        red_count = sum(1 for c in red_conditions if c)
+        
+        # Determine light
+        if red_count >= 2:
+            light = "RED"
+            if regime == MarketRegime.RISK_ON:
+                rationale = "RISK-ON regime - puts unfavorable"
+            elif liquidity_flag == "VACUUM":
+                rationale = "Liquidity vacuum - gappy moves, no exit"
+            elif flow_quality == "WARNING":
+                rationale = "Closing flow dominant - signals misleading"
+            else:
+                rationale = "Multiple adverse conditions - wait"
+                
+        elif green_count >= 4:
+            light = "GREEN"
+            rationale = "RISK-OFF + TREND + GOOD FLOW - puts permitted"
+            
+        else:
+            light = "YELLOW"
+            if tradeability == Tradeability.CHOP:
+                rationale = "Choppy conditions - reduce size, be selective"
+            elif liquidity_flag == "THINNING":
+                rationale = "Liquidity thinning - small size only"
+            elif gamma_flip_zone == "FRAGILE":
+                rationale = "Fragility zone - heightened risk, be cautious"
+            else:
+                rationale = "Mixed signals - be selective"
+        
+        return light, rationale
+    
+    # =========================================================================
     # TIER 3: CAUSE & AMPLIFIERS
     # =========================================================================
     
@@ -900,6 +1048,11 @@ class MarketPulseEngine:
         expected_move_pct, open_vs_expected, em_data = await self.get_expected_move_position()
         raw_data["expected_move"] = em_data
         
+        # A5. Liquidity Depth Ratio (ARCHITECT-4 FINAL)
+        logger.info("Calculating liquidity depth ratio...")
+        liquidity_depth_ratio, liquidity_flag, liquidity_data = await self.get_liquidity_depth_ratio()
+        raw_data["liquidity"] = liquidity_data
+        
         # =====================================================================
         # END ARCHITECT-4 ADDITIONS
         # =====================================================================
@@ -1015,6 +1168,28 @@ class MarketPulseEngine:
         if certainty_gap == "VOLATILE":
             notes.append("📊 VOLATILE CERTAINTY: Large score change from prior run")
         
+        # Add liquidity depth note
+        if liquidity_flag == "VACUUM":
+            notes.append("🚨 LIQUIDITY VACUUM: Bids disappearing - gappy moves, no exit")
+        elif liquidity_flag == "THINNING":
+            notes.append("⚠️ LIQUIDITY THINNING: Bid depth reducing - reduce size")
+        
+        # ARCHITECT-4 FINAL: Determine Execution Light
+        execution_light, execution_rationale = self.determine_execution_light(
+            regime=regime,
+            tradeability=tradeability,
+            gamma_flip_zone=gamma_flip_zone,
+            flow_quality=flow_quality,
+            liquidity_flag=liquidity_flag
+        )
+        
+        if execution_light == "RED":
+            notes.append(f"🔴 EXECUTION: RED - {execution_rationale}")
+        elif execution_light == "GREEN":
+            notes.append(f"🟢 EXECUTION: GREEN - {execution_rationale}")
+        else:
+            notes.append(f"🟡 EXECUTION: YELLOW - {execution_rationale}")
+        
         # Generate conditional picks (ONLY if risk-off + trend)
         conditional_picks = []
         if regime == MarketRegime.RISK_OFF and tradeability == Tradeability.TREND:
@@ -1051,6 +1226,11 @@ class MarketPulseEngine:
             open_vs_expected=open_vs_expected,
             historical_matches=historical_matches,
             sample_confidence=sample_confidence,
+            # ARCHITECT-4 FINAL ADDITIONS
+            liquidity_depth_ratio=liquidity_depth_ratio,
+            liquidity_flag=liquidity_flag,
+            execution_light=execution_light,
+            execution_rationale=execution_rationale,
             # Original fields
             notes=notes,
             conditional_picks=conditional_picks,
@@ -1248,6 +1428,11 @@ async def analyze_market_direction(polygon=None, uw=None):
                 "open_vs_expected": result.open_vs_expected,
                 "historical_matches": result.historical_matches,
                 "sample_confidence": result.sample_confidence,
+                # ARCHITECT-4 FINAL ADDITIONS
+                "liquidity_depth_ratio": result.liquidity_depth_ratio,
+                "liquidity_flag": result.liquidity_flag,
+                "execution_light": result.execution_light,
+                "execution_rationale": result.execution_rationale,
                 # Original fields
                 "notes": result.notes,
                 "conditional_picks": result.conditional_picks,

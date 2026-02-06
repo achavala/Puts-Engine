@@ -625,25 +625,50 @@ class PutsEngineScheduler:
         # ============================================================================
         
         # ============================================================================
-        # EARLY WARNING SYSTEM - OPTIMIZED (Feb 4, 2026)
+        # EARLY WARNING SYSTEM - FIXED (Feb 5, 2026)
         # ============================================================================
-        # OPTIMIZATION: Only ONE EWS scan makes UW API calls (10 PM)
-        # This saves ~4,000 UW API calls/day for use in Pre-Market and Regular scans
-        # Dashboard reads from cached early_warning_alerts.json for real-time display
+        # CRITICAL FIX: EWS data was 11+ hours stale at market open!
+        # Added pre-market EWS scan to ensure fresh institutional footprint data
         # ============================================================================
         
-        # SINGLE EWS scan that makes actual UW API calls - runs at 10 PM
+        # 8:00 AM EWS - CRITICAL for market-open decisions
+        # Scans 361 tickers for overnight institutional footprints
+        # This ensures TOP 8 picks are fresh when you need them at 9:30 AM
+        self.scheduler.add_job(
+            self._run_early_warning_scan_wrapper,
+            CronTrigger(hour=8, minute=0, timezone=EST),
+            id="early_warning_8am",
+            name="🚨 Early Warning Scan (8:00 AM ET) - PRE-MARKET CRITICAL",
+            replace_existing=True
+        )
+        
+        # 12:00 PM EWS - Midday update for afternoon positioning
+        self.scheduler.add_job(
+            self._run_early_warning_scan_wrapper,
+            CronTrigger(hour=12, minute=0, timezone=EST),
+            id="early_warning_12pm",
+            name="🚨 Early Warning Scan (12:00 PM ET) - MIDDAY UPDATE",
+            replace_existing=True
+        )
+        
+        # 4:30 PM EWS - After-hours positioning detection
+        self.scheduler.add_job(
+            self._run_early_warning_scan_wrapper,
+            CronTrigger(hour=16, minute=30, timezone=EST),
+            id="early_warning_430pm",
+            name="🚨 Early Warning Scan (4:30 PM ET) - POST-MARKET",
+            replace_existing=True
+        )
+        
+        # 10:00 PM EWS - Overnight footprint detection
         # Scans 361 tickers for institutional footprints
         self.scheduler.add_job(
             self._run_early_warning_scan_wrapper,
             CronTrigger(hour=22, minute=0, timezone=EST),
             id="early_warning_10pm",
-            name="🚨 Early Warning Scan (10:00 PM ET) - FULL UW SCAN (361 tickers)",
+            name="🚨 Early Warning Scan (10:00 PM ET) - OVERNIGHT",
             replace_existing=True
         )
-        
-        # REMOVED: Overnight Full Scan (10:00 PM) - Redundant with EWS at 10 PM
-        # The EWS scan at 10 PM now handles all overnight detection
         
         # ============================================================================
         # ZERO-HOUR GAP SCANNER (Feb 1, 2026) - Day 0 Execution Confirmation

@@ -1,13 +1,13 @@
 {
-  "cache_time": "2026-02-04T22:26:53.470689",
+  "cache_time": "2026-02-05T22:11:49.417050",
   "regime_data": {
-    "timestamp": "2026-02-04T22:26:53.470565",
+    "timestamp": "2026-02-05T22:11:49.416495",
     "regime": "bearish_neutral",
     "spy_below_vwap": true,
-    "qqq_below_vwap": false,
+    "qqq_below_vwap": true,
     "index_gex": 0.0,
-    "vix_level": 26.75,
-    "vix_change": 0.014410314751611641,
+    "vix_level": 28.42,
+    "vix_change": 0.062429906542056136,
     "is_tradeable": true,
     "block_reasons": [],
     "is_passive_inflow_window": false,

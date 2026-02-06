@@ -30,6 +30,9 @@ from putsengine.big_movers_scanner import analyze_historical_movers, SECTOR_MAPP
 # New isolated Market Direction tab (Feb 4, 2026)
 from putsengine.dashboard_market_direction_tab import render_market_direction_tab
 
+# New isolated Predictive System tab (Feb 5, 2026)
+from putsengine.dashboard_predictive_tab import render_predictive_tab
+
 st.set_page_config(page_title="PutsEngine", page_icon="📉", layout="wide", initial_sidebar_state="expanded")
 
 # ============================================================================
@@ -963,7 +966,7 @@ def render_early_warning_tab():
             pass
     
     if not early_warning_data:
-        st.error("⚠️ Early warning data not yet available. Scans run at 8 AM, 12 PM, 4:30 PM, 8 PM, and 10 PM ET.")
+        st.error("⚠️ Early warning data not yet available. Scans run at 8 AM, 12 PM, 4:30 PM, and 10 PM ET.")
         
         # Check if there's any footprint history
         if footprint_history_file.exists():
@@ -1007,7 +1010,7 @@ def render_early_warning_tab():
             st.caption(f"Last scan: {scan_time}")
     
     # Auto-refresh info
-    st.caption("📡 EWS scans run automatically at 8 AM, 12 PM, 4:30 PM, 8 PM, and 10 PM ET. Dashboard auto-refreshes every 60 seconds.")
+    st.caption("📡 EWS scans run automatically at 8 AM, 12 PM, 4:30 PM, and 10 PM ET. Dashboard auto-refreshes every 60 seconds.")
     
     # Summary metrics
     summary = early_warning_data.get("summary", {})
@@ -1054,43 +1057,62 @@ def render_early_warning_tab():
         reverse=True
     )
     
-    # ACT Level Alerts (Critical)
+    # ACT Level Alerts (Critical) - TABULAR FORMAT
     act_alerts = [(s, a) for s, a in sorted_alerts if a.get("level") == "act"]
     if act_alerts:
         st.markdown("### 🔴 IMMINENT BREAKDOWN (IPI ≥ 0.70)")
         st.markdown("*These symbols have multiple institutional footprints converging. Consider put entry on any bounce.*")
         
+        # Create DataFrame for ACT alerts
+        act_data = []
         for symbol, alert in act_alerts:
-            with st.container():
-                col1, col2, col3, col4 = st.columns([1, 1, 1, 2])
-                
-                with col1:
-                    st.markdown(f"### {symbol}")
-                    st.markdown(f"**IPI: {alert.get('ipi', 0):.2f}**")
-                
-                with col2:
-                    st.metric("Footprint Types", alert.get("unique_footprints", 0))
-                
-                with col3:
-                    st.metric("Days Building", alert.get("days_building", 0))
-                
-                with col4:
-                    st.markdown(f"📋 {alert.get('recommendation', '')}")
-                
-                # Show footprint details
+            footprints = alert.get("footprints", [])
+            fp_types = ", ".join(set(fp.get("type", "").replace("_", " ").title() for fp in footprints[:4]))
+            avg_strength = sum(fp.get("strength", 0) for fp in footprints) / len(footprints) if footprints else 0
+            
+            act_data.append({
+                "Symbol": f"🔴 {symbol}",
+                "IPI": f"{alert.get('ipi', 0):.2f}",
+                "Footprints": alert.get("unique_footprints", 0),
+                "Days Building": alert.get("days_building", 0),
+                "Avg Strength": f"{avg_strength:.2f}",
+                "Footprint Types": fp_types,
+                "Recommendation": alert.get("recommendation", "Consider put entry on any bounce. 7-14 DTE.")
+            })
+        
+        if act_data:
+            df = pd.DataFrame(act_data)
+            st.dataframe(
+                df, 
+                use_container_width=True, 
+                hide_index=True,
+                column_config={
+                    "Symbol": st.column_config.TextColumn("Symbol", width="small"),
+                    "IPI": st.column_config.TextColumn("IPI", width="small"),
+                    "Footprints": st.column_config.NumberColumn("# FP", width="small"),
+                    "Days Building": st.column_config.NumberColumn("Days", width="small"),
+                    "Avg Strength": st.column_config.TextColumn("Strength", width="small"),
+                    "Footprint Types": st.column_config.TextColumn("Footprint Types", width="medium"),
+                    "Recommendation": st.column_config.TextColumn("Recommendation", width="large"),
+                }
+            )
+        
+        # Expandable details for each ACT alert
+        with st.expander(f"📋 View Detailed Footprints for {len(act_alerts)} ACT Symbols"):
+            for symbol, alert in act_alerts:
                 footprints = alert.get("footprints", [])
                 if footprints:
-                    with st.expander(f"View {len(footprints)} footprints"):
-                        for fp in footprints[:5]:
-                            fp_type = fp.get("type", "unknown").replace("_", " ").title()
-                            strength = fp.get("strength", 0)
-                            details = fp.get("details", {})
-                            
-                            st.markdown(f"**{fp_type}** (strength: {strength:.2f})")
-                            if details:
-                                st.json(details)
-                
-                st.divider()
+                    st.markdown(f"**{symbol}** (IPI: {alert.get('ipi', 0):.2f})")
+                    fp_detail_data = []
+                    for fp in footprints[:8]:
+                        fp_detail_data.append({
+                            "Type": fp.get("type", "unknown").replace("_", " ").title(),
+                            "Strength": f"{fp.get('strength', 0):.2f}",
+                            "Date": fp.get("date", "N/A"),
+                        })
+                    if fp_detail_data:
+                        st.dataframe(pd.DataFrame(fp_detail_data), use_container_width=True, hide_index=True)
+                    st.divider()
     
     # PREPARE Level Alerts
     prepare_alerts = [(s, a) for s, a in sorted_alerts if a.get("level") == "prepare"]
@@ -2154,15 +2176,16 @@ def main():
         render_config_view()
     
     elif "Dashboard" in page or "Puts Scanner" in page:
-        # Main tabs - now with more space (7 tabs instead of 10)
-        tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+        # Main tabs - 8 tabs including new Predictive System
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
             "🔥 Gamma Drain", 
             "📉 Distribution", 
             "💧 Liquidity", 
             "🚨 Early Warning",
             "📊 48-Hour",
             "🎯 Big Movers",
-            "🎯 Market Direction"
+            "🌊 Market Direction",
+            "🎯 Predictive System"
         ])
 
         with tab1:
@@ -2204,6 +2227,10 @@ def main():
         with tab7:
             # Market Direction tab
             render_market_direction_tab()
+
+        with tab8:
+            # Predictive System tab - Bulletproof Put Detection
+            render_predictive_tab()
 
     elif "Trade History" in page:
         render_ledger_view()

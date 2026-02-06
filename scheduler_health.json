@@ -1,12 +1,12 @@
 {
   "is_running": true,
-  "pid": 68187,
-  "memory_mb": 5.14,
+  "pid": 4285,
+  "memory_mb": 5.66,
   "cpu_percent": 0.0,
-  "last_activity": "2026-02-04T22:37:06.750448",
-  "process_age_seconds": 4844.0,
+  "last_activity": "2026-02-05T22:12:14.839679",
+  "process_age_seconds": 9091.0,
   "in_grace_period": false,
   "status": "HEALTHY",
-  "timestamp": "2026-02-04T22:38:07.564537",
-  "watchdog_pid": 68219
+  "timestamp": "2026-02-05T22:36:48.298506",
+  "watchdog_pid": 4288
 }

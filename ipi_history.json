@@ -1,19 +1,6 @@
 {
   "INFY": [
     {
-      "timestamp": "2026-02-04T10:44:28.090738",
-      "ipi": 0.9247723360072776,
-      "unique_footprints": 3,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "multi_day_distribution",
-        "dark_pool_sequence",
-        "dark_pool_sequence",
-        "quote_degradation",
-        "multi_day_distribution"
-      ]
-    },
-    {
       "timestamp": "2026-02-04T22:12:20.983190",
       "ipi": 0.7443762597773019,
       "unique_footprints": 3,
@@ -26,21 +13,38 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.977156",
+      "ipi": 0.5256993437141305,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.836163",
+      "ipi": 0.6027407944521482,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
     }
   ],
   "FISV": [
-    {
-      "timestamp": "2026-02-04T10:44:28.091042",
-      "ipi": 0.9200092091388442,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "multi_day_distribution",
-        "dark_pool_sequence",
-        "dark_pool_sequence",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.970741",
       "ipi": 0.8855989765382813,
@@ -54,21 +58,41 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.853399",
+      "ipi": 0.7141659571394255,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.232461",
+      "ipi": 0.7258903955726221,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
     }
   ],
   "OPEN": [
-    {
-      "timestamp": "2026-02-04T10:44:28.091211",
-      "ipi": 0.8206412517986731,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "dark_pool_sequence",
-        "quote_degradation",
-        "dark_pool_sequence",
-        "quote_degradation"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.971722",
       "ipi": 0.8843964005077306,
@@ -82,25 +106,77 @@
         "quote_degradation",
         "dark_pool_sequence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.860626",
+      "ipi": 0.7043482368334204,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.927844",
+      "ipi": 0.5683074988653224,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation"
+      ]
     }
   ],
   "PYPL": [
     {
-      "timestamp": "2026-02-04T10:44:28.091375",
-      "ipi": 0.8070325781217086,
+      "timestamp": "2026-02-04T22:12:20.964172",
+      "ipi": 1.0,
       "unique_footprints": 4,
       "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
         "dark_pool_sequence",
         "multi_day_distribution",
         "cross_asset_divergence",
         "dark_pool_sequence",
-        "quote_degradation",
         "multi_day_distribution"
       ]
     },
     {
-      "timestamp": "2026-02-04T22:12:20.964172",
-      "ipi": 1.0,
+      "timestamp": "2026-02-05T09:50:52.826768",
+      "ipi": 0.8043954007230775,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.193715",
+      "ipi": 0.7455174919575651,
       "unique_footprints": 4,
       "footprint_types": [
         "quote_degradation",
@@ -118,18 +194,6 @@
   ],
   "PLUG": [
     {
-      "timestamp": "2026-02-04T10:44:28.091529",
-      "ipi": 0.7999517438524908,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "multi_day_distribution",
-        "dark_pool_sequence",
-        "dark_pool_sequence",
-        "multi_day_distribution"
-      ]
-    },
-    {
       "timestamp": "2026-02-04T22:12:20.965123",
       "ipi": 1.0,
       "unique_footprints": 3,
@@ -144,22 +208,43 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "AMC": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.091698",
-      "ipi": 0.7696651352547567,
+      "timestamp": "2026-02-05T09:50:52.821555",
+      "ipi": 0.8644780080327822,
       "unique_footprints": 3,
       "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
         "dark_pool_sequence",
         "multi_day_distribution",
-        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
         "dark_pool_sequence",
         "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.337439",
+      "ipi": 0.6894518118164867,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "AMC": [
     {
       "timestamp": "2026-02-04T22:12:20.978771",
       "ipi": 0.7855732264187194,
@@ -173,21 +258,37 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.957285",
+      "ipi": 0.554245846219709,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.861799",
+      "ipi": 0.3819985557353578,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
     }
   ],
   "OWL": [
-    {
-      "timestamp": "2026-02-04T10:44:28.091879",
-      "ipi": 0.7597621622785132,
-      "unique_footprints": 3,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "multi_day_distribution",
-        "quote_degradation",
-        "dark_pool_sequence",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.966949",
       "ipi": 0.9306584797095573,
@@ -202,21 +303,42 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "CPRT": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.092067",
-      "ipi": 0.7555468612228989,
+      "timestamp": "2026-02-05T09:50:52.844073",
+      "ipi": 0.7431908101886019,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.015103",
+      "ipi": 0.8383492210213679,
       "unique_footprints": 3,
       "footprint_types": [
         "dark_pool_sequence",
         "multi_day_distribution",
-        "dark_pool_sequence",
         "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
-    },
+    }
+  ],
+  "CPRT": [
     {
       "timestamp": "2026-02-04T22:12:20.972692",
       "ipi": 0.8608401419338726,
@@ -230,22 +352,39 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "IBM": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.092253",
-      "ipi": 0.7177890069658373,
+      "timestamp": "2026-02-05T09:50:52.907804",
+      "ipi": 0.6064416730758647,
       "unique_footprints": 3,
       "footprint_types": [
+        "dark_pool_sequence",
         "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.180070",
+      "ipi": 0.7469795741265619,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
         "multi_day_distribution",
         "dark_pool_sequence",
         "quote_degradation",
         "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
-    },
+    }
+  ],
+  "IBM": [
     {
       "timestamp": "2026-02-04T22:12:20.963035",
       "ipi": 1.0,
@@ -262,22 +401,43 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "BBAI": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.092461",
-      "ipi": 0.7100523122809829,
-      "unique_footprints": 4,
+      "timestamp": "2026-02-05T09:50:52.831708",
+      "ipi": 0.7970660079104606,
+      "unique_footprints": 3,
       "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
         "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution",
-        "cross_asset_divergence",
-        "dark_pool_sequence",
-        "multi_day_distribution"
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:09.976266",
+      "ipi": 0.8780377671324128,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "BBAI": [
     {
       "timestamp": "2026-02-04T22:12:20.973671",
       "ipi": 0.8577636136538607,
@@ -292,20 +452,43 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "ARES": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.092682",
-      "ipi": 0.7024526651421362,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.816064",
+      "ipi": 0.921578695122301,
+      "unique_footprints": 4,
       "footprint_types": [
         "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
         "multi_day_distribution",
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.220202",
+      "ipi": 0.7307084938817408,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "ARES": [
     {
       "timestamp": "2026-02-04T22:12:21.003570",
       "ipi": 0.6729388736491322,
@@ -318,20 +501,40 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.862987",
+      "ipi": 0.6970946053894316,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.938633",
+      "ipi": 0.5656184332832593,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
     }
   ],
   "NCLH": [
-    {
-      "timestamp": "2026-02-04T10:44:28.092920",
-      "ipi": 0.7013604563907694,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "quote_degradation",
-        "dark_pool_sequence",
-        "dark_pool_sequence"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.988521",
       "ipi": 0.7176356183591458,
@@ -343,21 +546,37 @@
         "dark_pool_sequence",
         "quote_degradation"
       ]
-    }
-  ],
-  "TWLO": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.093162",
-      "ipi": 0.6978148711725508,
+      "timestamp": "2026-02-05T09:50:52.884812",
+      "ipi": 0.6369638265581974,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.139175",
+      "ipi": 0.7693246925548142,
       "unique_footprints": 3,
       "footprint_types": [
         "dark_pool_sequence",
-        "multi_day_distribution",
-        "multi_day_distribution",
         "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
-    },
+    }
+  ],
+  "TWLO": [
     {
       "timestamp": "2026-02-04T22:12:20.968822",
       "ipi": 0.8953848276204627,
@@ -372,22 +591,42 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "BB": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.093413",
-      "ipi": 0.6397406510083814,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.839004",
+      "ipi": 0.7738295634962592,
+      "unique_footprints": 3,
       "footprint_types": [
-        "quote_degradation",
+        "multi_day_distribution",
         "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution",
-        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.647374",
+      "ipi": 0.6205738029144521,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "BB": [
     {
       "timestamp": "2026-02-04T22:12:20.994105",
       "ipi": 0.6925009684548981,
@@ -403,14 +642,16 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "HUBS": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.093669",
-      "ipi": 0.6312122236198131,
+      "timestamp": "2026-02-05T09:50:52.879996",
+      "ipi": 0.6488604483544583,
       "unique_footprints": 2,
       "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution",
         "quote_degradation",
@@ -419,6 +660,25 @@
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.813161",
+      "ipi": 0.6089629630367381,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "HUBS": [
     {
       "timestamp": "2026-02-04T22:12:21.014316",
       "ipi": 0.5964291594620063,
@@ -433,20 +693,43 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.874897",
+      "ipi": 0.6524997546680934,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.607252",
+      "ipi": 0.6274237402162205,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
     }
   ],
   "CSGP": [
-    {
-      "timestamp": "2026-02-04T10:44:28.093929",
-      "ipi": 0.6189228120281898,
-      "unique_footprints": 3,
-      "footprint_types": [
-        "multi_day_distribution",
-        "dark_pool_sequence",
-        "dark_pool_sequence",
-        "quote_degradation"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.998493",
       "ipi": 0.6801921259652777,
@@ -458,20 +741,34 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "CRWV": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.094194",
-      "ipi": 0.6161054191267761,
+      "timestamp": "2026-02-05T09:50:53.022896",
+      "ipi": 0.4797037975952456,
       "unique_footprints": 3,
       "footprint_types": [
         "dark_pool_sequence",
-        "multi_day_distribution",
+        "dark_pool_sequence",
         "quote_degradation",
-        "multi_day_distribution"
+        "multi_day_distribution",
+        "dark_pool_sequence"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.903878",
+      "ipi": 0.5715570554474112,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "CRWV": [
     {
       "timestamp": "2026-02-04T22:12:21.005899",
       "ipi": 0.6551446207312592,
@@ -485,21 +782,41 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "BILL": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.094479",
-      "ipi": 0.6112347911916872,
+      "timestamp": "2026-02-05T09:50:52.910282",
+      "ipi": 0.605584945407415,
       "unique_footprints": 3,
       "footprint_types": [
-        "dark_pool_sequence",
-        "quote_degradation",
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.851746",
+      "ipi": 0.5940445368644512,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "BILL": [
     {
       "timestamp": "2026-02-04T22:12:21.008335",
       "ipi": 0.6245332745357073,
@@ -513,20 +830,42 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "SOUN": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.094769",
-      "ipi": 0.5965892236905992,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.895193",
+      "ipi": 0.6191342120719178,
+      "unique_footprints": 3,
       "footprint_types": [
-        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
         "multi_day_distribution",
         "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.169730",
+      "ipi": 0.7538640248612071,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "SOUN": [
     {
       "timestamp": "2026-02-04T22:12:20.969782",
       "ipi": 0.8901298719851677,
@@ -540,19 +879,40 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.836403",
+      "ipi": 0.7750753998405151,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.390093",
+      "ipi": 0.6753694256353132,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
     }
   ],
   "CCL": [
-    {
-      "timestamp": "2026-02-04T10:44:28.095129",
-      "ipi": 0.5952138811387196,
-      "unique_footprints": 1,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "dark_pool_sequence",
-        "dark_pool_sequence"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.979856",
       "ipi": 0.7667124656296989,
@@ -564,21 +924,33 @@
         "dark_pool_sequence",
         "dark_pool_sequence"
       ]
-    }
-  ],
-  "JBLU": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.095437",
-      "ipi": 0.5882780694417645,
+      "timestamp": "2026-02-05T09:50:52.968845",
+      "ipi": 0.5394001978225446,
       "unique_footprints": 2,
       "footprint_types": [
         "dark_pool_sequence",
-        "quote_degradation",
-        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
         "dark_pool_sequence",
         "quote_degradation"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.963788",
+      "ipi": 0.37270369859968755,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "JBLU": [
     {
       "timestamp": "2026-02-04T22:12:21.101212",
       "ipi": 0.41712060142849783,
@@ -590,20 +962,38 @@
         "dark_pool_sequence",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.983014",
+      "ipi": 0.5211367900961766,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.892694",
+      "ipi": 0.581035150770803,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "U": [
-    {
-      "timestamp": "2026-02-04T10:44:28.095757",
-      "ipi": 0.5857389814349483,
-      "unique_footprints": 3,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "multi_day_distribution",
-        "quote_degradation",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.997386",
       "ipi": 0.6829980841747303,
@@ -616,20 +1006,39 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "JD": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.096097",
-      "ipi": 0.5825924413214997,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.889700",
+      "ipi": 0.6250690223259919,
+      "unique_footprints": 3,
       "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
         "dark_pool_sequence",
         "multi_day_distribution",
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.061475",
+      "ipi": 0.8160306961638207,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "JD": [
     {
       "timestamp": "2026-02-04T22:12:20.980888",
       "ipi": 0.7533749923613264,
@@ -643,22 +1052,40 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "DKNG": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.096437",
-      "ipi": 0.5781026989706513,
-      "unique_footprints": 3,
+      "timestamp": "2026-02-05T09:50:52.867678",
+      "ipi": 0.6669848650762439,
+      "unique_footprints": 2,
       "footprint_types": [
-        "quote_degradation",
         "multi_day_distribution",
         "dark_pool_sequence",
-        "quote_degradation",
+        "multi_day_distribution",
         "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.862067",
+      "ipi": 0.5893051018118886,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "DKNG": [
     {
       "timestamp": "2026-02-04T22:12:21.018140",
       "ipi": 0.5848885453148461,
@@ -673,20 +1100,42 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "ON": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.096781",
-      "ipi": 0.5577185022793101,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.991252",
+      "ipi": 0.501186901230163,
+      "unique_footprints": 3,
       "footprint_types": [
-        "dark_pool_sequence",
         "multi_day_distribution",
         "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.882168",
+      "ipi": 0.585251880891085,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "ON": [
     {
       "timestamp": "2026-02-04T22:12:21.126725",
       "ipi": 0.3953825596867955,
@@ -697,20 +1146,21 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "GSK": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.097160",
-      "ipi": 0.5438742924739429,
+      "timestamp": "2026-02-05T22:12:11.663738",
+      "ipi": 0.41316555996909077,
       "unique_footprints": 2,
       "footprint_types": [
+        "dark_pool_sequence",
         "dark_pool_sequence",
         "multi_day_distribution",
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
-    },
+    }
+  ],
+  "GSK": [
     {
       "timestamp": "2026-02-04T22:12:21.136696",
       "ipi": 0.38532850539797386,
@@ -725,17 +1175,6 @@
   ],
   "NU": [
     {
-      "timestamp": "2026-02-04T10:44:28.097555",
-      "ipi": 0.5377358988153881,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "quote_degradation",
-        "dark_pool_sequence",
-        "quote_degradation"
-      ]
-    },
-    {
       "timestamp": "2026-02-04T22:12:20.976713",
       "ipi": 0.8314836386794281,
       "unique_footprints": 3,
@@ -748,20 +1187,39 @@
         "dark_pool_sequence",
         "quote_degradation"
       ]
-    }
-  ],
-  "BAC": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.097946",
-      "ipi": 0.5316786965676582,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.925796",
+      "ipi": 0.5861755822823732,
+      "unique_footprints": 3,
       "footprint_types": [
         "dark_pool_sequence",
         "quote_degradation",
         "dark_pool_sequence",
-        "quote_degradation"
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.207719",
+      "ipi": 0.732420870806452,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "BAC": [
     {
       "timestamp": "2026-02-04T22:12:21.148108",
       "ipi": 0.37809367567980545,
@@ -772,21 +1230,21 @@
         "dark_pool_sequence",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.732352",
+      "ipi": 0.40408477668848763,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "AI": [
-    {
-      "timestamp": "2026-02-04T10:44:28.098389",
-      "ipi": 0.5312964441446566,
-      "unique_footprints": 3,
-      "footprint_types": [
-        "multi_day_distribution",
-        "cross_asset_divergence",
-        "quote_degradation",
-        "multi_day_distribution",
-        "cross_asset_divergence"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:21.009513",
       "ipi": 0.6159081943963994,
@@ -800,20 +1258,42 @@
         "multi_day_distribution",
         "cross_asset_divergence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.865340",
+      "ipi": 0.6750454278622132,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.037789",
+      "ipi": 0.8276347123707349,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution"
+      ]
     }
   ],
   "MDB": [
-    {
-      "timestamp": "2026-02-04T10:44:28.098973",
-      "ipi": 0.5243304028996013,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "quote_degradation",
-        "multi_day_distribution",
-        "quote_degradation",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.991870",
       "ipi": 0.6991918021905579,
@@ -827,12 +1307,45 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.858137",
+      "ipi": 0.705180512782072,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.278407",
+      "ipi": 0.7026463505161534,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
     }
   ],
   "MSFT": [
     {
-      "timestamp": "2026-02-04T10:44:28.099442",
-      "ipi": 0.5241527499263818,
+      "timestamp": "2026-02-04T22:12:20.995195",
+      "ipi": 0.6875978227165837,
       "unique_footprints": 2,
       "footprint_types": [
         "quote_degradation",
@@ -843,12 +1356,30 @@
         "multi_day_distribution",
         "quote_degradation",
         "quote_degradation",
-        "multi_day_distribution"
+        "multi_day_distribution",
+        "quote_degradation"
       ]
     },
     {
-      "timestamp": "2026-02-04T22:12:20.995195",
-      "ipi": 0.6875978227165837,
+      "timestamp": "2026-02-05T09:50:52.902829",
+      "ipi": 0.6130355798173406,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.825507",
+      "ipi": 0.6060537705456281,
       "unique_footprints": 2,
       "footprint_types": [
         "quote_degradation",
@@ -866,16 +1397,6 @@
   ],
   "DDOG": [
     {
-      "timestamp": "2026-02-04T10:44:28.099868",
-      "ipi": 0.5212553019521717,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "dark_pool_sequence",
-        "quote_degradation"
-      ]
-    },
-    {
       "timestamp": "2026-02-04T22:12:20.986383",
       "ipi": 0.7288517950251426,
       "unique_footprints": 3,
@@ -886,21 +1407,35 @@
         "quote_degradation",
         "dark_pool_sequence"
       ]
-    }
-  ],
-  "IONQ": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.100301",
-      "ipi": 0.5193730318178601,
+      "timestamp": "2026-02-05T09:50:52.918092",
+      "ipi": 0.6000455171416935,
       "unique_footprints": 3,
       "footprint_types": [
-        "quote_degradation",
         "multi_day_distribution",
         "dark_pool_sequence",
         "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.652657",
+      "ipi": 0.4137073702239167,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "IONQ": [
     {
       "timestamp": "2026-02-04T22:12:21.080929",
       "ipi": 0.45355121387359804,
@@ -913,19 +1448,38 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "SNY": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.100737",
-      "ipi": 0.516755598772626,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:53.117826",
+      "ipi": 0.40635357396261024,
+      "unique_footprints": 3,
       "footprint_types": [
+        "multi_day_distribution",
         "dark_pool_sequence",
-        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.974853",
+      "ipi": 0.3683302172207134,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "SNY": [
     {
       "timestamp": "2026-02-04T22:12:21.160140",
       "ipi": 0.3672440993782897,
@@ -939,17 +1493,6 @@
   ],
   "CTSH": [
     {
-      "timestamp": "2026-02-04T10:44:28.101316",
-      "ipi": 0.5065509557200826,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "multi_day_distribution",
-        "dark_pool_sequence",
-        "multi_day_distribution"
-      ]
-    },
-    {
       "timestamp": "2026-02-04T22:12:21.166081",
       "ipi": 0.3612552498990797,
       "unique_footprints": 2,
@@ -959,22 +1502,36 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "VALE": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.101969",
-      "ipi": 0.5056833591384311,
+      "timestamp": "2026-02-05T09:50:53.187643",
+      "ipi": 0.36789617329976987,
       "unique_footprints": 3,
       "footprint_types": [
         "quote_degradation",
-        "multi_day_distribution",
-        "quote_degradation",
         "dark_pool_sequence",
-        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.494411",
+      "ipi": 0.6412009086881807,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "VALE": [
     {
       "timestamp": "2026-02-04T22:12:20.981953",
       "ipi": 0.7490799330632492,
@@ -990,21 +1547,43 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "VRTX": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.102582",
-      "ipi": 0.5020354813586709,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.824025",
+      "ipi": 0.8554469679132717,
+      "unique_footprints": 3,
       "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "dark_pool_sequence",
         "quote_degradation",
         "multi_day_distribution",
         "quote_degradation",
-        "quote_degradation",
-        "multi_day_distribution"
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.378030",
+      "ipi": 0.6771314769818446,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "VRTX": [
     {
       "timestamp": "2026-02-04T22:12:21.057345",
       "ipi": 0.495422906861038,
@@ -1018,19 +1597,42 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.016786",
+      "ipi": 0.48481006458733683,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.004496",
+      "ipi": 0.8589355105629883,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
     }
   ],
   "NKE": [
-    {
-      "timestamp": "2026-02-04T10:44:28.103038",
-      "ipi": 0.48977171317561036,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "multi_day_distribution",
-        "dark_pool_sequence"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.992997",
       "ipi": 0.698531047258568,
@@ -1043,19 +1645,35 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "CMCSA": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.103523",
-      "ipi": 0.47099715653842844,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.993986",
+      "ipi": 0.4935886668147818,
+      "unique_footprints": 3,
       "footprint_types": [
         "dark_pool_sequence",
         "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
         "dark_pool_sequence"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:12.306334",
+      "ipi": 0.3403113340449267,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "CMCSA": [
     {
       "timestamp": "2026-02-04T22:12:21.033167",
       "ipi": 0.553899321515098,
@@ -1066,20 +1684,33 @@
         "dark_pool_sequence",
         "quote_degradation"
       ]
-    }
-  ],
-  "CNC": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.104282",
-      "ipi": 0.46132198499757143,
+      "timestamp": "2026-02-05T09:50:53.146154",
+      "ipi": 0.3892092324342846,
       "unique_footprints": 2,
       "footprint_types": [
         "dark_pool_sequence",
-        "multi_day_distribution",
         "dark_pool_sequence",
-        "multi_day_distribution"
+        "quote_degradation",
+        "dark_pool_sequence"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.914713",
+      "ipi": 0.5713419981052508,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "CNC": [
     {
       "timestamp": "2026-02-04T22:12:20.996284",
       "ipi": 0.6862390355131175,
@@ -1092,21 +1723,38 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "XLF": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.104853",
-      "ipi": 0.4612823472443626,
+      "timestamp": "2026-02-05T09:50:52.942238",
+      "ipi": 0.5699436141316674,
       "unique_footprints": 3,
       "footprint_types": [
-        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.260158",
+      "ipi": 0.4797471373851323,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution",
         "dark_pool_sequence",
         "quote_degradation",
         "multi_day_distribution"
       ]
-    },
+    }
+  ],
+  "XLF": [
     {
       "timestamp": "2026-02-04T22:12:21.142300",
       "ipi": 0.3833526486632175,
@@ -1119,19 +1767,41 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "NVO": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.105374",
-      "ipi": 0.456312738289305,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:53.155554",
+      "ipi": 0.3838155722938322,
+      "unique_footprints": 3,
       "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
         "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
         "multi_day_distribution",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.960167",
+      "ipi": 0.5615401593338998,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "NVO": [
     {
       "timestamp": "2026-02-04T22:12:21.031685",
       "ipi": 0.5543161905277489,
@@ -1143,21 +1813,39 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "LEU": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.105961",
-      "ipi": 0.45205952735905813,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.892133",
+      "ipi": 0.6231488268028739,
+      "unique_footprints": 3,
       "footprint_types": [
         "quote_degradation",
         "multi_day_distribution",
-        "quote_degradation",
-        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.070780",
+      "ipi": 0.809374355939567,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "LEU": [
     {
       "timestamp": "2026-02-04T22:12:21.073017",
       "ipi": 0.46729118547897275,
@@ -1171,21 +1859,42 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "COMP": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.106490",
-      "ipi": 0.4505097319332494,
-      "unique_footprints": 3,
+      "timestamp": "2026-02-05T09:50:52.965649",
+      "ipi": 0.5411839687947202,
+      "unique_footprints": 2,
       "footprint_types": [
+        "quote_degradation",
         "multi_day_distribution",
         "quote_degradation",
-        "dark_pool_sequence",
         "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.482354",
+      "ipi": 0.45240776832231444,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "COMP": [
     {
       "timestamp": "2026-02-04T22:12:20.987462",
       "ipi": 0.7177565533597956,
@@ -1200,20 +1909,42 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "ZS": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.107025",
-      "ipi": 0.42778904478729524,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.877574",
+      "ipi": 0.6499754129862202,
+      "unique_footprints": 3,
       "footprint_types": [
-        "quote_degradation",
         "multi_day_distribution",
         "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:09.984619",
+      "ipi": 0.8654354302836625,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "ZS": [
     {
       "timestamp": "2026-02-04T22:12:21.026004",
       "ipi": 0.5681721850275003,
@@ -1226,20 +1957,41 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "CVNA": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.107769",
-      "ipi": 0.4276938551420975,
+      "timestamp": "2026-02-05T09:50:52.897695",
+      "ipi": 0.6147394647679405,
       "unique_footprints": 2,
       "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.529836",
+      "ipi": 0.6384792745640392,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "CVNA": [
     {
       "timestamp": "2026-02-04T22:12:20.977760",
       "ipi": 0.8003320093386767,
@@ -1253,20 +2005,40 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "FDS": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.108350",
-      "ipi": 0.42738997934450934,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.855801",
+      "ipi": 0.7106183188906464,
+      "unique_footprints": 3,
       "footprint_types": [
+        "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.566734",
+      "ipi": 0.6342115265190094,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "FDS": [
     {
       "timestamp": "2026-02-04T22:12:21.074601",
       "ipi": 0.4644917516960132,
@@ -1279,20 +2051,41 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "APP": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.108914",
-      "ipi": 0.42713894806187086,
+      "timestamp": "2026-02-05T09:50:52.999982",
+      "ipi": 0.49086409627969896,
       "unique_footprints": 2,
       "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.009706",
+      "ipi": 0.5522747031273627,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "APP": [
     {
       "timestamp": "2026-02-04T22:12:21.027314",
       "ipi": 0.5670677734699142,
@@ -1305,21 +2098,42 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "NOW": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.109473",
-      "ipi": 0.42068371761561857,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.887296",
+      "ipi": 0.6324691031059984,
+      "unique_footprints": 3,
       "footprint_types": [
         "quote_degradation",
         "multi_day_distribution",
+        "cross_asset_divergence",
         "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.590906",
+      "ipi": 0.6319701203077241,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "NOW": [
     {
       "timestamp": "2026-02-04T22:12:21.001989",
       "ipi": 0.6730776988595336,
@@ -1333,20 +2147,38 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.044796",
+      "ipi": 0.47577149532865765,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.367515",
+      "ipi": 0.47231557279773034,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "SPGI": [
-    {
-      "timestamp": "2026-02-04T10:44:28.110031",
-      "ipi": 0.4145945939648572,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "quote_degradation",
-        "multi_day_distribution",
-        "multi_day_distribution",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:21.020660",
       "ipi": 0.5792480457794719,
@@ -1360,20 +2192,42 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "BMY": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.110592",
-      "ipi": 0.40825415437661544,
-      "unique_footprints": 3,
+      "timestamp": "2026-02-05T09:50:52.920628",
+      "ipi": 0.5984205520447528,
+      "unique_footprints": 2,
       "footprint_types": [
-        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
         "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:09.993099",
+      "ipi": 0.8652672076561472,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "BMY": [
     {
       "timestamp": "2026-02-04T22:12:21.048081",
       "ipi": 0.5291985227104917,
@@ -1385,19 +2239,35 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "RDW": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.111154",
-      "ipi": 0.40173044128654894,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:53.174702",
+      "ipi": 0.3729126223595853,
+      "unique_footprints": 3,
       "footprint_types": [
-        "dark_pool_sequence",
         "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
         "dark_pool_sequence"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.872677",
+      "ipi": 0.5888537805377552,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "RDW": [
     {
       "timestamp": "2026-02-04T22:12:21.156083",
       "ipi": 0.36896928995086287,
@@ -1408,21 +2278,34 @@
         "quote_degradation",
         "dark_pool_sequence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.217141",
+      "ipi": 0.34848915217101645,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.230990",
+      "ipi": 0.34787085916411314,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence"
+      ]
     }
   ],
   "CEG": [
-    {
-      "timestamp": "2026-02-04T10:44:28.112234",
-      "ipi": 0.40122567361434147,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "quote_degradation",
-        "multi_day_distribution",
-        "multi_day_distribution",
-        "quote_degradation",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.974640",
       "ipi": 0.8561284145405075,
@@ -1439,20 +2322,43 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "LCID": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.112952",
-      "ipi": 0.39911042968430804,
+      "timestamp": "2026-02-05T09:50:52.818870",
+      "ipi": 0.891818588533874,
       "unique_footprints": 3,
       "footprint_types": [
-        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
         "dark_pool_sequence"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.295428",
+      "ipi": 0.7018330723525027,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "LCID": [
     {
       "timestamp": "2026-02-04T22:12:21.010705",
       "ipi": 0.6141889648080048,
@@ -1465,18 +2371,36 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.083905",
+      "ipi": 0.4341526096758087,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.952580",
+      "ipi": 0.3735497729793217,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation"
+      ]
     }
   ],
   "GME": [
-    {
-      "timestamp": "2026-02-04T10:44:28.113590",
-      "ipi": 0.3984256332897545,
-      "unique_footprints": 1,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "dark_pool_sequence"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:21.065115",
       "ipi": 0.48335060974539573,
@@ -1486,18 +2410,32 @@
         "dark_pool_sequence",
         "dark_pool_sequence"
       ]
-    }
-  ],
-  "AAL": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.114223",
-      "ipi": 0.3983513829610186,
+      "timestamp": "2026-02-05T09:50:53.014021",
+      "ipi": 0.48655856639357575,
       "unique_footprints": 1,
       "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
         "dark_pool_sequence",
         "dark_pool_sequence"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.503784",
+      "ipi": 0.44979682528734594,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "AAL": [
     {
       "timestamp": "2026-02-04T22:12:21.043335",
       "ipi": 0.5413822147557766,
@@ -1508,18 +2446,32 @@
         "dark_pool_sequence",
         "dark_pool_sequence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.158657",
+      "ipi": 0.38217902503757367,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.239639",
+      "ipi": 0.483109843785246,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "XLB": [
-    {
-      "timestamp": "2026-02-04T10:44:28.114869",
-      "ipi": 0.39408433123561437,
-      "unique_footprints": 1,
-      "footprint_types": [
-        "dark_pool_sequence",
-        "dark_pool_sequence"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:21.112052",
       "ipi": 0.40857155479745144,
@@ -1529,34 +2481,33 @@
         "dark_pool_sequence",
         "dark_pool_sequence"
       ]
-    }
-  ],
-  "MARA": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.115678",
-      "ipi": 0.3893935761200098,
+      "timestamp": "2026-02-05T09:50:53.194091",
+      "ipi": 0.3653662272316728,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.986345",
+      "ipi": 0.5556292461520579,
       "unique_footprints": 2,
       "footprint_types": [
         "dark_pool_sequence",
         "quote_degradation",
-        "dark_pool_sequence"
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation"
       ]
     }
   ],
   "META": [
-    {
-      "timestamp": "2026-02-04T10:44:28.116364",
-      "ipi": 0.3832591751274712,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "quote_degradation",
-        "multi_day_distribution",
-        "quote_degradation",
-        "quote_degradation",
-        "quote_degradation",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:21.021932",
       "ipi": 0.5791638492384834,
@@ -1573,19 +2524,43 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "VST": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.117247",
-      "ipi": 0.3775259266549629,
+      "timestamp": "2026-02-05T09:50:52.939510",
+      "ipi": 0.5699943046101068,
       "unique_footprints": 2,
       "footprint_types": [
+        "quote_degradation",
         "multi_day_distribution",
-        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.380210",
+      "ipi": 0.471920473862882,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "VST": [
     {
       "timestamp": "2026-02-04T22:12:21.028647",
       "ipi": 0.5658882595578498,
@@ -1597,19 +2572,38 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "APO": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.117997",
-      "ipi": 0.37703176742068056,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.900122",
+      "ipi": 0.6142286314849046,
+      "unique_footprints": 3,
       "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
         "multi_day_distribution",
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.102499",
+      "ipi": 0.5097401186597434,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "APO": [
     {
       "timestamp": "2026-02-04T22:12:21.063594",
       "ipi": 0.4878520276455069,
@@ -1620,19 +2614,34 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "GLXY": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.118652",
-      "ipi": 0.3767270255516549,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:53.063025",
+      "ipi": 0.465372815863086,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.721425",
+      "ipi": 0.40617184792822897,
+      "unique_footprints": 3,
       "footprint_types": [
         "multi_day_distribution",
         "dark_pool_sequence",
-        "multi_day_distribution"
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
       ]
-    },
+    }
+  ],
+  "GLXY": [
     {
       "timestamp": "2026-02-04T22:12:21.068270",
       "ipi": 0.4798278176205094,
@@ -1644,20 +2653,37 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "MCO": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.119297",
-      "ipi": 0.3719661327621953,
+      "timestamp": "2026-02-05T09:50:53.060152",
+      "ipi": 0.46985938294264684,
       "unique_footprints": 2,
       "footprint_types": [
-        "quote_degradation",
         "multi_day_distribution",
-        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.044857",
+      "ipi": 0.5277925232783333,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "MCO": [
     {
       "timestamp": "2026-02-04T22:12:21.066702",
       "ipi": 0.4829319801384212,
@@ -1671,19 +2697,42 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "HIMS": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.119944",
-      "ipi": 0.37045764541639403,
+      "timestamp": "2026-02-05T09:50:53.041627",
+      "ipi": 0.4763210941808529,
       "unique_footprints": 2,
       "footprint_types": [
+        "quote_degradation",
         "multi_day_distribution",
-        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.100371",
+      "ipi": 0.7758178000858235,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "HIMS": [
     {
       "timestamp": "2026-02-04T22:12:20.990644",
       "ipi": 0.7023536378492742,
@@ -1696,20 +2745,37 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "LITE": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.120610",
-      "ipi": 0.3670333859545473,
+      "timestamp": "2026-02-05T09:50:52.960062",
+      "ipi": 0.5489238324172279,
       "unique_footprints": 3,
       "footprint_types": [
         "quote_degradation",
-        "cross_asset_divergence",
+        "dark_pool_sequence",
         "multi_day_distribution",
-        "cross_asset_divergence"
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.902279",
+      "ipi": 0.37866985094359185,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "LITE": [
     {
       "timestamp": "2026-02-04T22:12:21.046522",
       "ipi": 0.5332812530138861,
@@ -1723,19 +2789,42 @@
         "quote_degradation",
         "cross_asset_divergence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.954218",
+      "ipi": 0.5589734068953295,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.405582",
+      "ipi": 0.4703910007107129,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
     }
   ],
   "XLK": [
-    {
-      "timestamp": "2026-02-04T10:44:28.121335",
-      "ipi": 0.3609321273225585,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "multi_day_distribution",
-        "quote_degradation",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.966032",
       "ipi": 0.930920185718634,
@@ -1749,19 +2838,40 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "WULF": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.122027",
-      "ipi": 0.3586474802825971,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.829262",
+      "ipi": 0.7978720133369726,
+      "unique_footprints": 3,
       "footprint_types": [
         "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
         "dark_pool_sequence",
+        "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.307823",
+      "ipi": 0.6936686126165811,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "WULF": [
     {
       "timestamp": "2026-02-04T22:12:21.034522",
       "ipi": 0.5533973491881904,
@@ -1773,19 +2883,38 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "BNTX": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.122712",
-      "ipi": 0.3572889422574128,
-      "unique_footprints": 1,
+      "timestamp": "2026-02-05T09:50:52.912783",
+      "ipi": 0.6024461099614676,
+      "unique_footprints": 3,
       "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution",
         "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.171528",
+      "ipi": 0.5007530140967168,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "BNTX": [
     {
       "timestamp": "2026-02-04T22:12:21.153842",
       "ipi": 0.3731118957686208,
@@ -1800,17 +2929,6 @@
   ],
   "AVGO": [
     {
-      "timestamp": "2026-02-04T10:44:28.123407",
-      "ipi": 0.35549796990980825,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "quote_degradation",
-        "multi_day_distribution",
-        "quote_degradation",
-        "multi_day_distribution"
-      ]
-    },
-    {
       "timestamp": "2026-02-04T22:12:21.199294",
       "ipi": 0.33074683828134116,
       "unique_footprints": 2,
@@ -1821,21 +2939,41 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "AXP": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.124106",
-      "ipi": 0.35474951623742673,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:53.005547",
+      "ipi": 0.4886234583620217,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.339631",
+      "ipi": 0.4772929392450359,
+      "unique_footprints": 3,
       "footprint_types": [
         "quote_degradation",
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution",
         "quote_degradation",
-        "multi_day_distribution"
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence"
       ]
-    },
+    }
+  ],
+  "AXP": [
     {
       "timestamp": "2026-02-04T22:12:20.989567",
       "ipi": 0.7042648098324696,
@@ -1851,20 +2989,43 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "INTU": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.124835",
-      "ipi": 0.35218767930133427,
+      "timestamp": "2026-02-05T09:50:52.930985",
+      "ipi": 0.5847741623133084,
       "unique_footprints": 3,
       "footprint_types": [
         "multi_day_distribution",
-        "cross_asset_divergence",
         "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.438141",
+      "ipi": 0.46072273054495183,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "INTU": [
     {
       "timestamp": "2026-02-04T22:12:21.132262",
       "ipi": 0.3858339174710314,
@@ -1877,20 +3038,39 @@
         "multi_day_distribution",
         "cross_asset_divergence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.108225",
+      "ipi": 0.4151018915005604,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.417867",
+      "ipi": 0.6651010927091547,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution"
+      ]
     }
   ],
   "BMNR": [
-    {
-      "timestamp": "2026-02-04T10:44:28.125550",
-      "ipi": 0.3463350478911065,
-      "unique_footprints": 3,
-      "footprint_types": [
-        "quote_degradation",
-        "multi_day_distribution",
-        "dark_pool_sequence",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:21.197177",
       "ipi": 0.33202147348792005,
@@ -1902,19 +3082,40 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "TDOC": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.126268",
-      "ipi": 0.344499562373016,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.951436",
+      "ipi": 0.5611227053956319,
+      "unique_footprints": 3,
       "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.079981",
+      "ipi": 0.8032208998265288,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "TDOC": [
     {
       "timestamp": "2026-02-04T22:12:21.011902",
       "ipi": 0.60950803515099,
@@ -1927,19 +3128,41 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "RR": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.127005",
-      "ipi": 0.3435617790218677,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.870039",
+      "ipi": 0.6629273172077694,
+      "unique_footprints": 3,
       "footprint_types": [
+        "quote_degradation",
         "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.579259",
+      "ipi": 0.633902532535417,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "RR": [
     {
       "timestamp": "2026-02-04T22:12:21.150004",
       "ipi": 0.3768643585439329,
@@ -1950,19 +3173,21 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "EFX": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.127877",
-      "ipi": 0.3413633804120098,
+      "timestamp": "2026-02-05T09:50:53.133190",
+      "ipi": 0.39760713017944305,
       "unique_footprints": 2,
       "footprint_types": [
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
         "multi_day_distribution"
       ]
-    },
+    }
+  ],
+  "EFX": [
     {
       "timestamp": "2026-02-04T22:12:21.000720",
       "ipi": 0.673585489303552,
@@ -1975,20 +3200,39 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "CDE": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.128685",
-      "ipi": 0.3360216562256956,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.948688",
+      "ipi": 0.5617790444559064,
+      "unique_footprints": 3,
       "footprint_types": [
+        "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution",
         "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.950251",
+      "ipi": 0.5643321224433595,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "CDE": [
     {
       "timestamp": "2026-02-04T22:12:21.151918",
       "ipi": 0.37585473306208034,
@@ -2001,22 +3245,41 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.933554",
+      "ipi": 0.5745079592394104,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.242462",
+      "ipi": 0.7217913267530818,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
     }
   ],
   "MA": [
-    {
-      "timestamp": "2026-02-04T10:44:28.129456",
-      "ipi": 0.32651568541053383,
-      "unique_footprints": 3,
-      "footprint_types": [
-        "quote_degradation",
-        "multi_day_distribution",
-        "dark_pool_sequence",
-        "quote_degradation",
-        "quote_degradation",
-        "quote_degradation"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:21.086131",
       "ipi": 0.4441339612035887,
@@ -2032,21 +3295,43 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "GS": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.130251",
-      "ipi": 0.3264777390901906,
+      "timestamp": "2026-02-05T09:50:53.071725",
+      "ipi": 0.4579930295951842,
       "unique_footprints": 3,
       "footprint_types": [
         "quote_degradation",
         "dark_pool_sequence",
         "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
         "multi_day_distribution",
         "quote_degradation"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:12.468797",
+      "ipi": 0.31483524169363103,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "GS": [
     {
       "timestamp": "2026-02-04T22:12:21.146177",
       "ipi": 0.379068568013503,
@@ -2060,20 +3345,42 @@
         "quote_degradation",
         "quote_degradation"
       ]
-    }
-  ],
-  "MSTR": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.131015",
-      "ipi": 0.3204049850410197,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:53.102038",
+      "ipi": 0.4162686042688482,
+      "unique_footprints": 3,
       "footprint_types": [
+        "quote_degradation",
         "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
         "quote_degradation",
         "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.427498",
+      "ipi": 0.46291455753646427,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "MSTR": [
     {
       "timestamp": "2026-02-04T22:12:21.055653",
       "ipi": 0.5002851549014398,
@@ -2087,20 +3394,42 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "TTWO": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.131892",
-      "ipi": 0.32003370770247996,
+      "timestamp": "2026-02-05T09:50:52.945825",
+      "ipi": 0.568542579719466,
       "unique_footprints": 2,
       "footprint_types": [
         "quote_degradation",
         "multi_day_distribution",
         "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.078263",
+      "ipi": 0.5232224284489309,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "TTWO": [
     {
       "timestamp": "2026-02-04T22:12:21.024666",
       "ipi": 0.5744363800690163,
@@ -2113,19 +3442,38 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "RGTI": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.132697",
-      "ipi": 0.3188133153157284,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:53.002756",
+      "ipi": 0.490846640520271,
+      "unique_footprints": 3,
       "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
         "multi_day_distribution",
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.591335",
+      "ipi": 0.4249364890147706,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "RGTI": [
     {
       "timestamp": "2026-02-04T22:12:21.049608",
       "ipi": 0.5251230393376127,
@@ -2137,20 +3485,41 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "HUM": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.133701",
-      "ipi": 0.3188086727814438,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.851042",
+      "ipi": 0.7176175564477435,
+      "unique_footprints": 3,
       "footprint_types": [
+        "dark_pool_sequence",
         "quote_degradation",
         "multi_day_distribution",
-        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.401103",
+      "ipi": 0.6706816668894947,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "HUM": [
     {
       "timestamp": "2026-02-04T22:12:21.219128",
       "ipi": 0.30833798889359076,
@@ -2162,19 +3531,38 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "SOFI": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.134578",
-      "ipi": 0.31639899785488557,
+      "timestamp": "2026-02-05T09:50:53.123921",
+      "ipi": 0.4023625958964797,
       "unique_footprints": 2,
       "footprint_types": [
         "quote_degradation",
-        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
         "quote_degradation"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:12.145778",
+      "ipi": 0.36012196290203624,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "SOFI": [
     {
       "timestamp": "2026-02-04T22:12:21.087823",
       "ipi": 0.44393446071945847,
@@ -2185,20 +3573,20 @@
         "dark_pool_sequence",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.288766",
+      "ipi": 0.31263686587474976,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence"
+      ]
     }
   ],
   "RCL": [
-    {
-      "timestamp": "2026-02-04T10:44:28.135392",
-      "ipi": 0.3149762700879501,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "multi_day_distribution",
-        "quote_degradation",
-        "quote_degradation",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:20.984253",
       "ipi": 0.7436963232674192,
@@ -2214,19 +3602,43 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.841362",
+      "ipi": 0.7563697154880173,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:09.967023",
+      "ipi": 0.9392258427074043,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
     }
   ],
   "NIO": [
-    {
-      "timestamp": "2026-02-04T10:44:28.136215",
-      "ipi": 0.3149130763834424,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "multi_day_distribution",
-        "dark_pool_sequence",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:21.004740",
       "ipi": 0.6592639086973487,
@@ -2239,31 +3651,41 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "USB": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.137035",
-      "ipi": 0.31193879804194713,
-      "unique_footprints": 2,
+      "timestamp": "2026-02-05T09:50:52.834063",
+      "ipi": 0.7922117980190293,
+      "unique_footprints": 3,
       "footprint_types": [
         "dark_pool_sequence",
-        "quote_degradation",
-        "quote_degradation"
-      ]
-    }
-  ],
-  "BABA": [
-    {
-      "timestamp": "2026-02-04T10:44:28.137951",
-      "ipi": 0.31166013340269855,
-      "unique_footprints": 2,
-      "footprint_types": [
         "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "quote_degradation",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:10.089789",
+      "ipi": 0.7810857935592131,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "BABA": [
     {
       "timestamp": "2026-02-04T22:12:21.170003",
       "ipi": 0.35321150822993985,
@@ -2274,19 +3696,35 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "CRWD": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.138783",
-      "ipi": 0.3092888715626477,
+      "timestamp": "2026-02-05T09:50:53.162216",
+      "ipi": 0.38090022852956934,
       "unique_footprints": 2,
       "footprint_types": [
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
         "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.305578",
+      "ipi": 0.4786520356684539,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "CRWD": [
     {
       "timestamp": "2026-02-04T22:12:21.071399",
       "ipi": 0.47318082644405673,
@@ -2299,21 +3737,41 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
-    }
-  ],
-  "V": [
+    },
     {
-      "timestamp": "2026-02-04T10:44:28.139625",
-      "ipi": 0.30438167759576595,
-      "unique_footprints": 3,
+      "timestamp": "2026-02-05T09:50:52.962877",
+      "ipi": 0.5456033460458231,
+      "unique_footprints": 2,
       "footprint_types": [
         "quote_degradation",
         "multi_day_distribution",
-        "dark_pool_sequence",
         "quote_degradation",
-        "quote_degradation"
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
       ]
     },
+    {
+      "timestamp": "2026-02-05T22:12:11.135247",
+      "ipi": 0.5045467695278776,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "V": [
     {
       "timestamp": "2026-02-04T22:12:21.223519",
       "ipi": 0.3055252017628742,
@@ -2326,20 +3784,24 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.270885",
+      "ipi": 0.47954076646975996,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
     }
   ],
   "DIA": [
-    {
-      "timestamp": "2026-02-04T10:44:28.140534",
-      "ipi": 0.30231702177064385,
-      "unique_footprints": 2,
-      "footprint_types": [
-        "quote_degradation",
-        "multi_day_distribution",
-        "quote_degradation",
-        "multi_day_distribution"
-      ]
-    },
     {
       "timestamp": "2026-02-04T22:12:21.113918",
       "ipi": 0.40816047658650906,
@@ -2369,6 +3831,40 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.848701",
+      "ipi": 0.731150401427587,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.113580",
+      "ipi": 0.5068323503703899,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
     }
   ],
   "REGN": [
@@ -2387,6 +3883,40 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.846402",
+      "ipi": 0.7382004499697035,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.267834",
+      "ipi": 0.7107792651214918,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "RBLX": [
@@ -2400,6 +3930,36 @@
         "multi_day_distribution",
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.872537",
+      "ipi": 0.6612699529129064,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.322281",
+      "ipi": 0.6924041211484472,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
         "multi_day_distribution"
       ]
     }
@@ -2419,6 +3979,36 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.028750",
+      "ipi": 0.4770206155665926,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.375122",
+      "ipi": 0.3276420576864189,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "TRU": [
@@ -2431,6 +4021,36 @@
         "multi_day_distribution",
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.974479",
+      "ipi": 0.5274934050955563,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.032006",
+      "ipi": 0.5403365702337642,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution",
         "multi_day_distribution"
       ]
@@ -2449,6 +4069,37 @@
         "dark_pool_sequence",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.915616",
+      "ipi": 0.6012834875583252,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.205007",
+      "ipi": 0.49931275192301205,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
     }
   ],
   "OSCR": [
@@ -2463,6 +4114,38 @@
         "quote_degradation",
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.985755",
+      "ipi": 0.5040678467022048,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.460997",
+      "ipi": 0.6523492347742238,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution"
       ]
     }
@@ -2481,6 +4164,37 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.988472",
+      "ipi": 0.5036645635945155,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.020667",
+      "ipi": 0.5449971450995228,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation"
+      ]
     }
   ],
   "KLAC": [
@@ -2495,6 +4209,36 @@
         "quote_degradation",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.882369",
+      "ipi": 0.6404759898790072,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.660113",
+      "ipi": 0.6191175010105812,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
     }
   ],
   "UPST": [
@@ -2506,6 +4250,38 @@
         "dark_pool_sequence",
         "multi_day_distribution",
         "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.928373",
+      "ipi": 0.5851168786618874,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.550290",
+      "ipi": 0.6368373776033102,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
         "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution"
@@ -2525,6 +4301,38 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.905341",
+      "ipi": 0.6103320255529978,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.024439",
+      "ipi": 0.8376178194638122,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
     }
   ],
   "KMX": [
@@ -2541,6 +4349,38 @@
         "cross_asset_divergence",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.068827",
+      "ipi": 0.46003169314200143,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.428876",
+      "ipi": 0.31828991924792527,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
     }
   ],
   "IQ": [
@@ -2553,6 +4393,36 @@
         "quote_degradation",
         "multi_day_distribution",
         "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.050971",
+      "ipi": 0.4712971868427677,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.448148",
+      "ipi": 0.6597740606989516,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
         "multi_day_distribution",
         "multi_day_distribution"
       ]
@@ -2570,6 +4440,34 @@
         "quote_degradation",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.054303",
+      "ipi": 0.4709852630071219,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.474761",
+      "ipi": 0.6500710339705665,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
     }
   ],
   "EXK": [
@@ -2584,6 +4482,34 @@
         "dark_pool_sequence",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.057218",
+      "ipi": 0.47005450545550964,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.183176",
+      "ipi": 0.5003827838290397,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
     }
   ],
   "COST": [
@@ -2597,6 +4523,34 @@
         "quote_degradation",
         "quote_degradation",
         "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.047947",
+      "ipi": 0.47312160489606775,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.253139",
+      "ipi": 0.7123587294867041,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
       ]
     }
   ],
@@ -2613,6 +4567,36 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.980296",
+      "ipi": 0.5248165405763944,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.351184",
+      "ipi": 0.688255900139437,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
     }
   ],
   "ELV": [
@@ -2626,6 +4610,37 @@
         "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.923177",
+      "ipi": 0.5943527944458951,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.052287",
+      "ipi": 0.8173226166335487,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
       ]
     }
   ],
@@ -2643,6 +4658,39 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.936470",
+      "ipi": 0.5721793171796551,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.428630",
+      "ipi": 0.6599482306862675,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
     }
   ],
   "RIOT": [
@@ -2655,6 +4703,32 @@
         "multi_day_distribution",
         "dark_pool_sequence",
         "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.086814",
+      "ipi": 0.4338474407059209,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.159947",
+      "ipi": 0.5017793747930925,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
       ]
     }
   ],
@@ -2670,6 +4744,35 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.011156",
+      "ipi": 0.4869068664796509,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.602667",
+      "ipi": 0.4211358191720151,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
     }
   ],
   "LUV": [
@@ -2678,6 +4781,29 @@
       "ipi": 0.48809036110872334,
       "unique_footprints": 2,
       "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.223616",
+      "ipi": 0.343783126599371,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.459396",
+      "ipi": 0.45653858662006436,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
         "dark_pool_sequence",
         "quote_degradation",
         "dark_pool_sequence",
@@ -2699,6 +4825,37 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.096056",
+      "ipi": 0.42875555945222105,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.848918",
+      "ipi": 0.38255310852805174,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
     }
   ],
   "GEV": [
@@ -2710,6 +4867,36 @@
         "dark_pool_sequence",
         "multi_day_distribution",
         "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.020052",
+      "ipi": 0.4823194807183621,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.285073",
+      "ipi": 0.4793015667045235,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution"
       ]
@@ -2730,6 +4917,39 @@
         "cross_asset_divergence",
         "cross_asset_divergence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.129996",
+      "ipi": 0.40048645439816205,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.361098",
+      "ipi": 0.3333936692938588,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "cross_asset_divergence",
+        "cross_asset_divergence"
+      ]
     }
   ],
   "AG": [
@@ -2742,6 +4962,27 @@
         "quote_degradation",
         "dark_pool_sequence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.274545",
+      "ipi": 0.3232605885205199,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.549132",
+      "ipi": 0.30619836100034203,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "TME": [
@@ -2753,6 +4994,33 @@
         "dark_pool_sequence",
         "quote_degradation",
         "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.114365",
+      "ipi": 0.40818107459533803,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.999138",
+      "ipi": 0.36798091799196925,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
         "multi_day_distribution",
         "multi_day_distribution"
       ]
@@ -2769,6 +5037,18 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.171605",
+      "ipi": 0.37530881963929696,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "NOC": [
@@ -2782,6 +5062,35 @@
         "multi_day_distribution",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.065943",
+      "ipi": 0.46349310115866377,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.149876",
+      "ipi": 0.7629565879664413,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
     }
   ],
   "ALB": [
@@ -2794,6 +5103,17 @@
         "quote_degradation",
         "cross_asset_divergence",
         "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.296180",
+      "ipi": 0.30982386344072466,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "cross_asset_divergence",
+        "cross_asset_divergence",
+        "dark_pool_sequence",
+        "quote_degradation"
       ]
     }
   ],
@@ -2809,6 +5129,19 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.830778",
+      "ipi": 0.3846294537845544,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
     }
   ],
   "CG": [
@@ -2820,6 +5153,16 @@
         "dark_pool_sequence",
         "dark_pool_sequence",
         "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.306514",
+      "ipi": 0.30079887538846733,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence"
       ]
     }
   ],
@@ -2834,6 +5177,31 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.149224",
+      "ipi": 0.38822646097678454,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.169622",
+      "ipi": 0.35743118094361476,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "T": [
@@ -2842,6 +5210,18 @@
       "ipi": 0.42348944535875976,
       "unique_footprints": 2,
       "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.580261",
+      "ipi": 0.4262667828287616,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
         "dark_pool_sequence",
         "quote_degradation",
         "dark_pool_sequence",
@@ -2859,6 +5239,29 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.077909",
+      "ipi": 0.44122095350936463,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.808675",
+      "ipi": 0.39059464835834284,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
     }
   ],
   "SHOP": [
@@ -2873,6 +5276,34 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.092736",
+      "ipi": 0.4295788769022379,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.090521",
+      "ipi": 0.512544046075157,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
     }
   ],
   "CIFR": [
@@ -2885,6 +5316,32 @@
         "dark_pool_sequence",
         "dark_pool_sequence",
         "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.168506",
+      "ipi": 0.37756365494602245,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.470490",
+      "ipi": 0.4532144589008958,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution"
       ]
     }
   ],
@@ -2912,6 +5369,34 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.996727",
+      "ipi": 0.4917435290833958,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.683185",
+      "ipi": 0.618999884842954,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
     }
   ],
   "COIN": [
@@ -2927,6 +5412,38 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.074974",
+      "ipi": 0.4525659753395111,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.353854",
+      "ipi": 0.4734417817764117,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
     }
   ],
   "CLSK": [
@@ -2939,6 +5456,29 @@
         "dark_pool_sequence",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.126966",
+      "ipi": 0.4005294196969341,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.045319",
+      "ipi": 0.3664990140399787,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
     }
   ],
   "ONDS": [
@@ -2950,6 +5490,29 @@
         "dark_pool_sequence",
         "quote_degradation",
         "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.190825",
+      "ipi": 0.36679790246973876,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.332750",
+      "ipi": 0.336550869532773,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation"
       ]
     }
   ],
@@ -2966,6 +5529,37 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.099073",
+      "ipi": 0.4284664401602983,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.119661",
+      "ipi": 0.7715665472512445,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution"
+      ]
     }
   ],
   "CGNX": [
@@ -2974,6 +5568,17 @@
       "ipi": 0.4024574866165665,
       "unique_footprints": 3,
       "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.184210",
+      "ipi": 0.36950414539495247,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "multi_day_distribution",
         "dark_pool_sequence",
         "quote_degradation",
         "cross_asset_divergence"
@@ -2990,6 +5595,29 @@
         "cross_asset_divergence",
         "dark_pool_sequence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.299600",
+      "ipi": 0.3085126590249557,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "cross_asset_divergence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.415505",
+      "ipi": 0.3185590646508502,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "cross_asset_divergence",
+        "cross_asset_divergence"
+      ]
     }
   ],
   "JOBY": [
@@ -3002,6 +5630,29 @@
         "dark_pool_sequence",
         "dark_pool_sequence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.152302",
+      "ipi": 0.3869406457478053,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.878158",
+      "ipi": 0.3808386690047066,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
     }
   ],
   "HLT": [
@@ -3012,6 +5663,31 @@
       "footprint_types": [
         "dark_pool_sequence",
         "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.111333",
+      "ipi": 0.412807892741373,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.641500",
+      "ipi": 0.41582784370376813,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "dark_pool_sequence",
         "quote_degradation",
         "quote_degradation"
       ]
@@ -3027,6 +5703,31 @@
         "multi_day_distribution",
         "cross_asset_divergence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.008363",
+      "ipi": 0.4880353913718545,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.569643",
+      "ipi": 0.4312776926095798,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
     }
   ],
   "CVS": [
@@ -3037,6 +5738,30 @@
       "footprint_types": [
         "dark_pool_sequence",
         "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.243962",
+      "ipi": 0.33100437945516636,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.055598",
+      "ipi": 0.526191821908397,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
         "multi_day_distribution"
       ]
     }
@@ -3051,6 +5776,31 @@
         "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.165341",
+      "ipi": 0.37888732163205047,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.147644",
+      "ipi": 0.5020229325523033,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
       ]
     }
   ],
@@ -3077,6 +5827,29 @@
         "dark_pool_sequence",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.089789",
+      "ipi": 0.4309858948041791,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.916214",
+      "ipi": 0.37835872363939205,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence"
+      ]
     }
   ],
   "MCD": [
@@ -3090,6 +5863,32 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.267859",
+      "ipi": 0.32382174738371033,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.998231",
+      "ipi": 0.5545326235369147,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "INTC": [
@@ -3101,6 +5900,17 @@
         "dark_pool_sequence",
         "quote_degradation",
         "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.292391",
+      "ipi": 0.31104841373874276,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation"
       ]
     }
   ],
@@ -3114,6 +5924,29 @@
         "quote_degradation",
         "cross_asset_divergence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.226950",
+      "ipi": 0.340315913557498,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.216381",
+      "ipi": 0.4956719979586004,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "cross_asset_divergence",
+        "multi_day_distribution"
+      ]
     }
   ],
   "SQM": [
@@ -3122,6 +5955,30 @@
       "ipi": 0.363091546559947,
       "unique_footprints": 2,
       "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.234101",
+      "ipi": 0.33558335095729563,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.770711",
+      "ipi": 0.4013867738828165,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
         "dark_pool_sequence",
         "multi_day_distribution",
         "multi_day_distribution"
@@ -3138,6 +5995,29 @@
         "quote_degradation",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.230822",
+      "ipi": 0.3369242952276941,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.454677",
+      "ipi": 0.31590780419793413,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation"
+      ]
     }
   ],
   "SBUX": [
@@ -3150,6 +6030,35 @@
         "multi_day_distribution",
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.247622",
+      "ipi": 0.3294273696673467,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.227697",
+      "ipi": 0.4873719264555839,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
         "multi_day_distribution",
         "multi_day_distribution"
       ]
@@ -3179,6 +6088,35 @@
         "multi_day_distribution",
         "quote_degradation",
         "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.250924",
+      "ipi": 0.32913162182502864,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.158083",
+      "ipi": 0.35958481807948145,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation"
       ]
     }
   ],
@@ -3216,6 +6154,27 @@
         "dark_pool_sequence",
         "dark_pool_sequence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.080867",
+      "ipi": 0.4400886741215793,
+      "unique_footprints": 1,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.619303",
+      "ipi": 0.4169885094496769,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence"
+      ]
     }
   ],
   "SKLZ": [
@@ -3228,6 +6187,19 @@
         "multi_day_distribution",
         "multi_day_distribution",
         "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.278277",
+      "ipi": 0.3197576438473608,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
         "multi_day_distribution"
       ]
     }
@@ -3255,6 +6227,16 @@
         "dark_pool_sequence",
         "dark_pool_sequence"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.080351",
+      "ipi": 0.3637504678939104,
+      "unique_footprints": 1,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "dark_pool_sequence"
+      ]
     }
   ],
   "BKNG": [
@@ -3270,6 +6252,38 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.180986",
+      "ipi": 0.37066336647629955,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.710185",
+      "ipi": 0.4076766584756761,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
     }
   ],
   "CLOV": [
@@ -3281,6 +6295,34 @@
         "quote_degradation",
         "multi_day_distribution",
         "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.285383",
+      "ipi": 0.3136783127831004,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.929066",
+      "ipi": 0.37780783071292706,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
         "multi_day_distribution",
         "multi_day_distribution"
       ]
@@ -3298,6 +6340,35 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.139833",
+      "ipi": 0.3960400527615622,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.219035",
+      "ipi": 0.3519849956964061,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
     }
   ],
   "RL": [
@@ -3311,6 +6382,33 @@
         "quote_degradation",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.142903",
+      "ipi": 0.3928632506984427,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.744392",
+      "ipi": 0.4039960311954249,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
     }
   ],
   "LLY": [
@@ -3322,6 +6420,21 @@
         "quote_degradation",
         "quote_degradation",
         "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.674482",
+      "ipi": 0.41105652860843966,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
         "quote_degradation",
         "quote_degradation"
       ]
@@ -3339,6 +6452,37 @@
         "quote_degradation",
         "quote_degradation",
         "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.197260",
+      "ipi": 0.3622965660755236,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.602782",
+      "ipi": 0.3034526934614241,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
       ]
     }
   ],
@@ -3364,6 +6508,18 @@
         "quote_degradation",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.394989",
+      "ipi": 0.47117373919707956,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "FCEL": [
@@ -3374,6 +6530,19 @@
       "footprint_types": [
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.303018",
+      "ipi": 0.3023666433387546,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
         "multi_day_distribution",
         "multi_day_distribution",
         "multi_day_distribution"
@@ -3392,6 +6561,35 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:52.971676",
+      "ipi": 0.5391510932327627,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.492922",
+      "ipi": 0.4503074158818652,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
     }
   ],
   "TLN": [
@@ -3402,6 +6600,34 @@
       "footprint_types": [
         "multi_day_distribution",
         "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.213887",
+      "ipi": 0.34873701567734733,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.756801",
+      "ipi": 0.403792247897157,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
         "multi_day_distribution",
         "multi_day_distribution",
         "multi_day_distribution"
@@ -3420,6 +6646,33 @@
         "multi_day_distribution",
         "multi_day_distribution"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T09:50:53.210575",
+      "ipi": 0.34893672257822395,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.403286",
+      "ipi": 0.3212363863276468,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
     }
   ],
   "ENTG": [
@@ -3428,6 +6681,16 @@
       "ipi": 0.3024961858446666,
       "unique_footprints": 2,
       "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.011186",
+      "ipi": 0.3674061018643352,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
         "dark_pool_sequence",
         "quote_degradation"
       ]
@@ -3442,6 +6705,18 @@
         "dark_pool_sequence",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.124975",
+      "ipi": 0.5063180302706657,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation"
+      ]
     }
   ],
   "AA": [
@@ -3453,6 +6728,16 @@
         "dark_pool_sequence",
         "quote_degradation"
       ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.033534",
+      "ipi": 0.3666303781958437,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
     }
   ],
   "NEM": [
@@ -3461,6 +6746,16 @@
       "ipi": 0.30249598024884844,
       "unique_footprints": 2,
       "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.130805",
+      "ipi": 0.3608000598862902,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
         "dark_pool_sequence",
         "quote_degradation"
       ]
@@ -3485,6 +6780,983 @@
       "footprint_types": [
         "dark_pool_sequence",
         "quote_degradation"
+      ]
+    }
+  ],
+  "ETSY": [
+    {
+      "timestamp": "2026-02-05T09:50:53.025907",
+      "ipi": 0.47751413182961,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.249940",
+      "ipi": 0.4800967915155796,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "quote_degradation",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
+    }
+  ],
+  "TEAM": [
+    {
+      "timestamp": "2026-02-05T09:50:53.105145",
+      "ipi": 0.41534260829839914,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.022330",
+      "ipi": 0.36695974450862073,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "PLTK": [
+    {
+      "timestamp": "2026-02-05T09:50:53.120876",
+      "ipi": 0.40278329484327613,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.687915",
+      "ipi": 0.4110099653176829,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence"
+      ]
+    }
+  ],
+  "FIS": [
+    {
+      "timestamp": "2026-02-05T09:50:53.136346",
+      "ipi": 0.3960418398661607,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "HOLX": [
+    {
+      "timestamp": "2026-02-05T09:50:53.177866",
+      "ipi": 0.3715124855847773,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.558881",
+      "ipi": 0.43213660361198175,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "MRNA": [
+    {
+      "timestamp": "2026-02-05T09:50:53.200484",
+      "ipi": 0.3556512242458274,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:10.363591",
+      "ipi": 0.6829540445844307,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "CLS": [
+    {
+      "timestamp": "2026-02-05T09:50:53.203758",
+      "ipi": 0.35475453545781777,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "BILI": [
+    {
+      "timestamp": "2026-02-05T09:50:53.207001",
+      "ipi": 0.3536013369060677,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.941289",
+      "ipi": 0.3753067186350924,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "DXCM": [
+    {
+      "timestamp": "2026-02-05T09:50:53.220375",
+      "ipi": 0.34524088189677854,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "LAD": [
+    {
+      "timestamp": "2026-02-05T09:50:53.237379",
+      "ipi": 0.33340458978736764,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "MSCI": [
+    {
+      "timestamp": "2026-02-05T09:50:53.240658",
+      "ipi": 0.331592481465086,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.794211",
+      "ipi": 0.39112983825616066,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "IREN": [
+    {
+      "timestamp": "2026-02-05T09:50:53.254296",
+      "ipi": 0.32894004929332565,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.576970",
+      "ipi": 0.3055392147035257,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "RDFN": [
+    {
+      "timestamp": "2026-02-05T09:50:53.257597",
+      "ipi": 0.32479796788138443,
+      "unique_footprints": 1,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.293768",
+      "ipi": 0.34318114178517894,
+      "unique_footprints": 1,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "IAA": [
+    {
+      "timestamp": "2026-02-05T09:50:53.261173",
+      "ipi": 0.3242525363129565,
+      "unique_footprints": 1,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.267950",
+      "ipi": 0.34366734981975516,
+      "unique_footprints": 1,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "LOTZ": [
+    {
+      "timestamp": "2026-02-05T09:50:53.264499",
+      "ipi": 0.3239453222401013,
+      "unique_footprints": 1,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:12.280883",
+      "ipi": 0.3433807214266866,
+      "unique_footprints": 1,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "SILV": [
+    {
+      "timestamp": "2026-02-05T09:50:53.271185",
+      "ipi": 0.3235491187524127,
+      "unique_footprints": 1,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    },
+    {
+      "timestamp": "2026-02-05T22:12:11.525143",
+      "ipi": 0.4446707766083486,
+      "unique_footprints": 1,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "QQQ": [
+    {
+      "timestamp": "2026-02-05T09:50:53.281962",
+      "ipi": 0.31380714036107543,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "NBIS": [
+    {
+      "timestamp": "2026-02-05T09:50:53.309935",
+      "ipi": 0.3004537591354532,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "LMT": [
+    {
+      "timestamp": "2026-02-05T22:12:10.512270",
+      "ipi": 0.6395477588552756,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "BX": [
+    {
+      "timestamp": "2026-02-05T22:12:10.620430",
+      "ipi": 0.6265060275179147,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "THC": [
+    {
+      "timestamp": "2026-02-05T22:12:10.971837",
+      "ipi": 0.5581093873467856,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "EA": [
+    {
+      "timestamp": "2026-02-05T22:12:11.066417",
+      "ipi": 0.5239090441046487,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "cross_asset_divergence",
+        "cross_asset_divergence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "MKSI": [
+    {
+      "timestamp": "2026-02-05T22:12:11.193791",
+      "ipi": 0.4995916252742954,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "GE": [
+    {
+      "timestamp": "2026-02-05T22:12:11.319383",
+      "ipi": 0.4774906074192978,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "MS": [
+    {
+      "timestamp": "2026-02-05T22:12:11.416894",
+      "ipi": 0.46722577362270745,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "ACHR": [
+    {
+      "timestamp": "2026-02-05T22:12:11.448832",
+      "ipi": 0.45850065121800254,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "NRG": [
+    {
+      "timestamp": "2026-02-05T22:12:11.514441",
+      "ipi": 0.44649173338574466,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "UNH": [
+    {
+      "timestamp": "2026-02-05T22:12:11.536344",
+      "ipi": 0.4369352406057271,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "LI": [
+    {
+      "timestamp": "2026-02-05T22:12:11.547757",
+      "ipi": 0.43408424653902816,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "cross_asset_divergence",
+        "cross_asset_divergence",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "MU": [
+    {
+      "timestamp": "2026-02-05T22:12:11.630585",
+      "ipi": 0.4166323523026325,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "ALGN": [
+    {
+      "timestamp": "2026-02-05T22:12:11.698851",
+      "ipi": 0.4094192981826253,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "DAL": [
+    {
+      "timestamp": "2026-02-05T22:12:11.782093",
+      "ipi": 0.3971871736212516,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "ARKK": [
+    {
+      "timestamp": "2026-02-05T22:12:11.889345",
+      "ipi": 0.37892357235070895,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "XLI": [
+    {
+      "timestamp": "2026-02-05T22:12:11.987538",
+      "ipi": 0.3680455186164268,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "FLEX": [
+    {
+      "timestamp": "2026-02-05T22:12:12.057359",
+      "ipi": 0.36586719895843456,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "BLDP": [
+    {
+      "timestamp": "2026-02-05T22:12:12.068929",
+      "ipi": 0.3656678425149511,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "WISH": [
+    {
+      "timestamp": "2026-02-05T22:12:12.091744",
+      "ipi": 0.3631278784052414,
+      "unique_footprints": 1,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "ZM": [
+    {
+      "timestamp": "2026-02-05T22:12:12.103193",
+      "ipi": 0.36283102910765763,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "PODD": [
+    {
+      "timestamp": "2026-02-05T22:12:12.115372",
+      "ipi": 0.36243090708487374,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "ENPH": [
+    {
+      "timestamp": "2026-02-05T22:12:12.181474",
+      "ipi": 0.3552850787474263,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "cross_asset_divergence",
+        "cross_asset_divergence",
+        "cross_asset_divergence",
+        "cross_asset_divergence"
+      ]
+    }
+  ],
+  "WOLF": [
+    {
+      "timestamp": "2026-02-05T22:12:12.194145",
+      "ipi": 0.3546597135669895,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "RTX": [
+    {
+      "timestamp": "2026-02-05T22:12:12.206411",
+      "ipi": 0.3528463860132513,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "JNJ": [
+    {
+      "timestamp": "2026-02-05T22:12:12.243032",
+      "ipi": 0.34534262574768226,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "TMUS": [
+    {
+      "timestamp": "2026-02-05T22:12:12.255763",
+      "ipi": 0.3451220166180722,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "EXPE": [
+    {
+      "timestamp": "2026-02-05T22:12:12.320225",
+      "ipi": 0.3371782448332316,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "ZG": [
+    {
+      "timestamp": "2026-02-05T22:12:12.348356",
+      "ipi": 0.3352553746519508,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "MDT": [
+    {
+      "timestamp": "2026-02-05T22:12:12.389867",
+      "ipi": 0.32373647865663235,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "KKR": [
+    {
+      "timestamp": "2026-02-05T22:12:12.441615",
+      "ipi": 0.31816964356898897,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "FTNT": [
+    {
+      "timestamp": "2026-02-05T22:12:12.481456",
+      "ipi": 0.31169045570718984,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "cross_asset_divergence",
+        "quote_degradation",
+        "dark_pool_sequence"
+      ]
+    }
+  ],
+  "APLD": [
+    {
+      "timestamp": "2026-02-05T22:12:12.494444",
+      "ipi": 0.3111268289276457,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "CMI": [
+    {
+      "timestamp": "2026-02-05T22:12:12.508178",
+      "ipi": 0.31033856810591454,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "HCA": [
+    {
+      "timestamp": "2026-02-05T22:12:12.521201",
+      "ipi": 0.3100668988644393,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "quote_degradation",
+        "quote_degradation"
+      ]
+    }
+  ],
+  "SNOW": [
+    {
+      "timestamp": "2026-02-05T22:12:12.534548",
+      "ipi": 0.30908339089096915,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "quote_degradation",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "ABNB": [
+    {
+      "timestamp": "2026-02-05T22:12:12.563840",
+      "ipi": 0.3058252315649083,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "BSX": [
+    {
+      "timestamp": "2026-02-05T22:12:12.589691",
+      "ipi": 0.3050379469561982,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "WDAY": [
+    {
+      "timestamp": "2026-02-05T22:12:12.615907",
+      "ipi": 0.3030646351567347,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "multi_day_distribution",
+        "multi_day_distribution"
+      ]
+    }
+  ],
+  "PAAS": [
+    {
+      "timestamp": "2026-02-05T22:12:12.628462",
+      "ipi": 0.3001281135265376,
+      "unique_footprints": 2,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "dark_pool_sequence"
       ]
     }
   ]

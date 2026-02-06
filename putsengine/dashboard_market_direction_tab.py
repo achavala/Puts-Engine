@@ -43,6 +43,8 @@ SCAN_RESULTS_FILE = _PROJECT_ROOT / "scan_results.json"
 PATTERN_SCAN_FILE = _PROJECT_ROOT / "pattern_scan_results.json"
 EARLY_WARNING_FILE = _PROJECT_ROOT / "early_warning_alerts.json"  # Same as main dashboard
 FOOTPRINT_HISTORY_FILE = _PROJECT_ROOT / "footprint_history.json"
+SCAN_HISTORY_FILE = _PROJECT_ROOT / "scan_history.json"  # For 48-hour frequency
+BIG_MOVERS_FILE = _PROJECT_ROOT / "big_movers_analysis.json"  # Big movers patterns
 
 
 # ============================================================================
@@ -180,6 +182,132 @@ def load_engine_picks() -> Dict[str, List[Dict]]:
         picks[engine] = unique_picks[:10]
     
     return picks
+
+
+def load_48hour_frequency_picks() -> List[Dict]:
+    """Load picks from 48-Hour Frequency analysis (multi-engine convergence)."""
+    if not SCAN_HISTORY_FILE.exists():
+        return []
+    
+    try:
+        with open(SCAN_HISTORY_FILE, 'r') as f:
+            data = json.load(f)
+        
+        scans = data.get("scans", [])
+        if not scans:
+            return []
+        
+        # Count symbol appearances across engines
+        symbol_counts = {}
+        for scan in scans[-20:]:  # Last 20 scans (48 hours approx)
+            for candidate in scan.get("candidates", []):
+                symbol = candidate.get("symbol", "")
+                if not symbol:
+                    continue
+                
+                if symbol not in symbol_counts:
+                    symbol_counts[symbol] = {
+                        "symbol": symbol,
+                        "gamma_drain": 0,
+                        "distribution": 0,
+                        "liquidity": 0,
+                        "total": 0,
+                        "avg_score": []
+                    }
+                
+                engine = scan.get("engine", "").lower()
+                if "gamma" in engine:
+                    symbol_counts[symbol]["gamma_drain"] += 1
+                elif "distribution" in engine:
+                    symbol_counts[symbol]["distribution"] += 1
+                elif "liquidity" in engine:
+                    symbol_counts[symbol]["liquidity"] += 1
+                
+                symbol_counts[symbol]["total"] += 1
+                if candidate.get("score"):
+                    symbol_counts[symbol]["avg_score"].append(candidate.get("score", 0))
+        
+        # Convert to list and calculate scores
+        picks = []
+        for symbol, data in symbol_counts.items():
+            engines_count = sum([
+                1 if data["gamma_drain"] > 0 else 0,
+                1 if data["distribution"] > 0 else 0,
+                1 if data["liquidity"] > 0 else 0
+            ])
+            
+            avg_score = sum(data["avg_score"]) / len(data["avg_score"]) if data["avg_score"] else 0.5
+            
+            # Calculate conviction score (similar to 48-hour tab)
+            conviction = data["total"] * 0.15 + engines_count * 0.25 + avg_score * 0.3
+            
+            picks.append({
+                "symbol": symbol,
+                "score": conviction,
+                "engines_count": engines_count,
+                "total_appearances": data["total"],
+                "gamma_drain": data["gamma_drain"],
+                "distribution": data["distribution"],
+                "liquidity": data["liquidity"],
+                "is_trifecta": engines_count == 3
+            })
+        
+        # Sort by trifecta first, then conviction
+        return sorted(picks, key=lambda x: (x.get("is_trifecta", False), x.get("score", 0)), reverse=True)[:15]
+        
+    except Exception as e:
+        return []
+
+
+def load_big_movers_picks() -> List[Dict]:
+    """Load picks from Big Movers pattern analysis."""
+    if not BIG_MOVERS_FILE.exists():
+        # Try pattern scan results as fallback
+        if PATTERN_SCAN_FILE.exists():
+            try:
+                with open(PATTERN_SCAN_FILE, 'r') as f:
+                    data = json.load(f)
+                
+                picks = []
+                for pattern_type, patterns in data.items():
+                    if isinstance(patterns, list):
+                        for pattern in patterns:
+                            if isinstance(pattern, dict):
+                                picks.append({
+                                    "symbol": pattern.get("symbol", pattern.get("ticker", "")),
+                                    "pattern_type": pattern.get("pattern_type", pattern_type),
+                                    "confidence": pattern.get("confidence", pattern.get("score", 0.5)),
+                                    "expected_move": pattern.get("expected_move_pct", 0),
+                                    "signals": pattern.get("signals", [])
+                                })
+                
+                return sorted(picks, key=lambda x: x.get("confidence", 0), reverse=True)[:10]
+            except:
+                pass
+        return []
+    
+    try:
+        with open(BIG_MOVERS_FILE, 'r') as f:
+            data = json.load(f)
+        
+        patterns = data.get("patterns", [])
+        picks = []
+        
+        for pattern in patterns:
+            if isinstance(pattern, dict):
+                picks.append({
+                    "symbol": pattern.get("symbol", ""),
+                    "pattern_type": pattern.get("pattern_type", "unknown"),
+                    "confidence": pattern.get("confidence", 0.5),
+                    "expected_move": pattern.get("expected_move_pct", 0),
+                    "signals": pattern.get("signals", []),
+                    "sector": pattern.get("sector", "")
+                })
+        
+        return sorted(picks, key=lambda x: x.get("confidence", 0), reverse=True)[:10]
+        
+    except Exception as e:
+        return []
 
 
 def load_early_warning_picks() -> List[Dict]:
@@ -502,6 +630,60 @@ def display_market_pulse(data: Dict):
             help="Opening position vs ATM straddle expected move. OUTSIDE = dealer re-hedge risk"
         )
     
+    # =========================================================================
+    # ARCHITECT-4 FINAL: Liquidity Depth & Execution Light
+    # =========================================================================
+    st.markdown("---")
+    st.markdown("### 🚦 EXECUTION LIGHT (ARCHITECT-4 FINAL)")
+    st.caption("**Descriptive state, NOT prescriptive command. Helps discipline, doesn't replace it.**")
+    
+    exec_col1, exec_col2, exec_col3 = st.columns([1, 2, 2])
+    
+    with exec_col1:
+        # EXECUTION LIGHT - The Main Signal
+        exec_light = data.get("execution_light", "YELLOW")
+        exec_rationale = data.get("execution_rationale", "Mixed signals")
+        
+        if exec_light == "GREEN":
+            st.success(f"## 🟢 GREEN")
+            st.caption("**PERMISSION**")
+        elif exec_light == "RED":
+            st.error(f"## 🔴 RED")
+            st.caption("**WAIT**")
+        else:
+            st.warning(f"## 🟡 YELLOW")
+            st.caption("**SELECTIVE**")
+        
+        st.markdown(f"*{exec_rationale}*")
+    
+    with exec_col2:
+        # Liquidity Depth Ratio
+        liq_ratio = data.get("liquidity_depth_ratio", 1.0)
+        liq_flag = data.get("liquidity_flag", "NORMAL")
+        liq_emoji = "✅" if liq_flag == "NORMAL" else "⚠️" if liq_flag == "THINNING" else "🚨"
+        
+        st.metric(
+            "💧 Liquidity Depth",
+            f"{liq_emoji} {liq_ratio:.1f}x",
+            help="Bid size / rolling avg bid size. VACUUM = bids disappearing"
+        )
+        st.caption(f"Status: **{liq_flag}**")
+        
+        if liq_flag == "VACUUM":
+            st.error("🚨 **VACUUM RISK**: Gappy moves, no exit")
+        elif liq_flag == "THINNING":
+            st.warning("⚠️ Reduce position size")
+    
+    with exec_col3:
+        # Interpretation Guide
+        st.markdown("**Execution Light Logic:**")
+        st.markdown("""
+        - 🔴 **RED**: High IPI but positive gamma, or vacuum, or closing flow → **Wait**
+        - 🟡 **YELLOW**: Mixed conditions → **Small size, selective**
+        - 🟢 **GREEN**: Risk-Off + Trend + Good Flow → **Permission**
+        """)
+        st.caption("*No automation. No forced trade.*")
+    
     # Key observations
     notes = data.get("notes", [])
     if notes:
@@ -739,84 +921,243 @@ def display_finviz_sentiment():
 
 
 def display_best_8_picks(market_direction: Dict, best_plays: List[Dict], ews_picks: List[Dict], engine_picks: Dict):
-    """Display the 8 best picks based on market direction, EWS, and engines."""
+    """
+    Display the CONSOLIDATED TOP 8 PICKS from ALL data sources.
+    
+    RANKING ALGORITHM:
+    FINAL_SCORE = (
+        EWS_IPI × 0.35 +           # Institutional footprints (highest weight)
+        FREQUENCY_CONV × 0.25 +    # Multi-engine convergence (48-hour)
+        MARKETPULSE_REGIME × 0.20 + # Regime alignment
+        BIG_MOVER_CONF × 0.15 +    # Pattern detection
+        SECTOR_STRESS × 0.05       # Sector contagion
+    )
+    """
     
     st.markdown("---")
-    st.markdown("## 🏆 TODAY'S 8 BEST PLAYS")
+    st.markdown("## 🏆 CONSOLIDATED TOP 8 PICKS")
+    st.caption("*Ranked by composite score from ALL data sources: EWS + 48-Hour + Big Movers + Engines*")
     
-    # If market direction has best_plays, use them
-    if best_plays:
+    # Load additional data sources
+    freq_picks = load_48hour_frequency_picks()
+    big_mover_picks = load_big_movers_picks()
+    
+    # Get regime alignment factor
+    regime = market_direction.get("regime", "NEUTRAL") if market_direction else "NEUTRAL"
+    regime_boost = 1.2 if regime in ["RISK_OFF", "STRONG_BEARISH", "BEARISH"] else 0.8 if regime in ["RISK_ON", "STRONG_BULLISH", "BULLISH"] else 1.0
+    
+    # Create unified scoring
+    symbol_scores = {}
+    
+    # 1. EWS picks (weight: 0.35) - HIGHEST PRIORITY
+    for pick in ews_picks:
+        symbol = pick.get("symbol", "")
+        if not symbol:
+            continue
+        
+        ipi = pick.get("score", 0)
+        level = pick.get("level", "WATCH")
+        
+        if symbol not in symbol_scores:
+            symbol_scores[symbol] = {
+                "symbol": symbol,
+                "ews_score": 0, "freq_score": 0, "regime_score": 0, "bigmover_score": 0,
+                "sources": [], "signals": [], "action": "WATCH"
+            }
+        
+        symbol_scores[symbol]["ews_score"] = ipi * 0.35 * regime_boost
+        symbol_scores[symbol]["sources"].append(f"🚨 EWS {level}")
+        symbol_scores[symbol]["signals"].append(f"IPI={ipi:.2f}, {pick.get('footprints', 0)} footprints")
+        
+        if level == "ACT":
+            symbol_scores[symbol]["action"] = "🎯 BUY PUTS"
+        elif level == "PREPARE":
+            symbol_scores[symbol]["action"] = "⚡ PREPARE"
+    
+    # 2. 48-Hour Frequency picks (weight: 0.25)
+    for pick in freq_picks:
+        symbol = pick.get("symbol", "")
+        if not symbol:
+            continue
+        
+        if symbol not in symbol_scores:
+            symbol_scores[symbol] = {
+                "symbol": symbol,
+                "ews_score": 0, "freq_score": 0, "regime_score": 0, "bigmover_score": 0,
+                "sources": [], "signals": [], "action": "WATCH"
+            }
+        
+        conviction = pick.get("score", 0)
+        engines_count = pick.get("engines_count", 0)
+        is_trifecta = pick.get("is_trifecta", False)
+        
+        # Trifecta bonus: 1.5x
+        trifecta_boost = 1.5 if is_trifecta else 1.0
+        symbol_scores[symbol]["freq_score"] = conviction * 0.25 * trifecta_boost * regime_boost
+        
+        if is_trifecta:
+            symbol_scores[symbol]["sources"].append("🎯 TRIFECTA")
+            symbol_scores[symbol]["action"] = "🎯 BUY PUTS"
+        elif engines_count >= 2:
+            symbol_scores[symbol]["sources"].append(f"📊 {engines_count} Engines")
+        
+        symbol_scores[symbol]["signals"].append(f"{pick.get('total_appearances', 0)} appearances")
+    
+    # 3. Big Mover picks (weight: 0.15)
+    for pick in big_mover_picks:
+        symbol = pick.get("symbol", "")
+        if not symbol:
+            continue
+        
+        if symbol not in symbol_scores:
+            symbol_scores[symbol] = {
+                "symbol": symbol,
+                "ews_score": 0, "freq_score": 0, "regime_score": 0, "bigmover_score": 0,
+                "sources": [], "signals": [], "action": "WATCH"
+            }
+        
+        confidence = pick.get("confidence", 0)
+        pattern_type = pick.get("pattern_type", "").replace("_", " ").title()
+        
+        symbol_scores[symbol]["bigmover_score"] = confidence * 0.15 * regime_boost
+        symbol_scores[symbol]["sources"].append(f"📉 {pattern_type}")
+        
+        if confidence >= 0.7:
+            symbol_scores[symbol]["signals"].append(f"{pattern_type} ({confidence:.0%})")
+    
+    # 4. Engine picks (adds to existing scores)
+    for engine_name, engine_list in engine_picks.items():
+        for pick in engine_list:
+            symbol = pick.get("symbol", "")
+            if not symbol:
+                continue
+            
+            if symbol not in symbol_scores:
+                symbol_scores[symbol] = {
+                    "symbol": symbol,
+                    "ews_score": 0, "freq_score": 0, "regime_score": 0, "bigmover_score": 0,
+                    "sources": [], "signals": [], "action": "WATCH"
+                }
+            
+            score = pick.get("score", 0)
+            # Small boost for engine appearance
+            symbol_scores[symbol]["regime_score"] += score * 0.05
+    
+    # Calculate final composite scores
+    for symbol in symbol_scores:
+        data = symbol_scores[symbol]
+        data["composite_score"] = (
+            data["ews_score"] + 
+            data["freq_score"] + 
+            data["regime_score"] + 
+            data["bigmover_score"]
+        )
+    
+    # Sort by composite score and get top 8
+    sorted_picks = sorted(
+        symbol_scores.values(), 
+        key=lambda x: x.get("composite_score", 0), 
+        reverse=True
+    )[:8]
+    
+    if sorted_picks:
+        # Display header with data source legend
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1f3c, #2d3561); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+                <span style="color: #ff6b6b;">🚨 EWS = Early Warning (35%)</span>
+                <span style="color: #ffd93d;">🎯 TRIFECTA = All 3 Engines</span>
+                <span style="color: #4ecdc4;">📊 48-Hour = Multi-Engine</span>
+                <span style="color: #a29bfe;">📉 Big Movers = Patterns</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Create table data
         play_data = []
-        for i, play in enumerate(best_plays[:8], 1):
-            action = play.get("action", "WATCH")
-            action_emoji = "🎯" if "PUT" in action else "⏸️" if "WAIT" in action else "👀"
+        for i, pick in enumerate(sorted_picks, 1):
+            action = pick.get("action", "👀 WATCH")
+            sources = " + ".join(pick.get("sources", [])[:3]) or "Engine"
+            signals = ", ".join(pick.get("signals", [])[:2]) or "Signal detected"
+            score = pick.get("composite_score", 0)
+            
+            # Color coding based on score
+            score_emoji = "🔥" if score > 0.3 else "⚡" if score > 0.2 else "👀"
             
             play_data.append({
-                "#": i,
-                "Symbol": play.get("symbol", ""),
-                "Action": f"{action_emoji} {action}",
-                "Reason": play.get("reason", ""),
-                "Note": play.get("note", "")
+                "Rank": f"{i}",
+                "Symbol": pick.get("symbol", ""),
+                "Score": f"{score_emoji} {score:.2f}",
+                "Action": action,
+                "Sources": sources,
+                "Signals": signals
             })
         
-        st.dataframe(play_data, use_container_width=True, hide_index=True)
+        import pandas as pd
+        df = pd.DataFrame(play_data)
         
-    else:
-        # Generate picks from EWS and Engine data
-        combined_picks = []
+        st.dataframe(
+            df, 
+            use_container_width=True, 
+            hide_index=True,
+            column_config={
+                "Rank": st.column_config.TextColumn("Rank", width="small"),
+                "Symbol": st.column_config.TextColumn("Symbol", width="small"),
+                "Score": st.column_config.TextColumn("Score", width="small"),
+                "Action": st.column_config.TextColumn("Action", width="medium"),
+                "Sources": st.column_config.TextColumn("Data Sources", width="medium"),
+                "Signals": st.column_config.TextColumn("Key Signals", width="large"),
+            }
+        )
         
-        # Add EWS picks (highest priority)
-        for pick in ews_picks[:4]:
-            level = pick.get("level", "WATCH")
-            action = "BUY PUTS" if level == "ACT" else "PREPARE PUTS" if level == "PREPARE" else "WATCH"
-            combined_picks.append({
-                "symbol": pick.get("symbol", ""),
-                "action": action,
-                "reason": f"EWS {level} - IPI: {pick.get('score', 0):.2f}",
-                "note": f"{pick.get('footprints', 0)} footprints",
-                "priority": 3 if level == "ACT" else 2 if level == "PREPARE" else 1
-            })
-        
-        # Add engine picks
-        for engine_name, engine_list in engine_picks.items():
-            for pick in engine_list[:2]:
-                combined_picks.append({
-                    "symbol": pick.get("symbol", ""),
-                    "action": "BUY PUTS" if pick.get("score", 0) > 0.6 else "WATCH",
-                    "reason": f"{engine_name.replace('_', ' ').title()} - Score: {pick.get('score', 0):.2f}",
-                    "note": ", ".join(pick.get("signals", [])[:2]),
-                    "priority": pick.get("score", 0)
-                })
-        
-        # Dedupe by symbol and sort by priority
-        seen = set()
-        unique_picks = []
-        for pick in sorted(combined_picks, key=lambda x: x.get("priority", 0), reverse=True):
-            if pick.get("symbol") and pick.get("symbol") not in seen:
-                seen.add(pick.get("symbol"))
-                unique_picks.append(pick)
-        
-        if unique_picks:
-            play_data = []
-            for i, play in enumerate(unique_picks[:8], 1):
-                action = play.get("action", "WATCH")
-                action_emoji = "🎯" if "PUT" in action else "⏸️" if "WAIT" in action else "👀"
-                
-                play_data.append({
-                    "#": i,
-                    "Symbol": play.get("symbol", ""),
-                    "Action": f"{action_emoji} {action}",
-                    "Reason": play.get("reason", ""),
-                    "Note": play.get("note", "")
-                })
+        # Top 3 highlight cards
+        if len(sorted_picks) >= 3:
+            st.markdown("### 🏆 Top 3 Highest Conviction")
+            top3_cols = st.columns(3)
+            colors = ["#FFD700", "#C0C0C0", "#CD7F32"]  # Gold, Silver, Bronze
             
-            st.dataframe(play_data, use_container_width=True, hide_index=True)
-        else:
-            st.info("No picks available. Run Market Direction Analysis or wait for scan results.")
+            for i, (col, pick) in enumerate(zip(top3_cols, sorted_picks[:3])):
+                with col:
+                    score = pick.get("composite_score", 0)
+                    action = pick.get("action", "WATCH")
+                    sources = " ".join(pick.get("sources", [])[:2])
+                    
+                    st.markdown(f"""
+                    <div style="
+                        background: linear-gradient(135deg, {colors[i]}22, {colors[i]}44);
+                        border: 2px solid {colors[i]};
+                        border-radius: 10px;
+                        padding: 15px;
+                        text-align: center;
+                        min-height: 150px;
+                    ">
+                        <h2 style="margin: 0; color: {colors[i]};">#{i+1}</h2>
+                        <h1 style="margin: 5px 0; color: white;">{pick.get('symbol', 'N/A')}</h1>
+                        <p style="margin: 5px 0; color: #4ecdc4; font-size: 1.2rem;">
+                            Score: {score:.2f}
+                        </p>
+                        <p style="margin: 5px 0; color: white; font-weight: bold;">
+                            {action}
+                        </p>
+                        <p style="margin: 5px 0; color: #aaa; font-size: 0.9rem;">
+                            {sources}
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
+    else:
+        st.info("No picks available. Run Market Direction Analysis or wait for scan results.")
     
-    # Avoid section
+    # Avoid section based on regime
+    if regime in ["RISK_ON", "STRONG_BULLISH", "BULLISH"]:
+        st.markdown("### ⚠️ REGIME WARNING")
+        st.error("""
+        **Market regime is BULLISH - New puts are risky!**
+        - Wait for regime change before opening new positions
+        - Only consider specific catalyst plays
+        - Manage existing positions, don't add
+        """)
+    
     avoid_plays = market_direction.get("avoid_plays", []) if market_direction else []
-    
     if avoid_plays:
         st.markdown("### ⚠️ AVOID TODAY")
         for avoid in avoid_plays:

@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-02-05T09:15:00.148281-05:00",
+  "summary": {
+    "checked": 0,
+    "vacuum_open": 0,
+    "spread_collapse": 0,
+    "pressure_absorbed": 0,
+    "monitoring": 0,
+    "actionable": 0
+  },
+  "alerts": {}
+}
