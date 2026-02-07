@@ -402,9 +402,11 @@ class PutsEngineScheduler:
         )
         
         # ============================================================================
-        # MARKET DIRECTION ENGINE (Feb 4, 2026)
+        # MARKET DIRECTION ENGINE (Feb 4, 2026) — UPDATED Feb 6, 2026
         # Predicts market direction using GEX, VIX, dark pool, options flow
-        # Runs at 8:00 AM and 9:00 AM ET for trading decisions
+        # Pre-market: 8:00 AM and 9:00 AM ET
+        # Intraday: Hourly from 10:00 AM to 3:00 PM ET (6 refreshes)
+        # Uses Polygon (unlimited) + cached UW data — lightweight refresh
         # ============================================================================
         self.scheduler.add_job(
             self._run_market_direction_wrapper,
@@ -421,6 +423,19 @@ class PutsEngineScheduler:
             name="🎯 Market Direction Analysis (9:00 AM ET) - Pre-Open",
             replace_existing=True
         )
+        
+        # INTRADAY MARKET DIRECTION REFRESH — Hourly during market hours
+        # FEB 6, 2026 FIX: Market Direction was stuck at 8 AM all day because
+        # no intraday refresh jobs existed. Dashboard auto-refresh reloads the
+        # JSON every 30 min, but the JSON itself wasn't being updated.
+        for md_hour in [10, 11, 12, 13, 14, 15]:
+            self.scheduler.add_job(
+                self._run_market_direction_wrapper,
+                CronTrigger(hour=md_hour, minute=0, timezone=EST),
+                id=f"market_direction_{md_hour}",
+                name=f"🎯 Market Direction Refresh ({md_hour}:00 ET) - Intraday",
+                replace_existing=True
+            )
         
         # ============================================================================
         # ARCHITECT-4 LEAD/DISCOVERY SCANNERS
@@ -666,12 +681,34 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
+        # 10:00 AM EWS - MORNING REFRESH (FEB 6, 2026 FIX)
+        # Fills the 8 AM → 12 PM gap that was leaving EWS data 4+ hours stale
+        # Also acts as a safety net if the 8 AM scan was interrupted
+        self.scheduler.add_job(
+            self._run_early_warning_scan_wrapper,
+            CronTrigger(hour=10, minute=0, timezone=EST),
+            id="early_warning_10am",
+            name="🚨 Early Warning Scan (10:00 AM ET) - MORNING REFRESH",
+            replace_existing=True
+        )
+        
         # 12:00 PM EWS - Midday update for afternoon positioning
         self.scheduler.add_job(
             self._run_early_warning_scan_wrapper,
             CronTrigger(hour=12, minute=0, timezone=EST),
             id="early_warning_12pm",
             name="🚨 Early Warning Scan (12:00 PM ET) - MIDDAY UPDATE",
+            replace_existing=True
+        )
+        
+        # 2:30 PM EWS - AFTERNOON REFRESH (FEB 6, 2026 FIX)
+        # Fills the 12 PM → 4:30 PM gap that was leaving EWS data 4.5 hours stale
+        # Critical: Captures afternoon institutional positioning before close
+        self.scheduler.add_job(
+            self._run_early_warning_scan_wrapper,
+            CronTrigger(hour=14, minute=30, timezone=EST),
+            id="early_warning_230pm",
+            name="🚨 Early Warning Scan (2:30 PM ET) - AFTERNOON REFRESH",
             replace_existing=True
         )
         
@@ -1115,7 +1152,8 @@ class PutsEngineScheduler:
         Wrapper to run early warning institutional footprint scan.
         
         This is the KEY scan for 1-3 day early detection.
-        It runs at 8 AM, 12 PM, and 4:30 PM ET.
+        Schedule: 8 AM, 10 AM, 12 PM, 2:30 PM, 4:30 PM, 10 PM ET.
+        (10 AM and 2:30 PM added Feb 6, 2026 to fill 4+ hour gaps)
         """
         self._safe_async_run(self.run_early_warning_scan(), "early_warning_scan")
     
@@ -1804,7 +1842,9 @@ class PutsEngineScheduler:
         Uses GEX, VIX, dark pool, and options flow to predict market direction.
         Outputs 8 best plays based on direction.
         
-        Schedule: 8:00 AM and 9:00 AM ET
+        Schedule: 8:00 AM, 9:00 AM ET (pre-market)
+                  10:00 AM, 11:00 AM, 12:00 PM, 1:00 PM, 2:00 PM, 3:00 PM ET (intraday refresh)
+        (Intraday refresh added Feb 6, 2026 — was stuck at 8 AM with no updates)
         """
         now_et = datetime.now(EST)
         logger.info("=" * 60)

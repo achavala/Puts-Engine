@@ -620,14 +620,14 @@
     "expires_date": "2026-02-06"
   },
   "HIMS": {
-    "score": 0.45,
+    "score": 0.6,
     "source": "liquidity",
     "signals": [
-      "ah_drop_3.7pct",
-      "after_hours_high"
+      "ah_drop_14.6pct",
+      "after_hours_critical"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-10"
+    "added_date": "2026-02-06",
+    "expires_date": "2026-02-11"
   },
   "BIDU": {
     "score": 0.5,
@@ -637,20 +637,19 @@
       "leader_JD_weak",
       "sector_china_adr"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-10"
+    "added_date": "2026-02-06",
+    "expires_date": "2026-02-11"
   },
   "NIO": {
-    "score": 0.7810857935592131,
-    "source": "early_warning",
-    "reason": "IPI=0.78 (3 footprints)",
+    "score": 0.5,
+    "source": "distribution",
     "signals": [
-      "quote_degradation",
-      "multi_day_distribution",
-      "dark_pool_sequence"
+      "sector_correlation",
+      "leader_JD_weak",
+      "sector_china_adr"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-07"
+    "added_date": "2026-02-06",
+    "expires_date": "2026-02-11"
   },
   "XPEV": {
     "score": 0.5,
@@ -660,8 +659,8 @@
       "leader_JD_weak",
       "sector_china_adr"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-10"
+    "added_date": "2026-02-06",
+    "expires_date": "2026-02-11"
   },
   "LI": {
     "score": 0.5,
@@ -671,8 +670,8 @@
       "leader_JD_weak",
       "sector_china_adr"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-10"
+    "added_date": "2026-02-06",
+    "expires_date": "2026-02-11"
   },
   "BILI": {
     "score": 0.5,
@@ -682,8 +681,8 @@
       "leader_JD_weak",
       "sector_china_adr"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-10"
+    "added_date": "2026-02-06",
+    "expires_date": "2026-02-11"
   },
   "MOH": {
     "score": 0.6,
@@ -849,18 +848,6 @@
     "added_date": "2026-02-05",
     "expires_date": "2026-02-07"
   },
-  "PANW": {
-    "score": 0.8376178194638122,
-    "source": "early_warning",
-    "reason": "IPI=0.84 (3 footprints)",
-    "signals": [
-      "quote_degradation",
-      "multi_day_distribution",
-      "dark_pool_sequence"
-    ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-07"
-  },
   "AI": {
     "score": 0.8276347123707349,
     "source": "early_warning",
@@ -1005,5 +992,15 @@
     ],
     "added_date": "2026-02-05",
     "expires_date": "2026-02-07"
+  },
+  "BDX": {
+    "score": 0.45,
+    "source": "liquidity",
+    "signals": [
+      "ah_drop_3.2pct",
+      "after_hours_high"
+    ],
+    "added_date": "2026-02-06",
+    "expires_date": "2026-02-11"
   }
 }

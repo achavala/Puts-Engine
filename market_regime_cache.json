@@ -1,13 +1,13 @@
 {
-  "cache_time": "2026-02-06T01:52:08.896065",
+  "cache_time": "2026-02-06T20:33:35.277400",
   "regime_data": {
-    "timestamp": "2026-02-06T01:52:08.896006",
+    "timestamp": "2026-02-06T20:33:35.277326",
     "regime": "bullish_neutral",
     "spy_below_vwap": false,
     "qqq_below_vwap": false,
     "index_gex": 0.0,
-    "vix_level": 28.42,
-    "vix_change": 0.062429906542056136,
+    "vix_level": 20.0,
+    "vix_change": 0.0,
     "is_tradeable": false,
     "block_reasons": [
       "index_pinned"
