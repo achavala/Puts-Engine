@@ -293,8 +293,23 @@ class AccelerationWindowLayer:
 
         Rising put volume is bullish for puts.
         But if IV has already spiked, opportunity is gone.
+        
+        FEB 8, 2026 UPGRADE: Now also checks ask/bid side breakdown for
+        put aggression scoring. Put volume bought at ask = aggressive bearish
+        positioning. Put volume sold at bid = closing/selling puts.
+        
+        New result keys:
+        - put_aggression_ratio: ask_side / bid_side for puts (>1.0 = aggressive buying)
+        - put_volume_surge: put_volume / 30d_avg (>1.3 = surge)
+        - bearish_premium_dominant: True if bearish_premium > bullish_premium
         """
-        result = {"volume_rising": False, "iv_reasonable": True}
+        result = {
+            "volume_rising": False,
+            "iv_reasonable": True,
+            "put_aggression_ratio": 1.0,
+            "put_volume_surge": 1.0,
+            "bearish_premium_dominant": False
+        }
 
         try:
             # Get options volume data
@@ -306,21 +321,56 @@ class AccelerationWindowLayer:
             # Handle both dict with "data" key and direct response
             data = volume_data.get("data", volume_data) if isinstance(volume_data, dict) else volume_data
 
-            # If data is a list, get first element
+            # If data is a list, get latest element
             if isinstance(data, list):
                 if len(data) == 0:
                     return result
-                data = data[0]
+                data = data[-1] if isinstance(data[-1], dict) else data[0]
 
             if not isinstance(data, dict):
                 return result
 
             # Check put volume trend
-            put_volume = data.get("put_volume", 0)
+            put_volume = int(data.get("put_volume", 0))
             put_volume_avg = data.get("put_volume_avg", put_volume)
+            
+            # FEB 8, 2026 UPGRADE: Use 3-day average for sensitive surge detection
+            # 3-day avg catches short-term spikes that 30-day average smooths out
+            # This detects "yesterday something changed" scenarios
+            avg_3d_put = float(data.get("avg_3_day_put_volume", 0))
+            avg_30d_put = float(data.get("avg_30_day_put_volume", 0))
+            
+            # Use 3-day average as primary for spike sensitivity
+            if avg_3d_put > 0:
+                surge_vs_3d = put_volume / avg_3d_put
+                result["put_volume_surge_3d"] = surge_vs_3d
+            else:
+                surge_vs_3d = 0.0
+                result["put_volume_surge_3d"] = 0.0
+            
+            # Use 30-day average as secondary (structural baseline)
+            if avg_30d_put > 0:
+                surge_vs_30d = put_volume / avg_30d_put
+                put_volume_avg = avg_30d_put
+                result["put_volume_surge"] = surge_vs_30d
+            elif put_volume_avg > 0:
+                surge_vs_30d = put_volume / put_volume_avg
+                result["put_volume_surge"] = surge_vs_30d
+            else:
+                surge_vs_30d = 0.0
 
             if put_volume_avg > 0:
-                result["volume_rising"] = put_volume > put_volume_avg * 1.2
+                # Standard: 1.2x of 30-day average
+                volume_rising_30d = put_volume > put_volume_avg * 1.2
+                # Sensitive: 1.3x of 3-day average (catches short-term surges)
+                volume_rising_3d = avg_3d_put > 0 and put_volume > avg_3d_put * 1.3
+                result["volume_rising"] = volume_rising_30d or volume_rising_3d
+                
+                if volume_rising_3d and not volume_rising_30d:
+                    logger.debug(
+                        f"{symbol}: Put volume surge via 3-day avg "
+                        f"(3d: {surge_vs_3d:.2f}x, 30d: {surge_vs_30d:.2f}x)"
+                    )
 
             # Check IV level
             iv_rank = data.get("iv_rank", 50)
@@ -333,6 +383,37 @@ class AccelerationWindowLayer:
                 iv_rank < 70 and
                 iv_change < self.config.IV_SPIKE_THRESHOLD
             )
+            
+            # ── FEB 8, 2026: ASK/BID SIDE AGGRESSION SCORING ──
+            # UW provides put_volume_ask_side and put_volume_bid_side:
+            # - put_volume_ask_side: puts bought at ask = aggressive bearish
+            # - put_volume_bid_side: puts sold at bid = closing/selling puts
+            # Aggression ratio > 1.0 means more aggressive put buying
+            put_ask_side = int(data.get("put_volume_ask_side", 0))
+            put_bid_side = int(data.get("put_volume_bid_side", 0))
+            
+            if put_bid_side > 0:
+                result["put_aggression_ratio"] = put_ask_side / put_bid_side
+            elif put_ask_side > 0:
+                result["put_aggression_ratio"] = 2.0  # All ask, no bid = max aggression
+            
+            # ── Bearish vs Bullish Premium ──
+            bearish_prem = float(data.get("bearish_premium", 0))
+            bullish_prem = float(data.get("bullish_premium", 0))
+            if bearish_prem > 0 or bullish_prem > 0:
+                result["bearish_premium_dominant"] = bearish_prem > bullish_prem
+            
+            # ── Enhanced volume_rising: consider aggression ──
+            # Even if volume isn't 1.2x avg, aggressive ask-side put buying
+            # with a surge > 1.1x is meaningful
+            if not result["volume_rising"] and result["put_aggression_ratio"] > 1.2:
+                if result["put_volume_surge"] > 1.1:
+                    result["volume_rising"] = True
+                    logger.debug(
+                        f"{symbol}: Put volume flagged via aggression "
+                        f"(surge={result['put_volume_surge']:.2f}x, "
+                        f"aggression={result['put_aggression_ratio']:.2f})"
+                    )
 
         except Exception as e:
             logger.warning(f"Error checking put volume/IV for {symbol}: {e}")
@@ -411,6 +492,7 @@ class AccelerationWindowLayer:
         - IV spiked >20% same session
         - Put volume exploded in last hour
         - Price already broke down significantly
+        - Price already moved beyond implied move (expected move exhausted)
 
         Late puts have negative expectancy due to:
         - Elevated IV = expensive premiums
@@ -430,6 +512,30 @@ class AccelerationWindowLayer:
                     if iv_change > self.config.IV_SPIKE_THRESHOLD:
                         logger.warning(f"{symbol}: LATE ENTRY - IV spiked {iv_change:.1%}")
                         return True
+
+            # FEB 8, 2026: Check if expected move is already exhausted
+            # If price has already moved beyond the implied_move_perc, the
+            # options market has already priced in this move = late entry
+            try:
+                iv_ts = await self.unusual_whales.get_iv_term_structure(symbol)
+                if iv_ts and isinstance(iv_ts, dict):
+                    implied_move_pct = float(iv_ts.get("implied_move_perc", 0) or 0)
+                    if implied_move_pct > 0 and bars and len(bars) >= 2:
+                        # Check if today's move already exceeds expected move
+                        today = bars[-1]
+                        yesterday = bars[-2]
+                        actual_move = abs((today.close - yesterday.close) / yesterday.close)
+                        # Convert implied_move to decimal if it's in percentage
+                        if implied_move_pct > 1:
+                            implied_move_pct = implied_move_pct / 100.0
+                        if actual_move > implied_move_pct * 1.2:  # >120% of expected move
+                            logger.warning(
+                                f"{symbol}: LATE ENTRY - Move {actual_move:.1%} exceeds "
+                                f"implied move {implied_move_pct:.1%} (exhausted)"
+                            )
+                            return True
+            except Exception as e:
+                logger.debug(f"Implied move check failed for {symbol}: {e}")
 
             # Check for volume explosion in last hour
             today = date.today()

@@ -1,9 +1,18 @@
 """
-🌪️ MARKET WEATHER FORECAST TAB v5.1
+🌪️ MARKET WEATHER FORECAST TAB v6.0
 =====================================
-Displays TWO daily weather reports:
+Displays TWO daily weather reports below the convergence board:
   • AM (9:00 AM ET) — "Open Risk Forecast" for same-day decisions
   • PM (3:00 PM ET) — "Overnight Storm Build" for next-day prep
+
+v6.0: Convergence Engine v2.0 Integration
+  • 🎯 Top 9 Convergence Board at the TOP — auto-updating, self-healing
+  • 📡 Pipeline Status — live heartbeat of all 4 data engines
+  • 🔺🔻➡️🆕 Trajectory Tracking — is the storm building or dissipating?
+  • 🏆 Trifecta Badge — stocks in 3/3 Gamma Drain sub-engines
+  • ⚠️ STALE Banners — prominent when data is older than 2 hours
+  • 🔄 Auto-recovery — degraded → auto-fix on next 30-min cycle
+  • 🌍 Sector Diversity — max 3 from same sector to reduce correlated risk
 
 v5.1 Architect Operational Additions:
   • 🏛️ Regime Panel (RISK_OFF/NEUTRAL/RISK_ON, TREND/CHOP, Fragility)
@@ -12,14 +21,6 @@ v5.1 Architect Operational Additions:
   • 📡 Data Freshness stamps per provider
   • 📊 Attribution Logger for T+1/T+2 calibration
   • ❌ Missing inputs shown explicitly, not silently neutral
-  • Top 8 (not 10) for actionability
-
-Prior v5 Additions:
-  • Storm Score (NOT probability — uncalibrated ranking)
-  • Gamma Flip Distance + Fragility flag
-  • Opening vs Closing Flow bias
-  • Liquidity Violence flag (NORMAL/GAPPY/VIOLENT)
-  • Confidence band (HIGH/MEDIUM/LOW) with similar_days_n
 
 Visual metaphor:
 - 🌪️ STORM WARNING = 4/4 layers (like a hurricane warning)
@@ -39,6 +40,433 @@ import pandas as pd
 
 WEATHER_DIR = Path("logs/market_weather")
 LEGACY_PATH = Path("logs/predictive_analysis.json")
+CONVERGENCE_FILE = Path("logs/convergence/latest_top9.json")
+
+
+def load_convergence_data() -> Optional[Dict]:
+    """Load the latest convergence Top 9 report."""
+    try:
+        if CONVERGENCE_FILE.exists():
+            with open(CONVERGENCE_FILE) as f:
+                return json.load(f)
+    except Exception as e:
+        st.error(f"Error loading convergence data: {e}")
+    return None
+
+
+def _convergence_source_indicator(health: Dict) -> str:
+    """Build a source health indicator string"""
+    freshness = health.get("freshness", "MISSING")
+    if freshness == "FRESH":
+        return "🟢"
+    elif freshness == "STALE":
+        return "⚠️"
+    elif freshness == "CRITICAL":
+        return "🔴"
+    else:
+        return "❌"
+
+
+def render_convergence_board():
+    """
+    🎯 TOP 9 CONVERGENCE CANDIDATES — v2.0
+    
+    Automated 4-step decision hierarchy display.
+    Shows at the TOP of the Predictive tab for immediate action.
+    
+    v2.0: Trajectory, trifecta badges, pipeline status, stale banners,
+    sector diversity, enhanced self-healing indicators.
+    
+    This is the FIRST thing you see when opening the Predictive tab.
+    Zero API calls — reads from cached JSON produced by convergence engine.
+    Auto-updates every 30 min + after each EWS scan.
+    """
+    conv_data = load_convergence_data()
+    
+    if not conv_data:
+        st.info("🎯 Convergence Engine initializing... Auto-runs every 30 min after EWS scans. No manual action needed.")
+        return
+    
+    status = conv_data.get("status", "unknown")
+    top9 = conv_data.get("top9", [])
+    summary = conv_data.get("summary", {})
+    source_health = conv_data.get("source_health", {})
+    pipeline = conv_data.get("pipeline_status", {})
+    generated = conv_data.get("generated_at_et", "")
+    
+    # Calculate age
+    age_str = _format_age(conv_data.get("generated_at_utc", ""))
+    
+    # Staleness check
+    is_stale = False
+    stale_msg = ""
+    stale_level = ""
+    try:
+        gen_utc = conv_data.get("generated_at_utc", "")
+        if gen_utc:
+            gen_ts = datetime.fromisoformat(gen_utc)
+            age_seconds = (datetime.utcnow() - gen_ts).total_seconds()
+            now_hour = datetime.utcnow().hour
+            is_market_hours = 13 <= now_hour <= 21  # ~8:30-4:00 ET
+            if is_market_hours and age_seconds > 7200:
+                is_stale = True
+                stale_level = "CRITICAL" if age_seconds > 14400 else "WARNING"
+                stale_msg = f"⚠️ DATA STALE — Last update: {age_str} (>{int(age_seconds//3600)}h during market hours)"
+            elif age_seconds > 14400:
+                is_stale = True
+                stale_level = "WARNING"
+                stale_msg = f"⚠️ Data aging — Last update: {age_str}"
+    except Exception:
+        pass
+    
+    # Degraded status
+    if status == "degraded":
+        error = conv_data.get("error", "Unknown error")
+        st.error(
+            f"🎯 Convergence Engine DEGRADED — {error}\n\n"
+            f"**Auto-recovery**: Will retry on next 30-min cycle. No manual action needed."
+        )
+        _render_pipeline_status(pipeline)
+        _render_source_health(source_health)
+        return
+    
+    # ── STALE Banner (prominent, impossible to miss) ──
+    if is_stale:
+        banner_bg = "#4a0a0a" if stale_level == "CRITICAL" else "#4a2a0a"
+        banner_border = "#ff4444" if stale_level == "CRITICAL" else "#ff8800"
+        st.markdown(f"""
+        <div style="background: {banner_bg}; padding: 10px 16px; border-radius: 8px;
+             border: 2px solid {banner_border}; margin-bottom: 10px; text-align: center;">
+            <span style="color: {banner_border}; font-weight: bold; font-size: 14px;">
+                {stale_msg}
+            </span><br>
+            <span style="color: #aaa; font-size: 11px;">
+                🔄 Auto-recovery: Convergence engine runs every 30 min + after each EWS scan.
+                No manual intervention needed.
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # ── Header ──
+    lights = summary.get("permission_lights", {})
+    regime = summary.get("direction_regime", "UNKNOWN")
+    sources_avail = summary.get("sources_available", 0)
+    trifecta_count = summary.get("trifecta_count", 0)
+    multi_eng = summary.get("multi_engine_count", 0)
+    any_stale = summary.get("any_stale", False)
+    
+    regime_colors = {"RISK_OFF": "#ff4444", "NEUTRAL": "#ffaa00", "RISK_ON": "#44cc44", "UNKNOWN": "#888"}
+    regime_color = regime_colors.get(regime, "#888")
+    
+    # Trifecta badge (if any)
+    trifecta_html = ""
+    if trifecta_count > 0:
+        trifecta_html = (
+            f'<span style="background:#5a0a5a; color:#ff44ff; padding:2px 8px; '
+            f'border-radius:4px; font-size:10px; font-weight:bold; margin-left:8px;">'
+            f'🏆 {trifecta_count} TRIFECTA</span>'
+        )
+    elif multi_eng > 0:
+        trifecta_html = (
+            f'<span style="background:#3a3a0a; color:#ffcc44; padding:2px 8px; '
+            f'border-radius:4px; font-size:10px; font-weight:bold; margin-left:8px;">'
+            f'🔥 {multi_eng} MULTI-ENGINE</span>'
+        )
+    
+    stale_indicator = ""
+    if any_stale:
+        stale_indicator = (
+            '<span style="background:#4a2a0a; color:#ffaa00; padding:2px 6px; '
+            'border-radius:4px; font-size:10px; margin-left:6px;">⚠️ PARTIAL STALE</span>'
+        )
+    
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #0a1a0a 0%, #0a0a2e 50%, #1a0a0a 100%);
+         padding: 18px 24px; border-radius: 12px; border: 1px solid #2a4a2a; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <span style="color: #44ff44; font-size: 22px; font-weight: bold;">🎯 TOP 9 CONVERGENCE CANDIDATES</span>
+                <span style="color: #888; font-size: 12px; margin-left: 12px;">
+                    Fully Automated · 4-Step: EWS(35%) → Direction(15%) → Gamma(25%) → Weather(25%)
+                </span>
+                {trifecta_html}{stale_indicator}
+            </div>
+            <div style="text-align: right;">
+                <span style="color: #44cc44; font-size: 14px;">🟢 {lights.get('green', 0)}</span>
+                <span style="color: #ffaa00; font-size: 14px; margin-left: 6px;">🟡 {lights.get('yellow', 0)}</span>
+                <span style="color: #ff4444; font-size: 14px; margin-left: 6px;">🔴 {lights.get('red', 0)}</span>
+                <span style="color: {regime_color}; font-size: 12px; margin-left: 10px;">[{regime}]</span>
+            </div>
+        </div>
+        <div style="color: #666; font-size: 11px; margin-top: 4px;">
+            Updated: {age_str} · Sources: {sources_avail}/4 ·
+            Auto-refreshes every 30 min + after each EWS scan · Self-healing · Zero API calls
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # ── Pipeline Status Bar ──
+    _render_pipeline_status(pipeline)
+    
+    # ── Source Health Bar ──
+    _render_source_health(source_health)
+    
+    # ── Top 9 Table ──
+    if not top9:
+        st.info("No convergence candidates detected. Markets may be calm or data sources initializing.")
+        return
+    
+    df_data = []
+    for i, c in enumerate(top9, 1):
+        perm = c.get("permission_light", "🔴")
+        src_count = c.get("sources_agreeing", 0)
+        src_list = c.get("source_list", [])
+        
+        # Source badges
+        src_badges = []
+        if "EWS" in src_list:
+            src_badges.append("🚨EWS")
+        if "GammaDrain" in src_list:
+            src_badges.append("🔥GD")
+        if "Weather" in src_list:
+            src_badges.append("🌪️WX")
+        if "Direction" in src_list:
+            src_badges.append("📈DIR")
+        
+        # EWS detail
+        ews_detail = ""
+        if c.get("ews_level"):
+            level = c["ews_level"].upper()
+            days = c.get("ews_days_building", 0)
+            ews_detail = f"{level}"
+            if days > 0:
+                ews_detail += f"({days}d)"
+        
+        # v2.0: Trifecta/multi-engine badge
+        eng_badge = ""
+        if c.get("gamma_is_trifecta"):
+            eng_badge = "🏆T"
+        elif c.get("gamma_engines_count", 0) >= 2:
+            eng_count = c["gamma_engines_count"]
+            eng_badge = f"🔥{eng_count}"
+        
+        # v2.0: Trajectory
+        traj = c.get("trajectory_emoji", "")
+        delta = c.get("score_delta", 0)
+        delta_str = f"{delta:+.3f}" if delta != 0 else ""
+        days_on = c.get("days_on_list", 0)
+        
+        df_data.append({
+            "": perm,
+            "#": i,
+            "Symbol": c["symbol"],
+            "Conv.": f"{c['convergence_score']:.3f}",
+            "Trend": f"{traj} {delta_str}".strip(),
+            "Days": days_on if days_on > 0 else "NEW",
+            "Src": f"{src_count}/4",
+            "Sources": " ".join(src_badges),
+            "EWS": f"{c.get('ews_score', 0):.2f}",
+            "Level": ews_detail,
+            "Gamma": f"{c.get('gamma_score', 0):.2f}",
+            "Eng": eng_badge,
+            "Storm": f"{c.get('weather_score', 0):.2f}",
+            "Dir.": f"{c.get('direction_alignment', 0):.2f}",
+            "Price": f"${c['current_price']:.2f}" if c.get("current_price") else "—",
+        })
+    
+    df = pd.DataFrame(df_data)
+    
+    # Color-code by permission light
+    def style_conv(row):
+        perm = row[""]
+        if perm == "🟢":
+            return ["background-color: #0a2a0a; color: #44ff44;"] * len(row)
+        elif perm == "🟡":
+            return ["background-color: #2a2a0a; color: #ffcc44;"] * len(row)
+        else:
+            return ["background-color: #1a0a0a; color: #ff6666;"] * len(row)
+    
+    styled = df.style.apply(style_conv, axis=1)
+    st.dataframe(styled, use_container_width=True, height=min(420, 55 + len(top9) * 40))
+    
+    # ── Expanded detail for top 3 ──
+    st.markdown("##### 🔍 Top 3 — Convergence Detail")
+    for i, c in enumerate(top9[:3], 1):
+        perm = c.get("permission_light", "🔴")
+        sym = c["symbol"]
+        conv = c["convergence_score"]
+        srcs = c.get("source_list", [])
+        traj_e = c.get("trajectory_emoji", "")
+        traj_t = c.get("trajectory", "")
+        days_on = c.get("days_on_list", 0)
+        delta = c.get("score_delta", 0)
+        
+        # Trifecta tag
+        tri_tag = " 🏆 TRIFECTA" if c.get("gamma_is_trifecta") else ""
+        eng_tag = f" 🔥{c['gamma_engines_count']}-engine" if c.get("gamma_engines_count", 0) >= 2 and not c.get("gamma_is_trifecta") else ""
+        
+        header = (
+            f"#{i} {perm} **{sym}** — Conv: {conv:.3f} {traj_e} ({traj_t}) | "
+            f"{c.get('sources_agreeing', 0)}/4 sources: {', '.join(srcs)}"
+            f"{tri_tag}{eng_tag}"
+            f" | Day {days_on} on list" if days_on > 1 else
+            f"#{i} {perm} **{sym}** — Conv: {conv:.3f} {traj_e} ({traj_t}) | "
+            f"{c.get('sources_agreeing', 0)}/4 sources: {', '.join(srcs)}"
+            f"{tri_tag}{eng_tag}"
+        )
+        
+        with st.expander(header, expanded=(i == 1)):
+            mc1, mc2, mc3, mc4 = st.columns(4)
+            
+            with mc1:
+                ews_s = c.get("ews_score", 0)
+                ews_l = c.get("ews_level", "N/A").upper()
+                fp = c.get("ews_footprints", 0)
+                days_b = c.get("ews_days_building", 0)
+                ews_color = "#ff4444" if ews_s >= 0.7 else "#ffaa00" if ews_s >= 0.4 else "#888"
+                st.markdown(
+                    f"**🚨 EWS** (35%)<br>"
+                    f"<span style='font-size:20px; color:{ews_color};'>{ews_s:.2f}</span><br>"
+                    f"Level: {ews_l} · {fp} footprints · {days_b}d building",
+                    unsafe_allow_html=True
+                )
+            
+            with mc2:
+                g_s = c.get("gamma_score", 0)
+                g_engine = c.get("gamma_engine", "N/A")
+                g_sigs = c.get("gamma_signals", [])[:3]
+                g_eng_count = c.get("gamma_engines_count", 0)
+                g_color = "#ff4444" if g_s >= 0.68 else "#ffaa00" if g_s >= 0.4 else "#888"
+                sigs_str = ", ".join(g_sigs) if g_sigs else "N/A"
+                tri_label = "🏆 TRIFECTA" if c.get("gamma_is_trifecta") else f"({g_eng_count} engines)" if g_eng_count >= 2 else ""
+                st.markdown(
+                    f"**🔥 Gamma Drain** (25%)<br>"
+                    f"<span style='font-size:20px; color:{g_color};'>{g_s:.2f}</span> {tri_label}<br>"
+                    f"Engine: {g_engine}<br>"
+                    f"<span style='font-size:11px;'>{sigs_str}</span>",
+                    unsafe_allow_html=True
+                )
+            
+            with mc3:
+                w_s = c.get("weather_score", 0)
+                w_fc = c.get("weather_forecast", "N/A")
+                w_layers = c.get("weather_layers", 0)
+                w_conf = c.get("weather_confidence", "N/A")
+                w_color = "#ff4444" if w_s >= 0.7 else "#ffaa00" if w_s >= 0.4 else "#888"
+                st.markdown(
+                    f"**🌪️ Weather** (25%)<br>"
+                    f"<span style='font-size:20px; color:{w_color};'>{w_s:.2f}</span><br>"
+                    f"{w_fc} · {w_layers}/4 layers · {w_conf}",
+                    unsafe_allow_html=True
+                )
+            
+            with mc4:
+                d_a = c.get("direction_alignment", 0)
+                d_r = c.get("direction_regime", "?")
+                d_color = "#44cc44" if d_a >= 0.6 else "#ffaa00" if d_a >= 0.3 else "#ff4444"
+                st.markdown(
+                    f"**📈 Direction** (15%)<br>"
+                    f"<span style='font-size:20px; color:{d_color};'>{d_a:.2f}</span><br>"
+                    f"Regime: {d_r}",
+                    unsafe_allow_html=True
+                )
+            
+            # Trajectory row
+            if days_on > 1:
+                prev_s = c.get("prev_score", 0)
+                delta_color = "#44ff44" if delta > 0 else "#ff4444" if delta < 0 else "#888"
+                st.markdown(
+                    f"**Trajectory:** {traj_e} {traj_t} · "
+                    f"Previous: {prev_s:.3f} → Current: {conv:.3f} · "
+                    f"<span style='color:{delta_color};'>Δ {delta:+.3f}</span> · "
+                    f"Day {days_on} on convergence list",
+                    unsafe_allow_html=True
+                )
+            
+            # EWS Recommendation (if available)
+            rec = c.get("ews_recommendation", "")
+            if rec:
+                st.markdown(f"**EWS Recommendation:** {rec}")
+    
+    st.divider()
+
+
+def _render_pipeline_status(pipeline: Dict):
+    """
+    Render the 4-step pipeline heartbeat as an inline status bar.
+    Shows which engines are running and their health.
+    """
+    if not pipeline or not pipeline.get("steps"):
+        return
+    
+    steps = pipeline["steps"]
+    all_healthy = pipeline.get("all_healthy", False)
+    any_stale = pipeline.get("any_stale", False)
+    any_missing = pipeline.get("any_missing", False)
+    
+    # Build inline pipeline visualization
+    step_items = []
+    for step in steps:
+        icon = step.get("icon", "❓")
+        status_e = step.get("status_emoji", "❓")
+        label = step.get("label", "?").replace("Step ", "")
+        records = step.get("records", 0)
+        err = step.get("error")
+        
+        if err:
+            tooltip = f"{label}: {err}"
+        else:
+            tooltip = f"{label}: {records} records"
+        
+        step_items.append(
+            f'<span title="{tooltip}" style="margin-right:12px;">'
+            f'{icon} {status_e} <span style="font-size:11px;">{label}</span>'
+            f'</span>'
+        )
+    
+    overall_color = "#44cc44" if all_healthy else "#ffaa00" if any_stale else "#ff4444"
+    overall_label = "ALL HEALTHY" if all_healthy else "PARTIAL STALE" if any_stale and not any_missing else "DEGRADED" if any_missing else "OK"
+    
+    st.markdown(
+        f'<div style="background: #0a0a1a; padding: 6px 14px; border-radius: 6px; '
+        f'border: 1px solid #2a2a4a; margin-bottom: 4px; font-size: 12px; color: #aaa; '
+        f'display: flex; justify-content: space-between; align-items: center;">'
+        f'<span>🔄 Pipeline: {"".join(step_items)}</span>'
+        f'<span style="color: {overall_color}; font-weight: bold;">{overall_label}</span>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+
+def _render_source_health(source_health: Dict):
+    """Render the 4-source health indicators inline."""
+    if not source_health:
+        return
+    
+    health_items = []
+    for key in ["ews", "direction", "gamma", "weather"]:
+        h = source_health.get(key, {})
+        icon = _convergence_source_indicator(h)
+        name_short = {"ews": "EWS", "direction": "Direction", "gamma": "Gamma", "weather": "Weather"}.get(key, key)
+        freshness = h.get("freshness", "MISSING")
+        count = h.get("record_count", 0)
+        err = h.get("error", "")
+        
+        detail = f"{icon} {name_short}: {freshness}"
+        if count > 0:
+            detail += f" ({count})"
+        if err:
+            detail += f" [{err}]"
+        health_items.append(detail)
+    
+    health_str = " &nbsp;·&nbsp; ".join(health_items)
+    st.markdown(
+        f'<div style="background: #0a0a1a; padding: 6px 14px; border-radius: 6px; '
+        f'border: 1px solid #2a2a4a; margin-bottom: 10px; font-size: 12px; color: #aaa;">'
+        f'📡 Source Health: {health_str}'
+        f'</div>',
+        unsafe_allow_html=True
+    )
 
 
 def load_weather_data(mode: str = "latest") -> Optional[Dict]:
@@ -123,7 +551,12 @@ def get_forecast_bg(forecast: str) -> str:
 
 
 def render_predictive_tab():
-    """Render the Market Weather Forecast tab — v5.2 (30-min refresh)"""
+    """Render the Market Weather Forecast tab — v6.0 (Convergence + 30-min refresh)"""
+    
+    # ═══════════════════════════════════════════════════════════════════════
+    # TOP OF TAB: 🎯 CONVERGENCE SCOREBOARD (auto-updating, self-healing)
+    # ═══════════════════════════════════════════════════════════════════════
+    render_convergence_board()
     
     # ── Styles ──
     st.markdown("""
@@ -776,10 +1209,11 @@ def render_predictive_tab():
 
 
 def _format_age(timestamp_str: str) -> str:
-    """Format a timestamp as 'Xm ago' or 'Xh ago'"""
+    """Format a UTC timestamp as 'Xm ago' or 'Xh ago'"""
     try:
         ts = datetime.fromisoformat(timestamp_str)
-        age = (datetime.now() - ts).total_seconds()
+        # CRITICAL: generated_at_utc is UTC — must compare with utcnow(), not now()
+        age = (datetime.utcnow() - ts).total_seconds()
         if age < 3600:
             return f"{int(age // 60)}m ago"
         elif age < 86400:

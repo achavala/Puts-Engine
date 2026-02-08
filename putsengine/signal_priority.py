@@ -181,6 +181,33 @@ SIGNAL_DEFINITIONS: Dict[str, SignalDefinition] = {
         description="Congressional selling - regulatory insight"
     ),
     
+    # Greek-Weighted Flow (FEB 8, 2026)
+    "high_greek_weighted_flow": SignalDefinition(
+        name="high_greek_weighted_flow",
+        timing=SignalTiming.PRE_BREAKDOWN,
+        base_weight=0.18,
+        priority_multiplier=1.5,
+        description="High bearish delta+gamma+vega exposure - institutional conviction BEFORE move"
+    ),
+    
+    # Skew Reversal (FEB 8, 2026)
+    "skew_reversal": SignalDefinition(
+        name="skew_reversal",
+        timing=SignalTiming.PRE_BREAKDOWN,
+        base_weight=0.14,
+        priority_multiplier=1.5,
+        description="Risk reversal flipped sign day-over-day - regime shift in options skew"
+    ),
+    
+    # Dark Pool Violence (FEB 8, 2026)
+    "dark_pool_violence": SignalDefinition(
+        name="dark_pool_violence",
+        timing=SignalTiming.PRE_BREAKDOWN,
+        base_weight=0.16,
+        priority_multiplier=1.5,
+        description="Large dark pool prints on thin NBBO books - violent absorption conditions"
+    ),
+    
     # Pre-Catalyst Specific
     "precatalyst_critical": SignalDefinition(
         name="precatalyst_critical",

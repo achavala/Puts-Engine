@@ -303,6 +303,12 @@ class DealerPositioningLayer:
 
         Higher score = better for puts (negative GEX, no put walls)
         Lower score = worse for puts (positive GEX, put walls present)
+        
+        FEB 8, 2026 UPGRADE: Now includes vanna/charm from greek-exposure.
+        - Negative vanna + rising IV = dealers forced to sell → explosive downside
+        - Negative charm = time decay forcing delta hedging → amplifies moves
+        These second-order Greeks detect conditions where dealer hedging
+        will AMPLIFY rather than dampen price moves.
 
         Returns:
             Score from 0.0 to 1.0
@@ -334,10 +340,90 @@ class DealerPositioningLayer:
                     if gex_data.gex_flip_level and current_price < gex_data.gex_flip_level:
                         score += 0.15
 
+            # FEB 8, 2026: Check vanna + charm from greek-exposure (second-order Greeks)
+            # These detect EXPLOSIVE conditions where dealer hedging amplifies moves
+            vanna_charm_boost = await self._check_vanna_charm(symbol)
+            score += vanna_charm_boost
+
         except Exception as e:
             logger.warning(f"Error calculating dealer score for {symbol}: {e}")
 
         return min(max(score, 0.0), 1.0)
+    
+    async def _check_vanna_charm(self, symbol: str) -> float:
+        """
+        Check vanna and charm from greek-exposure for explosive conditions.
+        
+        FEB 8, 2026: Second-order Greeks from UW greek-exposure endpoint.
+        
+        Vanna (dDelta/dIV): How delta changes when IV changes.
+        - Negative vanna + rising IV = dealers forced to sell shares as IV rises
+        - This creates a feedback loop: selling → price drop → IV up → more selling
+        
+        Charm (dDelta/dTime): How delta changes with time passage.
+        - Negative charm = delta decaying toward expiry forces dealer rebalancing
+        - Near expiration + negative charm = gamma exposure becomes violent
+        
+        When both are negative = "vanna-charm vortex" = maximum dealer amplification.
+        
+        Returns:
+            Boost 0.0 to 0.15
+        """
+        boost = 0.0
+        
+        try:
+            greek_data = await self.unusual_whales.get_greek_exposure(symbol)
+            
+            if not greek_data:
+                return 0.0
+            
+            # Handle response format
+            data = greek_data.get("data", greek_data) if isinstance(greek_data, dict) else greek_data
+            if isinstance(data, list) and len(data) > 0:
+                row = data[-1]  # Latest record
+            elif isinstance(data, dict):
+                row = data
+            else:
+                return 0.0
+            
+            if not isinstance(row, dict):
+                return 0.0
+            
+            # Extract vanna and charm (UW may use different field names)
+            vanna = float(row.get("vanna", row.get("call_vanna", 0)) or 0)
+            charm = float(row.get("charm", row.get("call_charm", 0)) or 0)
+            
+            # Also check put-specific if available
+            put_vanna = float(row.get("put_vanna", 0) or 0)
+            put_charm = float(row.get("put_charm", 0) or 0)
+            
+            # Use total vanna/charm if specific values available
+            total_vanna = vanna + put_vanna if put_vanna != 0 else vanna
+            total_charm = charm + put_charm if put_charm != 0 else charm
+            
+            # Negative vanna: dealers forced to sell into IV expansion
+            if total_vanna < 0:
+                boost += 0.05
+                logger.debug(f"{symbol}: Negative vanna ({total_vanna:.2f}) - dealer selling amplification")
+            
+            # Negative charm: time decay forcing delta hedging
+            if total_charm < 0:
+                boost += 0.05
+                logger.debug(f"{symbol}: Negative charm ({total_charm:.2f}) - expiry-driven dealer pressure")
+            
+            # Vanna-charm vortex: both negative = maximum amplification
+            if total_vanna < 0 and total_charm < 0:
+                boost += 0.05  # Extra bonus for the combo
+                logger.info(
+                    f"{symbol}: VANNA-CHARM VORTEX detected! "
+                    f"Vanna={total_vanna:.2f}, Charm={total_charm:.2f} - "
+                    f"Explosive downside conditions"
+                )
+            
+        except Exception as e:
+            logger.debug(f"Vanna/charm check failed for {symbol}: {e}")
+        
+        return min(boost, 0.15)
 
     async def is_put_blocked(self, symbol: str) -> Tuple[bool, List[BlockReason]]:
         """

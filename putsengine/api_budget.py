@@ -80,15 +80,33 @@ class APIBudget:
         return int(self.total_calls * self.priority_3_pct)
 
 
-# Budget allocation per time window (UPDATED FOR 7,500 daily limit)
+# Budget allocation per time window (UPDATED FEB 7, 2026)
+# 
+# Feb 8, 2026: NEW API KEY — daily budget raised to 15,000.
+# Previous 7,500 limit caused budget exhaustion by ~12 PM ET, blocking
+# afternoon EWS scans (2 PM, 3 PM) and overnight (10 PM).
+#
+# Window budgets scaled to match actual demand per time block:
+#   PRE_MARKET:    7 AM (101) + 8 AM EWS (1,447) + 9 AM full (1,829) = ~3,377
+#   OPENING_RANGE: 9:45 AM EWS (1,444) = ~1,444
+#   MID_MORNING:   11 AM EWS (1,447) = ~1,447
+#   MIDDAY:        12 PM EWS+Direction (1,468) = ~1,468
+#   AFTERNOON:     2 PM EWS+Direction (1,447) = ~1,447
+#   CLOSE:         3 PM Daily+EWS+Pulse+Weather (2,184) = ~2,184
+#   AFTER_HOURS:   4:30 PM EWS (~100) + 10 PM EWS (1,444) = ~1,544
+#
+# Total demand: ~12,811 UW calls/day — comfortably within 15,000 daily cap.
+# Window budgets include ~10-15% headroom above actual demand.
+# EWS uses force_scan=True (bypasses tier limits, respects window cap).
+#
 WINDOW_BUDGETS: Dict[TimeWindow, APIBudget] = {
-    TimeWindow.PRE_MARKET: APIBudget(TimeWindow.PRE_MARKET, 800),      # 4 scans (4, 6, 8, 9 AM)
-    TimeWindow.OPENING_RANGE: APIBudget(TimeWindow.OPENING_RANGE, 800),  # Market open + 10:00
-    TimeWindow.MID_MORNING: APIBudget(TimeWindow.MID_MORNING, 1500),    # 10:30-12:00 (4 scans)
-    TimeWindow.MIDDAY: APIBudget(TimeWindow.MIDDAY, 1000),              # 12:00-2:00 (4 scans)
-    TimeWindow.AFTERNOON: APIBudget(TimeWindow.AFTERNOON, 1500),       # 2:00-3:30 (4 scans)
-    TimeWindow.CLOSE: APIBudget(TimeWindow.CLOSE, 800),                # 4:00 PM close
-    TimeWindow.AFTER_HOURS: APIBudget(TimeWindow.AFTER_HOURS, 1100),   # 5:00 PM + buffer
+    TimeWindow.PRE_MARKET: APIBudget(TimeWindow.PRE_MARKET, 3500),      # 7 AM + 8 AM EWS + 9 AM full scan
+    TimeWindow.OPENING_RANGE: APIBudget(TimeWindow.OPENING_RANGE, 1600), # 9:45 AM EWS + Market Direction
+    TimeWindow.MID_MORNING: APIBudget(TimeWindow.MID_MORNING, 1600),    # 11 AM EWS + Direction
+    TimeWindow.MIDDAY: APIBudget(TimeWindow.MIDDAY, 1600),              # 12 PM EWS + 1 PM EWS + Direction
+    TimeWindow.AFTERNOON: APIBudget(TimeWindow.AFTERNOON, 1600),        # 2 PM EWS + Direction
+    TimeWindow.CLOSE: APIBudget(TimeWindow.CLOSE, 2500),                # 3 PM Daily+EWS+Pulse+Weather PM
+    TimeWindow.AFTER_HOURS: APIBudget(TimeWindow.AFTER_HOURS, 1800),    # 4:30 PM EWS + 10 PM EWS
 }
 
 
@@ -106,7 +124,7 @@ class APIBudgetManager:
             manager.record_call(symbol)
     """
     
-    daily_limit: int = 7500  # Increased from 6000
+    daily_limit: int = 15000  # Feb 8, 2026: New API key — raised to 15,000 per user request
     _calls_today: int = 0
     _calls_reset_date: date = field(default_factory=date.today)
     _window_calls: Dict[TimeWindow, int] = field(default_factory=dict)
@@ -216,15 +234,25 @@ class APIBudgetManager:
         return self.get_ticker_priority(symbol, score, is_dui)
     
     def can_call_uw(self, symbol: str, priority: TickerPriority = None, 
-                   score: float = 0, is_dui: bool = False) -> bool:
+                   score: float = 0, is_dui: bool = False,
+                   force_scan: bool = False) -> bool:
         """
         Check if we can make a UW API call for this ticker.
         
+        Args:
+            symbol: Ticker symbol
+            priority: Ticker priority (P1/P2/P3)
+            score: Ticker score for priority determination
+            is_dui: Whether ticker was DUI-promoted
+            force_scan: If True, bypass priority-tier window limits and cooldowns.
+                       Only respects daily limit and TOTAL window budget.
+                       Used for EWS discovery scans that must scan ALL tickers.
+        
         Returns False if:
         - Daily budget exhausted
-        - Window budget exhausted for this priority
-        - Ticker on cooldown
-        - Ticker hit daily max calls
+        - Window budget exhausted for this priority (skipped if force_scan)
+        - Ticker on cooldown (skipped if force_scan)
+        - Ticker hit daily max calls (relaxed if force_scan)
         """
         self._check_reset()
         
@@ -232,7 +260,7 @@ class APIBudgetManager:
         if priority is None:
             priority = self.get_ticker_priority(symbol, score, is_dui)
         
-        # Check daily budget
+        # Check daily budget (ALWAYS enforced, even with force_scan)
         if self._calls_today >= self.daily_limit:
             logger.warning(f"API Budget: Daily limit reached ({self.daily_limit})")
             return False
@@ -242,47 +270,62 @@ class APIBudgetManager:
         budget = WINDOW_BUDGETS[window]
         window_used = self._window_calls.get(window, 0)
         
-        if priority == TickerPriority.PRIORITY_1:
-            if window_used >= budget.priority_1_budget:
-                logger.debug(f"API Budget: Window {window.value} P1 budget exhausted")
+        if force_scan:
+            # FORCE SCAN MODE: Only check TOTAL window budget, not per-tier limits
+            # This ensures EWS can scan all 361 tickers regardless of priority
+            if window_used >= budget.total_calls:
+                logger.debug(f"API Budget: Window {window.value} total budget exhausted ({window_used}/{budget.total_calls})")
                 return False
-        elif priority == TickerPriority.PRIORITY_2:
-            p1_used = min(window_used, budget.priority_1_budget)
-            p2_used = window_used - p1_used
-            if p2_used >= budget.priority_2_budget:
-                logger.debug(f"API Budget: Window {window.value} P2 budget exhausted")
-                return False
-        else:  # P3
-            if budget.priority_3_budget == 0:
-                return False  # P3 disabled for this window
-            p1_p2_budget = budget.priority_1_budget + budget.priority_2_budget
-            p3_used = max(0, window_used - p1_p2_budget)
-            if p3_used >= budget.priority_3_budget:
-                return False
-        
-        # Check ticker cooldown
-        # CRITICAL FIX: Allow calls within SCAN_WINDOW to support multi-call analysis
-        last_call = self._ticker_last_call.get(symbol)
-        if last_call:
-            elapsed = (datetime.now() - last_call).total_seconds()
-            
-            # Allow calls within scan window (supports multiple API calls per analysis)
-            if elapsed < self.SCAN_WINDOW_SECONDS:
-                # Within scan window - allow the call (same scan session)
-                pass
-            else:
-                # After scan window - check cooldown between scan sessions
-                cooldown = self.TICKER_COOLDOWN.get(priority, 300)
-                if elapsed < cooldown:
-                    logger.debug(f"API Budget: {symbol} on cooldown ({int(cooldown - elapsed)}s remaining)")
+        else:
+            # NORMAL MODE: Check per-tier budget limits
+            if priority == TickerPriority.PRIORITY_1:
+                if window_used >= budget.priority_1_budget:
+                    logger.debug(f"API Budget: Window {window.value} P1 budget exhausted")
+                    return False
+            elif priority == TickerPriority.PRIORITY_2:
+                p1_used = min(window_used, budget.priority_1_budget)
+                p2_used = window_used - p1_used
+                if p2_used >= budget.priority_2_budget:
+                    logger.debug(f"API Budget: Window {window.value} P2 budget exhausted")
+                    return False
+            else:  # P3
+                if budget.priority_3_budget == 0:
+                    return False  # P3 disabled for this window
+                p1_p2_budget = budget.priority_1_budget + budget.priority_2_budget
+                p3_used = max(0, window_used - p1_p2_budget)
+                if p3_used >= budget.priority_3_budget:
                     return False
         
-        # Check ticker daily max
+        # Check ticker cooldown (skipped in force_scan mode)
+        if not force_scan:
+            # CRITICAL FIX: Allow calls within SCAN_WINDOW to support multi-call analysis
+            last_call = self._ticker_last_call.get(symbol)
+            if last_call:
+                elapsed = (datetime.now() - last_call).total_seconds()
+                
+                # Allow calls within scan window (supports multiple API calls per analysis)
+                if elapsed < self.SCAN_WINDOW_SECONDS:
+                    # Within scan window - allow the call (same scan session)
+                    pass
+                else:
+                    # After scan window - check cooldown between scan sessions
+                    cooldown = self.TICKER_COOLDOWN.get(priority, 300)
+                    if elapsed < cooldown:
+                        logger.debug(f"API Budget: {symbol} on cooldown ({int(cooldown - elapsed)}s remaining)")
+                        return False
+        
+        # Check ticker daily max (relaxed in force_scan mode)
         ticker_calls = self._ticker_call_count.get(symbol, 0)
-        max_calls = self.MAX_CALLS_PER_TICKER.get(priority, 3)
-        if ticker_calls >= max_calls:
-            logger.debug(f"API Budget: {symbol} hit daily max ({max_calls} calls)")
-            return False
+        if force_scan:
+            # Force scan: higher daily max per ticker (50 for all tiers)
+            if ticker_calls >= 50:
+                logger.debug(f"API Budget: {symbol} hit force-scan daily max (50 calls)")
+                return False
+        else:
+            max_calls = self.MAX_CALLS_PER_TICKER.get(priority, 3)
+            if ticker_calls >= max_calls:
+                logger.debug(f"API Budget: {symbol} hit daily max ({max_calls} calls)")
+                return False
         
         return True
     
@@ -371,15 +414,23 @@ class APIBudgetManager:
             "unique_tickers_called": len(self._ticker_call_count),
         }
     
-    def skip_uw_use_alpaca_only(self, symbol: str, score: float = 0) -> bool:
+    def skip_uw_use_alpaca_only(self, symbol: str, score: float = 0,
+                               force_scan: bool = False) -> bool:
         """
         Determine if we should skip UW and use Alpaca-only scan.
         
         Skip UW for:
-        - Very low scores (< 0.15)
-        - P3 tickers during midday
-        - When budget is critically low (< 10%)
+        - Very low scores (< 0.15) - unless force_scan
+        - P3 tickers during midday - unless force_scan
+        - When budget is critically low (< 10%) - unless force_scan
+        
+        Args:
+            force_scan: If True, never skip (EWS discovery scans need all tickers)
         """
+        # Force scan mode: never skip UW
+        if force_scan:
+            return False
+        
         priority = self.get_ticker_priority(symbol, score)
         window = self.get_current_window()
         

@@ -994,10 +994,15 @@ class MarketWeatherEngine:
         """
         Classify recent options flow as opening or closing.
         
-        Opening put pressure = bearish (new positions being created)
-        Closing put activity = possible short covering / bullish divergence
+        FEB 8, 2026 UPGRADE: Now uses /api/stock/{ticker}/net-prem-ticks 
+        (minute-level premium data) instead of crude volume/OI ratio.
         
-        Uses volume/OI ratio as proxy for opening-intent.
+        Method 1 (PRIMARY): net-prem-ticks opening/closing flow analysis
+        - Opening 30 ticks: institutional opening positioning
+        - Closing 30 ticks: institutional close-of-day positioning
+        - Flow reversal (bullish open → bearish close) = distribution signal
+        
+        Method 2 (FALLBACK): flow-recent put side analysis (original method)
         
         Returns: OPENING_BEARISH, CLOSING_NEUTRAL, MIXED, UNKNOWN
         """
@@ -1005,7 +1010,35 @@ class MarketWeatherEngine:
             if not self.uw:
                 return "UNKNOWN"
             
-            # Get recent flow for this symbol
+            # ── METHOD 1: Net Premium Ticks (preferred — minute-level data) ──
+            try:
+                flow_data = await self.uw.get_opening_closing_flow(symbol)
+                if flow_data and flow_data.get("tick_count", 0) >= 30:
+                    opening_bias = flow_data.get("opening_bias", "NEUTRAL")
+                    closing_bias = flow_data.get("closing_bias", "NEUTRAL")
+                    flow_reversal = flow_data.get("flow_reversal", False)
+                    delta_trend = flow_data.get("intraday_delta_trend", "FLAT")
+                    
+                    # Primary classification from opening flow
+                    if opening_bias == "BEARISH":
+                        # Bearish opening + bearish close = strong distribution
+                        if closing_bias == "BEARISH" or delta_trend == "BEARISH_ACCELERATING":
+                            return "OPENING_BEARISH"
+                        else:
+                            return "MIXED"
+                    elif closing_bias == "BEARISH" and flow_reversal:
+                        # Bullish open → bearish close = classic institutional distribution
+                        return "OPENING_BEARISH"
+                    elif opening_bias == "BULLISH" and closing_bias == "BULLISH":
+                        return "CLOSING_NEUTRAL"
+                    elif delta_trend == "BEARISH_ACCELERATING":
+                        return "OPENING_BEARISH"
+                    else:
+                        return "MIXED"
+            except Exception as e:
+                logger.debug(f"Net prem ticks failed for {symbol}, falling back: {e}")
+            
+            # ── METHOD 2: Flow-recent fallback (original method) ──
             flows = await self.uw.get_flow_recent(symbol, limit=20)
             if not flows:
                 return "UNKNOWN"
@@ -1018,13 +1051,9 @@ class MarketWeatherEngine:
                 if flow.option_type.lower() != "put":
                     continue
                 
-                # High volume relative to size suggests opening trades
-                # Bought at ask = new bullish (for puts: bearish for stock)
                 if flow.side.lower() in ["ask", "buy"]:
-                    # Put bought at ask = bearish opening intent
                     opening_put_count += 1
                 elif flow.side.lower() in ["bid", "sell"]:
-                    # Put sold at bid = closing position or bullish
                     closing_put_count += 1
             
             total = opening_put_count + closing_put_count
@@ -1087,15 +1116,37 @@ class MarketWeatherEngine:
             
             # Wide spread = low liquidity
             if spread_pct > 0.005:  # > 0.5%
-                score += 0.3
+                score += 0.25
             if spread_pct > 0.01:   # > 1%
-                score += 0.3
+                score += 0.25
             if spread_pct > 0.02:   # > 2%
-                score += 0.2
+                score += 0.15
             
             # Bid thinning (more asks than bids = sellers overwhelming)
             if size_imbalance > 0.3:
-                score += 0.2
+                score += 0.15
+            
+            # ── FEB 8, 2026: Enhance with net-prem-ticks delta spike detection ──
+            # Sudden net_delta spikes in the last 30 minutes = institutional
+            # absorption failure. This catches "liquidity violence" that
+            # spread data alone misses (e.g., TSLA flash moves).
+            if self.uw:
+                try:
+                    flow_data = await self.uw.get_opening_closing_flow(symbol)
+                    if flow_data and flow_data.get("tick_count", 0) >= 30:
+                        delta_trend = flow_data.get("intraday_delta_trend", "FLAT")
+                        total_net_prem = flow_data.get("total_net_premium", 0)
+                        closing_delta = flow_data.get("closing_delta", 0)
+                        
+                        # Bearish accelerating delta = liquidity being consumed
+                        if delta_trend == "BEARISH_ACCELERATING":
+                            score += 0.15
+                        
+                        # Heavy negative closing delta = end-of-day selling pressure
+                        if closing_delta < -100000:
+                            score += 0.10
+                except Exception:
+                    pass  # UW data is supplemental, don't fail on it
             
             score = min(1.0, score)
             

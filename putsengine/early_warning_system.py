@@ -75,7 +75,7 @@ from loguru import logger
 
 
 class FootprintType(Enum):
-    """The 7 institutional footprints."""
+    """The 8 institutional footprints."""
     DARK_POOL_SEQUENCE = "dark_pool_sequence"
     PUT_OI_ACCUMULATION = "put_oi_accumulation"
     IV_TERM_INVERSION = "iv_term_inversion"
@@ -83,6 +83,7 @@ class FootprintType(Enum):
     FLOW_DIVERGENCE = "flow_divergence"
     MULTI_DAY_DISTRIBUTION = "multi_day_distribution"
     CROSS_ASSET_DIVERGENCE = "cross_asset_divergence"
+    NET_PREMIUM_FLOW = "net_premium_flow"  # FEB 8, 2026: Best single institutional flow signal
 
 
 class PressureLevel(Enum):
@@ -206,6 +207,7 @@ class EarlyWarningScanner:
     FOOTPRINT_WEIGHTS = {
         FootprintType.DARK_POOL_SEQUENCE: 0.20,      # Highest - direct evidence
         FootprintType.PUT_OI_ACCUMULATION: 0.18,     # High - options positioning
+        FootprintType.NET_PREMIUM_FLOW: 0.17,        # High - best single institutional flow signal
         FootprintType.IV_TERM_INVERSION: 0.15,       # High - volatility structure
         FootprintType.QUOTE_DEGRADATION: 0.15,       # Medium - market maker behavior
         FootprintType.FLOW_DIVERGENCE: 0.12,         # Medium - flow analysis
@@ -230,7 +232,7 @@ class EarlyWarningScanner:
         self.polygon = polygon_client
         self.uw = uw_client
     
-    async def scan_symbol(self, symbol: str) -> InstitutionalPressure:
+    async def scan_symbol(self, symbol: str, full_scan: bool = True) -> InstitutionalPressure:
         """
         Scan a symbol for all 7 institutional footprints.
         
@@ -239,52 +241,65 @@ class EarlyWarningScanner:
         
         Args:
             symbol: Stock ticker to scan
+            full_scan: If True, runs all 7 footprints including UW-dependent ones.
+                      If False (REFRESH mode), only runs Polygon/Alpaca footprints
+                      (4, 6, 7) and uses cached historical UW footprints.
             
         Returns:
             InstitutionalPressure with IPI and recommendations
         """
-        logger.info(f"Early Warning Scan: {symbol}")
+        logger.info(f"Early Warning Scan: {symbol}" + (" [REFRESH]" if not full_scan else ""))
         
         # Detect current footprints
         current_footprints = []
         
-        # Footprint 1: Dark Pool Sequence
-        dp_footprint = await self._detect_dark_pool_sequence(symbol)
-        if dp_footprint:
-            current_footprints.append(dp_footprint)
-            add_footprint_to_history(symbol, dp_footprint)
+        # ---- UW-DEPENDENT FOOTPRINTS (only in FULL mode) ----
+        if full_scan and self.uw is not None:
+            # Footprint 1: Dark Pool Sequence (UW)
+            dp_footprint = await self._detect_dark_pool_sequence(symbol)
+            if dp_footprint:
+                current_footprints.append(dp_footprint)
+                add_footprint_to_history(symbol, dp_footprint)
+            
+            # Footprint 2: Put OI Accumulation (UW + Polygon)
+            poi_footprint = await self._detect_put_oi_accumulation(symbol)
+            if poi_footprint:
+                current_footprints.append(poi_footprint)
+                add_footprint_to_history(symbol, poi_footprint)
+            
+            # Footprint 3: IV Term Structure Inversion (UW)
+            iv_footprint = await self._detect_iv_term_inversion(symbol)
+            if iv_footprint:
+                current_footprints.append(iv_footprint)
+                add_footprint_to_history(symbol, iv_footprint)
+            
+            # Footprint 5: Options Flow Divergence (UW + Polygon)
+            flow_footprint = await self._detect_flow_divergence(symbol)
+            if flow_footprint:
+                current_footprints.append(flow_footprint)
+                add_footprint_to_history(symbol, flow_footprint)
+            
+            # Footprint 8: Net Premium Flow (UW net-prem-ticks) — Best institutional flow signal
+            net_prem_footprint = await self._detect_net_premium_flow(symbol)
+            if net_prem_footprint:
+                current_footprints.append(net_prem_footprint)
+                add_footprint_to_history(symbol, net_prem_footprint)
         
-        # Footprint 2: Put OI Accumulation
-        poi_footprint = await self._detect_put_oi_accumulation(symbol)
-        if poi_footprint:
-            current_footprints.append(poi_footprint)
-            add_footprint_to_history(symbol, poi_footprint)
+        # ---- NON-UW FOOTPRINTS (run in both FULL and REFRESH modes) ----
         
-        # Footprint 3: IV Term Structure Inversion
-        iv_footprint = await self._detect_iv_term_inversion(symbol)
-        if iv_footprint:
-            current_footprints.append(iv_footprint)
-            add_footprint_to_history(symbol, iv_footprint)
-        
-        # Footprint 4: Quote Quality Degradation
+        # Footprint 4: Quote Quality Degradation (Alpaca)
         quote_footprint = await self._detect_quote_degradation(symbol)
         if quote_footprint:
             current_footprints.append(quote_footprint)
             add_footprint_to_history(symbol, quote_footprint)
         
-        # Footprint 5: Options Flow Divergence
-        flow_footprint = await self._detect_flow_divergence(symbol)
-        if flow_footprint:
-            current_footprints.append(flow_footprint)
-            add_footprint_to_history(symbol, flow_footprint)
-        
-        # Footprint 6: Multi-Day Distribution Pattern
+        # Footprint 6: Multi-Day Distribution Pattern (Polygon)
         dist_footprint = await self._detect_multi_day_distribution(symbol)
         if dist_footprint:
             current_footprints.append(dist_footprint)
             add_footprint_to_history(symbol, dist_footprint)
         
-        # Footprint 7: Cross-Asset Divergence
+        # Footprint 7: Cross-Asset Divergence (Polygon)
         cross_footprint = await self._detect_cross_asset_divergence(symbol)
         if cross_footprint:
             current_footprints.append(cross_footprint)
@@ -727,6 +742,80 @@ class EarlyWarningScanner:
             logger.debug(f"Flow divergence check failed for {symbol}: {e}")
             return None
     
+    async def _detect_net_premium_flow(self, symbol: str) -> Optional[FootprintSignal]:
+        """
+        FOOTPRINT 8: Net Premium Flow (Best Single Institutional Flow Signal)
+        
+        FEB 8, 2026: Uses net-prem-ticks endpoint for minute-by-minute analysis.
+        
+        Detects:
+        - Sustained negative net premium (institutions buying puts / selling calls)
+        - Opening flow bearish (first 30 minutes = institutional intent)
+        - Bearish acceleration (second half more negative than first half)
+        - Flow reversal (opening bullish → closing bearish = distribution)
+        
+        This is the SINGLE BEST institutional flow signal because:
+        - It's real-time, not delayed
+        - It captures the actual dollar direction of flow
+        - Opening flow reveals institutional intent before retail reacts
+        
+        Cost: 1 UW API call per ticker.
+        """
+        try:
+            flow_data = await self.uw.get_opening_closing_flow(symbol)
+            
+            if not flow_data:
+                return None
+            
+            opening_bias = flow_data.get("opening_bias", "NEUTRAL")
+            closing_bias = flow_data.get("closing_bias", "NEUTRAL")
+            delta_trend = flow_data.get("intraday_delta_trend", "FLAT")
+            flow_reversal = flow_data.get("flow_reversal", False)
+            total_net = float(flow_data.get("total_net_premium", 0))
+            opening_net = float(flow_data.get("opening_net_premium", 0))
+            
+            # Score bearish signals
+            bearish_signals = 0
+            details = {}
+            
+            # Opening flow bearish = strongest institutional signal
+            if opening_bias == "BEARISH":
+                bearish_signals += 2
+                details["opening_flow"] = f"BEARISH (${opening_net:,.0f})"
+            
+            # Total day net premium strongly negative
+            if total_net < -500000:  # > $500K net negative
+                bearish_signals += 1
+                details["total_net_premium"] = f"${total_net:,.0f}"
+            
+            # Bearish acceleration (getting worse through the day)
+            if delta_trend == "BEARISH_ACCELERATING":
+                bearish_signals += 1
+                details["delta_trend"] = "BEARISH_ACCELERATING"
+            
+            # Flow reversal: opened bullish, closed bearish = distribution trap
+            if flow_reversal and closing_bias == "BEARISH":
+                bearish_signals += 1
+                details["flow_reversal"] = "BULLISH→BEARISH (distribution)"
+            
+            # Need at least 2 bearish signals to fire
+            if bearish_signals >= 2:
+                strength = min(1.0, bearish_signals / 4)
+                details["bearish_signal_count"] = bearish_signals
+                
+                return FootprintSignal(
+                    footprint_type=FootprintType.NET_PREMIUM_FLOW,
+                    timestamp=datetime.now(),
+                    strength=strength,
+                    details=details
+                )
+            
+            return None
+            
+        except Exception as e:
+            logger.debug(f"Net premium flow check failed for {symbol}: {e}")
+            return None
+    
     async def _detect_multi_day_distribution(self, symbol: str) -> Optional[FootprintSignal]:
         """
         FOOTPRINT 6: Multi-Day Distribution Pattern
@@ -876,7 +965,82 @@ class EarlyWarningScanner:
 # INTEGRATION WITH SCHEDULER
 # ============================================================================
 
-async def run_early_warning_scan(alpaca, polygon, uw, symbols: List[str]) -> Dict[str, InstitutionalPressure]:
+# ============================================================================
+# LAST SCAN RESULTS CACHE (for smart refresh)
+# ============================================================================
+_LAST_EWS_RESULTS_FILE = Path(__file__).parent.parent / "logs" / "ews_last_results.json"
+
+
+def _save_last_ews_results(results: Dict[str, InstitutionalPressure]):
+    """Save last EWS results for smart refresh."""
+    try:
+        _LAST_EWS_RESULTS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        data = {
+            symbol: {
+                "ipi": p.ipi,
+                "level": p.level.value,
+                "unique_footprints": p.unique_footprints,
+                "timestamp": datetime.now().isoformat(),
+            }
+            for symbol, p in results.items()
+        }
+        with open(_LAST_EWS_RESULTS_FILE, 'w') as f:
+            json.dump(data, f, indent=2)
+    except Exception as e:
+        logger.warning(f"Could not save EWS results cache: {e}")
+
+
+def _load_last_ews_results() -> Dict[str, Dict]:
+    """Load last EWS results for smart refresh."""
+    try:
+        if _LAST_EWS_RESULTS_FILE.exists():
+            with open(_LAST_EWS_RESULTS_FILE, 'r') as f:
+                return json.load(f)
+    except Exception as e:
+        logger.warning(f"Could not load EWS results cache: {e}")
+    return {}
+
+
+def get_refresh_tickers(all_symbols: List[str], sample_size: int = 50) -> List[str]:
+    """
+    Get tickers for a REFRESH scan (not full scan).
+    
+    Strategy:
+    - All tickers with IPI > 0.2 from last scan (high priority re-check)
+    - Random sample of remaining tickers (discover new signals)
+    - Index ETFs always included
+    
+    Returns: List of tickers to scan (~80-120 tickers vs full 361)
+    """
+    import random
+    
+    last_results = _load_last_ews_results()
+    
+    # Always include high-IPI tickers from last scan
+    high_ipi_tickers = [sym for sym, data in last_results.items() if data.get("ipi", 0) > 0.2]
+    
+    # Always include index ETFs
+    index_etfs = {"SPY", "QQQ", "IWM", "DIA"}
+    
+    # Random sample of remaining tickers
+    remaining = [s for s in all_symbols if s not in high_ipi_tickers and s not in index_etfs]
+    sample = random.sample(remaining, min(sample_size, len(remaining)))
+    
+    refresh_set = list(set(high_ipi_tickers) | index_etfs | set(sample))
+    
+    logger.info(
+        f"EWS REFRESH mode: {len(high_ipi_tickers)} high-IPI + "
+        f"{len(index_etfs)} index + {len(sample)} random sample = "
+        f"{len(refresh_set)} tickers (vs {len(all_symbols)} full)"
+    )
+    
+    return refresh_set
+
+
+async def run_early_warning_scan(
+    alpaca, polygon, uw, symbols: List[str], 
+    full_scan: bool = True
+) -> Dict[str, InstitutionalPressure]:
     """
     Run early warning scan on a list of symbols.
     
@@ -885,6 +1049,7 @@ async def run_early_warning_scan(alpaca, polygon, uw, symbols: List[str]) -> Dic
         polygon: PolygonClient
         uw: UnusualWhalesClient
         symbols: List of tickers to scan
+        full_scan: If True, scan ALL symbols. If False, only scan high-IPI + sample.
         
     Returns:
         Dict of symbol -> InstitutionalPressure for symbols with IPI > 0.3
@@ -892,18 +1057,36 @@ async def run_early_warning_scan(alpaca, polygon, uw, symbols: List[str]) -> Dic
     scanner = EarlyWarningScanner(alpaca, polygon, uw)
     results = {}
     
-    logger.info(f"Early Warning System: Scanning {len(symbols)} symbols...")
+    # Determine which tickers to scan
+    if full_scan:
+        scan_symbols = symbols
+        scan_mode = "FULL"
+    else:
+        scan_symbols = get_refresh_tickers(symbols)
+        scan_mode = "REFRESH"
     
-    for i, symbol in enumerate(symbols):
+    uw_calls_made = 0
+    uw_calls_skipped = 0
+    
+    logger.info(f"Early Warning System [{scan_mode}]: Scanning {len(scan_symbols)} symbols...")
+    
+    for i, symbol in enumerate(scan_symbols):
         try:
             pressure = await scanner.scan_symbol(symbol)
             
             if pressure.ipi > 0.3:  # Only track significant pressure
                 results[symbol] = pressure
             
+            # Count UW calls (4 UW methods per ticker, some may be skipped by budget)
+            # We track this via the budget manager
+            uw_calls_made += 4  # Approximate (actual may be fewer if budget-blocked)
+            
             # Rate limiting
             if (i + 1) % 10 == 0:
-                logger.info(f"Early Warning: {i+1}/{len(symbols)} scanned, {len(results)} with pressure")
+                logger.info(
+                    f"Early Warning [{scan_mode}]: {i+1}/{len(scan_symbols)} scanned, "
+                    f"{len(results)} with pressure"
+                )
                 await asyncio.sleep(0.5)
                 
         except Exception as e:
@@ -916,7 +1099,14 @@ async def run_early_warning_scan(alpaca, polygon, uw, symbols: List[str]) -> Dic
         reverse=True
     ))
     
-    logger.info(f"Early Warning Complete: {len(sorted_results)} symbols with institutional pressure")
+    # Save results for smart refresh
+    _save_last_ews_results(sorted_results)
+    
+    logger.info(
+        f"Early Warning [{scan_mode}] Complete: "
+        f"{len(sorted_results)} symbols with institutional pressure "
+        f"(scanned {len(scan_symbols)}/{len(symbols)} tickers)"
+    )
     
     return sorted_results
 

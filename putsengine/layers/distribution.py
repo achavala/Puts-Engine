@@ -109,6 +109,9 @@ class DistributionLayer:
             session_high=session_high
         )
         signal.repeated_sell_blocks = dp_signals.get("repeated_sell_blocks", False)
+        
+        # FEB 8, 2026: Dark pool violence (thin NBBO books + large prints)
+        dark_pool_violence = dp_signals.get("dark_pool_violence", False)
 
         # D. Insider Trading Analysis (per Architect Blueprint)
         insider_result = await self._analyze_insider_activity(symbol)
@@ -152,7 +155,10 @@ class DistributionLayer:
             "put_buying_at_ask": signal.put_buying_at_ask,
             "rising_put_oi": signal.rising_put_oi,
             "skew_steepening": signal.skew_steepening,
+            "skew_reversal": options_signals.get("skew_reversal", False),  # FEB 8: Sign flip
             "repeated_sell_blocks": signal.repeated_sell_blocks,
+            "dark_pool_violence": dark_pool_violence,  # FEB 8: Thin books + large prints
+            "high_greek_weighted_flow": options_signals.get("high_greek_weighted_flow", False),  # FEB 8: Greek conviction
             # Signals from Architect Blueprint
             "c_level_selling": insider_result.get("c_level_selling", False),
             "insider_cluster": insider_result.get("insider_cluster", False),
@@ -747,6 +753,62 @@ class DistributionLayer:
                 total_premium = sum(f.premium for f in ask_buys if hasattr(f, 'premium'))
                 if total_premium > 50000:  # $50K+ in put buying
                     signals["put_buying_at_ask"] = True
+            
+            # FEB 8, 2026: Greek-weighted flow analysis
+            # Weight bearish flow by delta/gamma/vega × size to capture conviction
+            # High delta puts = deep ITM = max directional exposure = smart money
+            # High gamma puts = near ATM = max acceleration exposure = timing bets
+            # High vega puts = vol-sensitive = hedging ahead of event
+            all_flow = (put_flow or []) + (call_selling or [])
+            if all_flow:
+                bearish_delta_exposure = 0.0
+                bearish_gamma_exposure = 0.0
+                bearish_vega_exposure = 0.0
+                total_bearish_trades = 0
+                for f in all_flow:
+                    if hasattr(f, 'sentiment') and f.sentiment == "bearish":
+                        total_bearish_trades += 1
+                        # Delta-weighted: larger delta = more directional conviction
+                        bearish_delta_exposure += abs(getattr(f, 'delta', 0)) * f.size * 100
+                        # Gamma-weighted: larger gamma = more acceleration sensitivity
+                        # Near-ATM puts with high gamma = max P&L acceleration on move
+                        bearish_gamma_exposure += abs(getattr(f, 'gamma', 0)) * f.size * 100
+                        # Vega-weighted: larger vega = more volatility-sensitive
+                        bearish_vega_exposure += abs(getattr(f, 'vega', 0)) * f.size * 100
+                
+                # Store for downstream scoring
+                signals["bearish_delta_exposure"] = bearish_delta_exposure
+                signals["bearish_gamma_exposure"] = bearish_gamma_exposure
+                signals["bearish_vega_exposure"] = bearish_vega_exposure
+                
+                # ── Boolean signal: High Greek-weighted bearish flow ──
+                # Triggers when institutional conviction is clear across Greeks
+                # This feeds into signal_priority.py scoring as PRE-breakdown
+                greek_conviction_count = sum([
+                    bearish_delta_exposure > 500000,  # $500K+ delta exposure
+                    bearish_gamma_exposure > 100000,  # $100K+ gamma exposure
+                    bearish_vega_exposure > 200000,   # $200K+ vega exposure
+                ])
+                signals["high_greek_weighted_flow"] = greek_conviction_count >= 2
+                
+                # High delta exposure = institutional directional bets
+                if bearish_delta_exposure > 500000:
+                    logger.info(
+                        f"{symbol}: High bearish delta exposure "
+                        f"${bearish_delta_exposure:,.0f} — institutional conviction"
+                    )
+                # High gamma exposure = acceleration-sensitive positioning
+                if bearish_gamma_exposure > 100000:
+                    logger.info(
+                        f"{symbol}: High bearish gamma exposure "
+                        f"${bearish_gamma_exposure:,.0f} — acceleration positioning"
+                    )
+                # High vega exposure = hedging ahead of expected vol event
+                if bearish_vega_exposure > 200000:
+                    logger.info(
+                        f"{symbol}: High bearish vega exposure "
+                        f"${bearish_vega_exposure:,.0f} — event hedging"
+                    )
 
         except Exception as e:
             logger.debug(f"Error in flow analysis for {symbol}: {e}")
@@ -774,7 +836,12 @@ class DistributionLayer:
             logger.debug(f"Error in OI analysis for {symbol}: {e}")
 
         try:
-            # 4. Check skew steepening
+            # 4. Check skew steepening + skew reversal
+            # FEB 8, 2026 FIX: get_skew() now returns enriched data with
+            # top-level 'skew_change' computed from risk_reversal time series.
+            # Negative risk_reversal = puts expensive vs calls = bearish.
+            # Increasingly negative (skew_change < 0) = skew steepening = bearish.
+            # NEW: skew_reversal = True when risk_reversal flips sign day-over-day.
             skew_data = await self.unusual_whales.get_skew(symbol)
             if skew_data:
                 # Handle list response
@@ -785,13 +852,41 @@ class DistributionLayer:
                         skew_data = {}
 
                 if isinstance(skew_data, dict):
-                    data = skew_data.get("data", skew_data)
-                    if isinstance(data, list) and len(data) > 0:
-                        data = data[0]
-                    if isinstance(data, dict):
-                        skew_change = float(data.get("skew_change", data.get("change", 0)))
-                        if skew_change > self.config.SKEW_STEEPENING_THRESHOLD:
+                    # First check top-level enriched fields (from fixed get_skew)
+                    skew_change = float(skew_data.get("skew_change", 0))
+                    
+                    # Fallback: look inside nested data
+                    if skew_change == 0:
+                        data = skew_data.get("data", skew_data)
+                        if isinstance(data, list) and len(data) > 0:
+                            data = data[-1]  # Use latest record
+                        if isinstance(data, dict):
+                            skew_change = float(data.get("skew_change", data.get("change", data.get("risk_reversal", 0))))
+                    
+                    # For risk_reversal-based skew: steepening when change is MORE negative
+                    # A negative skew_change means risk_reversal became more negative = bearish
+                    # Use absolute value comparison with threshold
+                    if abs(skew_change) > self.config.SKEW_STEEPENING_THRESHOLD:
+                        # For risk_reversal: negative change = puts getting more expensive = bearish
+                        if skew_change < 0:
                             signals["skew_steepening"] = True
+                            logger.info(f"{symbol}: Skew steepening detected (change={skew_change:.4f})")
+                        elif skew_change > self.config.SKEW_STEEPENING_THRESHOLD:
+                            # Legacy path: positive skew_change (old data format)
+                            signals["skew_steepening"] = True
+                    
+                    # FEB 8, 2026: Check for skew reversal (sign flip day-over-day)
+                    # This is a regime-change signal — options skew flipped direction
+                    skew_reversal = skew_data.get("skew_reversal", False)
+                    if skew_reversal:
+                        signals["skew_reversal"] = True
+                        # If reversal is to negative (bearish), it's extra significant
+                        latest_rr = float(skew_data.get("risk_reversal", 0))
+                        if latest_rr < 0:
+                            logger.info(
+                                f"{symbol}: SKEW REVERSAL TO BEARISH - "
+                                f"risk_reversal flipped to {latest_rr:.4f}"
+                            )
         except Exception as e:
             logger.debug(f"Error in skew analysis for {symbol}: {e}")
 
@@ -817,10 +912,17 @@ class DistributionLayer:
         
         Repeated sell blocks AND (price below VWAP OR failed new intraday high)
         
+        FEB 8, 2026: Dark Pool Violence Detection
+        ==========================================
+        Large prints hitting thin NBBO books = violent absorption conditions.
+        Uses nbbo_bid_quantity and nbbo_ask_quantity from UW dark pool data.
+        When print_size >> nbbo_depth, market makers are overwhelmed.
+        
         This ensures we're detecting genuine distribution, not neutral facilitation.
         """
         signals = {
-            "repeated_sell_blocks": False
+            "repeated_sell_blocks": False,
+            "dark_pool_violence": False,  # FEB 8, 2026: Thin-book violence
         }
 
         try:
@@ -833,10 +935,20 @@ class DistributionLayer:
             if len(dp_prints) < 5:
                 return signals
 
+            # FEB 8, 2026 FIX: Now that is_buy is inferred from price vs NBBO,
+            # prioritize SELL-side prints for distribution detection.
+            # Filter to sell-side or ambiguous prints (exclude confirmed buys)
+            sell_or_ambiguous = [p for p in dp_prints if p.is_buy is not True]
+            
+            # If we have enough sell-side prints, use them; otherwise use all
+            target_prints = sell_or_ambiguous if len(sell_or_ambiguous) >= 3 else dp_prints
+            
             # Group prints by price level (within 0.5%)
             price_clusters: Dict[float, List[DarkPoolPrint]] = {}
-            for print_data in dp_prints:
+            for print_data in target_prints:
                 # Round to nearest 0.5%
+                if print_data.price <= 0:
+                    continue
                 rounded_price = round(print_data.price / (print_data.price * 0.005)) * (print_data.price * 0.005)
                 if rounded_price not in price_clusters:
                     price_clusters[rounded_price] = []
@@ -878,6 +990,33 @@ class DistributionLayer:
                                     f"{total_size:,} shares at ${price_level:.2f}"
                                 )
                                 break
+
+            # ── FEB 8, 2026: Dark Pool Violence Scoring ──
+            # Thin NBBO books + large prints = violent conditions
+            # When print_size is >> nbbo_depth, market makers are overwhelmed
+            # This indicates absorption capacity is depleted
+            violence_prints = 0
+            total_violence_ratio = 0.0
+            for p in dp_prints:
+                nbbo_depth = max(
+                    getattr(p, 'nbbo_bid_quantity', 0),
+                    getattr(p, 'nbbo_ask_quantity', 0)
+                )
+                if nbbo_depth > 0 and p.size > 0:
+                    # Violence ratio: print_size / nbbo_depth
+                    # > 5x means the print is 5x bigger than what's on the book
+                    violence_ratio = p.size / nbbo_depth
+                    if violence_ratio > 5.0:
+                        violence_prints += 1
+                        total_violence_ratio += violence_ratio
+            
+            if violence_prints >= 3:
+                avg_violence = total_violence_ratio / violence_prints
+                signals["dark_pool_violence"] = True
+                logger.info(
+                    f"{symbol}: DARK POOL VIOLENCE - {violence_prints} prints "
+                    f"on thin books (avg ratio={avg_violence:.1f}x NBBO depth)"
+                )
 
         except Exception as e:
             logger.error(f"Error in dark pool analysis for {symbol}: {e}")

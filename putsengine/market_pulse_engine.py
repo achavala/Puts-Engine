@@ -182,24 +182,41 @@ class MarketPulseEngine:
     GEX_POSITIVE = 2.0
     GEX_NEGATIVE = -2.0
     
-    def __init__(self):
+    def __init__(self, polygon_client=None, uw_client=None):
+        """
+        Initialize MarketPulseEngine.
+        
+        FEB 8, 2026 OPTIMIZATION: Accept shared clients to leverage UW response cache.
+        Previously created SEPARATE UW/Polygon clients per run, bypassing the
+        scheduler's 30-min response cache. This wasted ~5 UW calls × 8 runs/day = 40 calls.
+        
+        Now: When called from scheduler, receives shared self._polygon and self._uw
+        so all UW calls go through the same cached client.
+        
+        Args:
+            polygon_client: Shared PolygonClient from scheduler (optional, creates new if None)
+            uw_client: Shared UnusualWhalesClient from scheduler (optional, creates new if None)
+        """
         self.settings = get_settings()
-        self.polygon: Optional[PolygonClient] = None
-        self.uw: Optional[UnusualWhalesClient] = None
+        self.polygon: Optional[PolygonClient] = polygon_client
+        self.uw: Optional[UnusualWhalesClient] = uw_client
+        # Track if we created our own clients (need to close them ourselves)
+        self._owns_clients = polygon_client is None and uw_client is None
         
     async def _init_clients(self):
-        """Initialize API clients."""
+        """Initialize API clients if not provided externally."""
         if self.polygon is None:
             self.polygon = PolygonClient(self.settings)
         if self.uw is None:
             self.uw = UnusualWhalesClient(self.settings)
     
     async def close(self):
-        """Close client connections."""
-        if self.polygon:
-            await self.polygon.close()
-        if self.uw:
-            await self.uw.close()
+        """Close client connections only if we created them ourselves."""
+        if self._owns_clients:
+            if self.polygon:
+                await self.polygon.close()
+            if self.uw:
+                await self.uw.close()
     
     # =========================================================================
     # TIER 1: DIRECTIONAL BIAS (WHO is in control)

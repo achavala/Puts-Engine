@@ -110,6 +110,8 @@ class OptionsFlow:
     spot_price: float
     implied_volatility: float
     delta: float
+    gamma: float = 0.0  # FEB 8, 2026: Per-trade gamma for Greek-weighted flow
+    vega: float = 0.0   # FEB 8, 2026: Per-trade vega for volatility sensitivity weighting
     is_sweep: bool = False
     is_block: bool = False
     sentiment: str = "neutral"  # 'bullish', 'bearish', 'neutral'
@@ -124,6 +126,10 @@ class DarkPoolPrint:
     size: int
     exchange: str
     is_buy: Optional[bool] = None
+    # FEB 8, 2026: NBBO depth for violence scoring
+    # Thin books (small quantities) + large prints = violent conditions
+    nbbo_bid_quantity: int = 0
+    nbbo_ask_quantity: int = 0
 
 
 @dataclass

@@ -966,7 +966,7 @@ def render_early_warning_tab():
             pass
     
     if not early_warning_data:
-        st.error("⚠️ Early warning data not yet available. Scans run at 8 AM, 12 PM, 4:30 PM, and 10 PM ET.")
+        st.error("⚠️ Early warning data not yet available. Scans run at 8 AM, 10 AM, 12 PM, 2:30 PM, 4:30 PM, and 10 PM ET.")
         
         # Check if there's any footprint history
         if footprint_history_file.exists():
@@ -1010,7 +1010,7 @@ def render_early_warning_tab():
             st.caption(f"Last scan: {scan_time}")
     
     # Auto-refresh info
-    st.caption("📡 EWS scans run automatically at 8 AM, 12 PM, 4:30 PM, and 10 PM ET. Dashboard auto-refreshes every 60 seconds.")
+    st.caption("📡 EWS scans run automatically at 8 AM, 9:45 AM, 11 AM, 12 PM, 1 PM, 2 PM, 3:02 PM, 4:30 PM, and 10 PM ET. Dashboard auto-refreshes every 60 seconds.")
     
     # Summary metrics
     summary = early_warning_data.get("summary", {})
@@ -1181,15 +1181,17 @@ def render_early_warning_tab():
             y=values,
             marker_color=['#dc3545' if v > 5 else '#ffc107' if v > 2 else '#28a745' for v in values]
         ))
-    fig.update_layout(
-        height=300,
+        fig.update_layout(
+            height=300,
             xaxis_title="Footprint Type",
             yaxis_title="Count",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
             margin=dict(l=20, r=20, t=20, b=60)
-    )
-    st.plotly_chart(fig, use_container_width=True)
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("No footprint data available yet. Waiting for next EWS scan.")
 
 
 def render_48hour_analysis():
