@@ -293,8 +293,23 @@ class AccelerationWindowLayer:
 
         Rising put volume is bullish for puts.
         But if IV has already spiked, opportunity is gone.
+        
+        FEB 8, 2026 UPGRADE: Now also checks ask/bid side breakdown for
+        put aggression scoring. Put volume bought at ask = aggressive bearish
+        positioning. Put volume sold at bid = closing/selling puts.
+        
+        New result keys:
+        - put_aggression_ratio: ask_side / bid_side for puts (>1.0 = aggressive buying)
+        - put_volume_surge: put_volume / 30d_avg (>1.3 = surge)
+        - bearish_premium_dominant: True if bearish_premium > bullish_premium
         """
-        result = {"volume_rising": False, "iv_reasonable": True}
+        result = {
+            "volume_rising": False,
+            "iv_reasonable": True,
+            "put_aggression_ratio": 1.0,
+            "put_volume_surge": 1.0,
+            "bearish_premium_dominant": False
+        }
 
         try:
             # Get options volume data
@@ -306,18 +321,26 @@ class AccelerationWindowLayer:
             # Handle both dict with "data" key and direct response
             data = volume_data.get("data", volume_data) if isinstance(volume_data, dict) else volume_data
 
-            # If data is a list, get first element
+            # If data is a list, get latest element
             if isinstance(data, list):
                 if len(data) == 0:
                     return result
-                data = data[0]
+                data = data[-1] if isinstance(data[-1], dict) else data[0]
 
             if not isinstance(data, dict):
                 return result
 
             # Check put volume trend
-            put_volume = data.get("put_volume", 0)
+            put_volume = int(data.get("put_volume", 0))
             put_volume_avg = data.get("put_volume_avg", put_volume)
+            
+            # FEB 8 FIX: Use 30-day average if available (more reliable baseline)
+            avg_30d_put = float(data.get("avg_30_day_put_volume", 0))
+            if avg_30d_put > 0:
+                put_volume_avg = avg_30d_put
+                result["put_volume_surge"] = put_volume / avg_30d_put
+            elif put_volume_avg > 0:
+                result["put_volume_surge"] = put_volume / put_volume_avg
 
             if put_volume_avg > 0:
                 result["volume_rising"] = put_volume > put_volume_avg * 1.2
@@ -333,6 +356,37 @@ class AccelerationWindowLayer:
                 iv_rank < 70 and
                 iv_change < self.config.IV_SPIKE_THRESHOLD
             )
+            
+            # ── FEB 8, 2026: ASK/BID SIDE AGGRESSION SCORING ──
+            # UW provides put_volume_ask_side and put_volume_bid_side:
+            # - put_volume_ask_side: puts bought at ask = aggressive bearish
+            # - put_volume_bid_side: puts sold at bid = closing/selling puts
+            # Aggression ratio > 1.0 means more aggressive put buying
+            put_ask_side = int(data.get("put_volume_ask_side", 0))
+            put_bid_side = int(data.get("put_volume_bid_side", 0))
+            
+            if put_bid_side > 0:
+                result["put_aggression_ratio"] = put_ask_side / put_bid_side
+            elif put_ask_side > 0:
+                result["put_aggression_ratio"] = 2.0  # All ask, no bid = max aggression
+            
+            # ── Bearish vs Bullish Premium ──
+            bearish_prem = float(data.get("bearish_premium", 0))
+            bullish_prem = float(data.get("bullish_premium", 0))
+            if bearish_prem > 0 or bullish_prem > 0:
+                result["bearish_premium_dominant"] = bearish_prem > bullish_prem
+            
+            # ── Enhanced volume_rising: consider aggression ──
+            # Even if volume isn't 1.2x avg, aggressive ask-side put buying
+            # with a surge > 1.1x is meaningful
+            if not result["volume_rising"] and result["put_aggression_ratio"] > 1.2:
+                if result["put_volume_surge"] > 1.1:
+                    result["volume_rising"] = True
+                    logger.debug(
+                        f"{symbol}: Put volume flagged via aggression "
+                        f"(surge={result['put_volume_surge']:.2f}x, "
+                        f"aggression={result['put_aggression_ratio']:.2f})"
+                    )
 
         except Exception as e:
             logger.warning(f"Error checking put volume/IV for {symbol}: {e}")

@@ -516,29 +516,47 @@ class UnusualWhalesClient:
 
         opt_type = item.get("option_type", item.get("put_call", "unknown"))
 
-        # Determine sentiment from side + option type
-        sentiment = "neutral"
-        side_lower = side.lower() if side else "unknown"
-        opt_lower = opt_type.lower() if opt_type else "unknown"
-        if opt_lower == "put" and side_lower in ["ask", "buy"]:
-            sentiment = "bearish"
-        elif opt_lower == "call" and side_lower in ["bid", "sell"]:
-            sentiment = "bearish"
-        elif opt_lower == "call" and side_lower in ["ask", "buy"]:
-            sentiment = "bullish"
-        elif opt_lower == "put" and side_lower in ["bid", "sell"]:
-            sentiment = "bullish"
-
-        # Detect sweeps/blocks from tags
+        # ── Detect sweeps/blocks from tags (do this FIRST, needed for sentiment) ──
         tags = item.get("tags", []) or []
         is_sweep = item.get("is_sweep", False) or item.get("trade_type", "") == "SWEEP"
         is_block = item.get("is_block", False) or item.get("trade_type", "") == "BLOCK"
+        tag_str = ""
         if isinstance(tags, list):
             tag_str = " ".join(str(t) for t in tags).lower()
             if "sweep" in tag_str:
                 is_sweep = True
             if "block" in tag_str:
                 is_block = True
+
+        # ── Determine sentiment ──
+        # FEB 8, 2026 FIX: PREFER UW's own tags field over bid/ask inference.
+        # UW has trade-level aggressor matching that is more accurate than
+        # cumulative bid/ask volume comparison.
+        #
+        # TSLA audit found 42% disagreement between our inference and UW tags.
+        # Root cause: bid_vol/ask_vol are CUMULATIVE for the option chain,
+        # not for the specific trade. UW tags use actual trade-level context.
+        #
+        # Priority: 1) UW tags (bearish/bullish) → 2) bid/ask inference → 3) neutral
+        sentiment = "neutral"
+        
+        # Method 1: UW's own sentiment tags (MOST RELIABLE)
+        if "bearish" in tag_str:
+            sentiment = "bearish"
+        elif "bullish" in tag_str:
+            sentiment = "bullish"
+        else:
+            # Method 2: Infer from side + option type (FALLBACK)
+            side_lower = side.lower() if side else "unknown"
+            opt_lower = opt_type.lower() if opt_type else "unknown"
+            if opt_lower == "put" and side_lower in ["ask", "buy"]:
+                sentiment = "bearish"
+            elif opt_lower == "call" and side_lower in ["bid", "sell"]:
+                sentiment = "bearish"
+            elif opt_lower == "call" and side_lower in ["ask", "buy"]:
+                sentiment = "bullish"
+            elif opt_lower == "put" and side_lower in ["bid", "sell"]:
+                sentiment = "bullish"
 
         return OptionsFlow(
             timestamp=timestamp,
@@ -723,22 +741,49 @@ class UnusualWhalesClient:
                 call_wall_val = float(data.get("call_wall", data.get("highest_call_oi_strike", 0)))
 
             # If put_wall/call_wall not in GEX response, fetch from OI-per-strike
+            # FEB 8, 2026 FIX: Always recompute walls and flip from OI data with
+            # ±30% price filter. The GEX response doesn't provide these fields.
+            # Previous bug: used median_strike × 0.5/1.5 which included deep OTM
+            # strikes and returned wrong values (e.g., $215 for TSLA at $411).
             if put_wall_val is None or call_wall_val is None or gex_flip is None:
                 try:
                     oi_strike_data = await self.get_oi_by_strike(symbol)
                     if oi_strike_data:
                         oi_list = oi_strike_data.get("data", oi_strike_data) if isinstance(oi_strike_data, dict) else oi_strike_data
                         if isinstance(oi_list, list) and oi_list:
-                            # Get approximate current price from net_gex context or data
-                            # Filter strikes to ±50% of median strike for realistic walls
-                            all_strikes = [float(r.get("strike", 0)) for r in oi_list if isinstance(r, dict) and float(r.get("strike", 0)) > 0]
-                            if all_strikes:
-                                median_strike = sorted(all_strikes)[len(all_strikes) // 2]
-                                low_bound = median_strike * 0.5
-                                high_bound = median_strike * 1.5
-                            else:
-                                low_bound, high_bound = 0, float('inf')
+                            # ── Get current price for ±30% range filter ──
+                            # Best source: recent flow data (underlying_price)
+                            # Fallback: OI-weighted median strike
+                            current_price = await self._get_underlying_price(symbol)
                             
+                            if current_price and current_price > 0:
+                                low_bound = current_price * 0.70   # ±30% range
+                                high_bound = current_price * 1.30
+                            else:
+                                # Fallback: OI-weighted center of mass
+                                all_strikes = [float(r.get("strike", 0)) for r in oi_list 
+                                              if isinstance(r, dict) and float(r.get("strike", 0)) > 0]
+                                total_oi = []
+                                for r in oi_list:
+                                    if isinstance(r, dict):
+                                        s = float(r.get("strike", 0))
+                                        oi = int(r.get("put_oi", 0)) + int(r.get("call_oi", 0))
+                                        if s > 0 and oi > 0:
+                                            total_oi.append((s, oi))
+                                if total_oi:
+                                    weighted_sum = sum(s * oi for s, oi in total_oi)
+                                    total_weight = sum(oi for _, oi in total_oi)
+                                    center = weighted_sum / total_weight if total_weight > 0 else sorted(all_strikes)[len(all_strikes)//2]
+                                    low_bound = center * 0.70
+                                    high_bound = center * 1.30
+                                elif all_strikes:
+                                    median_strike = sorted(all_strikes)[len(all_strikes) // 2]
+                                    low_bound = median_strike * 0.70
+                                    high_bound = median_strike * 1.30
+                                else:
+                                    low_bound, high_bound = 0, float('inf')
+                            
+                            # ── Find put wall and call wall in ±30% range ──
                             max_put_oi = 0
                             max_call_oi = 0
                             for strike_row in oi_list:
@@ -746,20 +791,28 @@ class UnusualWhalesClient:
                                     continue
                                 strike = float(strike_row.get("strike", strike_row.get("strike_price", 0)))
                                 if strike < low_bound or strike > high_bound:
-                                    continue  # Skip deep OTM/ITM strikes
+                                    continue  # Skip strikes outside ±30% range
                                 p_oi = int(strike_row.get("put_oi", strike_row.get("put_open_interest", 0)))
                                 c_oi = int(strike_row.get("call_oi", strike_row.get("call_open_interest", 0)))
                                 if p_oi > max_put_oi:
                                     max_put_oi = p_oi
-                                    if put_wall_val is None:
-                                        put_wall_val = strike
+                                    put_wall_val = strike  # Always update (not just if None)
                                 if c_oi > max_call_oi:
                                     max_call_oi = c_oi
-                                    if call_wall_val is None:
-                                        call_wall_val = strike
-                            # Compute gex_flip_level from OI per strike (use all strikes)
+                                    call_wall_val = strike  # Always update
+                            
+                            logger.debug(
+                                f"{symbol} GEX walls: range=${low_bound:.0f}-${high_bound:.0f}, "
+                                f"put_wall=${put_wall_val} (OI={max_put_oi:,}), "
+                                f"call_wall=${call_wall_val} (OI={max_call_oi:,})"
+                            )
+                            
+                            # ── Compute gex_flip_level from OI per strike ──
+                            # FEB 8 FIX: Only scan strikes in ±30% range
                             if gex_flip is None and len(oi_list) >= 2:
-                                gex_flip = self._compute_gex_flip_from_oi(oi_list)
+                                gex_flip = self._compute_gex_flip_from_oi(
+                                    oi_list, low_bound, high_bound
+                                )
                 except Exception as e:
                     logger.debug(f"Could not fetch OI-per-strike for {symbol} walls: {e}")
 
@@ -779,24 +832,48 @@ class UnusualWhalesClient:
             return None
 
     @staticmethod
-    def _compute_gex_flip_from_oi(oi_list: List[Dict]) -> Optional[float]:
+    def _compute_gex_flip_from_oi(
+        oi_list: List[Dict],
+        low_bound: float = 0,
+        high_bound: float = float('inf')
+    ) -> Optional[float]:
         """
         Compute GEX flip level from OI-per-strike data.
         
         The flip level is where net gamma crosses zero (call_oi - put_oi sign change).
         Above this level = positive gamma (dealers dampen moves).
         Below = negative gamma (dealers amplify moves).
+        
+        FEB 8, 2026 FIX: Accept low_bound/high_bound to filter to ±30% of 
+        current price. Previously scanned $5-$990 for TSLA and returned $8.37.
+        Now only scans strikes within the provided range (e.g., $288-$535).
+        
+        If no sign change is found in the filtered range, we find the strike
+        closest to zero net OI (i.e., where put and call OI are most balanced).
         """
         try:
             prev_net = None
             prev_strike = None
+            closest_to_zero = None
+            closest_abs = float('inf')
+            
             for row in sorted(oi_list, key=lambda r: float(r.get("strike", r.get("strike_price", 0)))):
                 if not isinstance(row, dict):
                     continue
                 strike = float(row.get("strike", row.get("strike_price", 0)))
+                
+                # FEB 8 FIX: Only consider strikes in the ±30% range
+                if strike < low_bound or strike > high_bound:
+                    continue
+                
                 c_oi = int(row.get("call_oi", row.get("call_open_interest", 0)))
                 p_oi = int(row.get("put_oi", row.get("put_open_interest", 0)))
                 net = c_oi - p_oi
+                
+                # Track closest-to-zero as fallback
+                if abs(net) < closest_abs:
+                    closest_abs = abs(net)
+                    closest_to_zero = strike
                 
                 if prev_net is not None and prev_net * net < 0:
                     # Sign change: interpolate
@@ -807,9 +884,199 @@ class UnusualWhalesClient:
                 
                 prev_net = net
                 prev_strike = strike
+            
+            # If no sign change found, use the strike closest to equilibrium
+            if closest_to_zero is not None:
+                logger.debug(f"GEX flip: no sign change in range ${low_bound:.0f}-${high_bound:.0f}, "
+                           f"using closest-to-zero strike: ${closest_to_zero:.0f}")
+                return closest_to_zero
+                
         except Exception as e:
             logger.debug(f"GEX flip computation failed: {e}")
         return None
+    
+    async def _get_underlying_price(self, symbol: str) -> Optional[float]:
+        """
+        Get current underlying price for a symbol from cached flow data or stock info.
+        Used internally to set the ±30% strike range for wall/flip computation.
+        
+        FEB 8, 2026: Added to fix GEX wall/flip computation which previously
+        used median strike (unreliable for wide strike ranges like TSLA $5-$990).
+        """
+        try:
+            # Method 1: Check flow-recent cache (underlying_price field)
+            cache_key = self._get_cache_key(f"/api/stock/{symbol}/flow-recent")
+            cached = self._get_cached_response(cache_key)
+            if cached:
+                data = cached.get("data", cached) if isinstance(cached, dict) else cached
+                if isinstance(data, list):
+                    for rec in data[:5]:
+                        if isinstance(rec, dict):
+                            price = rec.get("underlying_price")
+                            if price and float(price) > 0:
+                                return float(price)
+            
+            # Method 2: Check stock info cache
+            cache_key2 = self._get_cache_key(f"/api/stock/{symbol}/info")
+            cached2 = self._get_cached_response(cache_key2)
+            if cached2:
+                info = cached2.get("data", cached2) if isinstance(cached2, dict) else cached2
+                if isinstance(info, dict):
+                    # stock_info doesn't have price directly, skip
+                    pass
+            
+            # Method 3: Check options-volume cache (has close price)
+            cache_key3 = self._get_cache_key(f"/api/stock/{symbol}/options-volume")
+            cached3 = self._get_cached_response(cache_key3)
+            if cached3:
+                data = cached3.get("data", cached3) if isinstance(cached3, dict) else cached3
+                if isinstance(data, list) and data:
+                    latest = data[-1] if isinstance(data[-1], dict) else data[0] if isinstance(data[0], dict) else {}
+                    close = latest.get("close")
+                    if close and float(close) > 0:
+                        return float(close)
+            
+            # Method 4: Check max-pain cache (has close price)
+            cache_key4 = self._get_cache_key(f"/api/stock/{symbol}/max-pain")
+            cached4 = self._get_cached_response(cache_key4)
+            if cached4:
+                data = cached4.get("data", cached4) if isinstance(cached4, dict) else cached4
+                if isinstance(data, list) and data:
+                    for rec in data[:3]:
+                        if isinstance(rec, dict):
+                            close = rec.get("close")
+                            if close and float(close) > 0:
+                                return float(close)
+            
+        except Exception as e:
+            logger.debug(f"_get_underlying_price failed for {symbol}: {e}")
+        
+        return None
+
+    # ==================== Net Premium Ticks ====================
+    
+    async def get_net_premium_ticks(self, symbol: str) -> Dict[str, Any]:
+        """
+        Get intraday net premium flow (minute-by-minute call/put premium ticks).
+        Endpoint: /api/stock/{ticker}/net-prem-ticks
+        
+        FEB 8, 2026: NEW — Previously undiscovered endpoint.
+        Returns per-minute breakdown of:
+        - call_volume, put_volume (total + ask_side + bid_side)
+        - net_call_premium, net_put_premium ($ flow per minute)
+        - net_delta (total delta exposure per minute)
+        
+        Used for:
+        - opening_flow_bias: first 30 ticks = institutional opening positioning
+        - closing_flow_bias: last 30 ticks = institutional close-of-day positioning
+        - liquidity_violence_score: sudden net_delta spikes
+        
+        Cost: 1 API call per ticker.
+        """
+        endpoint = f"/api/stock/{symbol}/net-prem-ticks"
+        return await self._request(endpoint, symbol=symbol)
+    
+    async def get_opening_closing_flow(self, symbol: str) -> Dict[str, Any]:
+        """
+        Analyze opening and closing flow bias from net-prem-ticks data.
+        
+        FEB 8, 2026: NEW — Provides institutional flow direction inference.
+        
+        Returns dict with:
+        - opening_net_premium: $ net premium in first 30 minutes
+        - closing_net_premium: $ net premium in last 30 minutes
+        - opening_bias: "BULLISH" / "BEARISH" / "NEUTRAL"
+        - closing_bias: "BULLISH" / "BEARISH" / "NEUTRAL"
+        - flow_reversal: True if opening and closing disagree (distribution signal)
+        - intraday_delta_trend: "BEARISH_ACCELERATING" / "BULLISH" / "FLAT"
+        - total_net_premium: full day $ net premium
+        """
+        result = await self.get_net_premium_ticks(symbol)
+        
+        if not result:
+            return {}
+        
+        data = result.get("data", result) if isinstance(result, dict) else result
+        if not isinstance(data, list) or len(data) < 10:
+            return {}
+        
+        try:
+            def calc_net(ticks):
+                """Sum net premium across ticks."""
+                total = 0.0
+                for t in ticks:
+                    if isinstance(t, dict):
+                        ncp = float(t.get("net_call_premium", 0) or 0)
+                        npp = float(t.get("net_put_premium", 0) or 0)
+                        total += ncp + npp
+                return total
+            
+            def calc_delta(ticks):
+                """Sum net delta across ticks."""
+                total = 0.0
+                for t in ticks:
+                    if isinstance(t, dict):
+                        nd = float(t.get("net_delta", 0) or 0)
+                        total += nd
+                return total
+            
+            # Opening: first 30 ticks (~first 30 minutes of market)
+            opening_ticks = data[:30]
+            # Closing: last 30 ticks (~last 30 minutes of market)
+            closing_ticks = data[-30:]
+            
+            opening_net = calc_net(opening_ticks)
+            closing_net = calc_net(closing_ticks)
+            total_net = calc_net(data)
+            
+            opening_delta = calc_delta(opening_ticks)
+            closing_delta = calc_delta(closing_ticks)
+            
+            # Bias classification
+            def classify_bias(net_prem, threshold=100000):
+                if net_prem > threshold:
+                    return "BULLISH"
+                elif net_prem < -threshold:
+                    return "BEARISH"
+                else:
+                    return "NEUTRAL"
+            
+            opening_bias = classify_bias(opening_net)
+            closing_bias = classify_bias(closing_net)
+            
+            # Flow reversal = opening and closing disagree (distribution signal)
+            flow_reversal = (
+                (opening_bias == "BULLISH" and closing_bias == "BEARISH") or
+                (opening_bias == "BEARISH" and closing_bias == "BULLISH")
+            )
+            
+            # Intraday delta trend: compare first half vs second half
+            mid = len(data) // 2
+            first_half_delta = calc_delta(data[:mid])
+            second_half_delta = calc_delta(data[mid:])
+            
+            if second_half_delta < first_half_delta and second_half_delta < -50000:
+                delta_trend = "BEARISH_ACCELERATING"
+            elif second_half_delta > first_half_delta and second_half_delta > 50000:
+                delta_trend = "BULLISH"
+            else:
+                delta_trend = "FLAT"
+            
+            return {
+                "opening_net_premium": opening_net,
+                "closing_net_premium": closing_net,
+                "opening_bias": opening_bias,
+                "closing_bias": closing_bias,
+                "flow_reversal": flow_reversal,
+                "intraday_delta_trend": delta_trend,
+                "total_net_premium": total_net,
+                "opening_delta": opening_delta,
+                "closing_delta": closing_delta,
+                "tick_count": len(data)
+            }
+        except Exception as e:
+            logger.debug(f"Opening/closing flow analysis failed for {symbol}: {e}")
+            return {}
 
     # ==================== Options Volume & OI ====================
 
@@ -932,8 +1199,12 @@ class UnusualWhalesClient:
 
     async def get_put_wall(self, symbol: str) -> Optional[float]:
         """
-        Get the put wall (highest put OI level).
+        Get the put wall (highest put OI level within ±30% of current price).
         This represents potential dealer support.
+        
+        FEB 8, 2026 FIX: Filter to ±30% of current price to avoid returning
+        deep OTM strikes as the "wall" (e.g., $300 for a $411 stock is valid,
+        but $5 is not).
         """
         oi_data = await self.get_oi_by_strike(symbol)
 
@@ -951,16 +1222,29 @@ class UnusualWhalesClient:
         if not isinstance(data, list) or len(data) == 0:
             return None
 
+        # Get current price for ±30% range filter
+        current_price = await self._get_underlying_price(symbol)
+        if current_price and current_price > 0:
+            low_bound = current_price * 0.70
+            high_bound = current_price * 1.30
+        else:
+            # Fallback: no filter
+            low_bound = 0
+            high_bound = float('inf')
+
         max_put_oi = 0
         put_wall = None
 
         for strike_data in data:
             if not isinstance(strike_data, dict):
                 continue
+            strike = float(strike_data.get("strike", strike_data.get("strike_price", 0)))
+            if strike < low_bound or strike > high_bound:
+                continue  # Skip strikes outside ±30% range
             put_oi = int(strike_data.get("put_oi", strike_data.get("put_open_interest", 0)))
             if put_oi > max_put_oi:
                 max_put_oi = put_oi
-                put_wall = float(strike_data.get("strike", strike_data.get("strike_price", 0)))
+                put_wall = strike
 
         return put_wall
 
