@@ -1010,7 +1010,7 @@ def render_early_warning_tab():
             st.caption(f"Last scan: {scan_time}")
     
     # Auto-refresh info
-    st.caption("📡 EWS scans run automatically at 8 AM, 10 AM, 12 PM, 2:30 PM, 4:30 PM, and 10 PM ET. Dashboard auto-refreshes every 60 seconds.")
+    st.caption("📡 EWS scans run automatically at 8 AM, 9:45 AM, 11 AM, 12 PM, 1 PM, 2 PM, 3 PM, 4:30 PM, and 10 PM ET. Dashboard auto-refreshes every 60 seconds.")
     
     # Summary metrics
     summary = early_warning_data.get("summary", {})

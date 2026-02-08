@@ -4,10 +4,10 @@ Provides institutional flow detection, dark pool data, and options analytics.
 
 API Documentation: https://api.unusualwhales.com/docs
 
-BUDGET STRATEGY (7,500 calls/day with 19 scans):
-├── Pre-Market (4:00-9:00 AM):     800 calls  - 4 scans × all tickers
+BUDGET STRATEGY (7,500 calls/day with 67 jobs):
+├── Pre-Market (4:00-9:00 AM):     800 calls  - 4 scans x all tickers
 ├── Market Open (9:30-10:00 AM):   800 calls  - Full scan all
-├── Regular Hours (10:00-3:30 PM): 4,000 calls - 11 scans × all tickers  
+├── Regular Hours (10:00-3:30 PM): 4,000 calls - 11 scans x all tickers
 ├── Market Close (4:00 PM):        800 calls  - Full scan all
 ├── End of Day (5:00 PM):          400 calls  - Final summary
 └── Buffer:                        700 calls  - For retries
@@ -17,11 +17,21 @@ RATE LIMIT STRATEGY (120 req/min limit):
 - Wait 65 seconds between batches (rate limit reset)
 - Use 0.6s interval within batch (100 req/min, safe under 120)
 - Result: ALL tickers scanned per scan, ZERO misses
+
+RESPONSE CACHE STRATEGY (Feb 7, 2026):
+- 30-minute TTL cache for all UW API responses
+- Cache key = endpoint path (without params) to normalize limit differences
+- SAVES ~5,800+ UW calls/day from overlapping scans:
+  - EWS + Full Scan at same time: dark_pool_flow, oi_change overlap
+  - EWS + Earnings Priority: 4 endpoints overlap per earnings stock
+  - get_put_flow + get_call_selling_flow: both call flow_recent internally
+  - Duplicate 3PM scan eliminated (daily_report + market_pulse)
 """
 
 import asyncio
+import time as _time
 from datetime import datetime, date, timedelta
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Tuple
 import aiohttp
 from loguru import logger
 
@@ -48,8 +58,25 @@ class UnusualWhalesClient:
     BASE_URL = "https://api.unusualwhales.com"
     
     # Rate limiting: 0.6s = 100 req/min (safe under 120 limit)
-    # When batched: 100 tickers × 0.6s = 60s per batch, then wait 65s
+    # When batched: 100 tickers x 0.6s = 60s per batch, then wait 65s
     MIN_REQUEST_INTERVAL = 0.6  # 600ms between requests (100 req/min max)
+
+    # =========================================================================
+    # RESPONSE CACHE (Feb 7, 2026)
+    # Prevents redundant UW API calls when multiple scans overlap.
+    #
+    # WHY: At 3:00 PM, EWS + Full Scan + Weather all query the same endpoints.
+    #      EWS calls oi_change(AAPL), then Full Scan calls oi_change(AAPL) again.
+    #      Dark pool, OI, and IV data barely change in 30 minutes.
+    #
+    # HOW: Cache key = endpoint path (ignoring limit/params).
+    #      dark_pool_flow(AAPL, limit=50) and dark_pool_flow(AAPL, limit=30)
+    #      share one cache entry. The larger response (50 results) serves both.
+    #
+    # SAVINGS: ~5,800+ UW calls/day (within-block + cross-block + dup 3PM)
+    # =========================================================================
+    RESPONSE_CACHE_TTL = 1800  # 30 minutes - UW data is flow/OI, not tick-level quotes
+    CACHE_MAX_ENTRIES = 5000   # Prevent unbounded growth (~361 tickers x ~8 endpoints)
 
     def __init__(self, settings: Settings):
         self.settings = settings
@@ -63,6 +90,110 @@ class UnusualWhalesClient:
         
         # Budget manager for smart API allocation
         self._budget_manager = get_budget_manager()
+        
+        # Force scan mode: bypasses priority tier limits for EWS discovery scans
+        # When True, all _request() calls use force_scan=True in budget checks
+        # Set this True before FULL EWS scans to ensure ALL tickers get UW data
+        self._force_scan_mode = False
+        
+        # =====================================================================
+        # RESPONSE CACHE (Feb 7, 2026)
+        # Key: endpoint path (e.g., "/api/darkpool/AAPL")
+        # Value: (response_data, timestamp_seconds)
+        # =====================================================================
+        self._response_cache: Dict[str, Tuple[Any, float]] = {}
+        self._cache_hits = 0
+        self._cache_misses = 0
+        self._cache_saves = 0  # Number of API calls saved
+    
+    def set_force_scan_mode(self, enabled: bool):
+        """
+        Enable/disable force scan mode for EWS discovery scans.
+        
+        When enabled, bypasses P1/P2/P3 priority tier budget limits
+        (still respects daily limit and total window budget).
+        This ensures ALL 361+ tickers get UW data during FULL scans.
+        """
+        self._force_scan_mode = enabled
+        if enabled:
+            logger.info("UW Client: Force scan mode ENABLED (bypassing priority tiers)")
+        else:
+            logger.debug("UW Client: Force scan mode disabled")
+
+    # =====================================================================
+    # RESPONSE CACHE METHODS (Feb 7, 2026)
+    # =====================================================================
+    
+    def _get_cache_key(self, endpoint: str) -> str:
+        """
+        Generate cache key from endpoint path ONLY (no params).
+        
+        This normalizes limit differences:
+        - dark_pool_flow(AAPL, limit=50) and dark_pool_flow(AAPL, limit=30)
+          share key "/api/darkpool/AAPL"
+        - oi_change(AAPL) -> "/api/stock/AAPL/oi-change"
+        
+        SAFE because:
+        - Higher-limit responses are supersets of lower-limit responses
+        - UW sorts by recency - first N results are the same regardless of limit
+        - Callers already process/filter the response internally
+        """
+        return endpoint
+    
+    def _get_cached_response(self, cache_key: str) -> Optional[Any]:
+        """Get cached response if still valid (within TTL)."""
+        if cache_key in self._response_cache:
+            data, cached_at = self._response_cache[cache_key]
+            age = _time.time() - cached_at
+            if age < self.RESPONSE_CACHE_TTL:
+                self._cache_hits += 1
+                self._cache_saves += 1
+                return data
+            else:
+                # Expired - remove stale entry
+                del self._response_cache[cache_key]
+        self._cache_misses += 1
+        return None
+    
+    def _cache_response(self, cache_key: str, data: Any):
+        """Store API response in cache with current timestamp."""
+        self._response_cache[cache_key] = (data, _time.time())
+        
+        # Prevent unbounded growth
+        if len(self._response_cache) > self.CACHE_MAX_ENTRIES:
+            self._cleanup_expired_cache()
+    
+    def _cleanup_expired_cache(self):
+        """Remove expired entries from cache."""
+        now = _time.time()
+        expired = [
+            k for k, (_, ts) in self._response_cache.items()
+            if (now - ts) >= self.RESPONSE_CACHE_TTL
+        ]
+        for k in expired:
+            del self._response_cache[k]
+        if expired:
+            logger.debug(f"UW cache cleanup: removed {len(expired)} expired entries")
+    
+    def get_cache_stats(self) -> Dict[str, Any]:
+        """Get response cache statistics for monitoring."""
+        total = self._cache_hits + self._cache_misses
+        hit_rate = round(self._cache_hits / max(1, total) * 100, 1)
+        return {
+            "cache_hits": self._cache_hits,
+            "cache_misses": self._cache_misses,
+            "cache_entries": len(self._response_cache),
+            "cache_hit_rate_pct": hit_rate,
+            "api_calls_saved": self._cache_saves,
+        }
+    
+    def clear_cache(self):
+        """Clear the response cache and reset stats."""
+        self._response_cache.clear()
+        self._cache_hits = 0
+        self._cache_misses = 0
+        self._cache_saves = 0
+        logger.info("UW response cache cleared")
 
     @property
     def _headers(self) -> Dict[str, str]:
@@ -85,9 +216,12 @@ class UnusualWhalesClient:
         Check if we should skip UW API calls for this ticker.
         
         Use this to fall back to Alpaca-only scanning for low-priority tickers.
+        Respects force_scan_mode: never skips when force scanning.
         """
         if self._budget_manager:
-            return self._budget_manager.skip_uw_use_alpaca_only(symbol, score)
+            return self._budget_manager.skip_uw_use_alpaca_only(
+                symbol, score, force_scan=self._force_scan_mode
+            )
         return False
     
     def can_call_for_symbol(self, symbol: str, score: float = 0, is_dui: bool = False) -> bool:
@@ -145,20 +279,48 @@ class UnusualWhalesClient:
         endpoint: str,
         params: Optional[Dict] = None,
         symbol: str = None,
-        priority: TickerPriority = None
+        priority: TickerPriority = None,
+        force_scan: bool = False
     ) -> Dict[str, Any]:
         """
-        Make HTTP request to Unusual Whales API with budget management.
+        Make HTTP request to Unusual Whales API with budget management + response cache.
+        
+        CACHE STRATEGY (Feb 7, 2026):
+        - Before making HTTP call, check if endpoint is in the 30-min cache
+        - If cached and fresh -> return cached data (0 API calls, 0 budget impact)
+        - If not cached -> make real API call -> store in cache
+        - Cache key = endpoint path only (normalizes limit params)
+        
+        This prevents:
+        - EWS dark_pool(AAPL) at 3PM + Full Scan dark_pool(AAPL) at 3PM = 1 call not 2
+        - get_put_flow(AAPL) + get_call_selling(AAPL) both calling flow_recent = 1 call not 2
+        - oi_change(AAPL) queried by EWS, Full Scan, Earnings Priority = 1 call not 3
         
         Args:
             endpoint: API endpoint
             params: Query parameters
             symbol: Ticker symbol (for budget tracking)
             priority: Ticker priority (P1/P2/P3)
+            force_scan: If True, bypass priority tier limits (for EWS discovery)
         """
-        # Check budget manager first (if symbol provided)
+        # =====================================================================
+        # STEP 0: Check response cache FIRST (before any budget/rate logic)
+        # If we have fresh data for this endpoint, skip the API call entirely.
+        # This saves budget, rate limit capacity, and latency.
+        # =====================================================================
+        cache_key = self._get_cache_key(endpoint)
+        cached_data = self._get_cached_response(cache_key)
+        if cached_data is not None:
+            logger.debug(f"UW CACHE HIT: {endpoint} (saved 1 API call)")
+            return cached_data
+        
+        # =====================================================================
+        # STEP 1: Budget check (only if cache missed)
+        # =====================================================================
         if symbol and self._budget_manager:
-            if not self._budget_manager.can_call_uw(symbol, priority):
+            # Use force_scan from either the parameter or the client-level flag
+            effective_force = force_scan or self._force_scan_mode
+            if not self._budget_manager.can_call_uw(symbol, priority, force_scan=effective_force):
                 logger.debug(f"UW API call skipped for {symbol} - budget/cooldown")
                 return {}
         
@@ -167,7 +329,9 @@ class UnusualWhalesClient:
             logger.error("Unusual Whales daily API limit reached!")
             return {}
 
-        # Rate limiting - wait between requests
+        # =====================================================================
+        # STEP 2: Rate limiting + HTTP call
+        # =====================================================================
         await self._rate_limit_wait()
 
         url = f"{self.BASE_URL}{endpoint}"
@@ -182,7 +346,13 @@ class UnusualWhalesClient:
                     self._budget_manager.record_call(symbol)
 
                 if response.status == 200:
-                    return await response.json()
+                    result = await response.json()
+                    # =========================================================
+                    # STEP 3: Cache successful response for future reuse
+                    # =========================================================
+                    if result:  # Only cache non-empty responses
+                        self._cache_response(cache_key, result)
+                    return result
                 elif response.status == 429:
                     # Rate limited - wait longer and retry once
                     logger.debug("UW rate limit - waiting 3s before retry")

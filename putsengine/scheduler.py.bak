@@ -388,25 +388,19 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        # FEB 8, 2026 OPTIMIZATION: Staggered +2 min after co-located EWS scans.
-        # EWS at 12:00 PM caches dark_pool_flow, oi_change, flow_recent, iv_term_structure
-        # for ALL 361 tickers. Earnings Priority calls the SAME 4 endpoints for earnings
-        # stocks. Running 2 min later = GUARANTEED cache hits on 4/6 UW endpoints.
-        # SAVINGS: ~80 UW calls per scan (4 cached x ~20 earnings stocks).
         self.scheduler.add_job(
             self._run_earnings_priority_scan_wrapper,
-            CronTrigger(hour=12, minute=2, timezone=EST),
+            CronTrigger(hour=12, minute=0, timezone=EST),
             id="earnings_priority_12pm",
-            name="Earnings Priority Scan (12:02 PM ET) - Midday [cached from EWS]",
+            name="Earnings Priority Scan (12:00 PM ET) - Midday",
             replace_existing=True
         )
         
-        # FEB 8, 2026: Staggered +2 min after 4:30 PM EWS for same cache benefit.
         self.scheduler.add_job(
             self._run_earnings_priority_scan_wrapper,
-            CronTrigger(hour=16, minute=32, timezone=EST),
+            CronTrigger(hour=16, minute=30, timezone=EST),
             id="earnings_priority_430pm",
-            name="Earnings Priority Scan (4:32 PM ET) - Post-Market [cached from EWS]",
+            name="Earnings Priority Scan (4:30 PM ET) - Post-Market",
             replace_existing=True
         )
         
@@ -745,9 +739,9 @@ class PutsEngineScheduler:
         # Moved from 2:30 PM to align with Weather PM and daily report
         self.scheduler.add_job(
             self._run_early_warning_scan_wrapper,
-            CronTrigger(hour=15, minute=2, timezone=EST),
+            CronTrigger(hour=15, minute=0, timezone=EST),
             id="early_warning_3pm",
-            name="🚨 Early Warning Scan (3:02 PM ET) - AFTERNOON CLOSE PREP",
+            name="🚨 Early Warning Scan (3:00 PM ET) - AFTERNOON CLOSE PREP",
             replace_existing=True
         )
         
@@ -821,18 +815,18 @@ class PutsEngineScheduler:
         # 9:00 AM ET — FULL AM "Open Risk Forecast" (live UW API calls)
         self.scheduler.add_job(
             self._run_market_weather_am_wrapper,
-            CronTrigger(hour=9, minute=5, timezone=EST),
+            CronTrigger(hour=9, minute=0, timezone=EST),
             id="market_weather_0900",
-            name="🌪️ Market Weather AM (9:05 AM ET) — FULL Open Risk Forecast",
+            name="🌪️ Market Weather AM (9:00 AM ET) — FULL Open Risk Forecast",
             replace_existing=True
         )
         
         # 3:00 PM ET — FULL PM "Overnight Storm Build" (live UW API calls)
         self.scheduler.add_job(
             self._run_market_weather_pm_wrapper,
-            CronTrigger(hour=15, minute=8, timezone=EST),
+            CronTrigger(hour=15, minute=0, timezone=EST),
             id="market_weather_1500",
-            name="🌪️ Market Weather PM (3:08 PM ET) — FULL Overnight Storm Build",
+            name="🌪️ Market Weather PM (3:00 PM ET) — FULL Overnight Storm Build",
             replace_existing=True
         )
         
@@ -1272,20 +1266,14 @@ class PutsEngineScheduler:
             # Always disable force_scan mode after EWS scan
             if hasattr(self, '_uw') and self._uw is not None:
                 self._uw.set_force_scan_mode(False)
-                # FEB 8, 2026: Log cache stats after each EWS scan for monitoring.
-                # Shows how many UW calls saved by 30-min response cache
-                # from co-located scans (Daily Report, Earnings Priority, Weather).
-                try:
-                    stats = self._uw.get_cache_stats()
-                    logger.info(
-                        f"EWS UW Cache: hits={stats['cache_hits']}, "
-                        f"misses={stats['cache_misses']}, "
-                        f"hit_rate={stats['cache_hit_rate_pct']}%, "
-                        f"saved={stats['api_calls_saved']} API calls, "
-                        f"entries={stats['cache_entries']}"
-                    )
-                except Exception:
-                    pass
+                # Log cache stats after each EWS scan for monitoring
+                stats = self._uw.get_cache_stats()
+                logger.info(
+                    f"EWS UW Cache: hits={stats['cache_hits']}, "
+                    f"misses={stats['cache_misses']}, "
+                    f"hit_rate={stats['cache_hit_rate_pct']}%, "
+                    f"saved={stats['api_calls_saved']}"
+                )
     
     def _run_zero_hour_scan_wrapper(self):
         """
@@ -1985,18 +1973,10 @@ class PutsEngineScheduler:
         
         try:
             # Import and run the analysis from market_pulse_engine
-            # FEB 8, 2026: Pass shared clients to leverage UW response cache.
-            # Previously created SEPARATE UW/Polygon clients per run, bypassing
-            # the 30-min response cache. Now shares self._uw so cache hits are
-            # guaranteed when Market Direction runs alongside EWS or other scans.
-            await self._init_clients()
             from putsengine.market_pulse_engine import MarketPulseEngine
-            engine = MarketPulseEngine(
-                polygon_client=self._polygon,
-                uw_client=self._uw
-            )
+            engine = MarketPulseEngine()
             result = await engine.analyze()
-            await engine.close()  # Safe: won't close shared clients (_owns_clients=False)
+            await engine.close()
             
             # Log results
             logger.info(f"Regime: {result.regime.value}")
