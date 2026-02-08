@@ -470,7 +470,15 @@ class UnusualWhalesClient:
         ]
 
     def _parse_flow(self, item: Dict[str, Any], underlying: str = "") -> OptionsFlow:
-        """Parse flow item into OptionsFlow model."""
+        """
+        Parse flow item into OptionsFlow model.
+        
+        FEB 8, 2026 FIX: UW flow-recent has NO 'side' field.
+        Instead it provides bid_vol, ask_vol, mid_vol:
+          ask_vol > bid_vol → buyer-initiated (at ask)
+          bid_vol > ask_vol → seller-initiated (at bid)
+        We infer 'side' from these for accurate sentiment classification.
+        """
         # Handle expiration date
         exp_str = item.get("expiry", item.get("expiration_date", item.get("expires", "")))
         if exp_str:
@@ -491,20 +499,46 @@ class UnusualWhalesClient:
         else:
             timestamp = datetime.now()
 
-        # Determine sentiment from side/type
-        side = item.get("side", item.get("aggressor_side", "unknown"))
+        # Determine side: explicit field first, then infer from bid_vol/ask_vol
+        side = item.get("side", item.get("aggressor_side", ""))
+        if not side or side.lower() == "unknown":
+            ask_vol = int(item.get("ask_vol", 0) or 0)
+            bid_vol = int(item.get("bid_vol", 0) or 0)
+            mid_vol = int(item.get("mid_vol", 0) or 0)
+            if ask_vol > bid_vol and ask_vol > mid_vol:
+                side = "ask"   # Buyer-initiated
+            elif bid_vol > ask_vol and bid_vol > mid_vol:
+                side = "bid"   # Seller-initiated
+            elif mid_vol > 0:
+                side = "mid"
+            else:
+                side = "unknown"
+
         opt_type = item.get("option_type", item.get("put_call", "unknown"))
 
-        # Bearish: put buying at ask, call selling at bid
+        # Determine sentiment from side + option type
         sentiment = "neutral"
-        if opt_type.lower() == "put" and side.lower() in ["ask", "buy"]:
+        side_lower = side.lower() if side else "unknown"
+        opt_lower = opt_type.lower() if opt_type else "unknown"
+        if opt_lower == "put" and side_lower in ["ask", "buy"]:
             sentiment = "bearish"
-        elif opt_type.lower() == "call" and side.lower() in ["bid", "sell"]:
+        elif opt_lower == "call" and side_lower in ["bid", "sell"]:
             sentiment = "bearish"
-        elif opt_type.lower() == "call" and side.lower() in ["ask", "buy"]:
+        elif opt_lower == "call" and side_lower in ["ask", "buy"]:
             sentiment = "bullish"
-        elif opt_type.lower() == "put" and side.lower() in ["bid", "sell"]:
+        elif opt_lower == "put" and side_lower in ["bid", "sell"]:
             sentiment = "bullish"
+
+        # Detect sweeps/blocks from tags
+        tags = item.get("tags", []) or []
+        is_sweep = item.get("is_sweep", False) or item.get("trade_type", "") == "SWEEP"
+        is_block = item.get("is_block", False) or item.get("trade_type", "") == "BLOCK"
+        if isinstance(tags, list):
+            tag_str = " ".join(str(t) for t in tags).lower()
+            if "sweep" in tag_str:
+                is_sweep = True
+            if "block" in tag_str:
+                is_block = True
 
         return OptionsFlow(
             timestamp=timestamp,
@@ -519,8 +553,8 @@ class UnusualWhalesClient:
             spot_price=float(item.get("stock_price", item.get("underlying_price", item.get("spot", 0)))),
             implied_volatility=float(item.get("iv", item.get("implied_volatility", 0))),
             delta=float(item.get("delta", 0)),
-            is_sweep=item.get("is_sweep", False) or item.get("trade_type", "") == "SWEEP",
-            is_block=item.get("is_block", False) or item.get("trade_type", "") == "BLOCK",
+            is_sweep=is_sweep,
+            is_block=is_block,
             sentiment=sentiment
         )
 
@@ -561,13 +595,31 @@ class UnusualWhalesClient:
                     else:
                         timestamp = datetime.now()
 
+                    # FEB 8, 2026 FIX: UW dark pool has NO 'side' field.
+                    # Infer buy/sell from price vs NBBO:
+                    #   price >= nbbo_ask → buy-side
+                    #   price <= nbbo_bid → sell-side
+                    #   between → midpoint (None)
+                    is_buy = None
+                    if item.get("side"):
+                        is_buy = item["side"].lower() == "buy"
+                    else:
+                        dp_price = float(item.get("price", item.get("execution_price", 0)))
+                        nbbo_bid = float(item.get("nbbo_bid", 0) or 0)
+                        nbbo_ask = float(item.get("nbbo_ask", 0) or 0)
+                        if dp_price > 0 and nbbo_bid > 0 and nbbo_ask > 0:
+                            if dp_price >= nbbo_ask:
+                                is_buy = True
+                            elif dp_price <= nbbo_bid:
+                                is_buy = False
+
                     prints.append(DarkPoolPrint(
                         timestamp=timestamp,
                         symbol=symbol,
                         price=float(item.get("price", item.get("execution_price", 0))),
                         size=int(item.get("size", item.get("volume", item.get("shares", 0)))),
-                        exchange=item.get("exchange", item.get("venue", "DARK")),
-                        is_buy=item.get("side", "").lower() == "buy" if item.get("side") else None
+                        exchange=item.get("exchange", item.get("venue", item.get("market_center", "DARK"))),
+                        is_buy=is_buy
                     ))
                 except Exception as e:
                     logger.debug(f"Error parsing dark pool print: {e}")
@@ -611,7 +663,14 @@ class UnusualWhalesClient:
     async def get_gex_data(self, symbol: str) -> Optional[GEXData]:
         """
         Get Gamma Exposure (GEX) data for a symbol.
-        This estimates dealer positioning and hedging flows.
+        
+        FEB 8, 2026 FIX: UW greek-exposure returns a TIME SERIES with keys:
+        call_gamma, put_gamma, call_delta, put_delta (NOT gex/dex/net_gex).
+        
+        NEW: Compute net_gex = call_gamma + put_gamma
+             Compute dealer_delta = call_delta + put_delta  
+             Use LATEST record (last in list = most recent)
+             Compute gex_flip_level from OI-per-strike data
         """
         # Try greek-exposure endpoint first
         result = await self.get_greek_exposure(symbol)
@@ -626,30 +685,131 @@ class UnusualWhalesClient:
         # Handle both dict with "data" key and direct response
         data = result.get("data", result) if isinstance(result, dict) else result
 
-        # If data is a list, get first element
+        # If data is a list, get the LATEST record (last element = most recent date)
         if isinstance(data, list):
             if len(data) == 0:
                 return None
-            data = data[0]
+            data = data[-1]  # FIX: Use latest record, not first (oldest)
 
         if not isinstance(data, dict):
             return None
 
         try:
+            # COMPUTE net_gex from call_gamma + put_gamma (put_gamma is negative)
+            call_gamma = float(data.get("call_gamma", data.get("call_gex", 0)))
+            put_gamma = float(data.get("put_gamma", data.get("put_gex", 0)))
+            net_gex = float(data.get("gex", data.get("net_gex", data.get("gamma_exposure", 0))))
+            if net_gex == 0 and (call_gamma != 0 or put_gamma != 0):
+                net_gex = call_gamma + put_gamma
+
+            # COMPUTE dealer_delta from call_delta + put_delta
+            call_delta = float(data.get("call_delta", 0))
+            put_delta = float(data.get("put_delta", 0))
+            dealer_delta = float(data.get("dex", data.get("dealer_delta", data.get("net_delta", 0))))
+            if dealer_delta == 0 and (call_delta != 0 or put_delta != 0):
+                dealer_delta = call_delta + put_delta
+
+            # Try pre-computed walls/flip from response
+            gex_flip = None
+            if data.get("gex_flip") or data.get("flip_price"):
+                gex_flip = float(data.get("gex_flip", data.get("flip_price", 0)))
+
+            put_wall_val = None
+            if data.get("put_wall") or data.get("highest_put_oi_strike"):
+                put_wall_val = float(data.get("put_wall", data.get("highest_put_oi_strike", 0)))
+
+            call_wall_val = None
+            if data.get("call_wall") or data.get("highest_call_oi_strike"):
+                call_wall_val = float(data.get("call_wall", data.get("highest_call_oi_strike", 0)))
+
+            # If put_wall/call_wall not in GEX response, fetch from OI-per-strike
+            if put_wall_val is None or call_wall_val is None or gex_flip is None:
+                try:
+                    oi_strike_data = await self.get_oi_by_strike(symbol)
+                    if oi_strike_data:
+                        oi_list = oi_strike_data.get("data", oi_strike_data) if isinstance(oi_strike_data, dict) else oi_strike_data
+                        if isinstance(oi_list, list) and oi_list:
+                            # Get approximate current price from net_gex context or data
+                            # Filter strikes to ±50% of median strike for realistic walls
+                            all_strikes = [float(r.get("strike", 0)) for r in oi_list if isinstance(r, dict) and float(r.get("strike", 0)) > 0]
+                            if all_strikes:
+                                median_strike = sorted(all_strikes)[len(all_strikes) // 2]
+                                low_bound = median_strike * 0.5
+                                high_bound = median_strike * 1.5
+                            else:
+                                low_bound, high_bound = 0, float('inf')
+                            
+                            max_put_oi = 0
+                            max_call_oi = 0
+                            for strike_row in oi_list:
+                                if not isinstance(strike_row, dict):
+                                    continue
+                                strike = float(strike_row.get("strike", strike_row.get("strike_price", 0)))
+                                if strike < low_bound or strike > high_bound:
+                                    continue  # Skip deep OTM/ITM strikes
+                                p_oi = int(strike_row.get("put_oi", strike_row.get("put_open_interest", 0)))
+                                c_oi = int(strike_row.get("call_oi", strike_row.get("call_open_interest", 0)))
+                                if p_oi > max_put_oi:
+                                    max_put_oi = p_oi
+                                    if put_wall_val is None:
+                                        put_wall_val = strike
+                                if c_oi > max_call_oi:
+                                    max_call_oi = c_oi
+                                    if call_wall_val is None:
+                                        call_wall_val = strike
+                            # Compute gex_flip_level from OI per strike (use all strikes)
+                            if gex_flip is None and len(oi_list) >= 2:
+                                gex_flip = self._compute_gex_flip_from_oi(oi_list)
+                except Exception as e:
+                    logger.debug(f"Could not fetch OI-per-strike for {symbol} walls: {e}")
+
             return GEXData(
                 symbol=symbol,
                 timestamp=datetime.now(),
-                net_gex=float(data.get("gex", data.get("net_gex", data.get("gamma_exposure", 0)))),
-                call_gex=float(data.get("call_gex", data.get("call_gamma", 0))),
-                put_gex=float(data.get("put_gex", data.get("put_gamma", 0))),
-                gex_flip_level=float(data.get("gex_flip", data.get("flip_price", 0))) if data.get("gex_flip") or data.get("flip_price") else None,
-                dealer_delta=float(data.get("dex", data.get("dealer_delta", data.get("net_delta", 0)))),
-                put_wall=float(data.get("put_wall", data.get("highest_put_oi_strike", 0))) if data.get("put_wall") or data.get("highest_put_oi_strike") else None,
-                call_wall=float(data.get("call_wall", data.get("highest_call_oi_strike", 0))) if data.get("call_wall") or data.get("highest_call_oi_strike") else None
+                net_gex=net_gex,
+                call_gex=call_gamma,
+                put_gex=put_gamma,
+                gex_flip_level=gex_flip,
+                dealer_delta=dealer_delta,
+                put_wall=put_wall_val,
+                call_wall=call_wall_val
             )
         except Exception as e:
             logger.debug(f"Error parsing GEX data for {symbol}: {e}")
             return None
+
+    @staticmethod
+    def _compute_gex_flip_from_oi(oi_list: List[Dict]) -> Optional[float]:
+        """
+        Compute GEX flip level from OI-per-strike data.
+        
+        The flip level is where net gamma crosses zero (call_oi - put_oi sign change).
+        Above this level = positive gamma (dealers dampen moves).
+        Below = negative gamma (dealers amplify moves).
+        """
+        try:
+            prev_net = None
+            prev_strike = None
+            for row in sorted(oi_list, key=lambda r: float(r.get("strike", r.get("strike_price", 0)))):
+                if not isinstance(row, dict):
+                    continue
+                strike = float(row.get("strike", row.get("strike_price", 0)))
+                c_oi = int(row.get("call_oi", row.get("call_open_interest", 0)))
+                p_oi = int(row.get("put_oi", row.get("put_open_interest", 0)))
+                net = c_oi - p_oi
+                
+                if prev_net is not None and prev_net * net < 0:
+                    # Sign change: interpolate
+                    if prev_net != net:
+                        frac = abs(prev_net) / (abs(prev_net) + abs(net))
+                        flip = prev_strike + frac * (strike - prev_strike)
+                        return round(flip, 2)
+                
+                prev_net = net
+                prev_strike = strike
+        except Exception as e:
+            logger.debug(f"GEX flip computation failed: {e}")
+        return None
 
     # ==================== Options Volume & OI ====================
 
@@ -710,9 +870,40 @@ class UnusualWhalesClient:
         """
         Get volatility skew data.
         Endpoint: /api/stock/{ticker}/historical-risk-reversal-skew
+        
+        FEB 8, 2026 FIX: UW returns historical risk_reversal time series.
+        Consumers expect 'skew_change'. We compute it from the last two records.
+        Negative risk_reversal = puts expensive vs calls = bearish.
+        Increasingly negative change = skew steepening = very bearish.
         """
         endpoint = f"/api/stock/{symbol}/historical-risk-reversal-skew"
-        return await self._request(endpoint)
+        result = await self._request(endpoint)
+        
+        if not result:
+            return result
+        
+        data = result.get("data", result) if isinstance(result, dict) else result
+        if isinstance(data, list) and len(data) >= 2:
+            try:
+                sorted_data = sorted(data, key=lambda r: r.get("date", ""))
+                latest = sorted_data[-1]
+                prior = sorted_data[-2]
+                latest_rr = float(latest.get("risk_reversal", 0))
+                prior_rr = float(prior.get("risk_reversal", 0))
+                skew_change = latest_rr - prior_rr
+                return {
+                    "data": data,
+                    "skew": latest_rr,
+                    "skew_change": skew_change,
+                    "change": skew_change,
+                    "risk_reversal": latest_rr,
+                    "risk_reversal_prior": prior_rr,
+                    "skew_date": latest.get("date", ""),
+                }
+            except Exception as e:
+                logger.debug(f"Error computing skew change for {symbol}: {e}")
+        
+        return result
 
     async def get_iv_surface(self, symbol: str) -> Dict[str, Any]:
         """
@@ -844,16 +1035,49 @@ class UnusualWhalesClient:
         """
         Get insider trading activity.
         Endpoint: /api/insider/{ticker}
+        
+        FEB 8, 2026 FIX: UW /api/insider/{TICKER} returns PERSON-LEVEL data
+        (name, id, name_slug) — NOT trade transactions.
+        
+        We transform this into a trades-compatible format with
+        transaction_type="unknown" so consumers don't fire false positives.
+        The distribution layer checks for 'sale'/'sell' in transaction_type,
+        so these records are correctly skipped as unknowns.
         """
         endpoint = f"/api/insider/{symbol}"
         params = {"limit": limit}
-        result = await self._request(endpoint, params)
-        # Handle both list responses and dict with "data" key
+        result = await self._request(endpoint, params, symbol=symbol)
+        
+        raw_data = []
         if isinstance(result, list):
-            return result
+            raw_data = result
         elif isinstance(result, dict):
-            return result.get("data", [])
-        return []
+            raw_data = result.get("data", [])
+        
+        if not raw_data:
+            return []
+        
+        trades = []
+        for person in raw_data:
+            if not isinstance(person, dict):
+                continue
+            name = person.get("display_name", person.get("name", ""))
+            is_person = person.get("is_person", True)
+            if not is_person:
+                continue
+            trades.append({
+                "ticker": symbol,
+                "title": name,
+                "name": name,
+                "person_id": person.get("id", ""),
+                "is_person": is_person,
+                "transaction_type": "unknown",  # Don't fabricate trades
+                "value": 0,
+                "filing_date": "",
+                "source": "uw_insider_persons",
+            })
+        
+        return trades
 
     async def get_congress_trades(self, limit: int = 20) -> List[Dict[str, Any]]:
         """
@@ -874,20 +1098,22 @@ class UnusualWhalesClient:
         self,
         start_date: str = None,
         end_date: str = None,
-        limit: int = 100
+        limit: int = 100,
+        tickers: List[str] = None
     ) -> List[Dict[str, Any]]:
         """
         Get earnings calendar for upcoming/recent earnings.
-        Endpoint: /api/earnings-calendar
+        
+        FEB 8, 2026 FIX: /api/earnings/calendar returns 422.
+        FALLBACK: Use /api/stock/{ticker}/info (next_earnings_date field).
         
         Args:
-            start_date: Start date (YYYY-MM-DD)
-            end_date: End date (YYYY-MM-DD)
+            start_date: Start date filter (YYYY-MM-DD)
+            end_date: End date filter (YYYY-MM-DD)
             limit: Maximum results
-            
-        Returns:
-            List of earnings events with ticker, date, timing (BMO/AMC)
+            tickers: List of tickers to check (enables per-ticker fallback)
         """
+        # Try original endpoint first
         endpoint = "/api/earnings/calendar"
         params = {"limit": limit}
         if start_date:
@@ -897,10 +1123,51 @@ class UnusualWhalesClient:
         
         result = await self._request(endpoint, params)
         
-        if isinstance(result, list):
+        if isinstance(result, list) and result:
             return result
-        elif isinstance(result, dict):
+        elif isinstance(result, dict) and result.get("data"):
             return result.get("data", [])
+        
+        # FALLBACK: Build from stock_info endpoint
+        if tickers:
+            logger.debug(f"Earnings calendar endpoint failed; using stock_info for {len(tickers)} tickers")
+            earnings_list = []
+            for ticker in tickers[:limit]:
+                try:
+                    info = await self.get_stock_info(ticker)
+                    if not info:
+                        continue
+                    info_data = info.get("data", info) if isinstance(info, dict) else info
+                    if isinstance(info_data, list) and info_data:
+                        info_data = info_data[0]
+                    if not isinstance(info_data, dict):
+                        continue
+                    next_earn = info_data.get("next_earnings_date")
+                    if not next_earn:
+                        continue
+                    if start_date and next_earn < start_date:
+                        continue
+                    if end_date and next_earn > end_date:
+                        continue
+                    timing = info_data.get("announce_time", "")
+                    if "pre" in str(timing).lower():
+                        timing_code = "BMO"
+                    elif "post" in str(timing).lower():
+                        timing_code = "AMC"
+                    else:
+                        timing_code = timing or "unknown"
+                    earnings_list.append({
+                        "ticker": ticker,
+                        "date": next_earn,
+                        "timing": timing_code,
+                        "announce_time": info_data.get("announce_time", ""),
+                        "sector": info_data.get("sector", ""),
+                        "source": "stock_info_fallback",
+                    })
+                except Exception as e:
+                    logger.debug(f"Earnings fallback failed for {ticker}: {e}")
+            return earnings_list
+        
         return []
     
     async def get_global_flow_alerts(self, limit: int = 100) -> List[Dict[str, Any]]:
@@ -949,14 +1216,60 @@ class UnusualWhalesClient:
         Get IV term structure for a symbol.
         Endpoint: /api/stock/{symbol}/volatility/term-structure
         
-        Used for detecting IV inversion (near-term > far-term = hedging).
+        FEB 8, 2026 FIX: UW returns per-expiry rows with 'dte' and 'volatility'.
+        Consumers expect '7_day', '30_day', '60_day' IV values.
+        We now find the closest DTE to each target bucket and inject those fields.
         
         Returns:
-            Dict with 7_day, 30_day, 60_day IV values
+            Dict with 7_day, 30_day, 60_day IV values + raw data + inversion flag
         """
         endpoint = f"/api/stock/{symbol}/volatility/term-structure"
         result = await self._request(endpoint, symbol=symbol)
         
-        if isinstance(result, dict):
-            return result
-        return {}
+        if not result:
+            return {}
+        
+        data = result.get("data", result) if isinstance(result, dict) else result
+        
+        if isinstance(data, list) and len(data) >= 1:
+            try:
+                dte_vol = {}
+                for row in data:
+                    if not isinstance(row, dict):
+                        continue
+                    dte = row.get("dte")
+                    vol = row.get("volatility")
+                    if dte is not None and vol is not None and int(dte) > 0:
+                        dte_vol[int(dte)] = float(vol)
+                
+                if not dte_vol:
+                    return result if isinstance(result, dict) else {"data": data}
+                
+                def closest_iv(target_dte):
+                    if not dte_vol:
+                        return 0.0
+                    closest_key = min(dte_vol.keys(), key=lambda d: abs(d - target_dte))
+                    if abs(closest_key - target_dte) <= max(target_dte * 0.5, 5):
+                        return dte_vol[closest_key]
+                    return 0.0
+                
+                iv_7d = closest_iv(7)
+                iv_30d = closest_iv(30)
+                iv_60d = closest_iv(60)
+                
+                iv_inverted = iv_7d > iv_30d if iv_7d > 0 and iv_30d > 0 else False
+                inversion_ratio = round(iv_7d / iv_30d, 4) if iv_30d > 0 and iv_7d > 0 else 0.0
+                
+                return {
+                    "data": data,
+                    "7_day": iv_7d, "iv_7d": iv_7d, "near_term": iv_7d,
+                    "30_day": iv_30d, "iv_30d": iv_30d, "far_term": iv_30d,
+                    "60_day": iv_60d,
+                    "iv_inverted": iv_inverted,
+                    "inversion_ratio": inversion_ratio,
+                    "term_structure_slope": round(iv_30d - iv_7d, 4) if iv_7d > 0 and iv_30d > 0 else 0.0,
+                }
+            except Exception as e:
+                logger.debug(f"Error building IV term structure for {symbol}: {e}")
+        
+        return result if isinstance(result, dict) else {"data": data}

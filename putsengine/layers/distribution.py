@@ -775,6 +775,10 @@ class DistributionLayer:
 
         try:
             # 4. Check skew steepening
+            # FEB 8, 2026 FIX: get_skew() now returns enriched data with
+            # top-level 'skew_change' computed from risk_reversal time series.
+            # Negative risk_reversal = puts expensive vs calls = bearish.
+            # Increasingly negative (skew_change < 0) = skew steepening = bearish.
             skew_data = await self.unusual_whales.get_skew(symbol)
             if skew_data:
                 # Handle list response
@@ -785,12 +789,27 @@ class DistributionLayer:
                         skew_data = {}
 
                 if isinstance(skew_data, dict):
-                    data = skew_data.get("data", skew_data)
-                    if isinstance(data, list) and len(data) > 0:
-                        data = data[0]
-                    if isinstance(data, dict):
-                        skew_change = float(data.get("skew_change", data.get("change", 0)))
-                        if skew_change > self.config.SKEW_STEEPENING_THRESHOLD:
+                    # First check top-level enriched fields (from fixed get_skew)
+                    skew_change = float(skew_data.get("skew_change", 0))
+                    
+                    # Fallback: look inside nested data
+                    if skew_change == 0:
+                        data = skew_data.get("data", skew_data)
+                        if isinstance(data, list) and len(data) > 0:
+                            data = data[-1]  # Use latest record
+                        if isinstance(data, dict):
+                            skew_change = float(data.get("skew_change", data.get("change", data.get("risk_reversal", 0))))
+                    
+                    # For risk_reversal-based skew: steepening when change is MORE negative
+                    # A negative skew_change means risk_reversal became more negative = bearish
+                    # Use absolute value comparison with threshold
+                    if abs(skew_change) > self.config.SKEW_STEEPENING_THRESHOLD:
+                        # For risk_reversal: negative change = puts getting more expensive = bearish
+                        if skew_change < 0:
+                            signals["skew_steepening"] = True
+                            logger.info(f"{symbol}: Skew steepening detected (change={skew_change:.4f})")
+                        elif skew_change > self.config.SKEW_STEEPENING_THRESHOLD:
+                            # Legacy path: positive skew_change (old data format)
                             signals["skew_steepening"] = True
         except Exception as e:
             logger.debug(f"Error in skew analysis for {symbol}: {e}")
@@ -833,10 +852,20 @@ class DistributionLayer:
             if len(dp_prints) < 5:
                 return signals
 
+            # FEB 8, 2026 FIX: Now that is_buy is inferred from price vs NBBO,
+            # prioritize SELL-side prints for distribution detection.
+            # Filter to sell-side or ambiguous prints (exclude confirmed buys)
+            sell_or_ambiguous = [p for p in dp_prints if p.is_buy is not True]
+            
+            # If we have enough sell-side prints, use them; otherwise use all
+            target_prints = sell_or_ambiguous if len(sell_or_ambiguous) >= 3 else dp_prints
+            
             # Group prints by price level (within 0.5%)
             price_clusters: Dict[float, List[DarkPoolPrint]] = {}
-            for print_data in dp_prints:
+            for print_data in target_prints:
                 # Round to nearest 0.5%
+                if print_data.price <= 0:
+                    continue
                 rounded_price = round(print_data.price / (print_data.price * 0.005)) * (print_data.price * 0.005)
                 if rounded_price not in price_clusters:
                     price_clusters[rounded_price] = []

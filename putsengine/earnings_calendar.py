@@ -159,9 +159,18 @@ class EarningsCalendar:
                 end_date = today + timedelta(days=days_ahead)
                 
                 # UW endpoint: /api/earnings-calendar
+                # FEB 8, 2026 FIX: Pass known tickers for stock_info fallback
+                # (original endpoint returns 422, fallback uses per-ticker stock_info)
+                from putsengine.config import EngineConfig
+                try:
+                    all_tickers = list(EngineConfig.get_all_tickers())
+                except Exception:
+                    all_tickers = None
+                
                 response = await self.uw_client.get_earnings_calendar(
                     start_date=today.isoformat(),
-                    end_date=end_date.isoformat()
+                    end_date=end_date.isoformat(),
+                    tickers=all_tickers
                 )
                 
                 if response and isinstance(response, list):
@@ -170,11 +179,11 @@ class EarningsCalendar:
                         if not symbol:
                             continue
                         
-                        # Parse timing
-                        timing_str = item.get("time", "").lower()
-                        if "before" in timing_str or "bmo" in timing_str:
+                        # Parse timing (handles both raw UW and stock_info fallback)
+                        timing_str = (item.get("timing") or item.get("time") or "").lower()
+                        if "before" in timing_str or "bmo" in timing_str or "pre" in timing_str:
                             timing = EarningsTiming.BMO
-                        elif "after" in timing_str or "amc" in timing_str:
+                        elif "after" in timing_str or "amc" in timing_str or "post" in timing_str:
                             timing = EarningsTiming.AMC
                         else:
                             timing = EarningsTiming.UNKNOWN
