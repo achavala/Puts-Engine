@@ -208,17 +208,17 @@
     "expires_date": "2026-02-09"
   },
   "PYPL": {
-    "score": 0.7455174919575651,
+    "score": 0.8997721467610893,
     "source": "early_warning",
-    "reason": "IPI=0.75 (4 footprints)",
+    "reason": "IPI=0.90 (4 footprints)",
     "signals": [
-      "quote_degradation",
       "multi_day_distribution",
+      "cross_asset_divergence",
       "dark_pool_sequence",
-      "cross_asset_divergence"
+      "quote_degradation"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-07"
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
   },
   "SHOP": {
     "score": 0.5,
@@ -418,16 +418,16 @@
     "expires_date": "2026-02-07"
   },
   "REGN": {
-    "score": 0.7107792651214918,
+    "score": 0.8311451622559979,
     "source": "early_warning",
-    "reason": "IPI=0.71 (3 footprints)",
+    "reason": "IPI=0.83 (3 footprints)",
     "signals": [
-      "quote_degradation",
       "multi_day_distribution",
+      "quote_degradation",
       "dark_pool_sequence"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-07"
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
   },
   "NU": {
     "score": 0.732420870806452,
@@ -633,14 +633,16 @@
     "expires_date": "2026-02-10"
   },
   "RDW": {
-    "score": 0.6,
-    "source": "liquidity",
+    "score": 0.7589617041792084,
+    "source": "early_warning",
+    "reason": "IPI=0.76 (3 footprints)",
     "signals": [
-      "ah_drop_6.1pct",
-      "after_hours_critical"
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-10"
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
   },
   "ONDS": {
     "score": 0.6,
@@ -720,28 +722,27 @@
     "expires_date": "2026-02-07"
   },
   "ELV": {
-    "score": 0.8173226166335487,
+    "score": 0.8791188936564747,
     "source": "early_warning",
-    "reason": "IPI=0.82 (3 footprints)",
+    "reason": "IPI=0.88 (3 footprints)",
     "signals": [
-      "quote_degradation",
       "multi_day_distribution",
+      "quote_degradation",
       "dark_pool_sequence"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-07"
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
   },
   "U": {
-    "score": 0.8160306961638207,
+    "score": 0.7024687391595968,
     "source": "early_warning",
-    "reason": "IPI=0.82 (3 footprints)",
+    "reason": "IPI=0.70 (2 footprints)",
     "signals": [
-      "quote_degradation",
       "multi_day_distribution",
       "dark_pool_sequence"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-07"
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
   },
   "NVO": {
     "score": 0.809374355939567,
@@ -780,17 +781,17 @@
     "expires_date": "2026-02-07"
   },
   "ISRG": {
-    "score": 0.7715665472512445,
+    "score": 1.0,
     "source": "early_warning",
-    "reason": "IPI=0.77 (4 footprints)",
+    "reason": "IPI=1.00 (4 footprints)",
     "signals": [
-      "quote_degradation",
       "multi_day_distribution",
+      "cross_asset_divergence",
       "dark_pool_sequence",
-      "cross_asset_divergence"
+      "quote_degradation"
     ],
-    "added_date": "2026-02-05",
-    "expires_date": "2026-02-07"
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
   },
   "NOC": {
     "score": 0.7629565879664413,
@@ -860,5 +861,112 @@
     ],
     "added_date": "2026-02-06",
     "expires_date": "2026-02-11"
+  },
+  "CI": {
+    "score": 1.0,
+    "source": "early_warning",
+    "reason": "IPI=1.00 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
+  },
+  "CVNA": {
+    "score": 0.8124422126917552,
+    "source": "early_warning",
+    "reason": "IPI=0.81 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "quote_degradation",
+      "dark_pool_sequence"
+    ],
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
+  },
+  "MCD": {
+    "score": 0.7595577349579443,
+    "source": "early_warning",
+    "reason": "IPI=0.76 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "quote_degradation",
+      "dark_pool_sequence"
+    ],
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
+  },
+  "WIT": {
+    "score": 0.758869923761348,
+    "source": "early_warning",
+    "reason": "IPI=0.76 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
+  },
+  "MSFT": {
+    "score": 0.7253516918735472,
+    "source": "early_warning",
+    "reason": "IPI=0.73 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "quote_degradation",
+      "dark_pool_sequence"
+    ],
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
+  },
+  "EBAY": {
+    "score": 0.7233875172113625,
+    "source": "early_warning",
+    "reason": "IPI=0.72 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "dark_pool_sequence",
+      "quote_degradation"
+    ],
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
+  },
+  "INFY": {
+    "score": 1.0,
+    "source": "early_warning",
+    "reason": "IPI=1.00 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "quote_degradation",
+      "dark_pool_sequence"
+    ],
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
+  },
+  "HLT": {
+    "score": 0.7381720295827962,
+    "source": "early_warning",
+    "reason": "IPI=0.74 (2 footprints)",
+    "signals": [
+      "quote_degradation",
+      "dark_pool_sequence"
+    ],
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
+  },
+  "ZM": {
+    "score": 0.7031267869855445,
+    "source": "early_warning",
+    "reason": "IPI=0.70 (3 footprints)",
+    "signals": [
+      "multi_day_distribution",
+      "quote_degradation",
+      "dark_pool_sequence"
+    ],
+    "added_date": "2026-02-07",
+    "expires_date": "2026-02-09"
   }
 }

@@ -82,28 +82,31 @@ class APIBudget:
 
 # Budget allocation per time window (UPDATED FEB 7, 2026)
 # 
-# CRITICAL FIX: Previous budgets were causing 0 UW calls during market hours.
-# On Feb 6, only 700/7,500 (9.3%) daily budget was used because:
-#   1. can_call_uw() TypeError bug blocked all budget-tracked calls
-#   2. P3 tier limits (10% of window) throttled most tickers
-#   3. P3 skip during MIDDAY/AFTER_HOURS blocked scans entirely
+# Feb 8, 2026: NEW API KEY — daily budget raised to 15,000.
+# Previous 7,500 limit caused budget exhaustion by ~12 PM ET, blocking
+# afternoon EWS scans (2 PM, 3 PM) and overnight (10 PM).
 #
-# New allocation: More generous windows + force_scan support for EWS.
-# EWS scans use force_scan=True which bypasses tier limits (uses total).
+# Window budgets scaled to match actual demand per time block:
+#   PRE_MARKET:    7 AM (101) + 8 AM EWS (1,447) + 9 AM full (1,829) = ~3,377
+#   OPENING_RANGE: 9:45 AM EWS (1,444) = ~1,444
+#   MID_MORNING:   11 AM EWS (1,447) = ~1,447
+#   MIDDAY:        12 PM EWS+Direction (1,468) = ~1,468
+#   AFTERNOON:     2 PM EWS+Direction (1,447) = ~1,447
+#   CLOSE:         3 PM Daily+EWS+Pulse+Weather (2,184) = ~2,184
+#   AFTER_HOURS:   4:30 PM EWS (~100) + 10 PM EWS (1,444) = ~1,544
 #
-# Feb 7, 2026: Daily budget = 5,000. Window budgets distribute across 9 EWS scans.
-# Note: Window budgets sum > daily limit intentionally — daily cap is the hard stop.
+# Total demand: ~12,811 UW calls/day — comfortably within 15,000 daily cap.
+# Window budgets include ~10-15% headroom above actual demand.
 # EWS uses force_scan=True (bypasses tier limits, respects window cap).
-# Each EWS scan: ~361 tickers × ~1-3 UW calls = ~400-1000 calls.
 #
 WINDOW_BUDGETS: Dict[TimeWindow, APIBudget] = {
-    TimeWindow.PRE_MARKET: APIBudget(TimeWindow.PRE_MARKET, 1000),      # 8 AM EWS + 9 AM Weather AM
-    TimeWindow.OPENING_RANGE: APIBudget(TimeWindow.OPENING_RANGE, 800), # 9:45 AM EWS + Market Direction
-    TimeWindow.MID_MORNING: APIBudget(TimeWindow.MID_MORNING, 1000),    # 11 AM EWS + 12 PM EWS + Direction
-    TimeWindow.MIDDAY: APIBudget(TimeWindow.MIDDAY, 1000),              # 1 PM EWS + 2 PM EWS + Direction
-    TimeWindow.AFTERNOON: APIBudget(TimeWindow.AFTERNOON, 1000),        # 2:30 PM EWS + 3 PM Weather PM
-    TimeWindow.CLOSE: APIBudget(TimeWindow.CLOSE, 500),                 # 3:30-4:00 PM close
-    TimeWindow.AFTER_HOURS: APIBudget(TimeWindow.AFTER_HOURS, 800),     # 4:30 PM EWS + 10 PM EWS
+    TimeWindow.PRE_MARKET: APIBudget(TimeWindow.PRE_MARKET, 3500),      # 7 AM + 8 AM EWS + 9 AM full scan
+    TimeWindow.OPENING_RANGE: APIBudget(TimeWindow.OPENING_RANGE, 1600), # 9:45 AM EWS + Market Direction
+    TimeWindow.MID_MORNING: APIBudget(TimeWindow.MID_MORNING, 1600),    # 11 AM EWS + Direction
+    TimeWindow.MIDDAY: APIBudget(TimeWindow.MIDDAY, 1600),              # 12 PM EWS + 1 PM EWS + Direction
+    TimeWindow.AFTERNOON: APIBudget(TimeWindow.AFTERNOON, 1600),        # 2 PM EWS + Direction
+    TimeWindow.CLOSE: APIBudget(TimeWindow.CLOSE, 2500),                # 3 PM Daily+EWS+Pulse+Weather PM
+    TimeWindow.AFTER_HOURS: APIBudget(TimeWindow.AFTER_HOURS, 1800),    # 4:30 PM EWS + 10 PM EWS
 }
 
 
@@ -121,7 +124,7 @@ class APIBudgetManager:
             manager.record_call(symbol)
     """
     
-    daily_limit: int = 7500  # Feb 7, 2026: Set to 7500 per user request
+    daily_limit: int = 15000  # Feb 8, 2026: New API key — raised to 15,000 per user request
     _calls_today: int = 0
     _calls_reset_date: date = field(default_factory=date.today)
     _window_calls: Dict[TimeWindow, int] = field(default_factory=dict)

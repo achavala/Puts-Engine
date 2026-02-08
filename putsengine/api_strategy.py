@@ -81,7 +81,7 @@ class CachedData:
 @dataclass  
 class APIBudget:
     """Track API call budget."""
-    daily_limit: int = 6000
+    daily_limit: int = 15000  # Feb 8, 2026: new UW API key, 15k/day
     calls_today: int = 0
     last_reset: datetime = field(default_factory=datetime.now)
     

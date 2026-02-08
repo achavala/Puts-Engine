@@ -77,7 +77,7 @@ class Settings(BaseSettings):
     delta_max: float = Field(default=-0.25, ge=-1.0, le=0.0)
 
     # API Rate Limits
-    uw_daily_limit: int = Field(default=5000, description="Unusual Whales daily API limit")
+    uw_daily_limit: int = Field(default=15000, description="Unusual Whales daily API limit (Feb 8, 2026: new key, 15k/day)")
     # FEB 2, 2026: Updated for Options Advanced ($199/mo) plan - UNLIMITED API calls
     polygon_rate_limit: int = Field(default=100, description="Polygon requests per second (unlimited for paid plans)")
 

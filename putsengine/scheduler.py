@@ -307,15 +307,12 @@ class PutsEngineScheduler:
         # Uses full UW API (dark pool, options flow, IV, GEX)
         # Captures power hour institutional activity
         # ============================================================================
-        # FEB 7, 2026 OPTIMIZATION: Market Pulse moved to 3:05 PM with CACHED wrapper.
-        # Previously ran at 3:00 PM alongside daily_report_3pm, both calling run_scan()
-        # = 100% DUPLICATE full scan (~2,527 UW calls wasted per day).
-        # Now checks if daily_report already produced fresh results. If yes: 0 UW calls.
         self.scheduler.add_job(
-            self._run_market_pulse_cached_wrapper,
-            CronTrigger(hour=15, minute=5, timezone=EST),
+            self._run_scan_wrapper,
+            CronTrigger(hour=15, minute=0, timezone=EST),
+            args=["market_pulse"],
             id="market_pulse_3pm",
-            name="📊 Market Pulse (3:05 PM ET) - CACHED from daily report",
+            name="📊 Market Pulse Full Scan (3:00 PM ET) - 361 tickers - UW API",
             replace_existing=True
         )
         
@@ -392,7 +389,7 @@ class PutsEngineScheduler:
         # EWS at 12:00 PM caches dark_pool_flow, oi_change, flow_recent, iv_term_structure
         # for ALL 361 tickers. Earnings Priority calls the SAME 4 endpoints for earnings
         # stocks. Running 2 min later = GUARANTEED cache hits on 4/6 UW endpoints.
-        # SAVINGS: ~80 UW calls per scan (4 cached x ~20 earnings stocks).
+        # SAVINGS: ~80 UW calls per scan (4 cached × ~20 earnings stocks).
         self.scheduler.add_job(
             self._run_earnings_priority_scan_wrapper,
             CronTrigger(hour=12, minute=2, timezone=EST),
@@ -740,9 +737,12 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        # 3:00 PM EWS - AFTERNOON CLOSE PREP (FEB 7, 2026)
-        # Captures late-afternoon institutional positioning before close
-        # Moved from 2:30 PM to align with Weather PM and daily report
+        # 3:02 PM EWS - AFTERNOON CLOSE PREP (FEB 8, 2026 — staggered)
+        # STAGGERED from 3:00→3:02 PM to maximize UW response cache hits.
+        # daily_report_3pm starts at 3:00 PM and populates cache for
+        # flow_recent, oi_change, dark_pool on 361 tickers.
+        # By 3:02, many tickers are cached → EWS gets cache hits for
+        # 3 of its 4 UW endpoints. SAVINGS: ~1,083 UW calls/day.
         self.scheduler.add_job(
             self._run_early_warning_scan_wrapper,
             CronTrigger(hour=15, minute=2, timezone=EST),
@@ -818,7 +818,13 @@ class PutsEngineScheduler:
         #   → Reads latest EWS alerts from other scheduled EWS scans
         # =========================================================================
         
-        # 9:00 AM ET — FULL AM "Open Risk Forecast" (live UW API calls)
+        # 9:05 AM ET — FULL AM "Open Risk Forecast" (FEB 8 — staggered)
+        # STAGGERED from 9:00→9:05 AM to maximize UW response cache hits.
+        # pre_market_final_9am starts at 9:00 and calls 7+ UW endpoints per
+        # ticker (flow_recent, oi_change, dark_pool, gex, skew, insider, etc.)
+        # By 9:05, the cache is partially warm → Weather's gex_data +
+        # flow_recent calls hit cache for tickers already processed.
+        # SAVINGS: ~200 UW calls (gex + flow × top candidates already cached)
         self.scheduler.add_job(
             self._run_market_weather_am_wrapper,
             CronTrigger(hour=9, minute=5, timezone=EST),
@@ -827,7 +833,11 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        # 3:00 PM ET — FULL PM "Overnight Storm Build" (live UW API calls)
+        # 3:08 PM ET — FULL PM "Overnight Storm Build" (FEB 8 — staggered)
+        # STAGGERED from 3:00→3:08 PM. daily_report (3:00 PM) + EWS (3:02 PM)
+        # populate cache for all 361 tickers. By 3:08, Weather's UW calls
+        # (gex_data, flow_recent per candidate) are mostly cached.
+        # SAVINGS: ~40 UW calls (2 endpoints × top 20 candidates)
         self.scheduler.add_job(
             self._run_market_weather_pm_wrapper,
             CronTrigger(hour=15, minute=8, timezone=EST),
@@ -868,7 +878,38 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        logger.info("All scheduled jobs configured (OPTIMIZED Feb 6 — v5 Weather Engine + Attribution Backfill)")
+        # =========================================================================
+        # 🎯 CONVERGENCE ENGINE — Automated 4-Step Decision Hierarchy
+        #   EWS (35%) → Direction (15%) → Gamma Drain (25%) → Weather (25%)
+        # Merges ALL four systems into a single Top 9 Scoreboard.
+        #
+        # RUNS: Every 30 min during market hours (8:00 AM — 4:00 PM ET)
+        #   + After each EWS scan completes (triggered in _run_early_warning_scan_wrapper)
+        # OUTPUT: logs/convergence/latest_top9.json
+        # SELF-HEALING: Missing sources → partial data; crash → degraded status
+        # =========================================================================
+        convergence_times = [
+            (8, 10), (8, 40),   # Pre-market (after 8AM EWS + Direction)
+            (9, 10), (9, 50),   # Opening (after 9AM final + 9:45 EWS)
+            (10, 10), (10, 40),
+            (11, 10), (11, 40),
+            (12, 10), (12, 40),
+            (13, 10), (13, 40),
+            (14, 10), (14, 40),
+            (15, 10), (15, 40),
+        ]
+        for hour, minute in convergence_times:
+            time_str = f"{hour}:{minute:02d}"
+            job_id = f"convergence_{hour:02d}{minute:02d}"
+            self.scheduler.add_job(
+                self._run_convergence_wrapper,
+                CronTrigger(hour=hour, minute=minute, timezone=EST),
+                id=job_id,
+                name=f"🎯 Convergence Top 9 ({time_str} ET) — 4-Step Decision Merge",
+                replace_existing=True
+            )
+        
+        logger.info("All scheduled jobs configured (OPTIMIZED Feb 8 — v5 Weather + Attribution + Convergence Engine)")
     
     def _safe_async_run(self, coro, name: str = "scan"):
         """
@@ -935,53 +976,6 @@ class PutsEngineScheduler:
         """Wrapper to run async scan in scheduler context."""
         self._safe_async_run(self.run_scan(scan_type), f"scan_{scan_type}")
     
-    def _run_market_pulse_cached_wrapper(self):
-        """
-        Market Pulse wrapper that REUSES daily_report_3pm results.
-        
-        FEB 7, 2026 OPTIMIZATION:
-        Previously, BOTH daily_report_3pm AND market_pulse_3pm ran run_scan()
-        at 3:00 PM creating a 100% DUPLICATE full scan (~2,527 UW calls wasted).
-        
-        Now:
-        - daily_report_3pm runs at 3:00 PM (full scan + email)
-        - market_pulse_3pm runs at 3:05 PM and checks if fresh results exist
-        - If scheduled_scan_results.json was modified < 15 min ago: skip scan
-        - If not: run full scan as fallback (in case daily_report failed)
-        
-        SAVINGS: ~2,527 UW calls per day
-        """
-        import time
-        from pathlib import Path
-        
-        try:
-            results_file = Path("scheduled_scan_results.json")
-            if results_file.exists():
-                age_minutes = (time.time() - results_file.stat().st_mtime) / 60
-                if age_minutes < 15:
-                    logger.info(
-                        f"Market Pulse: REUSING daily_report results "
-                        f"(age: {age_minutes:.1f} min < 15 min threshold). "
-                        f"SAVED ~2,527 UW API calls."
-                    )
-                    # Log UW cache stats if available
-                    if hasattr(self, '_uw') and self._uw:
-                        stats = self._uw.get_cache_stats()
-                        logger.info(
-                            f"UW Cache Stats: hits={stats['cache_hits']}, "
-                            f"misses={stats['cache_misses']}, "
-                            f"hit_rate={stats['cache_hit_rate_pct']}%, "
-                            f"saved={stats['api_calls_saved']}"
-                        )
-                    return
-            
-            # No fresh results - run full scan as fallback
-            logger.info("Market Pulse: No fresh daily_report results. Running full scan.")
-            self._safe_async_run(self.run_scan("market_pulse"), "scan_market_pulse")
-        except Exception as e:
-            logger.error(f"Market Pulse cached wrapper error: {e}")
-            self._safe_async_run(self.run_scan("market_pulse"), "scan_market_pulse")
-    
     def _run_afterhours_scan_wrapper(self):
         """Wrapper to run after-hours scan in scheduler context."""
         self._safe_async_run(self.run_afterhours_scan(), "afterhours_scan")
@@ -1018,21 +1012,15 @@ class PutsEngineScheduler:
         self._safe_async_run(self.run_sector_correlation_scan(), "sector_correlation_scan")
     
     def _run_daily_report_scan_wrapper(self):
-        """
-        Wrapper to run daily report scan (3 PM EST) with email.
-        
-        This is the FULL SCAN at 3:00 PM. market_pulse_3pm (at 3:05 PM)
-        will reuse these results instead of re-scanning.
-        """
+        """Wrapper to run daily report scan (3 PM EST) with email."""
         self._safe_async_run(self.run_daily_report_scan(), "daily_report_scan")
-        # Log UW cache stats after the heaviest scan of the day
-        if hasattr(self, '_uw') and self._uw:
-            stats = self._uw.get_cache_stats()
-            logger.info(
-                f"Daily Report UW Cache: hits={stats['cache_hits']}, "
-                f"misses={stats['cache_misses']}, hit_rate={stats['cache_hit_rate_pct']}%, "
-                f"saved={stats['api_calls_saved']} API calls"
-            )
+        
+        # Auto-trigger Convergence Engine after daily report scan
+        # Gamma Drain + Distribution + Liquidity scores just updated
+        try:
+            self._run_convergence_wrapper()
+        except Exception as e:
+            logger.warning(f"Post-DailyReport convergence trigger failed (non-fatal): {e}")
     
     def _run_pattern_scan_wrapper(self):
         """Wrapper to run pattern scan (pump-reversal, two-day rally, high vol run)."""
@@ -1110,6 +1098,44 @@ class PutsEngineScheduler:
         now_et = datetime.now(EST)
         mode = "pm" if now_et.hour >= 15 else "am"
         self._safe_async_run(self.run_market_weather_report(mode, refresh=True), f"market_weather_refresh_{mode}")
+    
+    def _run_convergence_wrapper(self):
+        """
+        Wrapper to run 🎯 Convergence Engine — Automated 4-Step Decision Hierarchy.
+        
+        Merges ALL 4 detection systems into unified Top 9 candidates:
+          Step 1: EWS (35%)        — WHO is about to fall?
+          Step 2: Direction (15%)  — Is the MARKET allowing puts?
+          Step 3: Gamma Drain (25%)— Confirms with real-time scoring
+          Step 4: Weather (25%)    — Cross-validates with storm_score
+        
+        Schedule: Every 30 min (8 AM – 4 PM ET)
+        Also triggered automatically after each EWS scan completes.
+        Output: logs/convergence/latest_top9.json
+        
+        SELF-HEALING:
+        - If any source file missing/corrupt → uses available data, marks degraded
+        - If engine crashes → writes status="degraded" with error message
+        - Auto-recovers on next 30-min cycle
+        """
+        try:
+            from putsengine.convergence_engine import run_convergence
+            result = run_convergence()
+            
+            status = result.get("status", "unknown")
+            top9_count = len(result.get("top9", []))
+            sources = result.get("summary", {}).get("sources_available", 0)
+            lights = result.get("summary", {}).get("permission_lights", {})
+            
+            logger.info(
+                f"🎯 Convergence: status={status}, top9={top9_count}, "
+                f"sources={sources}/4, "
+                f"🟢{lights.get('green', 0)} 🟡{lights.get('yellow', 0)} 🔴{lights.get('red', 0)}"
+            )
+        except Exception as e:
+            logger.error(f"Convergence Engine error: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
     def _run_attribution_backfill_wrapper(self):
         """
@@ -1251,8 +1277,8 @@ class PutsEngineScheduler:
         Wrapper to run early warning institutional footprint scan.
         
         This is the KEY scan for 1-3 day early detection.
-        Schedule: 8 AM, 9:45 AM, 11 AM, 12 PM, 1 PM, 2 PM, 3 PM, 4:30 PM, 10 PM ET.
-        (Feb 7, 2026: Added 9:45 AM, 11 AM, 1 PM, 2 PM, moved 2:30→3 PM)
+        Schedule: 8 AM, 9:45 AM, 11 AM, 12 PM, 1 PM, 2 PM, 3:02 PM, 4:30 PM, 10 PM ET.
+        (Feb 8, 2026: 3 PM → 3:02 PM stagger for UW cache optimization)
         
         CRITICAL FIX (Feb 7, 2026): Enables force_scan_mode on UW client
         before EWS scans. This bypasses P3 tier limits and cooldowns
@@ -1272,20 +1298,14 @@ class PutsEngineScheduler:
             # Always disable force_scan mode after EWS scan
             if hasattr(self, '_uw') and self._uw is not None:
                 self._uw.set_force_scan_mode(False)
-                # FEB 8, 2026: Log cache stats after each EWS scan for monitoring.
-                # Shows how many UW calls saved by 30-min response cache
-                # from co-located scans (Daily Report, Earnings Priority, Weather).
-                try:
-                    stats = self._uw.get_cache_stats()
-                    logger.info(
-                        f"EWS UW Cache: hits={stats['cache_hits']}, "
-                        f"misses={stats['cache_misses']}, "
-                        f"hit_rate={stats['cache_hit_rate_pct']}%, "
-                        f"saved={stats['api_calls_saved']} API calls, "
-                        f"entries={stats['cache_entries']}"
-                    )
-                except Exception:
-                    pass
+            
+            # Auto-trigger Convergence Engine after each EWS scan
+            # EWS is the PRIMARY predictive signal — whenever it updates,
+            # the Top 9 scoreboard should re-merge all 4 systems immediately.
+            try:
+                self._run_convergence_wrapper()
+            except Exception as e:
+                logger.warning(f"Post-EWS convergence trigger failed (non-fatal): {e}")
     
     def _run_zero_hour_scan_wrapper(self):
         """
@@ -2929,6 +2949,14 @@ async def run_scheduler():
         logger.info("Shutting down scheduler daemon...")
         await scheduler.stop()
         logger.info("Scheduler daemon stopped gracefully")
+
+
+async def run_single_scan(scan_type: str = "manual"):
+    """Run a single scan without starting the scheduler."""
+    scheduler = PutsEngineScheduler()
+    await scheduler.run_scan(scan_type)
+    await scheduler._close_clients()
+    return scheduler.latest_results
 
 
 async def run_single_scan(scan_type: str = "manual"):
