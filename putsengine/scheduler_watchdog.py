@@ -34,6 +34,8 @@ MAX_MEMORY_MB = 500  # Restart if memory exceeds this
 MAX_UNRESPONSIVE_SECONDS = 1800  # Restart if no activity for 30 minutes (scans run every 30-60 min)
 MAX_RESTART_ATTEMPTS = 5  # Max restarts before giving up
 STARTUP_GRACE_PERIOD = 600  # Give scheduler 10 minutes after start before checking responsiveness
+LOOP_HEALTH_FILE = PROJECT_ROOT / "scheduler_loop_health.json"
+MAX_LOOP_STALE_SECONDS = 300  # 5 min — if heartbeat older than this, event loop is dead
 
 
 def write_log(message: str):
@@ -106,9 +108,48 @@ def check_daemon_health() -> dict:
             except:
                 pass
         
+        # ================================================================
+        # FEB 9 FIX: Check event loop health from heartbeat file
+        # The Feb 9 incident had a running process with a dead event loop.
+        # The watchdog previously only checked if the process was alive,
+        # not if the event loop inside it was functional.
+        # ================================================================
+        loop_alive = True
+        api_healthy = True
+        loop_stale = False
+        
+        if LOOP_HEALTH_FILE.exists() and not in_grace_period:
+            try:
+                with open(LOOP_HEALTH_FILE) as lf:
+                    loop_health = json.load(lf)
+                
+                loop_alive = loop_health.get("loop_alive", True)
+                api_healthy = loop_health.get("api_healthy", True)
+                
+                # Check if heartbeat is stale (loop stopped writing)
+                loop_ts_str = loop_health.get("timestamp", "")
+                if loop_ts_str:
+                    # Parse ISO format timestamp
+                    loop_ts = datetime.fromisoformat(loop_ts_str.replace("+00:00", "").split("-04:00")[0].split("-05:00")[0])
+                    loop_age = (datetime.now() - loop_ts).total_seconds()
+                    if loop_age > MAX_LOOP_STALE_SECONDS:
+                        loop_stale = True
+                        write_log(
+                            f"⚠️ Event loop heartbeat stale: {loop_age:.0f}s old "
+                            f"(max {MAX_LOOP_STALE_SECONDS}s)"
+                        )
+            except Exception as e:
+                write_log(f"Could not read loop health file: {e}")
+        
         # Determine status
         status = "HEALTHY"
-        if memory_mb > MAX_MEMORY_MB:
+        if not loop_alive or loop_stale:
+            status = "LOOP_DEAD"
+            write_log(f"🔴 Event loop dead/stale — daemon process alive but loop broken")
+        elif not api_healthy:
+            status = "API_UNHEALTHY"
+            write_log(f"🟡 API sessions unhealthy — may self-heal via _reset_client_sessions")
+        elif memory_mb > MAX_MEMORY_MB:
             status = "HIGH_MEMORY"
         elif not in_grace_period and last_activity:
             # Only check responsiveness after grace period
@@ -234,7 +275,7 @@ def run_watchdog():
                 if status == "STARTING":
                     write_log(f"Daemon in grace period (age: {health.get('process_age_seconds', 0):.0f}s)")
                     
-            elif status in ["NOT_RUNNING", "CRASHED", "UNRESPONSIVE", "HIGH_MEMORY"]:
+            elif status in ["NOT_RUNNING", "CRASHED", "UNRESPONSIVE", "HIGH_MEMORY", "LOOP_DEAD"]:
                 # Need to restart
                 write_log(f"Daemon issue detected: {status}")
                 

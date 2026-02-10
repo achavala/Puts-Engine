@@ -156,6 +156,12 @@ class WeatherForecast:
     current_price: float = 0.0
     sector: str = "unknown"
     
+    # Gap 4 Fix: Non-institutional weather score for Convergence de-duplication
+    # Convergence uses EWS IPI directly as ews_score. If Weather also includes EWS
+    # via institutional layer, it's double-counted. This field provides the Weather
+    # score EXCLUDING institutional so Convergence can use it without overlap.
+    non_institutional_score: float = 0.0
+    
     def to_dict(self) -> Dict:
         return {
             "symbol": self.symbol,
@@ -195,6 +201,7 @@ class WeatherForecast:
             "expected_drop": self.expected_drop,
             "current_price": round(self.current_price, 2),
             "sector": self.sector,
+            "non_institutional_score": round(self.non_institutional_score, 3),
             "layers": {
                 "structural": self.structural.to_dict(),
                 "institutional": self.institutional.to_dict(),
@@ -575,6 +582,19 @@ class MarketWeatherEngine:
             except Exception:
                 pass
         
+        # ── Gap 4 Fix: Compute non-institutional Weather score ──
+        # This removes the institutional (EWS-derived) component so that
+        # Convergence can use Weather WITHOUT double-counting EWS IPI.
+        # Non-institutional = structural + technical + catalyst (no institutional)
+        non_inst_score = (
+            structural.score * 0.30 +
+            technical.score * 0.40 +
+            catalyst.score * 0.30
+        ) if (structural.score + technical.score + catalyst.score) > 0 else 0.0
+        # Apply same trajectory bonus
+        if trajectory == TrajectoryType.ACCELERATING:
+            non_inst_score = min(1.0, non_inst_score * 1.10)
+        
         return WeatherForecast(
             symbol=symbol,
             forecast=forecast,
@@ -601,7 +621,9 @@ class MarketWeatherEngine:
             missing_inputs=missing_inputs,
             expected_drop=expected_drop,
             current_price=current_price,
-            sector=ews_data.get('sector', 'unknown')
+            sector=ews_data.get('sector', 'unknown'),
+            # Gap 4: Non-institutional score for Convergence de-dup
+            non_institutional_score=non_inst_score
         )
     
     # =========================================================================

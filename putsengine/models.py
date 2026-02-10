@@ -195,6 +195,13 @@ class MarketRegimeData:
     is_passive_inflow_window: bool = False
     passive_inflow_reason: str = ""  # "month_start", "month_end", "quarter_end"
     below_zero_gamma: bool = False  # Index below zero-gamma trigger
+    # Gap 2 Fix: scan_allowed is LESS strict than tradeable.
+    # Allows Distribution/Liquidity/Gamma engines to run and produce data
+    # even in neutral/bullish regimes so Convergence always has engine data.
+    is_scan_allowed: bool = True
+    # Gap 2 Fix: Scan-allowed is less strict than tradeable
+    # Allows distribution/liquidity analysis even in neutral/passive markets
+    is_scan_allowed: bool = True
 
 
 class EngineType(Enum):

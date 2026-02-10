@@ -113,10 +113,25 @@ class MarketRegimeLayer:
         # 1. No block reasons
         # 2. At least one index below VWAP
         # 3. VIX stable or rising
+        #
+        # Gap 2 Fix (Feb 9, 2026): Separate "tradeable" from "scannable".
+        # Even in non-tradeable regimes, we still SCAN to populate engine data.
+        # The scanner uses scan_allowed=True to run distribution/liquidity analysis.
+        # The TRADE gate (is_tradeable) remains strict for actual execution.
         is_tradeable = (
             len(block_reasons) == 0 and
             (not spy_data[0] or not qqq_data[0]) and  # At least one below VWAP
             vix_change >= -0.05  # VIX not collapsing
+        )
+        
+        # Scan-allowed is LESS strict: scan in all conditions except hard blocks
+        # This ensures the Gamma Drain / Distribution / Liquidity engines
+        # always produce data for the Convergence Engine to merge with EWS.
+        is_scan_allowed = len(block_reasons) == 0 or (
+            # Allow scanning even in PASSIVE_INFLOW or INDEX_PINNED
+            # Only TRUE hard blocks (positive GEX > 2x threshold) should stop scans
+            all(br != BlockReason.POSITIVE_GEX for br in block_reasons) or
+            index_gex <= self.config.GEX_NEUTRAL_THRESHOLD * 3.0
         )
 
         if not is_tradeable and not block_reasons:
@@ -135,8 +150,13 @@ class MarketRegimeLayer:
             # New fields per Architect
             is_passive_inflow_window=is_passive_window,
             passive_inflow_reason=passive_reason,
-            below_zero_gamma=index_gex < 0
+            below_zero_gamma=index_gex < 0,
+            # Gap 2 Fix: scan_allowed is LESS strict than tradeable
+            is_scan_allowed=is_scan_allowed
         )
+        
+        # Gap 2 Fix: Attach scan_allowed flag (less strict than tradeable)
+        result.is_scan_allowed = is_scan_allowed
 
         logger.info(
             f"Market regime: {regime.value}, "

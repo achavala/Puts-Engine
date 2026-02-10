@@ -67,15 +67,139 @@ def _convergence_source_indicator(health: Dict) -> str:
         return "❌"
 
 
+def _render_scan_engine_section(conv_data: Dict):
+    """
+    v2.1: Render the Scan Engine Top 10 picks below the Convergence board.
+    Shows overlap with Top 9 for cross-validation.
+    """
+    scan_top10 = conv_data.get("scan_engine_top10", [])
+    top9 = conv_data.get("top9", [])
+    
+    if not scan_top10:
+        return
+    
+    top9_symbols = set(c.get("symbol", "") for c in top9)
+    
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #0a0a2e 0%, #1a0a0a 100%);
+         padding: 14px 20px; border-radius: 10px; border: 1px solid #2a2a4a; margin: 10px 0;">
+        <span style="color: #ff8844; font-size: 16px; font-weight: bold;">🔥 SCAN ENGINE TOP 10</span>
+        <span style="color: #888; font-size: 11px; margin-left: 12px;">
+            From Gamma Drain + Distribution + Liquidity engines · Pattern-based detection
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Build table
+    scan_rows = []
+    for i, pick in enumerate(scan_top10, 1):
+        sym = pick.get("symbol", "")
+        in_conv = "✅" if sym in top9_symbols else "—"
+        eng_list = pick.get("engines", [])
+        eng_count = len(eng_list)
+        eng_badge = "🏆 TRI" if eng_count >= 3 else f"🔥 {eng_count}" if eng_count >= 2 else ""
+        
+        scan_rows.append({
+            "#": i,
+            "Symbol": sym,
+            "Score": f"{pick.get('score', 0):.2f}",
+            "Engine": pick.get("engine", ""),
+            "Multi": eng_badge,
+            "Signals": pick.get("signals", 0),
+            "Sector": pick.get("sector", ""),
+            "In Top 9?": in_conv,
+        })
+    
+    if scan_rows:
+        df_scan = pd.DataFrame(scan_rows)
+        
+        def style_scan(row):
+            if row["In Top 9?"] == "✅":
+                return ["background-color: #0a2a0a; color: #44ff44;"] * len(row)
+            return ["background-color: #1a1a2a; color: #cccccc;"] * len(row)
+        
+        styled = df_scan.style.apply(style_scan, axis=1)
+        st.dataframe(styled, use_container_width=True, height=min(380, 55 + len(scan_rows) * 38))
+        
+        # Overlap count
+        overlap_count = sum(1 for p in scan_top10 if p.get("symbol", "") in top9_symbols)
+        if overlap_count > 0:
+            st.success(
+                f"✅ **{overlap_count} stocks appear in BOTH** Convergence Top 9 AND Scan Engine Top 10 "
+                f"→ highest conviction (multiple independent systems agree)"
+            )
+        else:
+            st.warning(
+                "⚠️ **Zero overlap** between Convergence and Scan Engine picks. "
+                "This indicates different detection windows — EWS detects institutional footprints "
+                "while Scan Engine uses pattern-based scoring. "
+                "EWS picks are now auto-injected into the scan universe for future coverage."
+            )
+
+
+def _render_coverage_analysis(conv_data: Dict):
+    """
+    v2.1: Show coverage gap analysis — which stocks are detected by
+    which systems and where the gaps are.
+    """
+    coverage = conv_data.get("coverage_analysis", {})
+    if not coverage:
+        return
+    
+    with st.expander("📊 Coverage Analysis — EWS ↔ Scan Engine Gap", expanded=False):
+        ca1, ca2, ca3, ca4 = st.columns(4)
+        
+        with ca1:
+            st.metric("🚨 EWS Detections", coverage.get("ews_count", 0))
+        with ca2:
+            st.metric("🔥 Scan Engine", coverage.get("scan_count", 0))
+        with ca3:
+            st.metric("🤝 Overlap", coverage.get("overlap_ews_scan", 0))
+        with ca4:
+            synthetic = coverage.get("synthetic_gamma_count", 0)
+            st.metric("🔗 Synthetic Gamma", synthetic)
+        
+        # Detail sections
+        overlap_syms = coverage.get("overlap_symbols", [])
+        if overlap_syms:
+            st.markdown(
+                f"**🤝 Overlap (highest conviction):** {', '.join(overlap_syms)}"
+            )
+        
+        ews_only = coverage.get("ews_only_top", [])
+        if ews_only:
+            st.markdown(
+                f"**🚨 EWS-only (institutional footprints, not yet scanned by engines):** "
+                f"{', '.join(ews_only)}"
+            )
+            st.caption(
+                "These tickers have been auto-injected into the Dynamic Universe (DUI) "
+                "and will be scanned by Gamma Drain/Distribution/Liquidity in the next cycle."
+            )
+        
+        scan_only = coverage.get("scan_only_top", [])
+        if scan_only:
+            st.markdown(
+                f"**🔥 Scan-only (pattern-based, no EWS institutional signal yet):** "
+                f"{', '.join(scan_only)}"
+            )
+        
+        if coverage.get("note"):
+            st.info(coverage["note"])
+
+
 def render_convergence_board():
     """
-    🎯 TOP 9 CONVERGENCE CANDIDATES — v2.0
+    🎯 TOP 9 CONVERGENCE CANDIDATES — v2.1
     
     Automated 4-step decision hierarchy display.
     Shows at the TOP of the Predictive tab for immediate action.
     
     v2.0: Trajectory, trifecta badges, pipeline status, stale banners,
     sector diversity, enhanced self-healing indicators.
+    
+    v2.1: Scan Engine Top 10 comparison, coverage gap analysis,
+    synthetic gamma scores for EWS-only stocks, EWS→DUI injection.
     
     This is the FIRST thing you see when opening the Predictive tab.
     Zero API calls — reads from cached JSON produced by convergence engine.
@@ -222,7 +346,7 @@ def render_convergence_board():
         src_count = c.get("sources_agreeing", 0)
         src_list = c.get("source_list", [])
         
-        # Source badges
+        # Source badges (v3.0: includes Gap 5/6/12 sources)
         src_badges = []
         if "EWS" in src_list:
             src_badges.append("🚨EWS")
@@ -232,6 +356,10 @@ def render_convergence_board():
             src_badges.append("🌪️WX")
         if "Direction" in src_list:
             src_badges.append("📈DIR")
+        if "FinViz" in src_list:
+            src_badges.append("🔵FV")
+        if "Intraday" in src_list:
+            src_badges.append("📉ID")
         
         # EWS detail
         ews_detail = ""
@@ -263,7 +391,7 @@ def render_convergence_board():
             "Conv.": f"{c['convergence_score']:.3f}",
             "Trend": f"{traj} {delta_str}".strip(),
             "Days": days_on if days_on > 0 else "NEW",
-            "Src": f"{src_count}/4",
+            "Src": f"{src_count}/6",
             "Sources": " ".join(src_badges),
             "EWS": f"{c.get('ews_score', 0):.2f}",
             "Level": ews_detail,
@@ -387,6 +515,20 @@ def render_convergence_board():
             rec = c.get("ews_recommendation", "")
             if rec:
                 st.markdown(f"**EWS Recommendation:** {rec}")
+            
+            # v2.1: Show synthetic gamma indicator
+            if c.get("gamma_engine") == "ews_synthetic":
+                st.info(
+                    "🔗 **Synthetic Gamma Score** — Derived from EWS footprints "
+                    "(dark pool, IV inversion, distribution patterns). "
+                    "Injected into DUI for full engine scan in next cycle."
+                )
+    
+    # ── v2.1: SCAN ENGINE TOP 10 — Overlap & Coverage Analysis ──
+    _render_scan_engine_section(conv_data)
+    
+    # ── v2.1: Coverage Analysis ──
+    _render_coverage_analysis(conv_data)
     
     st.divider()
 

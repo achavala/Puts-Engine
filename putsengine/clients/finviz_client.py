@@ -16,14 +16,25 @@ Use cases in PutsEngine:
 3. Support/resistance levels for strike selection
 4. Insider activity cross-validation
 5. Analyst downgrades as bearish catalyst
+
+Gap 1 Fix (Feb 9, 2026): Real HTML parsing with BeautifulSoup,
+CSV export parsing, and robust data extraction.
 """
 
 import asyncio
+import re
 from datetime import datetime, date
 from typing import Optional, List, Dict, Any
 import aiohttp
 from loguru import logger
 from dataclasses import dataclass
+
+try:
+    from bs4 import BeautifulSoup
+    BS4_AVAILABLE = True
+except ImportError:
+    BS4_AVAILABLE = False
+    logger.warning("BeautifulSoup not installed — FinViz parsing will be limited")
 
 from putsengine.config import Settings
 
@@ -99,19 +110,46 @@ class FinVizClient:
         self.settings = settings
         self.api_key = settings.finviz_api_key
         self._session: Optional[aiohttp.ClientSession] = None
+        self._session_loop_id: Optional[int] = None  # Track which event loop owns the session
         self._last_request_time = 0.0
         self._request_interval = 0.5  # 2 requests per second max
         
     async def _get_session(self) -> aiohttp.ClientSession:
-        """Get or create aiohttp session."""
-        if self._session is None or self._session.closed:
+        """Get or create aiohttp session, auto-healing on event loop change."""
+        try:
+            current_loop_id = id(asyncio.get_running_loop())
+        except RuntimeError:
+            current_loop_id = None
+        
+        needs_new = (
+            self._session is None
+            or self._session.closed
+            or self._session_loop_id != current_loop_id
+        )
+        
+        if needs_new:
+            if self._session is not None:
+                try:
+                    if not self._session.closed:
+                        await self._session.close()
+                except Exception:
+                    pass
+                self._session = None
+            
             self._session = aiohttp.ClientSession()
+            self._session_loop_id = current_loop_id
+        
         return self._session
         
     async def close(self):
         """Close the aiohttp session."""
         if self._session and not self._session.closed:
-            await self._session.close()
+            try:
+                await self._session.close()
+            except Exception:
+                pass
+        self._session = None
+        self._session_loop_id = None
             
     async def _rate_limit_wait(self):
         """Wait to respect rate limits."""
@@ -161,6 +199,48 @@ class FinVizClient:
             logger.error(f"FinViz request failed: {e}")
             return {}
             
+    async def _request_csv(self, params: Dict) -> str:
+        """
+        Request CSV export from FinViz Elite (more reliable than HTML).
+        Uses the export.ashx endpoint which returns clean CSV.
+        """
+        if not self.api_key:
+            return ""
+        
+        await self._rate_limit_wait()
+        
+        params["auth"] = self.api_key
+        
+        session = await self._get_session()
+        try:
+            async with session.get(self.BASE_URL, params=params) as response:
+                if response.status == 200:
+                    return await response.text()
+                else:
+                    logger.debug(f"FinViz CSV export returned {response.status}")
+                    return ""
+        except Exception as e:
+            logger.debug(f"FinViz CSV request failed: {e}")
+            return ""
+    
+    def _parse_csv_rows(self, csv_text: str) -> List[Dict[str, str]]:
+        """Parse CSV text into list of dicts (header-keyed)."""
+        if not csv_text:
+            return []
+        rows = []
+        try:
+            lines = csv_text.strip().split('\n')
+            if len(lines) < 2:
+                return []
+            headers = [h.strip().strip('"').lower() for h in lines[0].split(',')]
+            for line in lines[1:]:
+                vals = [v.strip().strip('"') for v in line.split(',')]
+                if len(vals) == len(headers):
+                    rows.append(dict(zip(headers, vals)))
+        except Exception:
+            pass
+        return rows
+    
     # ==================== Stock Quotes ====================
     
     async def get_quote(self, symbol: str) -> Optional[FinVizQuote]:
@@ -196,36 +276,112 @@ class FinVizClient:
             return None
             
     def _parse_quote_data(self, symbol: str, data: str) -> Optional[FinVizQuote]:
-        """Parse quote data from FinViz response."""
-        # FinViz returns HTML/text that needs parsing
-        # For now, return a placeholder - real implementation would parse HTML
+        """
+        Parse quote data from FinViz HTML response using BeautifulSoup.
+        
+        Gap 1 Fix: Real parsing instead of returning empty placeholders.
+        FinViz Elite quote page contains a snapshot table with labeled cells.
+        """
+        if not data or not BS4_AVAILABLE:
+            return None
+        
         try:
-            # This is a simplified parser - real implementation would use BeautifulSoup
+            soup = BeautifulSoup(data, 'html.parser')
+            
+            # FinViz stores data in a table with class "snapshot-table2"
+            # Each row has alternating label (dark bg) and value cells
+            snapshot = {}
+            table = soup.find('table', class_='snapshot-table2')
+            if table:
+                rows = table.find_all('tr')
+                for row in rows:
+                    cells = row.find_all('td')
+                    # Cells alternate: label, value, label, value, ...
+                    for i in range(0, len(cells) - 1, 2):
+                        label = cells[i].get_text(strip=True).lower()
+                        value = cells[i + 1].get_text(strip=True)
+                        snapshot[label] = value
+            
+            if not snapshot:
+                # Fallback: try to parse from any table structure
+                for table in soup.find_all('table'):
+                    cells = table.find_all('td')
+                    for i in range(0, len(cells) - 1, 2):
+                        label = cells[i].get_text(strip=True).lower()
+                        value = cells[i + 1].get_text(strip=True)
+                        if label and value:
+                            snapshot[label] = value
+            
+            if not snapshot:
+                logger.debug(f"No FinViz snapshot data parsed for {symbol}")
+                return None
+            
+            def safe_float(val: str, default=None) -> Optional[float]:
+                """Safely parse float from FinViz value string."""
+                if not val or val == '-':
+                    return default
+                try:
+                    cleaned = val.replace('%', '').replace(',', '').replace('$', '').strip()
+                    return float(cleaned)
+                except (ValueError, TypeError):
+                    return default
+            
+            def safe_int(val: str, default=0) -> int:
+                """Safely parse int from FinViz value string."""
+                if not val or val == '-':
+                    return default
+                try:
+                    cleaned = val.replace(',', '').strip()
+                    # Handle M/B suffixes
+                    if cleaned.upper().endswith('M'):
+                        return int(float(cleaned[:-1]) * 1_000_000)
+                    elif cleaned.upper().endswith('B'):
+                        return int(float(cleaned[:-1]) * 1_000_000_000)
+                    return int(float(cleaned))
+                except (ValueError, TypeError):
+                    return default
+            
+            def parse_market_cap(val: str) -> float:
+                if not val or val == '-':
+                    return 0.0
+                try:
+                    val = val.strip()
+                    if val.upper().endswith('B'):
+                        return float(val[:-1]) * 1e9
+                    elif val.upper().endswith('M'):
+                        return float(val[:-1]) * 1e6
+                    elif val.upper().endswith('T'):
+                        return float(val[:-1]) * 1e12
+                    return float(val.replace(',', ''))
+                except (ValueError, TypeError):
+                    return 0.0
+            
             return FinVizQuote(
                 symbol=symbol,
-                price=0.0,
-                change_pct=0.0,
-                volume=0,
-                avg_volume=0,
-                market_cap=0.0,
-                pe_ratio=None,
-                forward_pe=None,
-                peg_ratio=None,
-                short_float=None,
-                short_ratio=None,
-                target_price=None,
-                analyst_rating=None,
-                rsi_14=None,
-                sma_20=None,
-                sma_50=None,
-                sma_200=None,
-                relative_volume=None,
-                support_1=None,
-                resistance_1=None,
-                signal=None,
-                pattern=None
+                price=safe_float(snapshot.get('price', ''), 0.0),
+                change_pct=safe_float(snapshot.get('change', ''), 0.0),
+                volume=safe_int(snapshot.get('volume', '')),
+                avg_volume=safe_int(snapshot.get('avg volume', '')),
+                market_cap=parse_market_cap(snapshot.get('market cap', '')),
+                pe_ratio=safe_float(snapshot.get('p/e', '')),
+                forward_pe=safe_float(snapshot.get('forward p/e', '')),
+                peg_ratio=safe_float(snapshot.get('peg', '')),
+                short_float=safe_float(snapshot.get('short float', '')),
+                short_ratio=safe_float(snapshot.get('short ratio', '')),
+                target_price=safe_float(snapshot.get('target price', '')),
+                analyst_rating=snapshot.get('recom', None),
+                rsi_14=safe_float(snapshot.get('rsi (14)', '')),
+                sma_20=safe_float(snapshot.get('sma20', '')),
+                sma_50=safe_float(snapshot.get('sma50', '')),
+                sma_200=safe_float(snapshot.get('sma200', '')),
+                relative_volume=safe_float(snapshot.get('rel volume', '')),
+                support_1=safe_float(snapshot.get('support', snapshot.get('52w low', ''))),
+                resistance_1=safe_float(snapshot.get('resistance', snapshot.get('52w high', ''))),
+                signal=snapshot.get('signal', None),
+                pattern=snapshot.get('pattern', None)
             )
-        except:
+        except Exception as e:
+            logger.error(f"Error parsing FinViz quote for {symbol}: {e}")
             return None
             
     # ==================== Stock Screener ====================
@@ -346,20 +502,57 @@ class FinVizClient:
         return self._parse_screener_results(result.get("raw", ""))
         
     def _parse_screener_results(self, data: str) -> List[str]:
-        """Parse screener CSV/text results to extract symbols."""
+        """
+        Parse screener CSV/text/HTML results to extract symbols.
+        
+        Gap 1 Fix: Try CSV first, then HTML (BS4), then regex fallback.
+        """
         if not data:
             return []
             
         symbols = []
         try:
+            # Strategy 1: CSV parsing (FinViz export format)
             lines = data.strip().split('\n')
-            for line in lines[1:]:  # Skip header
-                parts = line.split(',')
-                if parts and parts[0]:
-                    # First column is usually ticker
-                    symbol = parts[0].strip().strip('"')
-                    if symbol.isalpha() and len(symbol) <= 5:
-                        symbols.append(symbol.upper())
+            if len(lines) > 1 and ',' in lines[0]:
+                for line in lines[1:]:
+                    parts = line.split(',')
+                    if parts and parts[0]:
+                        symbol = parts[0].strip().strip('"')
+                        if symbol.isalpha() and 1 <= len(symbol) <= 5:
+                            symbols.append(symbol.upper())
+            
+            # Strategy 2: HTML parsing with BS4
+            if not symbols and BS4_AVAILABLE and '<' in data:
+                soup = BeautifulSoup(data, 'html.parser')
+                # FinViz screener puts tickers in links with class "screener-link-primary"
+                for link in soup.find_all('a', class_='screener-link-primary'):
+                    text = link.get_text(strip=True)
+                    if text.isalpha() and 1 <= len(text) <= 5:
+                        symbols.append(text.upper())
+                
+                # Fallback: look for any ticker-like text in table cells
+                if not symbols:
+                    for td in soup.find_all('td'):
+                        text = td.get_text(strip=True)
+                        if text.isalpha() and 1 <= len(text) <= 5 and text.isupper():
+                            if text not in symbols:
+                                symbols.append(text)
+            
+            # Strategy 3: Regex fallback
+            if not symbols:
+                ticker_pattern = r'\b([A-Z]{1,5})\b'
+                # Look for tickers after common patterns
+                matches = re.findall(ticker_pattern, data)
+                # Filter out common HTML/noise words
+                noise = {'HTML', 'HTTP', 'TABLE', 'CLASS', 'STYLE', 'COLOR', 'WIDTH',
+                         'HREF', 'FONT', 'SIZE', 'ALIGN', 'LIGHT', 'LEFT', 'RIGHT',
+                         'BODY', 'HEAD', 'META', 'LINK', 'TITLE', 'DIV', 'SPAN', 'TRUE',
+                         'FALSE', 'NONE', 'NULL', 'VALUE', 'NAME', 'TYPE', 'TEXT'}
+                for m in matches:
+                    if m not in noise and m not in symbols and len(m) <= 5:
+                        symbols.append(m)
+                        
         except Exception as e:
             logger.error(f"Error parsing FinViz screener: {e}")
             
@@ -461,42 +654,78 @@ class FinVizClient:
         return self._parse_news_data(result.get("raw", ""))
     
     def _parse_news_data(self, data: str) -> List[Dict[str, Any]]:
-        """Parse news data from FinViz response."""
+        """
+        Parse news data from FinViz response.
+        
+        Gap 1 Fix: Use BeautifulSoup for reliable parsing.
+        """
         news_items = []
         
         if not data:
             return news_items
             
         try:
-            # FinViz returns HTML - we'll parse basic headlines
-            # For a production system, you'd use BeautifulSoup here
-            import re
+            titles = []
             
-            # Look for headline patterns
-            headline_pattern = r'<a[^>]*class="tab-link-news"[^>]*>([^<]+)</a>'
-            matches = re.findall(headline_pattern, data, re.IGNORECASE)
+            # Strategy 1: BS4 parsing
+            if BS4_AVAILABLE and '<' in data:
+                soup = BeautifulSoup(data, 'html.parser')
+                # FinViz news links
+                for link in soup.find_all('a', class_='tab-link-news'):
+                    titles.append(link.get_text(strip=True))
+                
+                # Fallback: any link inside news table
+                if not titles:
+                    news_table = soup.find('table', id='news-table')
+                    if news_table:
+                        for link in news_table.find_all('a'):
+                            text = link.get_text(strip=True)
+                            if len(text) > 15:  # Filter out short non-headline links
+                                titles.append(text)
             
-            for title in matches[:20]:
-                # Basic sentiment analysis
+            # Strategy 2: Regex fallback
+            if not titles:
+                headline_pattern = r'<a[^>]*(?:class="tab-link-news"|href="[^"]*news[^"]*")[^>]*>([^<]+)</a>'
+                titles = re.findall(headline_pattern, data, re.IGNORECASE)
+            
+            # Sentiment keywords (expanded for better coverage)
+            bearish_keywords = [
+                "crash", "plunge", "tumble", "selloff", "sell-off", "fears", "downgrade",
+                "miss", "weak", "decline", "drop", "fall", "concern", "warning", "cut",
+                "layoff", "lawsuit", "investigation", "fraud", "bankruptcy", "default",
+                "tariff", "sanction", "recession", "slump", "bear", "risk", "loss",
+                "deficit", "shutdown", "threat", "crisis", "collapse", "downturn"
+            ]
+            bullish_keywords = [
+                "surge", "rally", "soar", "beat", "strong", "upgrade", "growth",
+                "record", "breakthrough", "approval", "deal", "acquisition", "buy",
+                "outperform", "above", "bull", "boost", "gain", "profit", "revenue"
+            ]
+            
+            for title in titles[:30]:
                 title_lower = title.lower()
                 
-                bearish_keywords = ["crash", "plunge", "tumble", "selloff", "fears", "downgrade", "miss", "weak"]
-                bullish_keywords = ["surge", "rally", "soar", "beat", "strong", "upgrade"]
+                # Score sentiment
+                bear_count = sum(1 for kw in bearish_keywords if kw in title_lower)
+                bull_count = sum(1 for kw in bullish_keywords if kw in title_lower)
                 
-                sentiment = "neutral"
-                for kw in bearish_keywords:
-                    if kw in title_lower:
-                        sentiment = "bearish"
-                        break
-                for kw in bullish_keywords:
-                    if kw in title_lower:
-                        sentiment = "bullish"
-                        break
+                if bear_count > bull_count:
+                    sentiment = "bearish"
+                elif bull_count > bear_count:
+                    sentiment = "bullish"
+                else:
+                    sentiment = "neutral"
+                
+                # Extract mentioned tickers (uppercase 1-5 letter words in parentheses)
+                ticker_match = re.findall(r'\(([A-Z]{1,5})\)', title)
                 
                 news_items.append({
                     "title": title.strip(),
                     "sentiment": sentiment,
-                    "source": "FinViz"
+                    "source": "FinViz",
+                    "tickers": ticker_match,
+                    "bearish_signals": bear_count,
+                    "bullish_signals": bull_count,
                 })
                 
         except Exception as e:
@@ -518,6 +747,50 @@ class FinVizClient:
             "top_sellers": sellers[:10] if sellers else [],
             "interpretation": f"{len(sellers)} stocks with insider selling detected"
         }
+    
+    # ==================== Short Interest ====================
+    
+    async def get_short_interest_data(self, symbols: List[str] = None) -> Dict[str, Dict]:
+        """
+        Gap 7 Fix: Get short interest data for symbols.
+        Uses CSV export for reliable parsing.
+        
+        Returns dict of {symbol: {short_float, short_ratio, float_short}} 
+        """
+        result = {}
+        try:
+            # Use CSV export with custom columns (short float, short ratio)
+            csv_data = await self._request_csv({
+                "v": "152",  # Custom view with short interest
+                "f": "sh_short_o10",  # Short float > 10%
+            })
+            
+            rows = self._parse_csv_rows(csv_data)
+            for row in rows:
+                sym = row.get('ticker', row.get('symbol', '')).upper()
+                if sym and (symbols is None or sym in symbols):
+                    def safe_pct(val):
+                        try:
+                            return float(val.replace('%', '')) if val and val != '-' else None
+                        except (ValueError, TypeError):
+                            return None
+                    def safe_float(val):
+                        try:
+                            return float(val) if val and val != '-' else None
+                        except (ValueError, TypeError):
+                            return None
+                    
+                    result[sym] = {
+                        "short_float": safe_pct(row.get('short float', '')),
+                        "short_ratio": safe_float(row.get('short ratio', '')),
+                        "float_short": safe_pct(row.get('float short', '')),
+                    }
+            
+            logger.info(f"FinViz short interest: {len(result)} stocks with >10% short float")
+        except Exception as e:
+            logger.debug(f"FinViz short interest error: {e}")
+        
+        return result
     
     # ==================== Sector Analysis ====================
     

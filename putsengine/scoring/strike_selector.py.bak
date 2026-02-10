@@ -343,8 +343,7 @@ class StrikeSelector:
         """
         Select optimal put contract for a candidate.
         
-        v2.0 (Gap 8): Enhanced with live Greeks from Polygon options snapshot.
-        Falls back to Alpaca chain if Polygon unavailable.
+        Implements full institutional-grade selection logic.
 
         Args:
             candidate: PutCandidate with price data populated
@@ -400,87 +399,28 @@ class StrikeSelector:
                 logger.warning(f"No valid expirations for {symbol} in DTE range {dte_min}-{dte_max}")
                 return None
 
-            # v2.0 (Gap 8): Try Polygon options snapshot first for live Greeks
+            # Get options chain with price-tier appropriate bounds
             all_contracts = []
-            polygon_greeks_available = False
-            
-            try:
-                polygon_snapshot = await self.polygon.get_options_snapshot(
-                    symbol, 
+            for exp_date in valid_expirations[:3]:  # Limit API calls
+                contracts = await self.alpaca.get_options_chain(
+                    underlying=symbol,
+                    expiration_date=exp_date,
                     option_type="put",
-                    strike_price_gte=min_strike * 0.95,
-                    strike_price_lte=max_strike * 1.05,
+                    strike_price_gte=min_strike * 0.95,  # 5% buffer
+                    strike_price_lte=max_strike * 1.05   # 5% buffer
                 )
-                if polygon_snapshot:
-                    for snap in polygon_snapshot:
-                        details = snap.get("details", {})
-                        greeks = snap.get("greeks", {})
-                        last_quote = snap.get("last_quote", {})
-                        day = snap.get("day", {})
-                        
-                        exp_str = details.get("expiration_date", "")
-                        if not exp_str:
-                            continue
-                        exp_date = datetime.strptime(exp_str, "%Y-%m-%d").date()
-                        dte = (exp_date - date.today()).days
-                        
-                        # Skip if DTE not in range
-                        if not (dte_min <= dte <= dte_max):
-                            continue
-                        
-                        strike = float(details.get("strike_price", 0))
-                        bid = float(last_quote.get("bid", 0))
-                        ask = float(last_quote.get("ask", 0))
-                        
-                        contract = OptionsContract(
-                            symbol=details.get("ticker", ""),
-                            underlying=symbol,
-                            expiration=exp_date,
-                            strike=strike,
-                            option_type="put",
-                            bid=bid,
-                            ask=ask,
-                            last=float(snap.get("last_trade", {}).get("price", 0)),
-                            volume=int(day.get("volume", 0)),
-                            open_interest=int(snap.get("open_interest", 0)),
-                            implied_volatility=float(greeks.get("implied_volatility", 0)),
-                            delta=float(greeks.get("delta", 0)),
-                            gamma=float(greeks.get("gamma", 0)),
-                            theta=float(greeks.get("theta", 0)),
-                            vega=float(greeks.get("vega", 0)),
-                            dte=dte,
-                        )
-                        all_contracts.append(contract)
-                    
-                    if all_contracts:
-                        polygon_greeks_available = True
-                        logger.info(f"  Gap 8: Polygon live Greeks for {len(all_contracts)} contracts")
-            except Exception as e:
-                logger.debug(f"  Polygon options snapshot failed for {symbol}: {e}")
-            
-            # Fallback: Alpaca options chain (original behavior)
-            if not all_contracts:
-                for exp_date in valid_expirations[:3]:
-                    contracts = await self.alpaca.get_options_chain(
-                        underlying=symbol,
-                        expiration_date=exp_date,
-                        option_type="put",
-                        strike_price_gte=min_strike * 0.95,
-                        strike_price_lte=max_strike * 1.05
-                    )
-                    all_contracts.extend(contracts)
+                all_contracts.extend(contracts)
 
             if not all_contracts:
                 logger.warning(f"No put contracts found for {symbol}")
                 return None
 
-            # Get quotes for contracts (only if from Alpaca, Polygon already has them)
-            if not polygon_greeks_available:
-                contract_symbols = [c.symbol for c in all_contracts[:50]]
-                quotes = await self.alpaca.get_options_quotes(contract_symbols)
-                enriched_contracts = self._enrich_with_quotes(all_contracts, quotes)
-            else:
-                enriched_contracts = all_contracts
+            # Get quotes for contracts
+            contract_symbols = [c.symbol for c in all_contracts[:50]]
+            quotes = await self.alpaca.get_options_quotes(contract_symbols)
+
+            # Enrich contracts with quote data
+            enriched_contracts = self._enrich_with_quotes(all_contracts, quotes)
 
             # Filter contracts with institutional logic
             valid_contracts = []
@@ -512,22 +452,15 @@ class StrikeSelector:
                 logger.warning(f"No valid contracts after filtering for {symbol}")
                 return None
 
-            # Rank and select best contract (v2.0: pass live Greeks flag)
-            best = self._rank_and_select(
-                valid_contracts, current_price, tier,
-                has_live_greeks=polygon_greeks_available
-            )
+            # Rank and select best contract
+            best = self._rank_and_select(valid_contracts, current_price, tier)
 
             if best:
-                greeks_tag = " [LIVE-Γ]" if polygon_greeks_available else ""
                 logger.info(
-                    f"SELECTED{greeks_tag}: {best.symbol} | "
+                    f"SELECTED: {best.symbol} | "
                     f"Strike: ${best.strike:.2f} | "
                     f"DTE: {best.dte} | "
                     f"Delta: {best.delta:.2f} | "
-                    f"Gamma: {best.gamma:.4f} | "
-                    f"Vega: {best.vega:.4f} | "
-                    f"IV: {best.implied_volatility:.1%} | "
                     f"Mid: ${best.mid_price:.2f} | "
                     f"Spread: {best.spread_pct:.1%} | "
                     f"OI: {best.open_interest} | "
@@ -582,25 +515,17 @@ class StrikeSelector:
         self,
         contracts: List[OptionsContract],
         current_price: float,
-        tier: PriceTier,
-        has_live_greeks: bool = False
+        tier: PriceTier
     ) -> Optional[OptionsContract]:
         """
         Rank contracts and select the best one.
 
-        v2.0 (Gap 8): Enhanced ranking with live Greeks when available.
-        
-        Ranking criteria (with live Greeks):
-        1. Delta closest to sweet spot (-0.325)          — 25%
-        2. Liquidity (tighter spread)                     — 20%
-        3. DTE (prefer middle of range)                   — 12%
-        4. OI/Volume                                      — 13%
-        5. Premium value                                  — 10%
-        6. Gamma acceleration (higher = faster gains)     — 10% (live Greeks only)
-        7. Vega exposure (moderate preferred)              — 5%  (live Greeks only)
-        8. IV attractiveness (not overpriced)              — 5%  (live Greeks only)
-        
-        Without live Greeks, falls back to original 5-factor model.
+        Ranking criteria:
+        1. Delta closest to sweet spot (-0.325)
+        2. Liquidity (tighter spread better)
+        3. DTE (prefer middle of range)
+        4. OI/Volume
+        5. Premium value
         """
         if not contracts:
             return None
@@ -610,135 +535,49 @@ class StrikeSelector:
         def score_contract(c: OptionsContract) -> float:
             score = 0.0
 
-            if has_live_greeks and c.gamma != 0:
-                # ── v2.0: 8-factor model with live Greeks ──
-                
-                # 1. Delta score — ideal is -0.325 (25% weight)
-                if c.delta != 0:
-                    delta_diff = abs(c.delta - self.IDEAL_DELTA)
-                    delta_score = max(0, 1.0 - delta_diff * 4)
-                    score += delta_score * 0.25
+            # 1. Delta score - ideal is -0.325 (30% weight)
+            if c.delta != 0:
+                delta_diff = abs(c.delta - self.IDEAL_DELTA)
+                delta_score = max(0, 1.0 - delta_diff * 4)
+                score += delta_score * 0.30
 
-                # 2. Liquidity score — tighter spread (20% weight)
-                if c.spread_pct > 0:
-                    spread_score = max(0, 1.0 - c.spread_pct * 10)
-                    score += spread_score * 0.20
+            # 2. Liquidity score - tighter spread better (25% weight)
+            if c.spread_pct > 0:
+                spread_score = max(0, 1.0 - c.spread_pct * 10)
+                score += spread_score * 0.25
 
-                # 3. DTE score — prefer middle of range (12% weight)
-                ideal_dte = 14
-                dte_diff = abs(c.dte - ideal_dte)
-                dte_score = max(0, 1.0 - dte_diff / 10)
-                score += dte_score * 0.12
+            # 3. DTE score - prefer middle of range (15% weight)
+            ideal_dte = 14
+            dte_diff = abs(c.dte - ideal_dte)
+            dte_score = max(0, 1.0 - dte_diff / 10)
+            score += dte_score * 0.15
 
-                # 4. OI/Volume score (13% weight)
-                oi_score = min(c.open_interest / 3000, 1.0)
-                vol_score = min(c.volume / 500, 1.0) if c.volume > 0 else 0
-                liquidity_score = oi_score * 0.7 + vol_score * 0.3
-                score += liquidity_score * 0.13
+            # 4. OI/Volume score (15% weight)
+            oi_score = min(c.open_interest / 3000, 1.0)
+            vol_score = min(c.volume / 500, 1.0) if c.volume > 0 else 0
+            liquidity_score = oi_score * 0.7 + vol_score * 0.3
+            score += liquidity_score * 0.15
 
-                # 5. Premium score (10% weight)
-                mid = c.mid_price
-                if 1.0 <= mid <= 5.0:
-                    premium_score = 1.0
-                elif 5.0 < mid <= 8.0:
-                    premium_score = 0.9
-                elif 0.50 <= mid < 1.0:
-                    premium_score = 0.7
-                elif 8.0 < mid <= 15.0:
-                    premium_score = 0.6
-                else:
-                    premium_score = 0.3
-                score += premium_score * 0.10
-
-                # 6. Gamma acceleration score (10% weight)
-                # Higher gamma = faster delta change = more leverage on a move
-                # For puts, gamma is positive. Normalize: 0.01-0.05 is typical range.
-                gamma_val = abs(c.gamma)
-                if gamma_val > 0:
-                    gamma_score = min(gamma_val / 0.04, 1.0)  # 0.04 gamma = perfect
-                    score += gamma_score * 0.10
-
-                # 7. Vega exposure score (5% weight)
-                # Moderate vega preferred: too high = IV crush risk, too low = no leverage
-                # Sweet spot: 0.05-0.15 vega per contract
-                vega_val = abs(c.vega)
-                if vega_val > 0:
-                    if 0.05 <= vega_val <= 0.15:
-                        vega_score = 1.0
-                    elif 0.03 <= vega_val < 0.05 or 0.15 < vega_val <= 0.25:
-                        vega_score = 0.7
-                    else:
-                        vega_score = 0.3
-                    score += vega_score * 0.05
-
-                # 8. IV attractiveness score (5% weight)
-                # Prefer IV < 80th percentile to avoid overpaying
-                # Lower IV + strong bearish signal = better risk/reward
-                iv = c.implied_volatility
-                if iv > 0:
-                    if iv < 0.40:
-                        iv_score = 1.0  # Low IV = cheap puts
-                    elif iv < 0.60:
-                        iv_score = 0.8
-                    elif iv < 0.80:
-                        iv_score = 0.5
-                    else:
-                        iv_score = 0.2  # Very high IV = expensive
-                    score += iv_score * 0.05
+            # 5. Premium score (15% weight)
+            # Prefer $1-$8 range for reasonable size and liquidity
+            mid = c.mid_price
+            if 1.0 <= mid <= 5.0:
+                premium_score = 1.0
+            elif 5.0 < mid <= 8.0:
+                premium_score = 0.9
+            elif 0.50 <= mid < 1.0:
+                premium_score = 0.7
+            elif 8.0 < mid <= 15.0:
+                premium_score = 0.6
             else:
-                # ── Original 5-factor model (no live Greeks) ──
-                
-                # 1. Delta score - ideal is -0.325 (30% weight)
-                if c.delta != 0:
-                    delta_diff = abs(c.delta - self.IDEAL_DELTA)
-                    delta_score = max(0, 1.0 - delta_diff * 4)
-                    score += delta_score * 0.30
-
-                # 2. Liquidity score - tighter spread better (25% weight)
-                if c.spread_pct > 0:
-                    spread_score = max(0, 1.0 - c.spread_pct * 10)
-                    score += spread_score * 0.25
-
-                # 3. DTE score - prefer middle of range (15% weight)
-                ideal_dte = 14
-                dte_diff = abs(c.dte - ideal_dte)
-                dte_score = max(0, 1.0 - dte_diff / 10)
-                score += dte_score * 0.15
-
-                # 4. OI/Volume score (15% weight)
-                oi_score = min(c.open_interest / 3000, 1.0)
-                vol_score = min(c.volume / 500, 1.0) if c.volume > 0 else 0
-                liquidity_score = oi_score * 0.7 + vol_score * 0.3
-                score += liquidity_score * 0.15
-
-                # 5. Premium score (15% weight)
-                mid = c.mid_price
-                if 1.0 <= mid <= 5.0:
-                    premium_score = 1.0
-                elif 5.0 < mid <= 8.0:
-                    premium_score = 0.9
-                elif 0.50 <= mid < 1.0:
-                    premium_score = 0.7
-                elif 8.0 < mid <= 15.0:
-                    premium_score = 0.6
-                else:
-                    premium_score = 0.3
-                score += premium_score * 0.15
+                premium_score = 0.3
+            score += premium_score * 0.15
 
             return score
 
         # Score and sort
         scored = [(c, score_contract(c)) for c in contracts]
         scored.sort(key=lambda x: x[1], reverse=True)
-
-        if scored and has_live_greeks:
-            best = scored[0][0]
-            logger.info(
-                f"  Gap 8: Ranked with live Greeks | "
-                f"Δ={best.delta:.3f} Γ={best.gamma:.4f} "
-                f"V={best.vega:.4f} IV={best.implied_volatility:.1%} | "
-                f"Score={scored[0][1]:.3f}"
-            )
 
         return scored[0][0] if scored else None
 
@@ -766,9 +605,6 @@ class StrikeSelector:
             "expiry": contract.expiration.strftime("%Y-%m-%d") if contract.expiration else "",
             "strike_put": contract.strike,
             "delta": contract.delta,
-            "gamma": contract.gamma,       # v2.0 (Gap 8): live Greeks
-            "theta": contract.theta,       # v2.0 (Gap 8): live Greeks
-            "vega": contract.vega,         # v2.0 (Gap 8): live Greeks
             "spread_pct": contract.spread_pct,
             "oi": contract.open_interest,
             "volume": contract.volume,

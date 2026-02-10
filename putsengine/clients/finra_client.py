@@ -35,19 +35,46 @@ class FINRAClient:
     def __init__(self, settings: Settings):
         self.settings = settings
         self._session: Optional[aiohttp.ClientSession] = None
+        self._session_loop_id: Optional[int] = None  # Track which event loop owns the session
         self._cache: Dict[str, Dict[str, Any]] = {}  # Cache short data
         self._cache_date: Optional[date] = None
         
     async def _get_session(self) -> aiohttp.ClientSession:
-        """Get or create aiohttp session."""
-        if self._session is None or self._session.closed:
+        """Get or create aiohttp session, auto-healing on event loop change."""
+        try:
+            current_loop_id = id(asyncio.get_running_loop())
+        except RuntimeError:
+            current_loop_id = None
+        
+        needs_new = (
+            self._session is None
+            or self._session.closed
+            or self._session_loop_id != current_loop_id
+        )
+        
+        if needs_new:
+            if self._session is not None:
+                try:
+                    if not self._session.closed:
+                        await self._session.close()
+                except Exception:
+                    pass
+                self._session = None
+            
             self._session = aiohttp.ClientSession()
+            self._session_loop_id = current_loop_id
+        
         return self._session
         
     async def close(self):
         """Close the aiohttp session."""
         if self._session and not self._session.closed:
-            await self._session.close()
+            try:
+                await self._session.close()
+            except Exception:
+                pass
+        self._session = None
+        self._session_loop_id = None
 
     async def get_short_volume(
         self,

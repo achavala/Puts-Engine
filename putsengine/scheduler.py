@@ -45,6 +45,7 @@ This scheduler runs as a background service and saves results for the dashboard.
 
 import asyncio
 import json
+import os
 import sys
 from datetime import datetime, date, timedelta
 from typing import List, Dict, Any, Optional
@@ -369,6 +370,30 @@ class PutsEngineScheduler:
             CronTrigger(hour=18, minute=0, timezone=EST),
             id="precatalyst",
             name="Pre-Catalyst Distribution Scan (6:00 PM ET)",
+            replace_existing=True
+        )
+        
+        # ============================================================================
+        # GAP 5/6/7 FIX: FINVIZ BEARISH + SHORT INTEREST SCAN
+        # ============================================================================
+        # Runs 2x daily: 8:30 AM (pre-market) and 1:30 PM (midday)
+        # Captures: insider selling, analyst downgrades, technical weakness,
+        #           high short interest, sector performance — ALL from FinViz Elite
+        # NO UW API calls — zero impact on UW budget
+        # Output: logs/finviz_bearish.json, logs/finviz_short_interest.json
+        # ============================================================================
+        self.scheduler.add_job(
+            self._run_finviz_bearish_scan_wrapper,
+            CronTrigger(hour=8, minute=30, timezone=EST),
+            id="finviz_bearish_830am",
+            name="🔵 FinViz Bearish Scan (8:30 AM ET) - Insider/Downgrade/Short",
+            replace_existing=True
+        )
+        self.scheduler.add_job(
+            self._run_finviz_bearish_scan_wrapper,
+            CronTrigger(hour=13, minute=30, timezone=EST),
+            id="finviz_bearish_130pm",
+            name="🔵 FinViz Bearish Scan (1:30 PM ET) - Insider/Downgrade/Short",
             replace_existing=True
         )
         
@@ -878,6 +903,17 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
+        # Gap 9: 5:45 PM ET — Convergence Backtest Backfill
+        # Fills in T+1/T+2 prices for Top 9 picks from past runs
+        # Builds the calibration data: "convergence > 0.55 → X% hit rate"
+        self.scheduler.add_job(
+            self._run_convergence_backfill_wrapper,
+            CronTrigger(hour=17, minute=45, timezone=EST),
+            id="convergence_backtest_backfill",
+            name="📊 Convergence Backtest Backfill (5:45 PM ET) — Calibration",
+            replace_existing=True
+        )
+        
         # =========================================================================
         # 🎯 CONVERGENCE ENGINE — Automated 4-Step Decision Hierarchy
         #   EWS (35%) → Direction (15%) → Gamma Drain (25%) → Weather (25%)
@@ -913,56 +949,57 @@ class PutsEngineScheduler:
     
     def _safe_async_run(self, coro, name: str = "scan"):
         """
-        FIXED: Safe async execution that prevents event loop crashes.
+        DEPRECATED (Feb 9 FIX): All wrappers are now async — this is only
+        kept as a fallback for any remaining sync callers.
         
-        The previous implementation had issues:
-        1. asyncio.run() creates a NEW event loop, conflicting with APScheduler
-        2. Event loop could get into closed/corrupted state
-        3. Memory leaks from unclosed sessions
+        ROOT CAUSE (Feb 9 incident): When sync wrappers ran in APScheduler's
+        thread pool, each call created a NEW event loop, then closed it.
+        aiohttp sessions remained bound to the old closed loop, causing
+        'Event loop is closed' for ALL subsequent API calls. The daemon ran
+        7 AM – 3 PM with zero successful UW/Polygon/Alpaca calls.
         
-        This implementation:
-        1. Uses the scheduler's loop directly
-        2. Wraps the coro with error handling
-        3. Cleans up resources properly
-        4. Collects garbage after completion
+        FIX: All wrapper methods are now async, so APScheduler runs them
+        directly on its own stable event loop. No new loops, no session
+        mismatch, no 'Event loop is closed' errors.
+        
+        This fallback now resets client sessions before creating a new loop,
+        so even sync callers won't corrupt sessions.
         """
         import gc
         
         async def wrapped_coro():
             """Wrapper that handles errors and cleanup."""
             try:
+                await self._init_clients()
                 await coro
             except Exception as e:
                 logger.error(f"Error in {name}: {e}")
+                import traceback
+                logger.error(traceback.format_exc())
             finally:
-                # Force garbage collection to prevent memory leaks
                 gc.collect()
         
         try:
             # Try to get the running loop (APScheduler's loop)
             loop = asyncio.get_running_loop()
             if loop.is_running():
-                # Schedule on the running loop - this is the correct way
+                # Schedule on the running loop
                 loop.create_task(wrapped_coro())
             else:
-                # Loop exists but not running (shouldn't happen)
                 loop.run_until_complete(wrapped_coro())
         except RuntimeError:
-            # No running loop - we need to create one safely
+            # No running loop — reset client sessions to prevent stale loop binding
+            self._reset_client_sessions()
             try:
-                # Create a new loop and run the coro
                 new_loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(new_loop)
                 try:
                     new_loop.run_until_complete(wrapped_coro())
                 finally:
-                    # Clean up the loop properly
                     try:
-                        # Cancel all pending tasks
                         pending = asyncio.all_tasks(new_loop)
                         for task in pending:
                             task.cancel()
-                        # Run the loop briefly to allow tasks to cancel
                         if pending:
                             new_loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
                     except Exception:
@@ -972,48 +1009,122 @@ class PutsEngineScheduler:
             except Exception as e:
                 logger.error(f"Failed to run {name} in new loop: {e}")
     
-    def _run_scan_wrapper(self, scan_type: str):
-        """Wrapper to run async scan in scheduler context."""
-        self._safe_async_run(self.run_scan(scan_type), f"scan_{scan_type}")
-    
-    def _run_afterhours_scan_wrapper(self):
-        """Wrapper to run after-hours scan in scheduler context."""
-        self._safe_async_run(self.run_afterhours_scan(), "afterhours_scan")
-    
-    def _run_earnings_check_wrapper(self):
-        """Wrapper to run earnings calendar check in scheduler context."""
-        self._safe_async_run(self.run_earnings_check(), "earnings_check")
-    
-    def _run_precatalyst_scan_wrapper(self):
-        """Wrapper to run pre-catalyst scan in scheduler context."""
-        self._safe_async_run(self.run_precatalyst_scan(), "precatalyst_scan")
-    
-    def _run_earnings_priority_scan_wrapper(self):
+    def _reset_client_sessions(self):
         """
-        Wrapper to run earnings priority scan in scheduler context.
+        Reset all client sessions so they recreate on the next event loop.
+        
+        FEB 9 FIX: When the event loop changes (e.g., _safe_async_run creates
+        a new loop), old sessions bound to the previous loop must be discarded.
+        The loop-aware _get_session() in each client will recreate them.
+        """
+        for client in [self._alpaca, self._polygon, self._uw]:
+            if client is not None and hasattr(client, '_session'):
+                client._session = None
+                if hasattr(client, '_session_loop_id'):
+                    client._session_loop_id = None
+    
+    async def _run_scan_wrapper(self, scan_type: str):
+        """Wrapper to run scan — async so APScheduler uses its own event loop."""
+        try:
+            await self._init_clients()
+            await self.run_scan(scan_type)
+        except Exception as e:
+            logger.error(f"Error in scan_{scan_type}: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+    
+    async def _run_afterhours_scan_wrapper(self):
+        """Wrapper to run after-hours scan — async for stable event loop."""
+        try:
+            await self._init_clients()
+            await self.run_afterhours_scan()
+        except Exception as e:
+            logger.error(f"Error in afterhours_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+    
+    async def _run_earnings_check_wrapper(self):
+        """Wrapper to run earnings calendar check — async for stable event loop."""
+        try:
+            await self._init_clients()
+            await self.run_earnings_check()
+        except Exception as e:
+            logger.error(f"Error in earnings_check: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+    
+    async def _run_precatalyst_scan_wrapper(self):
+        """Wrapper to run pre-catalyst scan — async for stable event loop."""
+        try:
+            await self._init_clients()
+            await self.run_precatalyst_scan()
+        except Exception as e:
+            logger.error(f"Error in precatalyst_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+    
+    async def _run_earnings_priority_scan_wrapper(self):
+        """
+        Wrapper to run earnings priority scan — async for stable event loop.
         FEB 3, 2026 FIX: 14/15 crashes were earnings-related.
         """
-        self._safe_async_run(self.run_earnings_priority_scan(), "earnings_priority_scan")
+        try:
+            await self._init_clients()
+            await self.run_earnings_priority_scan()
+        except Exception as e:
+            logger.error(f"Error in earnings_priority_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
-    def _run_market_direction_wrapper(self):
-        """Wrapper to run market direction analysis in scheduler context."""
-        self._safe_async_run(self.run_market_direction_analysis(), "market_direction_analysis")
+    async def _run_market_direction_wrapper(self):
+        """Wrapper to run market direction analysis — async for stable event loop."""
+        try:
+            await self._init_clients()
+            await self.run_market_direction_analysis()
+        except Exception as e:
+            logger.error(f"Error in market_direction_analysis: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
-    def _run_premarket_gap_scan_wrapper(self):
-        """Wrapper to run pre-market gap scan in scheduler context."""
-        self._safe_async_run(self.run_premarket_gap_scan(), "premarket_gap_scan")
+    async def _run_premarket_gap_scan_wrapper(self):
+        """Wrapper to run pre-market gap scan — async for stable event loop."""
+        try:
+            await self._init_clients()
+            await self.run_premarket_gap_scan()
+        except Exception as e:
+            logger.error(f"Error in premarket_gap_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
-    def _run_multiday_weakness_scan_wrapper(self):
-        """Wrapper to run multi-day weakness scan in scheduler context."""
-        self._safe_async_run(self.run_multiday_weakness_scan(), "multiday_weakness_scan")
+    async def _run_multiday_weakness_scan_wrapper(self):
+        """Wrapper to run multi-day weakness scan — async for stable event loop."""
+        try:
+            await self._init_clients()
+            await self.run_multiday_weakness_scan()
+        except Exception as e:
+            logger.error(f"Error in multiday_weakness_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
-    def _run_sector_correlation_scan_wrapper(self):
-        """Wrapper to run sector correlation scan in scheduler context."""
-        self._safe_async_run(self.run_sector_correlation_scan(), "sector_correlation_scan")
+    async def _run_sector_correlation_scan_wrapper(self):
+        """Wrapper to run sector correlation scan — async for stable event loop."""
+        try:
+            await self._init_clients()
+            await self.run_sector_correlation_scan()
+        except Exception as e:
+            logger.error(f"Error in sector_correlation_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
-    def _run_daily_report_scan_wrapper(self):
-        """Wrapper to run daily report scan (3 PM EST) with email."""
-        self._safe_async_run(self.run_daily_report_scan(), "daily_report_scan")
+    async def _run_daily_report_scan_wrapper(self):
+        """Wrapper to run daily report scan (3 PM EST) — async for stable event loop."""
+        try:
+            await self._init_clients()
+            await self.run_daily_report_scan()
+        except Exception as e:
+            logger.error(f"Error in daily_report_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
         
         # Auto-trigger Convergence Engine after daily report scan
         # Gamma Drain + Distribution + Liquidity scores just updated
@@ -1041,52 +1152,88 @@ class PutsEngineScheduler:
         except Exception as e:
             logger.error(f"Pattern scan error: {e}")
     
-    def _run_pump_dump_scan_wrapper(self):
-        """Wrapper to run pump-dump reversal scan."""
-        self._safe_async_run(self.run_pump_dump_scan(), "pump_dump_scan")
+    async def _run_pump_dump_scan_wrapper(self):
+        """Wrapper to run pump-dump reversal scan — async for stable event loop."""
+        try:
+            await self._init_clients()
+            await self.run_pump_dump_scan()
+        except Exception as e:
+            logger.error(f"Error in pump_dump_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
-    def _run_pre_earnings_flow_wrapper(self):
-        """Wrapper to run pre-earnings flow scan."""
-        self._safe_async_run(self.run_pre_earnings_flow_scan(), "pre_earnings_flow_scan")
+    async def _run_pre_earnings_flow_wrapper(self):
+        """Wrapper to run pre-earnings flow scan — async for stable event loop."""
+        try:
+            await self._init_clients()
+            await self.run_pre_earnings_flow_scan()
+        except Exception as e:
+            logger.error(f"Error in pre_earnings_flow_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
-    def _run_volume_price_scan_wrapper(self):
-        """Wrapper to run volume-price divergence scan."""
-        self._safe_async_run(self.run_volume_price_scan(), "volume_price_scan")
+    async def _run_volume_price_scan_wrapper(self):
+        """Wrapper to run volume-price divergence scan — async for stable event loop."""
+        try:
+            await self._init_clients()
+            await self.run_volume_price_scan()
+        except Exception as e:
+            logger.error(f"Error in volume_price_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
-    def _run_intraday_scan_wrapper(self):
+    async def _run_intraday_scan_wrapper(self):
         """
-        Wrapper to run REAL-TIME intraday big mover scan.
+        Wrapper to run REAL-TIME intraday big mover scan — async for stable event loop.
         
         FEB 2, 2026: Critical fix - uses quotes for live prices, not daily bars.
         This catches same-day drops that other scanners miss.
         """
-        self._safe_async_run(self.run_intraday_scan(), "intraday_scan")
+        try:
+            await self._init_clients()
+            await self.run_intraday_scan()
+        except Exception as e:
+            logger.error(f"Error in intraday_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
-    def _run_market_weather_am_wrapper(self):
+    async def _run_market_weather_am_wrapper(self):
         """
-        Wrapper to run Market Weather AM FULL report (9:00 AM ET).
+        Wrapper to run Market Weather AM FULL report (9:00 AM ET) — async for stable event loop.
         
         FULL run: Live UW API + Polygon + EWS → saves UW cache for refreshes.
         - 4 independent layers + gamma flip + flow quality + liquidity violence
         - Writes to logs/market_weather/latest_am.json
         - Same-day trading decisions
         """
-        self._safe_async_run(self.run_market_weather_report("am", refresh=False), "market_weather_am")
+        try:
+            await self._init_clients()
+            await self.run_market_weather_report("am", refresh=False)
+        except Exception as e:
+            logger.error(f"Error in market_weather_am: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
-    def _run_market_weather_pm_wrapper(self):
+    async def _run_market_weather_pm_wrapper(self):
         """
-        Wrapper to run Market Weather PM FULL report (3:00 PM ET).
+        Wrapper to run Market Weather PM FULL report (3:00 PM ET) — async for stable event loop.
         
         FULL run: Live UW API + Polygon + EWS → saves UW cache for refreshes.
         - 4 independent layers + gamma flip + flow quality + liquidity violence
         - Writes to logs/market_weather/latest_pm.json
         - Next-day preparation (overnight storm build)
         """
-        self._safe_async_run(self.run_market_weather_report("pm", refresh=False), "market_weather_pm")
+        try:
+            await self._init_clients()
+            await self.run_market_weather_report("pm", refresh=False)
+        except Exception as e:
+            logger.error(f"Error in market_weather_pm: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
-    def _run_market_weather_refresh_wrapper(self):
+    async def _run_market_weather_refresh_wrapper(self):
         """
-        Wrapper to run Market Weather REFRESH (every 30 min during market hours).
+        Wrapper to run Market Weather REFRESH — async for stable event loop.
         
         v5.2: REFRESH mode — NO new UW API calls.
         - Reuses cached UW data (gamma flip + flow) from last full run
@@ -1094,10 +1241,16 @@ class PutsEngineScheduler:
         - Fresh EWS data from latest scheduled EWS scans
         - Auto-detects AM/PM mode based on time of day
         """
-        from datetime import datetime
-        now_et = datetime.now(EST)
-        mode = "pm" if now_et.hour >= 15 else "am"
-        self._safe_async_run(self.run_market_weather_report(mode, refresh=True), f"market_weather_refresh_{mode}")
+        try:
+            await self._init_clients()
+            from datetime import datetime
+            now_et = datetime.now(EST)
+            mode = "pm" if now_et.hour >= 15 else "am"
+            await self.run_market_weather_report(mode, refresh=True)
+        except Exception as e:
+            logger.error(f"Error in market_weather_refresh: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
     def _run_convergence_wrapper(self):
         """
@@ -1137,9 +1290,109 @@ class PutsEngineScheduler:
             import traceback
             logger.error(traceback.format_exc())
     
-    def _run_attribution_backfill_wrapper(self):
+    async def _run_finviz_bearish_scan_wrapper(self):
         """
-        Wrapper to run Weather Attribution Backfill (5:30 PM ET).
+        Gap 5/6/7 Fix: Run FinViz bearish candidate scan — async for stable event loop.
+        
+        Scans for:
+        - Insider selling (strongest individual bearish signal)
+        - Analyst downgrades
+        - Technical weakness (RSI < 30, below SMAs)
+        - High short interest (>15% short float)
+        - Sector performance (weakest sectors)
+        
+        Zero UW API calls. Uses FinViz Elite only.
+        Output: logs/finviz_bearish.json, logs/finviz_short_interest.json
+        """
+        try:
+            from putsengine.clients.finviz_client import FinvizClient
+            from putsengine.config import Settings
+            import json
+            from pathlib import Path
+            from datetime import datetime
+            
+            settings = Settings()
+            client = FinvizClient(settings)
+            
+            try:
+                # Get bearish candidates (insider selling + downgrades + technical)
+                bearish = await client.get_bearish_candidates()
+                
+                # Get high short interest stocks
+                short_interest_symbols = await client.screen_high_short_interest()
+                
+                # Get insider selling
+                insider_selling = await client.screen_insider_selling()
+                
+                # Build combined results
+                candidates = []
+                all_symbols = set()
+                
+                for item in bearish:
+                    sym = item.get("symbol", "")
+                    if sym:
+                        all_symbols.add(sym)
+                        signals = item.get("signals", [])
+                        if sym in insider_selling:
+                            signals.append("insider_selling")
+                        item["signals"] = signals
+                        candidates.append(item)
+                
+                # Add insider selling stocks not already in bearish list
+                for sym in insider_selling:
+                    if sym not in all_symbols:
+                        candidates.append({
+                            "symbol": sym,
+                            "signals": ["insider_selling"],
+                            "score_boost": 0.04,
+                        })
+                
+                # Save bearish candidates
+                bearish_path = Path("logs/finviz_bearish.json")
+                bearish_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(bearish_path, "w") as f:
+                    json.dump({
+                        "timestamp": datetime.now().isoformat(),
+                        "candidates": candidates,
+                        "count": len(candidates),
+                    }, f, indent=2)
+                
+                # Save short interest data
+                si_data = {}
+                for sym in short_interest_symbols:
+                    # Get quote to extract short float details
+                    quote = await client.get_quote(sym)
+                    if quote:
+                        si_data[sym] = {
+                            "short_float": quote.short_float,
+                            "short_ratio": quote.short_ratio,
+                            "relative_volume": quote.relative_volume,
+                        }
+                
+                si_path = Path("logs/finviz_short_interest.json")
+                with open(si_path, "w") as f:
+                    json.dump({
+                        "timestamp": datetime.now().isoformat(),
+                        "data": si_data,
+                        "count": len(si_data),
+                    }, f, indent=2)
+                
+                logger.info(
+                    f"🔵 FinViz Bearish Scan: {len(candidates)} bearish candidates, "
+                    f"{len(si_data)} high short interest stocks"
+                )
+                
+            finally:
+                await client.close()
+            
+        except Exception as e:
+            logger.error(f"FinViz bearish scan error: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+    
+    async def _run_attribution_backfill_wrapper(self):
+        """
+        Wrapper to run Weather Attribution Backfill (5:30 PM ET) — async for stable event loop.
         
         Fills in T+1/T+2 actual outcomes for past weather forecasts.
         This is the "did it actually rain?" calibration loop.
@@ -1149,7 +1402,12 @@ class PutsEngineScheduler:
         - Flags did_drop_5pct, did_drop_10pct
         - Generates calibration_summary.json
         """
-        self._safe_async_run(self._run_attribution_backfill(), "attribution_backfill")
+        try:
+            await self._run_attribution_backfill()
+        except Exception as e:
+            logger.error(f"Error in attribution_backfill: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
     async def _run_attribution_backfill(self):
         """Run the attribution backfill engine."""
@@ -1176,6 +1434,131 @@ class PutsEngineScheduler:
             logger.error(f"Attribution Backfill error: {e}")
             import traceback
             logger.error(traceback.format_exc())
+    
+    async def _run_convergence_backfill_wrapper(self):
+        """
+        Gap 9 Fix: Backfill T+1/T+2 actual prices — async for stable event loop.
+        
+        Runs daily at 5:45 PM ET (after attribution backfill at 5:30 PM).
+        Fetches actual close prices via Polygon for past picks and computes
+        whether predictions were correct (3%+ drop in 2 days).
+        
+        This builds the calibration data needed to compute:
+        - "When convergence_score > 0.55, accuracy is X%"
+        - "Trifecta picks hit 3%+ drop Y% of the time"
+        """
+        try:
+            await self._run_convergence_backfill()
+        except Exception as e:
+            logger.error(f"Error in convergence_backfill: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+    
+    async def _run_convergence_backfill(self):
+        """Fill in T+1/T+2 actual prices in the convergence backtest ledger."""
+        try:
+            import json
+            from pathlib import Path
+            from datetime import timedelta
+            
+            ledger_path = Path("logs/convergence/backtest_ledger.json")
+            if not ledger_path.exists():
+                logger.info("No backtest ledger yet. Skipping backfill.")
+                return
+            
+            with open(ledger_path) as f:
+                ledger = json.load(f)
+            
+            if not ledger:
+                return
+            
+            now_et = datetime.now(EST)
+            updated_count = 0
+            
+            for entry in ledger:
+                entry_date = entry.get("date", "")
+                if not entry_date:
+                    continue
+                
+                try:
+                    entry_dt = datetime.strptime(entry_date, "%Y-%m-%d")
+                except ValueError:
+                    continue
+                
+                # Only backfill entries that are 1-3 days old (T+1 or T+2 available)
+                days_ago = (now_et.date() - entry_dt.date()).days
+                if days_ago < 1 or days_ago > 5:
+                    continue
+                
+                for pick in entry.get("picks", []):
+                    if pick.get("drop_t2") is not None:
+                        continue  # Already backfilled
+                    
+                    symbol = pick.get("symbol", "")
+                    entry_price = pick.get("current_price", 0)
+                    if not symbol or entry_price <= 0:
+                        continue
+                    
+                    try:
+                        # Get daily bars for T+1 and T+2
+                        t1_date = entry_dt + timedelta(days=1)
+                        t2_date = entry_dt + timedelta(days=2)
+                        # Skip weekends
+                        while t1_date.weekday() >= 5:
+                            t1_date += timedelta(days=1)
+                        while t2_date.weekday() >= 5:
+                            t2_date += timedelta(days=1)
+                        
+                        bars = await self._polygon.get_daily_bars(
+                            symbol,
+                            from_date=t1_date.strftime("%Y-%m-%d"),
+                            to_date=t2_date.strftime("%Y-%m-%d")
+                        )
+                        
+                        if bars and len(bars) >= 1:
+                            t1_close = bars[0].get("close", bars[0].get("c", 0))
+                            pick["price_t1"] = round(t1_close, 2)
+                            pick["drop_t1"] = round((t1_close / entry_price - 1) * 100, 2)
+                        
+                        if bars and len(bars) >= 2:
+                            t2_close = bars[1].get("close", bars[1].get("c", 0))
+                            pick["price_t2"] = round(t2_close, 2)
+                            pick["drop_t2"] = round((t2_close / entry_price - 1) * 100, 2)
+                            
+                            # Compute hit metrics
+                            min_price = min(b.get("low", b.get("l", entry_price)) for b in bars[:2])
+                            max_drop = (min_price / entry_price - 1) * 100
+                            pick["max_drop"] = round(max_drop, 2)
+                            pick["hit_3pct"] = max_drop <= -3.0
+                            pick["hit_5pct"] = max_drop <= -5.0
+                        
+                        updated_count += 1
+                        
+                    except Exception as e:
+                        logger.debug(f"Backfill failed for {symbol}: {e}")
+                        continue
+            
+            # Save updated ledger
+            with open(ledger_path, "w") as f:
+                json.dump(ledger, f, indent=2, default=str)
+            
+            # Generate summary
+            all_picks = [p for e in ledger for p in e.get("picks", []) if p.get("drop_t2") is not None]
+            if all_picks:
+                total = len(all_picks)
+                hit_3 = sum(1 for p in all_picks if p.get("hit_3pct"))
+                hit_5 = sum(1 for p in all_picks if p.get("hit_5pct"))
+                logger.info(
+                    f"📊 Convergence Backfill: {updated_count} picks updated, "
+                    f"Total calibrated: {total}, "
+                    f"Hit 3%: {hit_3}/{total} ({hit_3/total*100:.0f}%), "
+                    f"Hit 5%: {hit_5}/{total} ({hit_5/total*100:.0f}%)"
+                )
+            else:
+                logger.info(f"📊 Convergence Backfill: {updated_count} picks updated (no T+2 data yet)")
+                
+        except Exception as e:
+            logger.error(f"Convergence backfill error: {e}")
     
     async def run_market_weather_report(self, mode: str = "am", refresh: bool = False):
         """
@@ -1272,9 +1655,9 @@ class PutsEngineScheduler:
             
             return None
     
-    def _run_early_warning_scan_wrapper(self):
+    async def _run_early_warning_scan_wrapper(self):
         """
-        Wrapper to run early warning institutional footprint scan.
+        Wrapper to run early warning institutional footprint scan — async for stable event loop.
         
         This is the KEY scan for 1-3 day early detection.
         Schedule: 8 AM, 9:45 AM, 11 AM, 12 PM, 1 PM, 2 PM, 3:02 PM, 4:30 PM, 10 PM ET.
@@ -1285,15 +1668,22 @@ class PutsEngineScheduler:
         in the budget manager, ensuring ALL 361 tickers get UW data
         (dark pool, OI, IV term structure, flow divergence).
         
-        Previously: 3 out of 4 UW footprints were SILENTLY FAILING
-        due to a TypeError bug in can_call_uw() (missing force_scan param).
+        FEB 9 FIX: Now async — runs on APScheduler's event loop directly.
+        Eliminates the thread-pool → new-loop → closed-loop cascade that
+        caused 8 hours of blind scans on Feb 9.
         """
+        await self._init_clients()
+        
         # Enable force_scan mode for EWS - must scan ALL tickers
         if hasattr(self, '_uw') and self._uw is not None:
             self._uw.set_force_scan_mode(True)
         
         try:
-            self._safe_async_run(self.run_early_warning_scan(), "early_warning_scan")
+            await self.run_early_warning_scan()
+        except Exception as e:
+            logger.error(f"Error in early_warning_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
         finally:
             # Always disable force_scan mode after EWS scan
             if hasattr(self, '_uw') and self._uw is not None:
@@ -1307,14 +1697,20 @@ class PutsEngineScheduler:
             except Exception as e:
                 logger.warning(f"Post-EWS convergence trigger failed (non-fatal): {e}")
     
-    def _run_zero_hour_scan_wrapper(self):
+    async def _run_zero_hour_scan_wrapper(self):
         """
-        Wrapper to run zero-hour gap scanner.
+        Wrapper to run zero-hour gap scanner — async for stable event loop.
         
         ARCHITECT-4 VALIDATED: Highest ROI remaining addition.
         Runs at 9:15 AM ET to confirm Day 0 execution of Day -1 pressure.
         """
-        self._safe_async_run(self.run_zero_hour_scan(), "zero_hour_scan")
+        try:
+            await self._init_clients()
+            await self.run_zero_hour_scan()
+        except Exception as e:
+            logger.error(f"Error in zero_hour_scan: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
     async def run_scan(self, scan_type: str = "manual"):
         """
@@ -1368,6 +1764,9 @@ class PutsEngineScheduler:
             # Get market regime first (force API calls during scheduled scans)
             market_regime = await self._market_regime_layer.analyze(force_api_call=True)
             logger.info(f"Market Regime: {market_regime.regime.value}")
+            # Gap 2 Fix: Log scan_allowed separately from tradeable
+            scan_allowed = getattr(market_regime, 'is_scan_allowed', True)
+            logger.info(f"Tradeable: {market_regime.is_tradeable} | Scan Allowed: {scan_allowed}")
             
             # Calculate expiry dates
             today = date.today()
@@ -2931,12 +3330,66 @@ async def run_scheduler():
         logger.info("Scheduler daemon is now running...")
         logger.info("Press Ctrl+C or send SIGTERM to stop")
         
+        # Track consecutive API failures for self-healing
+        _consecutive_api_failures = 0
+        _MAX_API_FAILURES_BEFORE_RESET = 5
+        
         # Keep running until shutdown requested
         while not shutdown_requested:
             await asyncio.sleep(60)
             
-            # Log heartbeat every 30 minutes
             now_et = datetime.now(EST)
+            
+            # ================================================================
+            # FEB 9 FIX: Event loop health probe + heartbeat file
+            # The Feb 9 incident ran 8 hours with a broken event loop.
+            # This probe writes a heartbeat file every minute so the
+            # watchdog can detect dead loops. It also tests that the
+            # event loop can actually perform async I/O.
+            # ================================================================
+            try:
+                import json as _json
+                loop = asyncio.get_running_loop()
+                loop_alive = not loop.is_closed()
+                
+                # Quick connectivity test: verify aiohttp sessions are valid
+                api_healthy = True
+                if scheduler._uw is not None and hasattr(scheduler._uw, '_session'):
+                    session = scheduler._uw._session
+                    if session is not None and (session.closed or 
+                        (hasattr(session, '_connector') and session._connector is not None and session._connector.closed)):
+                        api_healthy = False
+                        _consecutive_api_failures += 1
+                        logger.warning(
+                            f"⚠️ Event loop health: UW session stale/closed "
+                            f"(failure {_consecutive_api_failures}/{_MAX_API_FAILURES_BEFORE_RESET})"
+                        )
+                    else:
+                        _consecutive_api_failures = 0
+                
+                # Self-heal: reset client sessions if too many consecutive failures
+                if _consecutive_api_failures >= _MAX_API_FAILURES_BEFORE_RESET:
+                    logger.warning("🔧 Auto-healing: resetting all client sessions due to consecutive failures")
+                    scheduler._reset_client_sessions()
+                    _consecutive_api_failures = 0
+                    api_healthy = True  # Will be re-created on next use
+                
+                # Write heartbeat file for watchdog
+                health_data = {
+                    "timestamp": now_et.isoformat(),
+                    "loop_alive": loop_alive,
+                    "api_healthy": api_healthy,
+                    "pid": os.getpid(),
+                    "consecutive_failures": _consecutive_api_failures,
+                }
+                health_path = Path("scheduler_loop_health.json")
+                with open(health_path, "w") as _f:
+                    _json.dump(health_data, _f, indent=2)
+                
+            except Exception as health_err:
+                logger.warning(f"Health probe error (non-fatal): {health_err}")
+            
+            # Log heartbeat every 30 minutes
             if now_et.minute == 0 or now_et.minute == 30:
                 logger.info(f"♥ Scheduler heartbeat: {now_et.strftime('%H:%M ET')} - Running")
             

@@ -1041,7 +1041,10 @@ class DistributionLayer:
         }
 
         try:
-            insider_trades = await self.unusual_whales.get_insider_trades(symbol, limit=50)
+            # v2.0 (Gap 10): UW now iterates person slugs for real trade details
+            insider_trades = await self.unusual_whales.get_insider_trades(
+                symbol, limit=50, max_person_lookups=5
+            )
 
             if not insider_trades:
                 return result
@@ -1054,6 +1057,7 @@ class DistributionLayer:
             total_sales = 0
             large_sales = 0
             recent_sales = 0  # Within 14 days
+            real_trade_count = 0  # Gap 10: count actual trade records
             
             from datetime import datetime, timedelta
             cutoff_date = datetime.now() - timedelta(days=14)
@@ -1062,6 +1066,15 @@ class DistributionLayer:
                 title = str(trade.get('title', '') or '').upper()
                 trans_type = str(trade.get('transaction_type', '') or '').lower()
                 value = float(trade.get('value', 0) or 0)
+                source = trade.get('source', '')
+                
+                # Skip person-level stubs with no trade data (they have unknown type)
+                if trans_type == 'unknown':
+                    continue
+                
+                # Count real trades from person iteration (Gap 10)
+                if source == 'uw_insider_person_trades':
+                    real_trade_count += 1
                 
                 # Parse trade date
                 trade_date_str = trade.get('transaction_date', trade.get('filing_date', ''))
@@ -1071,7 +1084,7 @@ class DistributionLayer:
                         is_recent = trade_date >= cutoff_date
                     else:
                         is_recent = False
-                except:
+                except Exception:
                     is_recent = False
 
                 if 'sale' in trans_type or 'sell' in trans_type or 's - sale' in trans_type:
@@ -1087,6 +1100,31 @@ class DistributionLayer:
                     if value > 500_000:
                         large_sales += 1
 
+            # Gap 10: Also check FinViz insider data (cross-validation)
+            finviz_insider_boost = False
+            if hasattr(self, 'finviz') and self.finviz:
+                try:
+                    fv_quote = await self.finviz.get_quote(symbol)
+                    if fv_quote:
+                        # FinViz _parse_quote_data may populate insider activity info
+                        cached = self.finviz._quote_cache.get(symbol, {})
+                        insider_own = cached.get('Insider Own', '')
+                        insider_trans = cached.get('Insider Trans', '')
+                        # If insider ownership is declining (negative trans %)
+                        if insider_trans:
+                            try:
+                                trans_pct = float(insider_trans.replace('%', ''))
+                                if trans_pct < -5.0:  # Insiders reduced by >5%
+                                    finviz_insider_boost = True
+                                    logger.debug(
+                                        f"{symbol}: FinViz insider transaction "
+                                        f"{trans_pct:.1f}% (bearish cross-validation)"
+                                    )
+                            except (ValueError, TypeError):
+                                pass
+                except Exception:
+                    pass  # FinViz is supplementary, not critical
+
             # C-level selling: 2+ C-level execs sold within 14 days
             result["c_level_selling"] = c_level_sales >= 2
             
@@ -1095,6 +1133,11 @@ class DistributionLayer:
 
             # Large sale: any sale >$500K
             result["large_sale"] = large_sales > 0
+            
+            # Gap 10: Track data quality
+            result["real_trades"] = real_trade_count
+            result["total_sales"] = total_sales
+            result["finviz_confirmed"] = finviz_insider_boost
 
             # Calculate boost per Architect Blueprint (+0.10 to +0.15)
             # NOT a trigger, only confirmation boost
@@ -1107,6 +1150,17 @@ class DistributionLayer:
             elif result["insider_cluster"]:
                 result["boost"] = 0.10  # Min boost
                 logger.info(f"{symbol}: Insider cluster detected. Boost +0.10")
+            elif finviz_insider_boost and recent_sales >= 2:
+                # FinViz cross-validated + some UW sales = moderate boost
+                result["boost"] = 0.08
+                logger.info(f"{symbol}: FinViz-confirmed insider selling. Boost +0.08")
+            
+            if real_trade_count > 0:
+                logger.debug(
+                    f"{symbol}: Insider analysis — {real_trade_count} real trades, "
+                    f"{total_sales} sales, {c_level_sales} C-level, "
+                    f"{recent_sales} recent, {large_sales} large"
+                )
 
         except Exception as e:
             logger.debug(f"Error analyzing insider activity for {symbol}: {e}")

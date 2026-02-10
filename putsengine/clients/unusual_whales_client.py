@@ -83,6 +83,7 @@ class UnusualWhalesClient:
         self.api_key = settings.unusual_whales_api_key
         self.daily_limit = settings.uw_daily_limit
         self._session: Optional[aiohttp.ClientSession] = None
+        self._session_loop_id: Optional[int] = None  # Track which event loop owns the session
         self._calls_today = 0
         self._calls_reset_date = date.today()
         self._last_request_time = 0.0  # For rate limiting
@@ -250,15 +251,46 @@ class UnusualWhalesClient:
             self._budget_manager.update_ticker_priority(symbol, score, is_dui)
 
     async def _get_session(self) -> aiohttp.ClientSession:
-        """Get or create aiohttp session."""
-        if self._session is None or self._session.closed:
+        """Get or create aiohttp session, auto-healing on event loop change.
+        
+        FEB 9 FIX: Detects when the session is bound to a different/closed
+        event loop and recreates it on the current loop. Prevents
+        'Event loop is closed' errors during scheduled scans.
+        """
+        try:
+            current_loop_id = id(asyncio.get_running_loop())
+        except RuntimeError:
+            current_loop_id = None
+        
+        needs_new = (
+            self._session is None
+            or self._session.closed
+            or self._session_loop_id != current_loop_id
+        )
+        
+        if needs_new:
+            if self._session is not None:
+                try:
+                    if not self._session.closed:
+                        await self._session.close()
+                except Exception:
+                    pass
+                self._session = None
+            
             self._session = aiohttp.ClientSession(headers=self._headers)
+            self._session_loop_id = current_loop_id
+        
         return self._session
 
     async def close(self):
         """Close the aiohttp session."""
         if self._session and not self._session.closed:
-            await self._session.close()
+            try:
+                await self._session.close()
+            except Exception:
+                pass
+        self._session = None
+        self._session_loop_id = None
 
     async def _rate_limit_wait(self):
         """Wait to respect rate limits - prevents 429 errors. Thread-safe with lock."""
@@ -1403,22 +1435,29 @@ class UnusualWhalesClient:
     async def get_insider_trades(
         self,
         symbol: str,
-        limit: int = 20
+        limit: int = 20,
+        max_persons: int = 5
     ) -> List[Dict[str, Any]]:
         """
-        Get insider trading activity.
-        Endpoint: /api/insider/{ticker}
+        Get insider trading activity with person-level iteration.
         
-        FEB 8, 2026 FIX: UW /api/insider/{TICKER} returns PERSON-LEVEL data
-        (name, id, name_slug) — NOT trade transactions.
+        Gap 10 Fix (Feb 9, 2026): UW /api/insider/{TICKER} returns PERSON-LEVEL data.
+        We now iterate top insiders to get their actual trade transactions via
+        /api/insider/{ticker}/{person_slug}. This unlocks insider selling detection
+        in the Distribution layer.
         
-        We transform this into a trades-compatible format with
-        transaction_type="unknown" so consumers don't fire false positives.
-        The distribution layer checks for 'sale'/'sell' in transaction_type,
-        so these records are correctly skipped as unknowns.
+        Flow:
+        1. GET /api/insider/{TICKER} → list of insiders (name, slug, etc.)
+        2. For top N insiders → GET /api/insider/{TICKER}/{slug} → actual trades
+        3. Parse transactions: look for "Sale" type, dollar values, dates
+        
+        Args:
+            symbol: Ticker symbol
+            limit: Max trades to return overall
+            max_persons: Max insiders to iterate (default 5 = top 5, +5 API calls)
         """
         endpoint = f"/api/insider/{symbol}"
-        params = {"limit": limit}
+        params = {"limit": 20}
         result = await self._request(endpoint, params, symbol=symbol)
         
         raw_data = []
@@ -1431,6 +1470,8 @@ class UnusualWhalesClient:
             return []
         
         trades = []
+        persons_iterated = 0
+        
         for person in raw_data:
             if not isinstance(person, dict):
                 continue
@@ -1438,19 +1479,75 @@ class UnusualWhalesClient:
             is_person = person.get("is_person", True)
             if not is_person:
                 continue
-            trades.append({
-                "ticker": symbol,
-                "title": name,
-                "name": name,
-                "person_id": person.get("id", ""),
-                "is_person": is_person,
-                "transaction_type": "unknown",  # Don't fabricate trades
-                "value": 0,
-                "filing_date": "",
-                "source": "uw_insider_persons",
-            })
+            
+            # Get person slug for detail endpoint
+            slug = person.get("name_slug", person.get("slug", ""))
+            person_id = person.get("id", "")
+            
+            # Try to get actual transactions for this person
+            if slug and persons_iterated < max_persons:
+                try:
+                    detail_endpoint = f"/api/insider/{symbol}/{slug}"
+                    detail_result = await self._request(detail_endpoint, {}, symbol=symbol)
+                    
+                    detail_data = []
+                    if isinstance(detail_result, list):
+                        detail_data = detail_result
+                    elif isinstance(detail_result, dict):
+                        detail_data = detail_result.get("data", detail_result.get("transactions", []))
+                    
+                    for txn in detail_data:
+                        if not isinstance(txn, dict):
+                            continue
+                        tx_type = txn.get("transaction_type", txn.get("type", "unknown")).lower()
+                        value = txn.get("value", txn.get("amount", 0))
+                        filing_date = txn.get("filing_date", txn.get("date", ""))
+                        shares = txn.get("shares", txn.get("quantity", 0))
+                        
+                        trades.append({
+                            "ticker": symbol,
+                            "title": txn.get("title", name),
+                            "name": name,
+                            "person_id": person_id,
+                            "is_person": True,
+                            "transaction_type": tx_type,
+                            "value": float(value) if value else 0,
+                            "shares": int(shares) if shares else 0,
+                            "filing_date": filing_date,
+                            "source": "uw_insider_detail",
+                        })
+                    
+                    persons_iterated += 1
+                    
+                except Exception as e:
+                    logger.debug(f"Insider detail for {symbol}/{slug} failed: {e}")
+                    # Fallback: add person-level record
+                    trades.append({
+                        "ticker": symbol,
+                        "title": name,
+                        "name": name,
+                        "person_id": person_id,
+                        "is_person": True,
+                        "transaction_type": "unknown",
+                        "value": 0,
+                        "filing_date": "",
+                        "source": "uw_insider_persons",
+                    })
+            else:
+                # No slug or max persons reached — add person-level record
+                trades.append({
+                    "ticker": symbol,
+                    "title": name,
+                    "name": name,
+                    "person_id": person_id,
+                    "is_person": True,
+                    "transaction_type": "unknown",
+                    "value": 0,
+                    "filing_date": "",
+                    "source": "uw_insider_persons",
+                })
         
-        return trades
+        return trades[:limit]
 
     async def get_congress_trades(self, limit: int = 20) -> List[Dict[str, Any]]:
         """

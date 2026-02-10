@@ -42,19 +42,51 @@ class PolygonClient:
         self.api_key = settings.polygon_api_key
         self.rate_limit = settings.polygon_rate_limit  # Default 100 for paid plans
         self._session: Optional[aiohttp.ClientSession] = None
+        self._session_loop_id: Optional[int] = None  # Track which event loop owns the session
         self._last_request_time = 0.0
         self._request_interval = 1.0 / max(self.rate_limit, 10)  # Minimum 10 req/sec
 
     async def _get_session(self) -> aiohttp.ClientSession:
-        """Get or create aiohttp session."""
-        if self._session is None or self._session.closed:
+        """Get or create aiohttp session, auto-healing on event loop change.
+        
+        FEB 9 FIX: Detects when the session is bound to a different/closed
+        event loop and recreates it on the current loop. Prevents
+        'Event loop is closed' errors during scheduled scans.
+        """
+        try:
+            current_loop_id = id(asyncio.get_running_loop())
+        except RuntimeError:
+            current_loop_id = None
+        
+        needs_new = (
+            self._session is None
+            or self._session.closed
+            or self._session_loop_id != current_loop_id
+        )
+        
+        if needs_new:
+            if self._session is not None:
+                try:
+                    if not self._session.closed:
+                        await self._session.close()
+                except Exception:
+                    pass
+                self._session = None
+            
             self._session = aiohttp.ClientSession()
+            self._session_loop_id = current_loop_id
+        
         return self._session
 
     async def close(self):
         """Close the aiohttp session."""
         if self._session and not self._session.closed:
-            await self._session.close()
+            try:
+                await self._session.close()
+            except Exception:
+                pass
+        self._session = None
+        self._session_loop_id = None
 
     async def _rate_limit_wait(self):
         """Wait to respect rate limits."""

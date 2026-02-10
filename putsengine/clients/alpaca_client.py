@@ -24,6 +24,7 @@ class AlpacaClient:
         self.data_url = settings.alpaca_data_url
         self.options_url = settings.alpaca_options_url
         self._session: Optional[aiohttp.ClientSession] = None
+        self._session_loop_id: Optional[int] = None  # Track which event loop owns the session
 
     @property
     def _headers(self) -> Dict[str, str]:
@@ -35,15 +36,48 @@ class AlpacaClient:
         }
 
     async def _get_session(self) -> aiohttp.ClientSession:
-        """Get or create aiohttp session."""
-        if self._session is None or self._session.closed:
+        """Get or create aiohttp session, auto-healing on event loop change.
+        
+        FEB 9 FIX: When APScheduler runs sync wrappers in a thread pool,
+        each thread creates a new event loop. Sessions bound to old (closed)
+        loops cause 'Event loop is closed' errors. This method detects the
+        loop mismatch and recreates the session on the current loop.
+        """
+        try:
+            current_loop_id = id(asyncio.get_running_loop())
+        except RuntimeError:
+            current_loop_id = None
+        
+        needs_new = (
+            self._session is None
+            or self._session.closed
+            or self._session_loop_id != current_loop_id
+        )
+        
+        if needs_new:
+            # Close stale session safely (may be on a closed loop)
+            if self._session is not None:
+                try:
+                    if not self._session.closed:
+                        await self._session.close()
+                except Exception:
+                    pass  # Session's loop may already be closed
+                self._session = None
+            
             self._session = aiohttp.ClientSession(headers=self._headers)
+            self._session_loop_id = current_loop_id
+        
         return self._session
 
     async def close(self):
         """Close the aiohttp session."""
         if self._session and not self._session.closed:
-            await self._session.close()
+            try:
+                await self._session.close()
+            except Exception:
+                pass
+        self._session = None
+        self._session_loop_id = None
 
     async def _request(
         self,

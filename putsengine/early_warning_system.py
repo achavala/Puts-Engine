@@ -887,29 +887,105 @@ class EarlyWarningScanner:
             logger.debug(f"Multi-day distribution check failed for {symbol}: {e}")
             return None
     
+    # ── Gap 11: Sector ETF mapping for cross-asset divergence ──
+    # Covers all GICS sectors + key thematic ETFs
+    SECTOR_ETF_MAP = {
+        # GICS Sector → ETF
+        "technology": "XLK",
+        "healthcare": "XLV",
+        "financials": "XLF",
+        "energy": "XLE",
+        "consumer_discretionary": "XLY",
+        "consumer_staples": "XLP",
+        "industrials": "XLI",
+        "materials": "XLB",
+        "real_estate": "XLRE",
+        "utilities": "XLU",
+        "communication_services": "XLC",
+        # Thematic ETFs
+        "semiconductor": "SMH",
+        "biotech": "XBI",
+        "retail": "XRT",
+        "homebuilders": "XHB",
+        "regional_banks": "KRE",
+        "oil_services": "OIH",
+        "gold_miners": "GDX",
+        "china": "FXI",
+        "cloud": "WCLD",
+        "cybersecurity": "HACK",
+        "crypto": "BITO",
+    }
+    
+    # Ticker → sector mapping (for commonly traded stocks)
+    TICKER_SECTOR_MAP = {
+        # Tech
+        "AAPL": "technology", "MSFT": "technology", "GOOG": "technology",
+        "GOOGL": "technology", "META": "technology", "AMZN": "consumer_discretionary",
+        "NVDA": "semiconductor", "AMD": "semiconductor", "INTC": "semiconductor",
+        "AVGO": "semiconductor", "MU": "semiconductor", "MRVL": "semiconductor",
+        "TSM": "semiconductor", "QCOM": "semiconductor", "TXN": "semiconductor",
+        "PLTR": "technology", "CRM": "technology", "ORCL": "technology",
+        "SNOW": "technology", "DDOG": "technology", "MDB": "technology",
+        "NET": "technology", "CRWD": "cybersecurity", "ZS": "cybersecurity",
+        "PANW": "cybersecurity", "FTNT": "cybersecurity",
+        # Fintech / Financials
+        "PYPL": "financials", "SQ": "financials", "SHOP": "technology",
+        "COIN": "crypto", "HOOD": "financials", "SOFI": "financials",
+        "AFRM": "financials", "INTU": "technology",
+        "JPM": "financials", "BAC": "financials", "GS": "financials",
+        "MS": "financials", "C": "financials", "WFC": "financials",
+        # Healthcare
+        "UNH": "healthcare", "JNJ": "healthcare", "PFE": "healthcare",
+        "ABBV": "healthcare", "LLY": "healthcare", "MRK": "healthcare",
+        "BMY": "healthcare", "AMGN": "biotech", "GILD": "biotech",
+        "MRNA": "biotech", "BIIB": "biotech", "VRTX": "biotech",
+        "HUM": "healthcare", "CI": "healthcare", "CVS": "healthcare",
+        "BSX": "healthcare", "MDT": "healthcare", "ABT": "healthcare",
+        # Energy
+        "XOM": "energy", "CVX": "energy", "COP": "energy",
+        "SLB": "oil_services", "HAL": "oil_services", "OXY": "energy",
+        # Consumer
+        "TSLA": "consumer_discretionary", "NKE": "consumer_discretionary",
+        "DIS": "communication_services", "NFLX": "communication_services",
+        "BABA": "china", "JD": "china", "PDD": "china", "NIO": "china",
+        # Industrials
+        "BA": "industrials", "CAT": "industrials", "DE": "industrials",
+        "HON": "industrials", "GE": "industrials", "RTX": "industrials",
+        # Crypto-adjacent
+        "MARA": "crypto", "RIOT": "crypto", "CLSK": "crypto",
+        "MSTR": "crypto", "HUT": "crypto", "BITF": "crypto",
+        # Real estate
+        "O": "real_estate", "AMT": "real_estate", "PLD": "real_estate",
+        # Travel
+        "ABNB": "consumer_discretionary", "BKNG": "consumer_discretionary",
+        "EXPE": "consumer_discretionary", "MAR": "consumer_discretionary",
+        # Materials
+        "MP": "materials", "ALB": "materials", "FCX": "materials",
+        "NEM": "gold_miners", "GOLD": "gold_miners",
+    }
+    
     async def _detect_cross_asset_divergence(self, symbol: str) -> Optional[FootprintSignal]:
         """
-        FOOTPRINT 7: Cross-Asset Divergence
+        FOOTPRINT 7: Cross-Asset Divergence (v2.0 — Gap 11 Enhancement)
         
-        Detects when stock diverges from related assets:
-        - Stock flat but sector ETF weak
-        - Stock flat but peers dropping
-        - Correlation breakdown
+        v2.0: Now checks BOTH peer stocks AND sector ETFs.
         
-        This requires sector mapping.
+        Detection methods:
+        1. Stock flat/up but sector ETF weak (bearish divergence)
+        2. Stock flat/up but peer group dropping
+        3. Stock dropping while SPY flat/up (relative weakness)
+        
+        Previously only checked HIGH_BETA_GROUPS peers, which left most
+        stocks without any cross-asset signal. Now uses comprehensive
+        sector ETF mapping covering all GICS sectors.
         """
         try:
             from putsengine.config import EngineConfig
             
-            # Get sector peers
-            peers = EngineConfig.get_sector_peers(symbol)
-            if not peers or len(peers) < 2:
-                return None
-            
-            # Get symbol's price change
+            # Get symbol's price change (last 3 days)
             symbol_bars = await self.polygon.get_daily_bars(
                 symbol=symbol,
-                from_date=date.today() - timedelta(days=3)
+                from_date=date.today() - timedelta(days=5)
             )
             
             if not symbol_bars or len(symbol_bars) < 2:
@@ -917,41 +993,95 @@ class EarlyWarningScanner:
             
             symbol_change = (symbol_bars[-1].close - symbol_bars[-2].close) / symbol_bars[-2].close
             
-            # Get peer changes
-            peer_changes = []
-            for peer in peers[:5]:  # Check up to 5 peers
-                try:
-                    peer_bars = await self.polygon.get_daily_bars(
-                        symbol=peer,
-                        from_date=date.today() - timedelta(days=3)
-                    )
-                    if peer_bars and len(peer_bars) >= 2:
-                        change = (peer_bars[-1].close - peer_bars[-2].close) / peer_bars[-2].close
-                        peer_changes.append(change)
-                except Exception:
-                    continue
+            signals = []
+            divergence_score = 0.0
+            details = {
+                "symbol_change_pct": round(symbol_change * 100, 2),
+            }
             
-            if not peer_changes:
-                return None
+            # ── Method 1: Sector ETF comparison (Gap 11) ──
+            sector = self.TICKER_SECTOR_MAP.get(symbol)
+            if sector:
+                etf = self.SECTOR_ETF_MAP.get(sector)
+                if etf:
+                    try:
+                        etf_bars = await self.polygon.get_daily_bars(
+                            symbol=etf,
+                            from_date=date.today() - timedelta(days=5)
+                        )
+                        if etf_bars and len(etf_bars) >= 2:
+                            etf_change = (etf_bars[-1].close - etf_bars[-2].close) / etf_bars[-2].close
+                            details["sector_etf"] = etf
+                            details["sector"] = sector
+                            details["etf_change_pct"] = round(etf_change * 100, 2)
+                            
+                            # Stock flat/up but sector ETF down
+                            if symbol_change >= -0.005 and etf_change < -0.015:
+                                signals.append(f"sector_etf_divergence ({etf} down)")
+                                divergence_score += 0.4
+                            
+                            # Stock lagging sector significantly (relative weakness)
+                            elif symbol_change < etf_change - 0.02:
+                                signals.append(f"relative_weakness vs {etf}")
+                                divergence_score += 0.3
+                    except Exception:
+                        pass
             
-            avg_peer_change = np.mean(peer_changes)
+            # ── Method 2: SPY relative weakness ──
+            try:
+                spy_bars = await self.polygon.get_daily_bars(
+                    symbol="SPY",
+                    from_date=date.today() - timedelta(days=5)
+                )
+                if spy_bars and len(spy_bars) >= 2:
+                    spy_change = (spy_bars[-1].close - spy_bars[-2].close) / spy_bars[-2].close
+                    details["spy_change_pct"] = round(spy_change * 100, 2)
+                    
+                    # Stock dropping while SPY flat/up = relative weakness
+                    if symbol_change < -0.02 and spy_change >= -0.005:
+                        signals.append("spy_relative_weakness")
+                        divergence_score += 0.3
+            except Exception:
+                pass
             
-            # Divergence: symbol flat/up while peers down
-            if symbol_change >= -0.01 and avg_peer_change < -0.02:
-                divergence = abs(symbol_change - avg_peer_change)
-                strength = min(1.0, divergence * 10)  # Scale divergence to strength
+            # ── Method 3: Peer group comparison (original behavior) ──
+            peers = EngineConfig.get_sector_peers(symbol)
+            if peers and len(peers) >= 2:
+                peer_changes = []
+                for peer in peers[:5]:
+                    try:
+                        peer_bars = await self.polygon.get_daily_bars(
+                            symbol=peer,
+                            from_date=date.today() - timedelta(days=3)
+                        )
+                        if peer_bars and len(peer_bars) >= 2:
+                            change = (peer_bars[-1].close - peer_bars[-2].close) / peer_bars[-2].close
+                            peer_changes.append(change)
+                    except Exception:
+                        continue
+                
+                if peer_changes:
+                    avg_peer_change = np.mean(peer_changes)
+                    details["avg_peer_change_pct"] = round(avg_peer_change * 100, 2)
+                    details["peers_checked"] = len(peer_changes)
+                    
+                    # Stock flat/up but peers down
+                    if symbol_change >= -0.01 and avg_peer_change < -0.02:
+                        divergence = abs(symbol_change - avg_peer_change)
+                        signals.append("peer_group_divergence")
+                        divergence_score += min(0.4, divergence * 8)
+            
+            # Fire footprint if enough signals
+            if signals and divergence_score >= 0.3:
+                strength = min(1.0, divergence_score)
+                details["divergence_signals"] = signals
+                details["note"] = "Cross-asset divergence: stock decoupling from sector/market"
                 
                 return FootprintSignal(
                     footprint_type=FootprintType.CROSS_ASSET_DIVERGENCE,
                     timestamp=datetime.now(),
                     strength=strength,
-                    details={
-                        "symbol_change_pct": round(symbol_change * 100, 2),
-                        "avg_peer_change_pct": round(avg_peer_change * 100, 2),
-                        "divergence_pct": round(divergence * 100, 2),
-                        "peers_checked": len(peer_changes),
-                        "note": "Symbol diverging from sector peers"
-                    }
+                    details=details
                 )
             
             return None

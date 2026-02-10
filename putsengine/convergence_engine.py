@@ -105,6 +105,10 @@ DIRECTION_FILE = Path("logs/market_direction.json")
 SCAN_RESULTS_FILE = Path("scheduled_scan_results.json")
 WEATHER_AM_FILE = Path("logs/market_weather/latest_am.json")
 WEATHER_PM_FILE = Path("logs/market_weather/latest_pm.json")
+INTRADAY_FILE = Path("intraday_alerts.json")         # Gap 12: Intraday momentum
+FINVIZ_BEARISH_FILE = Path("logs/finviz_bearish.json")  # Gap 5/6: FinViz sentiment
+SHORT_INTEREST_FILE = Path("logs/finviz_short_interest.json")  # Gap 7: Short interest
+BACKTEST_FILE = Path("logs/convergence/backtest_ledger.json")  # Gap 9: Backtest
 OUTPUT_DIR = Path("logs/convergence")
 OUTPUT_FILE = OUTPUT_DIR / "latest_top9.json"
 HISTORY_DIR = OUTPUT_DIR / "history"
@@ -183,14 +187,29 @@ class ConvergenceCandidate:
     prev_score: float = 0.0          # Previous convergence score
     score_delta: float = 0.0         # Change from previous
     days_on_list: int = 0            # How many consecutive runs on Top 9
+    
+    # v3.0: Gap fix fields
+    intraday_confirmed: bool = False  # Gap 12: Intraday momentum confirmed
+    intraday_drop: float = 0.0        # Gap 12: Intraday % drop
+    finviz_bearish: bool = False      # Gap 5/6: FinViz bearish signal
+    short_float: float = 0.0          # Gap 7: Short interest %
+    sector_contagion: bool = False    # Gap 11: Sector contagion detected
 
 
 class ConvergenceEngine:
     """
-    Merges 4 detection systems into unified Top 9 candidates.
+    Merges 4+ detection systems into unified Top 9 candidates.
     
     v2.0: Trifecta bonus, trajectory tracking, sector diversity, 
     enhanced self-healing, pipeline status.
+    
+    v3.0 (Gap Fixes Feb 9, 2026):
+    - Gap 3: Properly reads pattern-populated scan data
+    - Gap 5/6: Integrates FinViz bearish sentiment + macro signals
+    - Gap 7: Integrates short interest data for squeeze/cascade detection
+    - Gap 9: Backtesting ledger for historical calibration
+    - Gap 11: Enhanced cross-asset divergence via sector correlation
+    - Gap 12: Intraday momentum feed for same-day signal boosting
     
     Self-healing:
     - Gracefully handles missing/corrupt files
@@ -206,6 +225,9 @@ class ConvergenceEngine:
         self._direction_data: Dict = {}
         self._scan_data: Dict = {}
         self._weather_data: Dict = {}
+        self._intraday_data: List = []        # Gap 12: Intraday momentum
+        self._finviz_bearish: List = []        # Gap 5/6: FinViz sentiment
+        self._short_interest: Dict = {}        # Gap 7: Short interest
         self._previous_top9: Dict[str, Dict] = {}  # v2: previous run data
     
     def run(self) -> Dict:
@@ -230,6 +252,12 @@ class ConvergenceEngine:
             self._load_direction()
             self._load_scan_results()
             self._load_weather()
+            
+            # Step 1b: Load supplementary data sources (Gaps 5/6/7/12)
+            # These are optional — engine works without them, but they boost quality
+            self._load_intraday_alerts()     # Gap 12: Intraday momentum
+            self._load_finviz_bearish()       # Gap 5/6: Sentiment + macro
+            self._load_short_interest()       # Gap 7: Short interest
             
             # Log source status
             available_count = sum(1 for s in self.source_statuses.values() if s.available)
@@ -278,7 +306,17 @@ class ConvergenceEngine:
                     f"{','.join(c.source_list)}{trifecta_tag}"
                 )
             
-            logger.info("✅ Convergence Engine v2.0 complete")
+            # Step 8: Inject EWS ACT/PREPARE tickers into DUI
+            # This ensures that stocks with institutional footprints get
+            # scanned by the Gamma Drain/Distribution/Liquidity engines
+            # in subsequent scheduled scans. BRIDGES the coverage gap.
+            self._inject_ews_to_dui()
+            
+            # Step 9 (Gap 9): Record backtest ledger entry for calibration
+            # Logs each Top 9 pick with timestamp for future T+1/T+2 price comparison
+            self._record_backtest_entry(top9)
+            
+            logger.info("✅ Convergence Engine v3.0 complete (all gaps fixed)")
             return report
             
         except Exception as e:
@@ -436,6 +474,81 @@ class ConvergenceEngine:
         self.source_statuses["weather"] = status
     
     # ======================================================================
+    # GAP 12: Load Intraday Momentum Alerts
+    # ======================================================================
+    
+    def _load_intraday_alerts(self):
+        """
+        Gap 12 Fix: Load intraday big mover alerts so same-day drops
+        boost convergence scores. A stock dropping 3%+ intraday with
+        EWS footprints is very high conviction.
+        """
+        try:
+            if not INTRADAY_FILE.exists():
+                return
+            with open(INTRADAY_FILE) as f:
+                data = json.load(f)
+            alerts = data.get("alerts", data if isinstance(data, list) else [])
+            ts = data.get("timestamp", "") if isinstance(data, dict) else ""
+            age = self._calc_age(ts) if ts else 99999
+            # Only use intraday data if fresh (< 2 hours old)
+            if age < 7200:
+                self._intraday_data = alerts
+                logger.debug(f"Intraday alerts loaded: {len(alerts)} movers")
+            else:
+                logger.debug(f"Intraday alerts stale ({age:.0f}s), skipping")
+        except Exception as e:
+            logger.debug(f"Intraday load (non-fatal): {e}")
+    
+    # ======================================================================
+    # GAP 5/6: Load FinViz Bearish Candidates + Macro Sentiment
+    # ======================================================================
+    
+    def _load_finviz_bearish(self):
+        """
+        Gap 5/6 Fix: Load FinViz bearish candidate data if available.
+        This includes insider selling, analyst downgrades, technical
+        weakness, and sector performance — all from FinViz Elite.
+        
+        Macro events are captured via FinViz news sentiment scoring.
+        """
+        try:
+            if not FINVIZ_BEARISH_FILE.exists():
+                return
+            with open(FINVIZ_BEARISH_FILE) as f:
+                data = json.load(f)
+            candidates = data.get("candidates", [])
+            ts = data.get("timestamp", "")
+            age = self._calc_age(ts) if ts else 99999
+            # FinViz data is daily — accept up to 24 hours
+            if age < 86400:
+                self._finviz_bearish = candidates
+                logger.debug(f"FinViz bearish loaded: {len(candidates)} candidates")
+        except Exception as e:
+            logger.debug(f"FinViz bearish load (non-fatal): {e}")
+    
+    # ======================================================================
+    # GAP 7: Load Short Interest Data
+    # ======================================================================
+    
+    def _load_short_interest(self):
+        """
+        Gap 7 Fix: Load short interest data from FinViz.
+        High short interest (>15%) changes the dynamics:
+        - With bearish signals → cascade risk (shorts pile on)
+        - Without bearish signals → squeeze risk (avoid)
+        """
+        try:
+            if not SHORT_INTEREST_FILE.exists():
+                return
+            with open(SHORT_INTEREST_FILE) as f:
+                data = json.load(f)
+            self._short_interest = data.get("data", data if isinstance(data, dict) else {})
+            logger.debug(f"Short interest loaded: {len(self._short_interest)} stocks")
+        except Exception as e:
+            logger.debug(f"Short interest load (non-fatal): {e}")
+    
+    # ======================================================================
     # CANDIDATE MERGER — Union of all tickers from all 4 systems
     # ======================================================================
     
@@ -506,6 +619,89 @@ class ConvergenceEngine:
                 universe[sym]["gamma_engines_list"] = list(engines)
                 universe[sym]["gamma_is_trifecta"] = len(engines) >= 3
         
+        # ─── v2.1: SYNTHETIC GAMMA SCORE for EWS-only stocks ───
+        # Problem: EWS finds stocks with institutional footprints (dark pool,
+        # IV inversion, distribution) but if the stock isn't in scan_results,
+        # it gets gamma_score=0 → low convergence score → never surfaces.
+        #
+        # Solution: Map EWS footprint types to the Gamma Drain sub-engine
+        # that would detect the same signal. This bridges the coverage gap.
+        #
+        # Rationale: EWS footprints ARE institutional signals:
+        #   - dark_pool_sequence → Distribution engine would detect this
+        #   - iv_term_inversion → Dealer/Acceleration engine would detect this
+        #   - multi_day_distribution → Distribution engine directly
+        #   - quote_degradation → Liquidity engine would detect this
+        #   - put_oi_accumulation → Distribution engine
+        #   - net_premium_flow → Distribution engine
+        # So if EWS has 3+ diverse footprints on a stock but Gamma Drain
+        # hasn't scanned it, we can infer a synthetic score.
+        
+        FOOTPRINT_TO_ENGINE = {
+            "dark_pool_sequence": "distribution",
+            "iv_term_inversion": "gamma_drain",
+            "multi_day_distribution": "distribution",
+            "quote_degradation": "liquidity",
+            "put_oi_accumulation": "distribution",
+            "net_premium_flow": "distribution",
+            "flow_divergence": "gamma_drain",
+            "cross_asset_divergence": "gamma_drain",
+        }
+        
+        for sym, data in universe.items():
+            ews_ipi = data.get("ews_ipi", 0.0)
+            ews_level = data.get("ews_level", "")
+            has_gamma = data.get("gamma_score", 0.0) > 0
+            
+            # Only synthesize for EWS stocks NOT already in scan results
+            if ews_ipi > 0.3 and not has_gamma:
+                # Get footprint types from EWS alerts
+                alert = ews_alerts.get(sym, {})
+                footprints = alert.get("footprints", [])
+                
+                # Map footprint types to sub-engines
+                synthetic_engines = set()
+                total_strength = 0.0
+                fp_count = 0
+                unique_types = set()
+                
+                for fp in footprints:
+                    if isinstance(fp, dict):
+                        fp_type = fp.get("type", "")
+                        fp_strength = float(fp.get("strength", 0))
+                        if fp_type and fp_type not in unique_types:
+                            unique_types.add(fp_type)
+                            total_strength += fp_strength
+                            fp_count += 1
+                            engine = FOOTPRINT_TO_ENGINE.get(fp_type)
+                            if engine:
+                                synthetic_engines.add(engine)
+                
+                if fp_count >= 2:  # Need at least 2 unique footprint types
+                    # Compute synthetic gamma score:
+                    # Base = IPI score (0-1) × 0.7 (discount for indirect measurement)
+                    # + footprint diversity bonus (more types = more convincing)
+                    avg_strength = total_strength / fp_count if fp_count > 0 else 0
+                    diversity_bonus = min(0.15, len(unique_types) * 0.03)
+                    
+                    synthetic_score = min(1.0, ews_ipi * 0.7 + diversity_bonus + avg_strength * 0.1)
+                    
+                    # Only apply if meaningfully better than zero
+                    if synthetic_score >= 0.3:
+                        data["gamma_score"] = synthetic_score
+                        data["gamma_engine"] = "ews_synthetic"
+                        data["gamma_signals"] = list(unique_types)
+                        data["gamma_engines_count"] = len(synthetic_engines)
+                        data["gamma_engines_list"] = list(synthetic_engines)
+                        data["gamma_is_trifecta"] = len(synthetic_engines) >= 3
+                        data["synthetic_gamma"] = True  # Flag for display
+                        
+                        logger.info(
+                            f"  {sym}: SYNTHETIC gamma={synthetic_score:.3f} "
+                            f"(from EWS IPI={ews_ipi:.3f}, {fp_count} footprints, "
+                            f"engines={synthetic_engines})"
+                        )
+        
         # --- Weather: Extract storm scores ---
         forecasts = self._weather_data.get("forecasts", [])
         for fc in forecasts:
@@ -521,11 +717,79 @@ class ConvergenceEngine:
             universe[sym]["weather_confidence"] = fc.get("confidence", "LOW")
             universe[sym]["weather_timing"] = fc.get("timing", "")
             universe[sym]["weather_drop"] = fc.get("expected_drop", "")
+            # Gap 4: Store non-institutional weather score for de-duplication
+            universe[sym]["weather_non_inst"] = fc.get("non_institutional_score", 0.0)
             
             if fc.get("current_price"):
                 universe[sym]["current_price"] = fc["current_price"]
             if fc.get("sector"):
                 universe[sym]["sector"] = fc["sector"]
+        
+        # ─── Gap 12: INTRADAY MOMENTUM FEED ───
+        # If a stock is already in the universe AND dropping 3%+ intraday today,
+        # that's same-day confirmation. Boost its score and flag it.
+        intraday_symbols = set()
+        for alert in self._intraday_data:
+            sym = alert.get("symbol", "")
+            change_pct = alert.get("change_pct", 0)
+            severity = alert.get("severity", "")
+            if not sym or change_pct >= 0:  # Only bearish moves
+                continue
+            intraday_symbols.add(sym)
+            if sym in universe:
+                # Existing candidate confirmed by intraday momentum
+                universe[sym]["intraday_drop"] = change_pct
+                universe[sym]["intraday_severity"] = severity
+                universe[sym]["intraday_confirmed"] = True
+                logger.debug(f"  {sym}: Intraday drop {change_pct:+.2f}% confirms bearish thesis")
+            # We don't ADD new tickers just from intraday — only confirm existing
+        
+        # ─── Gap 5/6: FINVIZ SENTIMENT + MACRO ───
+        # If FinViz flagged a ticker as bearish (insider selling, downgrade, etc.)
+        # AND it's already in the universe, that's cross-source confirmation.
+        finviz_symbols = set()
+        for candidate in self._finviz_bearish:
+            sym = candidate.get("symbol", "")
+            if not sym:
+                continue
+            finviz_symbols.add(sym)
+            if sym not in universe:
+                universe[sym] = {"symbol": sym}
+            universe[sym]["finviz_bearish"] = True
+            universe[sym]["finviz_signals"] = candidate.get("signals", [])
+            universe[sym]["finviz_score_boost"] = candidate.get("score_boost", 0.0)
+        
+        # ─── Gap 7: SHORT INTEREST DATA ───
+        # High short interest + bearish signals = cascade risk (strong put)
+        # High short interest alone = squeeze risk (cautious)
+        for sym, si_data in self._short_interest.items():
+            if sym in universe:
+                sf = si_data.get("short_float")
+                sr = si_data.get("short_ratio")
+                if sf is not None:
+                    universe[sym]["short_float"] = sf
+                    universe[sym]["short_ratio"] = sr
+                    if sf >= 20.0:
+                        universe[sym]["high_short_interest"] = True
+                        logger.debug(f"  {sym}: High short float {sf:.1f}%")
+        
+        # ─── Gap 11: CROSS-ASSET DIVERGENCE (sector correlation) ───
+        # Build sector → tickers mapping, then check for sector weakness
+        sector_tickers: Dict[str, List[str]] = {}
+        for sym, data in universe.items():
+            sector = data.get("sector", "unknown")
+            if sector and sector != "unknown":
+                sector_tickers.setdefault(sector, []).append(sym)
+        
+        # If 3+ tickers in the same sector are flagged, boost all of them
+        # (sector contagion — one falling stock suggests the sector is weak)
+        for sector, tickers in sector_tickers.items():
+            ews_in_sector = sum(1 for t in tickers if universe[t].get("ews_ipi", 0) > 0.3)
+            if ews_in_sector >= 3:
+                for t in tickers:
+                    universe[t]["sector_contagion"] = True
+                    universe[t]["sector_ews_count"] = ews_in_sector
+                    logger.debug(f"  {t}: Sector contagion ({sector}: {ews_in_sector} EWS tickers)")
         
         # --- Market Direction: conditional picks ---
         direction_picks = self._direction_data.get("conditional_picks", [])
@@ -615,7 +879,11 @@ class ConvergenceEngine:
                 logger.debug(f"  {sym}: 2-engine boost → GD={c.gamma_score:.3f}")
             
             # --- Weather Score (0-1) ---
-            c.weather_score = min(1.0, data.get("weather_storm", 0.0))
+            # Gap 4: Use non-institutional weather score to avoid double-counting
+            # EWS IPI. If non_inst is available, use it. Otherwise fallback to storm.
+            non_inst = data.get("weather_non_inst", 0.0)
+            storm = data.get("weather_storm", 0.0)
+            c.weather_score = min(1.0, non_inst if non_inst > 0.01 else storm)
             c.weather_forecast = data.get("weather_forecast", "")
             c.weather_layers = data.get("weather_layers", 0)
             c.weather_confidence = data.get("weather_confidence", "")
@@ -651,6 +919,12 @@ class ConvergenceEngine:
                 c.source_list.append("Weather")
             if data.get("in_direction_picks"):
                 c.source_list.append("Direction")
+            # Gap 5/6: FinViz as additional source
+            if data.get("finviz_bearish"):
+                c.source_list.append("FinViz")
+            # Gap 12: Intraday as additional source
+            if data.get("intraday_confirmed"):
+                c.source_list.append("Intraday")
             c.sources_agreeing = len(c.source_list)
             
             # --- Weighted Convergence Score ---
@@ -661,14 +935,48 @@ class ConvergenceEngine:
                 WEIGHT_DIRECTION * c.direction_alignment * source_penalty.get("direction", 1.0)
             )
             
+            # ─── Gap 5/6: FinViz sentiment boost ───
+            # Insider selling, analyst downgrade, technical weakness from FinViz
+            finviz_boost = data.get("finviz_score_boost", 0.0)
+            finviz_signals = data.get("finviz_signals", [])
+            if "insider_selling" in finviz_signals:
+                raw_score += 0.04  # Insider selling is one of strongest bearish signals
+            if "analyst_downgrade" in finviz_signals:
+                raw_score += 0.02
+            if "technical_weakness" in finviz_signals:
+                raw_score += 0.01
+            
+            # ─── Gap 7: Short interest modifier ───
+            short_float = data.get("short_float", 0)
+            if short_float and short_float >= 20.0 and c.ews_score > 0.3:
+                # High short + bearish EWS = cascade risk (shorts will pile on)
+                raw_score = raw_score * 1.08
+                logger.debug(f"  {sym}: Short cascade boost (SF={short_float:.1f}%)")
+            elif short_float and short_float >= 30.0 and c.ews_score <= 0.1:
+                # Very high short but NO bearish EWS = squeeze risk (careful)
+                raw_score = raw_score * 0.90
+            
+            # ─── Gap 11: Sector contagion boost ───
+            if data.get("sector_contagion"):
+                raw_score = raw_score * 1.05
+            
+            # ─── Gap 12: Intraday momentum boost ───
+            intraday_drop = data.get("intraday_drop", 0)
+            if intraday_drop < -3.0:  # Dropping 3%+ today
+                raw_score = raw_score * 1.10
+                logger.debug(f"  {sym}: Intraday momentum boost ({intraday_drop:+.1f}%)")
+            elif intraday_drop < -1.5:
+                raw_score = raw_score * 1.03
+            
             # CONVERGENCE BONUS: Multiple systems agreeing = non-linear boost
             # This is the key insight: independent confirmation compounds conviction.
-            # 4/4 systems → 1.30x (all 4 independent detectors agree)
-            # 3/4 systems → 1.15x (strong consensus)
-            # 2/4 systems → 1.05x (mild confirmation)
-            # 1/4 systems → 1.00x (no cross-validation)
-            convergence_multiplier = {4: 1.30, 3: 1.15, 2: 1.05, 1: 1.00, 0: 1.00}
-            multiplier = convergence_multiplier.get(c.sources_agreeing, 1.0)
+            # 5+/6 systems → 1.35x (massive consensus across independent systems)
+            # 4/6 systems → 1.30x (all 4 core detectors agree)
+            # 3/6 systems → 1.15x (strong consensus)
+            # 2/6 systems → 1.05x (mild confirmation)
+            # 1/6 systems → 1.00x (no cross-validation)
+            convergence_multiplier = {6: 1.35, 5: 1.35, 4: 1.30, 3: 1.15, 2: 1.05, 1: 1.00, 0: 1.00}
+            multiplier = convergence_multiplier.get(min(c.sources_agreeing, 6), 1.0)
             
             c.convergence_score = min(1.0, raw_score * multiplier)
             
@@ -677,6 +985,13 @@ class ConvergenceEngine:
             c.current_price = data.get("current_price", 0.0)
             c.expected_drop = data.get("weather_drop", "")
             c.timing = data.get("weather_timing", "")
+            
+            # v3.0 Gap fix fields
+            c.intraday_confirmed = data.get("intraday_confirmed", False)
+            c.intraday_drop = data.get("intraday_drop", 0.0)
+            c.finviz_bearish = data.get("finviz_bearish", False)
+            c.short_float = data.get("short_float", 0.0)
+            c.sector_contagion = data.get("sector_contagion", False)
             
             # Data age = oldest source
             ages = []
@@ -902,6 +1217,13 @@ class ConvergenceEngine:
                 "prev_score": round(c.prev_score, 4),
                 "score_delta": round(c.score_delta, 4),
                 "days_on_list": c.days_on_list,
+                
+                # v3.0: Gap fixes — additional data sources
+                "intraday_confirmed": getattr(c, "intraday_confirmed", False),
+                "intraday_drop": getattr(c, "intraday_drop", 0.0),
+                "finviz_bearish": getattr(c, "finviz_bearish", False),
+                "short_float": getattr(c, "short_float", 0.0),
+                "sector_contagion": getattr(c, "sector_contagion", False),
             })
         
         # Permission light summary
@@ -932,8 +1254,8 @@ class ConvergenceEngine:
             "status": "ok",
             "generated_at_utc": now_utc,
             "generated_at_et": self.now.strftime("%Y-%m-%d %H:%M:%S ET"),
-            "engine": "ConvergenceEngine v2.0",
-            "description": "Automated 4-step decision hierarchy: EWS → Direction → Gamma → Weather",
+            "engine": "ConvergenceEngine v3.0",
+            "description": "Automated 6+ source decision hierarchy: EWS → Direction → Gamma → Weather → FinViz → Intraday",
             
             "top9": candidates_list,
             
@@ -966,6 +1288,12 @@ class ConvergenceEngine:
                 "weather": WEIGHT_WEATHER,
                 "direction": WEIGHT_DIRECTION,
             },
+            
+            # v2.1: Include scan engine top picks for comparison/overlap display
+            "scan_engine_top10": self._get_scan_engine_top10(),
+            
+            # v2.1: Coverage gap analysis
+            "coverage_analysis": self._get_coverage_analysis(top9),
         }
         
         return report
@@ -1020,6 +1348,95 @@ class ConvergenceEngine:
             "all_healthy": all(s["status"] == "FRESH" for s in steps),
             "any_stale": any(s["status"] in ("STALE", "CRITICAL") for s in steps),
             "any_missing": any(s["status"] == "MISSING" for s in steps),
+        }
+    
+    def _get_scan_engine_top10(self) -> List[Dict]:
+        """
+        v2.1: Get the Top 10 from scan results (Gamma Drain + Distribution + Liquidity)
+        for display alongside convergence Top 9, enabling overlap analysis.
+        
+        This lets the user see BOTH lists side-by-side and understand where
+        they agree (overlap = higher conviction) and where they diverge.
+        """
+        all_scan_picks = {}
+        
+        for engine_key in ["gamma_drain", "distribution", "liquidity"]:
+            candidates = self._scan_data.get(engine_key, [])
+            for c in candidates:
+                sym = c.get("symbol", "")
+                if not sym:
+                    continue
+                score = c.get("score", 0.0)
+                existing = all_scan_picks.get(sym, {}).get("score", 0.0)
+                if score > existing:
+                    all_scan_picks[sym] = {
+                        "symbol": sym,
+                        "score": score,
+                        "engine": engine_key,
+                        "signals": c.get("signals", 0),
+                        "sector": c.get("sector", ""),
+                        "current_price": c.get("current_price", c.get("close", 0)),
+                    }
+                # Track how many engines flagged this ticker
+                eng_list = all_scan_picks.get(sym, {}).get("engines", [])
+                if engine_key not in eng_list:
+                    eng_list.append(engine_key)
+                all_scan_picks.setdefault(sym, {})["engines"] = eng_list
+        
+        # Sort by score descending, take top 10
+        sorted_picks = sorted(all_scan_picks.values(), key=lambda x: x.get("score", 0), reverse=True)
+        return sorted_picks[:10]
+    
+    def _get_coverage_analysis(self, top9: List[ConvergenceCandidate]) -> Dict:
+        """
+        v2.1: Analyze the coverage gap between EWS and scan results.
+        This shows:
+        - How many EWS stocks are NOT in scan results (gap)
+        - How many scan result stocks are NOT in EWS (uninstrumented)
+        - Overlap (both systems agree — highest conviction)
+        """
+        ews_symbols = set(self._ews_data.get("alerts", {}).keys())
+        
+        scan_symbols = set()
+        for engine_key in ["gamma_drain", "distribution", "liquidity"]:
+            for c in self._scan_data.get(engine_key, []):
+                sym = c.get("symbol", "")
+                if sym:
+                    scan_symbols.add(sym)
+        
+        weather_symbols = set()
+        for fc in self._weather_data.get("forecasts", []):
+            sym = fc.get("symbol", "")
+            if sym:
+                weather_symbols.add(sym)
+        
+        top9_symbols = set(c.symbol for c in top9)
+        
+        overlap_ews_scan = ews_symbols & scan_symbols
+        ews_only = ews_symbols - scan_symbols
+        scan_only = scan_symbols - ews_symbols
+        
+        # How many convergence candidates have synthetic gamma scores
+        synthetic_count = sum(
+            1 for c in top9 
+            if c.gamma_engine == "ews_synthetic"
+        )
+        
+        return {
+            "ews_count": len(ews_symbols),
+            "scan_count": len(scan_symbols),
+            "weather_count": len(weather_symbols),
+            "overlap_ews_scan": len(overlap_ews_scan),
+            "overlap_symbols": sorted(list(overlap_ews_scan)),
+            "ews_only_count": len(ews_only),
+            "ews_only_top": sorted(list(ews_only))[:10],
+            "scan_only_count": len(scan_only),
+            "scan_only_top": sorted(list(scan_only))[:10],
+            "synthetic_gamma_count": synthetic_count,
+            "note": (
+                "EWS-only stocks now get SYNTHETIC gamma scores from footprint mapping. "
+                "EWS ACT/PREPARE tickers are auto-injected into DUI for next scan cycle."
+            ),
         }
     
     def _write_degraded(self, error: str) -> Dict:
@@ -1160,6 +1577,143 @@ class ConvergenceEngine:
         if seconds < 86400:
             return f"{int(seconds // 3600)}h {int((seconds % 3600) // 60)}m"
         return f"{int(seconds // 86400)}d"
+    
+    # ======================================================================
+    # GAP 9: BACKTESTING LEDGER — Record picks for historical calibration
+    # ======================================================================
+    
+    def _record_backtest_entry(self, top9: List[ConvergenceCandidate]):
+        """
+        Gap 9 Fix: Record each Top 9 pick with timestamp, score, and current price
+        so that the 5:30 PM weather_attribution_backfill job can compare T+1/T+2
+        actual prices and compute accuracy metrics.
+        
+        After 15-20 trading days, this data enables:
+        - "When convergence > 0.55, how often did stock drop 3%+ in 2 days?"
+        - "What IPI threshold gives best precision?"
+        - "Are trifecta picks actually better than single-engine?"
+        
+        Output: logs/convergence/backtest_ledger.json (append-only)
+        """
+        try:
+            BACKTEST_FILE.parent.mkdir(parents=True, exist_ok=True)
+            
+            # Load existing ledger
+            ledger = []
+            if BACKTEST_FILE.exists():
+                try:
+                    with open(BACKTEST_FILE) as f:
+                        ledger = json.load(f)
+                except (json.JSONDecodeError, KeyError):
+                    ledger = []
+            
+            # Add new entry
+            entry = {
+                "timestamp": self.now.isoformat(),
+                "date": self.now.strftime("%Y-%m-%d"),
+                "picks": []
+            }
+            
+            for c in top9:
+                entry["picks"].append({
+                    "symbol": c.symbol,
+                    "convergence_score": round(c.convergence_score, 4),
+                    "ews_score": round(c.ews_score, 3),
+                    "gamma_score": round(c.gamma_score, 3),
+                    "weather_score": round(c.weather_score, 3),
+                    "sources_agreeing": c.sources_agreeing,
+                    "permission_light": c.permission_light,
+                    "ews_level": c.ews_level,
+                    "gamma_is_trifecta": c.gamma_is_trifecta,
+                    "current_price": round(c.current_price, 2) if c.current_price else 0,
+                    "sector": c.sector,
+                    # These will be filled by backfill job:
+                    "price_t1": None,   # T+1 close
+                    "price_t2": None,   # T+2 close
+                    "drop_t1": None,    # % change at T+1
+                    "drop_t2": None,    # % change at T+2
+                    "hit_3pct": None,   # Did it drop 3%+ by T+2?
+                    "hit_5pct": None,   # Did it drop 5%+ by T+2?
+                    "max_drop": None,   # Max intraday drop within T+2
+                })
+            
+            ledger.append(entry)
+            
+            # Keep last 30 days of entries (trim older)
+            if len(ledger) > 500:
+                ledger = ledger[-500:]
+            
+            with open(BACKTEST_FILE, "w") as f:
+                json.dump(ledger, f, indent=2, default=str)
+            
+            logger.debug(f"Backtest ledger: recorded {len(top9)} picks (total entries: {len(ledger)})")
+            
+        except Exception as e:
+            logger.debug(f"Backtest ledger write failed (non-fatal): {e}")
+    
+    # ======================================================================
+    # EWS → DUI BRIDGE — Inject detected stocks into scan universe
+    # ======================================================================
+    
+    def _inject_ews_to_dui(self):
+        """
+        v2.1: Inject EWS ACT and PREPARE level tickers into the Dynamic
+        Universe Injection (DUI) so they get scanned by the Gamma Drain,
+        Distribution, and Liquidity engines in subsequent scheduled scans.
+        
+        This bridges the critical coverage gap where EWS detects institutional
+        selling but the stock never gets analyzed by the full engine pipeline
+        because it's not in the scan universe.
+        
+        Only injects tickers that are NOT already in scan results.
+        """
+        try:
+            from putsengine.config import DynamicUniverseManager
+            
+            dui = DynamicUniverseManager()
+            ews_alerts = self._ews_data.get("alerts", {})
+            
+            # Get tickers already in scan results
+            scan_tickers = set()
+            for engine_key in ["gamma_drain", "distribution", "liquidity"]:
+                for c in self._scan_data.get(engine_key, []):
+                    sym = c.get("symbol", "")
+                    if sym:
+                        scan_tickers.add(sym)
+            
+            injected = 0
+            for symbol, alert in ews_alerts.items():
+                ipi = alert.get("ipi_score", alert.get("ipi", 0.0))
+                level = alert.get("level", "")
+                
+                # Only inject ACT and PREPARE level alerts
+                if level not in ("act", "prepare"):
+                    continue
+                
+                # Skip if already in scan results
+                if symbol in scan_tickers:
+                    continue
+                
+                # Inject with appropriate TTL
+                ttl = 3 if level == "act" else 2  # ACT = 3 days, PREPARE = 2 days
+                footprints = alert.get("footprints", [])
+                fp_types = [fp.get("type", "") for fp in footprints if isinstance(fp, dict)]
+                
+                dui.inject_symbol(
+                    symbol=symbol,
+                    source="convergence_ews_bridge",
+                    reason=f"EWS {level.upper()} IPI={ipi:.2f} ({len(fp_types)} footprints)",
+                    score=ipi,
+                    signals=fp_types,
+                    ttl_days=ttl
+                )
+                injected += 1
+            
+            if injected > 0:
+                logger.info(f"🔗 EWS→DUI Bridge: Injected {injected} tickers for scan coverage")
+        
+        except Exception as e:
+            logger.debug(f"EWS→DUI injection skipped: {e}")
 
 
 def run_convergence() -> Dict:
