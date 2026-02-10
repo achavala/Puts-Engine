@@ -197,9 +197,19 @@ class PolygonClient:
         self,
         symbol: str,
         from_date: Optional[date] = None,
-        to_date: Optional[date] = None
+        to_date: Optional[date] = None,
+        limit: int = None
     ) -> List[PriceBar]:
-        """Get daily bars for a symbol."""
+        """Get daily bars for a symbol.
+        
+        FEB 10 FIX: Added limit parameter for compatibility with scanners
+        (pump-dump, big-movers, vol-price-div, gap, precatalyst) that
+        pass limit=N instead of from_date/to_date.
+        """
+        if limit is not None and from_date is None:
+            from_date = date.today() - timedelta(days=limit + 5)
+        if to_date is None:
+            to_date = date.today()
         return await self.get_aggregates(
             symbol=symbol,
             multiplier=1,

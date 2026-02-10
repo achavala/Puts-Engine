@@ -362,48 +362,55 @@ class UnusualWhalesClient:
             return {}
 
         # =====================================================================
-        # STEP 2: Rate limiting + HTTP call
+        # STEP 2: Rate limiting + HTTP call (with 429 retry)
         # =====================================================================
-        await self._rate_limit_wait()
-
         url = f"{self.BASE_URL}{endpoint}"
-        session = await self._get_session()
+        max_retries = 2  # 1 initial attempt + 1 retry on 429
+        
+        for attempt in range(max_retries):
+            await self._rate_limit_wait()
+            session = await self._get_session()
 
-        try:
-            async with session.get(url, params=params) as response:
-                self._calls_today += 1
-                
-                # Record call in budget manager
-                if symbol and self._budget_manager:
-                    self._budget_manager.record_call(symbol)
-
-                if response.status == 200:
-                    result = await response.json()
-                    # =========================================================
-                    # STEP 3: Cache successful response for future reuse
-                    # =========================================================
-                    if result:  # Only cache non-empty responses
-                        self._cache_response(cache_key, result)
-                    return result
-                elif response.status == 429:
-                    # Rate limited - wait longer and retry once
-                    logger.debug("UW rate limit - waiting 3s before retry")
-                    await asyncio.sleep(3.0)
-                    self._last_request_time = 0  # Reset to allow immediate retry
-                    return {}
-                elif response.status == 401:
-                    logger.error("Unusual Whales authentication failed")
-                    return {}
-                elif response.status == 403:
-                    logger.debug(f"UW access denied for {endpoint}")
-                    return {}
-                else:
-                    error_text = await response.text()
-                    logger.debug(f"UW API {response.status} for {endpoint}: {error_text[:100]}")
-                    return {}
-        except Exception as e:
-            logger.error(f"Unusual Whales request failed: {e}")
-            return {}
+            try:
+                async with session.get(url, params=params) as response:
+                    if response.status == 200:
+                        # Only count successful calls against daily budget
+                        self._calls_today += 1
+                        if symbol and self._budget_manager:
+                            self._budget_manager.record_call(symbol)
+                        
+                        result = await response.json()
+                        # =========================================================
+                        # STEP 3: Cache successful response for future reuse
+                        # =========================================================
+                        if result:  # Only cache non-empty responses
+                            self._cache_response(cache_key, result)
+                        return result
+                    elif response.status == 429:
+                        if attempt < max_retries - 1:
+                            # Rate limited — wait and actually retry (no budget cost)
+                            logger.debug(f"UW rate limit 429 on {endpoint} — backoff 5s then retry (attempt {attempt + 1}/{max_retries})")
+                            await asyncio.sleep(5.0)
+                            continue  # Retry without counting against budget
+                        else:
+                            # Final attempt also 429 — give up, don't waste budget
+                            logger.warning(f"UW rate limit 429 persists on {endpoint} after {max_retries} attempts — skipping")
+                            return {}
+                    elif response.status == 401:
+                        logger.error("Unusual Whales authentication failed")
+                        return {}
+                    elif response.status == 403:
+                        logger.debug(f"UW access denied for {endpoint}")
+                        return {}
+                    else:
+                        error_text = await response.text()
+                        logger.debug(f"UW API {response.status} for {endpoint}: {error_text[:100]}")
+                        return {}
+            except Exception as e:
+                logger.error(f"Unusual Whales request failed: {e}")
+                return {}
+        
+        return {}  # Should not reach here, but safety net
 
     # ==================== Options Flow ====================
 
@@ -1125,13 +1132,7 @@ class UnusualWhalesClient:
         endpoint = f"/api/stock/{symbol}/options-volume"
         return await self._request(endpoint)
 
-    async def get_oi_change(self, symbol: str) -> Dict[str, Any]:
-        """
-        Get open interest change data.
-        Endpoint: /api/stock/{ticker}/oi-change
-        """
-        endpoint = f"/api/stock/{symbol}/oi-change"
-        return await self._request(endpoint)
+    # get_oi_change is defined below (line ~1674) with proper symbol tracking
 
     async def get_oi_by_strike(
         self,

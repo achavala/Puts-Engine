@@ -1027,7 +1027,18 @@ class PutsEngineScheduler:
         """Wrapper to run scan — async so APScheduler uses its own event loop."""
         try:
             await self._init_clients()
-            await self.run_scan(scan_type)
+            # Enable force_scan for PM scans (market_pulse, daily_report) so they
+            # can access the reserved afternoon UW API budget (4,000 calls).
+            is_pm_scan = scan_type.lower() in ("market_pulse", "daily_report")
+            if is_pm_scan and hasattr(self, '_uw') and self._uw:
+                self._uw.set_force_scan_mode(True)
+                logger.info(f"Force scan mode ENABLED for {scan_type} (PM budget reservation)")
+            try:
+                await self.run_scan(scan_type)
+            finally:
+                if is_pm_scan and hasattr(self, '_uw') and self._uw:
+                    self._uw.set_force_scan_mode(False)
+                    logger.info(f"Force scan mode DISABLED after {scan_type}")
         except Exception as e:
             logger.error(f"Error in scan_{scan_type}: {e}")
             import traceback
@@ -1657,26 +1668,30 @@ class PutsEngineScheduler:
     
     async def _run_early_warning_scan_wrapper(self):
         """
-        Wrapper to run early warning institutional footprint scan — async for stable event loop.
+        Wrapper to run early warning institutional footprint scan — async for stable event loop.                                                                                      
         
         This is the KEY scan for 1-3 day early detection.
         Schedule: 8 AM, 9:45 AM, 11 AM, 12 PM, 1 PM, 2 PM, 3:02 PM, 4:30 PM, 10 PM ET.
         (Feb 8, 2026: 3 PM → 3:02 PM stagger for UW cache optimization)
         
-        CRITICAL FIX (Feb 7, 2026): Enables force_scan_mode on UW client
-        before EWS scans. This bypasses P3 tier limits and cooldowns
-        in the budget manager, ensuring ALL 361 tickers get UW data
-        (dark pool, OI, IV term structure, flow divergence).
+        FEB 10 FIX: force_scan_mode is ONLY enabled for PM window (after 2 PM ET).
+        Before 2 PM, EWS respects the budget ceiling so that 4,000 calls are
+        reserved for the critical 3 PM market_pulse scan.
+        After 2 PM, force_scan_mode is enabled so the 3:02 PM EWS can use
+        the remaining budget freely alongside the market_pulse scan.
         
         FEB 9 FIX: Now async — runs on APScheduler's event loop directly.
-        Eliminates the thread-pool → new-loop → closed-loop cascade that
-        caused 8 hours of blind scans on Feb 9.
         """
         await self._init_clients()
         
-        # Enable force_scan mode for EWS - must scan ALL tickers
-        if hasattr(self, '_uw') and self._uw is not None:
+        # Only enable force_scan for PM EWS scans (after 2 PM ET)
+        # Before 2 PM, respect the afternoon budget reservation
+        import pytz as _pytz
+        _now_et = datetime.now(_pytz.timezone('US/Eastern')).time()
+        _is_pm = _now_et >= datetime.strptime("14:00", "%H:%M").time()
+        if _is_pm and hasattr(self, '_uw') and self._uw is not None:
             self._uw.set_force_scan_mode(True)
+            logger.info("EWS: Force scan mode ENABLED (PM window — budget released)")
         
         try:
             await self.run_early_warning_scan()
@@ -2021,64 +2036,33 @@ class PutsEngineScheduler:
         """
         Determine which engine type based on signals.
         
-        ARCHITECT-4 REFINED LOGIC (Feb 1, 2026):
-        =========================================
-        KEY INSIGHT: pump_reversal is a TRANSITION state, not pure execution.
+        FEB 10, 2026 FIX: GAMMA SIGNALS FIRST
+        ======================================
+        CRITICAL BUG: dark_pool_violence fires for ~95% of candidates and is
+        classified as PRE_BREAKDOWN. The old logic checked is_predictive_signal_dominant()
+        FIRST, which routed nearly everything to Distribution before the Gamma Drain
+        check was reached. Result: 0 Gamma Drain candidates despite 53+ tickers having
+        call_selling_at_bid and 15+ having put_buying_at_ask.
         
-        - Distribution = early warning (supply detection, 1-3 days before breakdown)
-        - Gamma Drain = forced execution (dealer-driven acceleration)
-        - Liquidity = vacuum detection (buyers disappearing)
+        FIX: Check gamma signals FIRST. Options flow signals (call selling,
+        put buying, skew steepening, rising put OI) are the highest-conviction
+        dealer execution signals. If a ticker has these, it belongs in Gamma Drain
+        regardless of whether dark_pool_violence also fires.
         
-        FEB 1, 2026 UPDATE: PRE-BREAKDOWN SIGNAL PRIORITY
-        =================================================
-        - PRE-breakdown signals (predictive) → Distribution Engine (early warning)
-        - POST-breakdown signals (reactive) → Gamma Drain Engine (execution)
-        - This ensures early detection candidates get proper attribution
-        
-        CRITICAL FIX: pump_reversal + high_rvol_red_day → Distribution (transition)
-        This separates thesis formation from execution timing.
+        Decision hierarchy (institutional microstructure correct):
+        1. GAMMA DRAIN: 2+ options flow signals = dealer forced execution
+        2. GAMMA DRAIN: 1 flow signal + high score (>= 0.70) = strong flow conviction
+        3. LIQUIDITY: VWAP loss + multi-day weakness = buyer disappearance
+        4. DISTRIBUTION: Everything else (supply absorption / early warning)
         """
-        from putsengine.signal_priority import (
-            classify_signals, 
-            is_predictive_signal_dominant,
-            get_signal_priority_summary
-        )
-        
         signals = distribution.signals
         score = distribution.score
         
         # ======================================================================
-        # FEB 1, 2026 FIX: Check if PRE-breakdown signals dominate
-        # If predictive signals are dominant, route to Distribution (early warning)
-        # ======================================================================
-        try:
-            summary = get_signal_priority_summary(signals)
-            if is_predictive_signal_dominant(signals):
-                pre_signals = summary.get("pre_signals", [])
-                logger.info(
-                    f"Engine assignment: DISTRIBUTION (PRE-breakdown signals dominant: "
-                    f"{', '.join(pre_signals[:3])}...)"
-                )
-                return EngineType.DISTRIBUTION_TRAP
-        except Exception as e:
-            logger.debug(f"Signal priority check error: {e}")
-        
-        # ======================================================================
-        # ARCHITECT-4 FIX: Handle pump_reversal as TRANSITION state
-        # pump_reversal alone is supply detection, not execution timing
-        # ======================================================================
-        has_pump_reversal = signals.get("pump_reversal", False)
-        has_high_rvol_red = signals.get("high_rvol_red_day", False)
-        
-        # If pump_reversal + high_rvol_red_day → DISTRIBUTION (transition phase)
-        # This is early warning, not execution trigger
-        if has_pump_reversal and has_high_rvol_red:
-            logger.info("Engine assignment: DISTRIBUTION (pump_reversal + high_rvol = transition)")
-            return EngineType.DISTRIBUTION_TRAP
-        
-        # ======================================================================
-        # Gamma Drain: Options flow + dealer positioning signals
-        # These indicate forced execution (dealers must hedge)
+        # STEP 1: COUNT GAMMA SIGNALS (OPTIONS FLOW = HIGHEST PRIORITY)
+        # These indicate forced dealer execution — most actionable signals.
+        # Must be checked BEFORE predictive classification because gamma signals
+        # ARE predictive (PRE_BREAKDOWN) but need separate engine treatment.
         # ======================================================================
         gamma_signals = sum([
             signals.get("call_selling_at_bid", False),
@@ -2086,69 +2070,51 @@ class PutsEngineScheduler:
             signals.get("rising_put_oi", False),
             signals.get("skew_steepening", False),
             signals.get("volume_price_divergence", False),
+            signals.get("skew_reversal", False),  # Skew reversal = gamma-relevant
         ])
         
-        # ======================================================================
-        # Distribution: Price-volume signals + event-driven
-        # These indicate supply absorption (smart money exiting)
-        # ======================================================================
-        dist_signals = sum([
-            signals.get("gap_up_reversal", False),
-            signals.get("gap_down_no_recovery", False),
-            has_high_rvol_red,  # Already calculated
-            signals.get("flat_price_rising_volume", False),
-            signals.get("failed_breakout", False),
-            signals.get("is_post_earnings_negative", False),
-            signals.get("is_pre_earnings", False),
-            has_pump_reversal,  # pump_reversal is distribution evidence
-        ])
+        # 2+ gamma signals = pure dealer execution → Gamma Drain
+        if gamma_signals >= 2 and score >= 0.45:
+            active_gamma = [s for s in ["call_selling_at_bid", "put_buying_at_ask", 
+                           "rising_put_oi", "skew_steepening", "volume_price_divergence",
+                           "skew_reversal"] if signals.get(s, False)]
+            logger.info(f"Engine assignment: GAMMA_DRAIN (2+ gamma signals: {', '.join(active_gamma)}, score={score:.3f})")
+            return EngineType.GAMMA_DRAIN
+        
+        # 1 gamma signal + high score = strong flow conviction → Gamma Drain
+        if gamma_signals >= 1 and score >= 0.70:
+            active_gamma = [s for s in ["call_selling_at_bid", "put_buying_at_ask", 
+                           "rising_put_oi", "skew_steepening", "volume_price_divergence",
+                           "skew_reversal"] if signals.get(s, False)]
+            logger.info(f"Engine assignment: GAMMA_DRAIN (1 gamma + high score: {', '.join(active_gamma)}, score={score:.3f})")
+            return EngineType.GAMMA_DRAIN
         
         # ======================================================================
-        # Liquidity: Dark pool + institutional + VWAP loss
-        # These indicate buyer disappearance
+        # STEP 2: LIQUIDITY VACUUM DETECTION
+        # VWAP loss + multi-day weakness = buyers disappearing
         # ======================================================================
-        liq_signals = sum([
-            signals.get("repeated_sell_blocks", False),
-            signals.get("vwap_loss", False),
-            signals.get("multi_day_weakness", False),
-            signals.get("below_vwap", False),
-        ])
-        
-        # ======================================================================
-        # DECISION LOGIC (Architect-4 validated):
-        # 1. 2+ gamma signals (pure flow) → Gamma Drain (execution)
-        # 2. Event-driven OR distribution patterns → Distribution (early warning)
-        # 3. VWAP loss + weakness → Liquidity (vacuum detection)
-        # ======================================================================
-        
-        # Check for pure gamma flow (2+ signals = dealer execution)
-        has_pure_gamma = gamma_signals >= 2
-        
-        # Check for event-driven distribution
-        has_event = signals.get("is_post_earnings_negative", False)
-        has_failed_breakout = signals.get("failed_breakout", False) or signals.get("gap_up_reversal", False)
-        
-        # Check for liquidity vacuum
         has_vwap_loss = signals.get("vwap_loss", False) or signals.get("below_vwap", False)
         has_weakness = signals.get("multi_day_weakness", False)
+        has_sell_blocks = signals.get("repeated_sell_blocks", False)
         
-        # Decision tree (institutionally correct separation)
-        if has_pure_gamma and score >= 0.55:
-            logger.debug("Engine assignment: GAMMA_DRAIN (2+ gamma signals + high score)")
-            return EngineType.GAMMA_DRAIN
-        elif has_pump_reversal or has_event or has_failed_breakout:
-            # pump_reversal alone → Distribution (not Gamma Drain)
-            logger.debug("Engine assignment: DISTRIBUTION (supply detection)")
-            return EngineType.DISTRIBUTION_TRAP
-        elif has_vwap_loss and has_weakness:
-            logger.debug("Engine assignment: LIQUIDITY (vacuum detection)")
-            return EngineType.SNAPBACK  # Liquidity
-        elif gamma_signals > dist_signals and gamma_signals > liq_signals:
-            return EngineType.GAMMA_DRAIN
-        elif dist_signals >= liq_signals:
-            return EngineType.DISTRIBUTION_TRAP
-        else:
-            return EngineType.SNAPBACK  # Liquidity
+        liq_signals = sum([has_sell_blocks, has_vwap_loss, has_weakness, 
+                          signals.get("below_vwap", False)])
+        
+        if has_vwap_loss and has_weakness:
+            logger.debug("Engine assignment: LIQUIDITY (VWAP loss + multi-day weakness)")
+            return EngineType.SNAPBACK
+        
+        if liq_signals >= 3:
+            logger.debug("Engine assignment: LIQUIDITY (3+ liquidity signals)")
+            return EngineType.SNAPBACK
+        
+        # ======================================================================
+        # STEP 3: EVERYTHING ELSE → DISTRIBUTION (early warning / supply detection)
+        # This includes: pump_reversal, event-driven, dark_pool_violence,
+        # exhaustion, topping_tail, etc.
+        # ======================================================================
+        logger.debug(f"Engine assignment: DISTRIBUTION (default: gamma={gamma_signals}, liq={liq_signals}, score={score:.3f})")
+        return EngineType.DISTRIBUTION_TRAP
     
     def _save_results(self):
         """Save scan results to JSON file and history."""

@@ -1,12 +1,12 @@
 {
   "is_running": true,
-  "pid": 37591,
-  "memory_mb": 208.16,
-  "cpu_percent": 0.5,
-  "last_activity": "2026-02-10T08:14:36.509447",
-  "process_age_seconds": 30500.0,
-  "in_grace_period": false,
-  "status": "HEALTHY",
-  "timestamp": "2026-02-10T08:16:16.539397",
-  "watchdog_pid": 37645
+  "pid": 7147,
+  "memory_mb": 10.88,
+  "cpu_percent": 0.0,
+  "last_activity": "2026-02-10T16:42:41.352898",
+  "process_age_seconds": 488.0,
+  "in_grace_period": true,
+  "status": "STARTING",
+  "timestamp": "2026-02-10T16:58:11.096243",
+  "watchdog_pid": 7157
 }
