@@ -264,33 +264,54 @@ SIGNAL_DEFINITIONS: Dict[str, SignalDefinition] = {
         priority_multiplier=0.7,
         description="Multiple red days - AFTER move already started"
     ),
+    # =========================================================================
+    # FEB 11, 2026 RECLASSIFICATION — Rally Exhaustion Signals
+    # =========================================================================
+    # CRITICAL INSIGHT: pump_reversal, exhaustion, topping_tail are NOT 
+    # "reactive" when they appear on stocks that just rallied 10-30%.
+    # They are PREDICTIVE — they signal the rally is ending and a reversal
+    # is imminent. This is the "distribution after pump" pattern that
+    # institutions use to exit positions (Wyckoff Distribution Phase C/D).
+    #
+    # The Feb 11 analysis proved this: U (+23% pump → -31%), ALAB (+27% → -18%),
+    # HOOD (+17% → -11%) all had these signals but were ranked #245, #125, #206
+    # because pump_reversal was penalized at 0.7x.
+    # =========================================================================
+    
     "pump_reversal": SignalDefinition(
         name="pump_reversal",
-        timing=SignalTiming.POST_BREAKDOWN,
-        base_weight=0.12,
-        priority_multiplier=0.7,
-        description="Pump then reversal - AFTER pump already failed"
+        timing=SignalTiming.PRE_BREAKDOWN,       # RECLASSIFIED: pump exhaustion IS predictive
+        base_weight=0.18,                         # INCREASED from 0.12
+        priority_multiplier=1.5,                  # CHANGED from 0.7x to 1.5x
+        description="Pump then reversal — multi-day rally exhausting, institutions distributing into strength"
     ),
     "failed_breakout": SignalDefinition(
         name="failed_breakout",
-        timing=SignalTiming.POST_BREAKDOWN,
-        base_weight=0.10,
-        priority_multiplier=0.7,
-        description="Failed breakout - AFTER attempt already made"
+        timing=SignalTiming.NEUTRAL,              # RECLASSIFIED from POST to NEUTRAL
+        base_weight=0.12,                         # INCREASED from 0.10
+        priority_multiplier=1.0,
+        description="Failed breakout — bulls tried and failed, trapped longs will sell"
     ),
     "exhaustion": SignalDefinition(
         name="exhaustion",
-        timing=SignalTiming.POST_BREAKDOWN,
-        base_weight=0.10,
-        priority_multiplier=0.7,
-        description="Exhaustion pattern - AFTER run already happened"
+        timing=SignalTiming.NEUTRAL,              # RECLASSIFIED from POST to NEUTRAL
+        base_weight=0.12,                         # INCREASED from 0.10
+        priority_multiplier=1.0,                  # CHANGED from 0.7x to 1.0x
+        description="Rally exhaustion — momentum fading, reversal setup forming"
+    ),
+    "topping_tail": SignalDefinition(
+        name="topping_tail",
+        timing=SignalTiming.PRE_BREAKDOWN,         # NEW: was missing entirely (defaulted to 0.05)
+        base_weight=0.14,
+        priority_multiplier=1.5,
+        description="Topping tail candlestick — rejection at highs, sellers overwhelming buyers (Nison 1991)"
     ),
     "two_day_rally": SignalDefinition(
         name="two_day_rally",
-        timing=SignalTiming.POST_BREAKDOWN,
-        base_weight=0.08,
-        priority_multiplier=0.7,
-        description="Two-day rally exhaustion - wait for reversal confirmation"
+        timing=SignalTiming.NEUTRAL,              # RECLASSIFIED from POST to NEUTRAL
+        base_weight=0.10,                         # INCREASED from 0.08
+        priority_multiplier=1.0,                  # CHANGED from 0.7x to 1.0x
+        description="Two-day rally — fast move creates trapped longs, mean-reversion setup"
     ),
     "high_vol_run": SignalDefinition(
         name="high_vol_run",
@@ -298,6 +319,22 @@ SIGNAL_DEFINITIONS: Dict[str, SignalDefinition] = {
         base_weight=0.08,
         priority_multiplier=0.7,
         description="High volume run - AFTER move already in progress"
+    ),
+    # Handoff candidate (was missing — scored as unknown 0.05)
+    "handoff_candidate": SignalDefinition(
+        name="handoff_candidate",
+        timing=SignalTiming.PRE_BREAKDOWN,
+        base_weight=0.12,
+        priority_multiplier=1.5,
+        description="Handoff candidate — gap scanner → distribution engine pipeline, confirmed weakness"
+    ),
+    # Failure mode (was missing — scored as unknown 0.05)
+    "failure_mode": SignalDefinition(
+        name="failure_mode",
+        timing=SignalTiming.NEUTRAL,
+        base_weight=0.10,
+        priority_multiplier=1.0,
+        description="Failure mode — price structure breaking down, key supports failing"
     ),
     
     # =========================================================================
@@ -342,9 +379,63 @@ SIGNAL_DEFINITIONS: Dict[str, SignalDefinition] = {
 }
 
 
+def _normalize_signal_name(signal_name: str) -> str:
+    """
+    Normalize dynamic signal names to their base definition.
+    
+    Examples:
+        pump_reversal_+23% → pump_reversal
+        two_day_rally_+15% → two_day_rally
+        high_vol_3.9x → high_vol_run
+        pump_+20% → pump_reversal
+    """
+    # Direct match first
+    if signal_name in SIGNAL_DEFINITIONS:
+        return signal_name
+    
+    # Handle pump_reversal_+XX% or pump_reversal_-XX%
+    if signal_name.startswith("pump_reversal_") or signal_name.startswith("pump_"):
+        return "pump_reversal"
+    
+    # Handle two_day_rally_+XX%
+    if signal_name.startswith("two_day_rally_"):
+        return "two_day_rally"
+    
+    # Handle high_vol_X.Xx or high_vol_red
+    if signal_name.startswith("high_vol_"):
+        if "red" in signal_name:
+            return "high_rvol_red_day"
+        return "high_vol_run"
+    
+    # Handle below_prior_low variants
+    if signal_name.startswith("below_prior"):
+        return "below_prior_low"
+    
+    return signal_name
+
+
+def _extract_pump_magnitude(signal_name: str) -> float:
+    """
+    Extract the pump magnitude percentage from dynamic signal names.
+    
+    Examples:
+        pump_reversal_+23% → 23.0
+        pump_+20% → 20.0
+        pump_reversal_-14% → 14.0 (absolute value)
+    """
+    import re
+    match = re.search(r'[+\-](\d+\.?\d*)', signal_name)
+    if match:
+        return float(match.group(1))
+    return 0.0
+
+
 def get_signal_weight(signal_name: str) -> float:
     """
     Get the effective weight for a signal (with PRE/POST priority applied).
+    
+    FEB 11 FIX: Now handles dynamic signal names (pump_reversal_+23%)
+    and applies magnitude-based weight scaling for pump reversal signals.
     
     Args:
         signal_name: Name of the signal
@@ -352,8 +443,35 @@ def get_signal_weight(signal_name: str) -> float:
     Returns:
         Effective weight (base_weight * priority_multiplier)
     """
-    if signal_name in SIGNAL_DEFINITIONS:
-        return SIGNAL_DEFINITIONS[signal_name].effective_weight
+    base_name = _normalize_signal_name(signal_name)
+    
+    if base_name in SIGNAL_DEFINITIONS:
+        defn = SIGNAL_DEFINITIONS[base_name]
+        weight = defn.effective_weight
+        
+        # MAGNITUDE SCALING for pump reversal signals
+        # A 25%+ pump is far more predictive than a 5% pump
+        if base_name == "pump_reversal":
+            magnitude = _extract_pump_magnitude(signal_name)
+            if magnitude >= 25:
+                weight *= 1.30   # 30% bonus for massive pumps (25%+)
+            elif magnitude >= 15:
+                weight *= 1.15   # 15% bonus for strong pumps (15%+)
+            elif magnitude >= 10:
+                weight *= 1.0    # Normal weight for decent pumps
+            elif magnitude > 0:
+                weight *= 0.75   # Small pump — less predictive
+        
+        # Magnitude scaling for two_day_rally
+        if base_name == "two_day_rally":
+            magnitude = _extract_pump_magnitude(signal_name)
+            if magnitude >= 15:
+                weight *= 1.20
+            elif magnitude >= 10:
+                weight *= 1.10
+        
+        return weight
+    
     return 0.05  # Default weight for unknown signals
 
 
@@ -361,20 +479,25 @@ def get_signal_timing(signal_name: str) -> SignalTiming:
     """
     Get the timing classification for a signal.
     
+    FEB 11 FIX: Now handles dynamic signal names.
+    
     Args:
         signal_name: Name of the signal
         
     Returns:
         SignalTiming enum value
     """
-    if signal_name in SIGNAL_DEFINITIONS:
-        return SIGNAL_DEFINITIONS[signal_name].timing
+    base_name = _normalize_signal_name(signal_name)
+    if base_name in SIGNAL_DEFINITIONS:
+        return SIGNAL_DEFINITIONS[base_name].timing
     return SignalTiming.NEUTRAL
 
 
 def classify_signals(signals: Dict[str, bool]) -> Tuple[List[str], List[str], List[str]]:
     """
     Classify active signals into PRE, POST, and NEUTRAL categories.
+    
+    FEB 11 FIX: Uses normalized signal names for classification.
     
     Args:
         signals: Dict of signal_name -> is_active

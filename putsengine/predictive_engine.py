@@ -384,8 +384,10 @@ class MarketWeatherEngine:
             self._save_uw_cache()
             logger.info(f"UW cache saved for {len(self._uw_ticker_cache)} tickers (used by 30-min refreshes)")
         
-        # Return top 10
-        return forecasts[:10]
+        # v4.0: Return top 50 (was 10) — feeds convergence engine with
+        # wider candidate pool. Feb 11 analysis showed 22 movers dropped 5%+
+        # but Weather only passed 10 to convergence, starving the funnel.
+        return forecasts[:50]
     
     async def _analyze_ticker(self, symbol: str, ews_data: Dict, mode: ReportMode, refresh: bool = False) -> Optional[WeatherForecast]:
         """Analyze a single ticker across all 4 weather layers + v5 additions.

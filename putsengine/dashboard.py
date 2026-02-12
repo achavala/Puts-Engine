@@ -33,6 +33,9 @@ from putsengine.dashboard_market_direction_tab import render_market_direction_ta
 # New isolated Predictive System tab (Feb 5, 2026)
 from putsengine.dashboard_predictive_tab import render_predictive_tab
 
+# New Universe Scanner tab (Feb 10, 2026)
+from putsengine.dashboard_universe_tab import render_universe_tab
+
 st.set_page_config(page_title="PutsEngine", page_icon="📉", layout="wide", initial_sidebar_state="expanded")
 
 # ============================================================================
@@ -1640,6 +1643,7 @@ def render_big_movers_analysis():
     pump_reversal = pattern_data.get("pump_reversal", [])
     two_day_rally = pattern_data.get("two_day_rally", [])
     high_vol_run = pattern_data.get("high_vol_run", [])
+    engine_conviction = pattern_data.get("engine_conviction", [])
     
     # =========================================================================
     # ARCHITECT-4 ENHANCEMENT: Cross-Engine Confirmation Check
@@ -1775,6 +1779,8 @@ def render_big_movers_analysis():
         all_pattern_symbols.add(p["symbol"])
     for p in high_vol_run:
         all_pattern_symbols.add(p["symbol"])
+    for p in engine_conviction:
+        all_pattern_symbols.add(p["symbol"])
     
     engine_confirmed_count = len(all_pattern_symbols & engine_confirmed_symbols)
     
@@ -1833,7 +1839,7 @@ def render_big_movers_analysis():
     
     st.markdown("### 🎯 Future Candidates Summary")
     
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     
     with col1:
         st.metric("💥 Pump Reversal", len(pump_reversal), help="Pumped stocks - watch for crash")
@@ -1845,6 +1851,9 @@ def render_big_movers_analysis():
         st.metric("📈 High Vol Run", len(high_vol_run), help="Big gains on volume - institutions exiting?")
     
     with col4:
+        st.metric("🏛️ Engine Conviction", len(engine_conviction), help="High-conviction institutional signals (dark pool, flow, OI)")
+    
+    with col5:
         # Get earnings candidates from scheduled data
         earnings_upcoming = [c for c in scheduled_data.get("distribution", []) if "earnings" in str(c.get("signals", [])).lower()]
         st.metric("⚡ Earnings Watch", len(earnings_upcoming), help="Stocks with earnings upcoming")
@@ -1961,9 +1970,62 @@ def render_big_movers_analysis():
     st.divider()
     
     # =========================================================================
-    # Pattern 4: Sector Contagion Watch
+    # Pattern 4: Engine Conviction (Institutional Signals)
     # =========================================================================
-    st.markdown("### 🔗 Pattern 4: Sector Contagion Watch")
+    st.markdown("### 🏛️ Pattern 4: Engine-Detected Institutional Signals")
+    st.markdown("*Stocks with strong institutional positioning (dark pool violence, rising put OI, skew steepening) detected by the main engines. These are INVISIBLE to price-only scanners — only UW/Polygon institutional data reveals them.*")
+    
+    if engine_conviction:
+        # Count by engine type
+        gamma_ec = sum(1 for e in engine_conviction if "gamma" in e.get("engine_type", ""))
+        dist_ec = sum(1 for e in engine_conviction if "distribution" in e.get("engine_type", ""))
+        liq_ec = sum(1 for e in engine_conviction if "liquidity" in e.get("engine_type", ""))
+        predictive_ec = sum(1 for e in engine_conviction if e.get("is_predictive"))
+        
+        ec_cols = st.columns(4)
+        with ec_cols[0]:
+            st.metric("🔥 Gamma", gamma_ec, help="Gamma Drain detected")
+        with ec_cols[1]:
+            st.metric("📉 Distribution", dist_ec, help="Distribution Trap detected")
+        with ec_cols[2]:
+            st.metric("💧 Liquidity", liq_ec, help="Liquidity Vacuum detected")
+        with ec_cols[3]:
+            st.metric("🎯 Predictive", predictive_ec, help="Pre-breakdown signals dominant")
+        
+        engine_labels = {
+            "gamma_drain": "🔥 Gamma",
+            "distribution_trap": "📉 Dist",
+            "liquidity_vacuum": "💧 Liq",
+        }
+        
+        df_ec = pd.DataFrame([
+            {
+                "Engine": engine_labels.get(e.get("engine_type", ""), e.get("engine_type", "")),
+                "Symbol": e["symbol"],
+                "Price": f"${e.get('price', 0):.2f}",
+                "Score": f"{e.get('engine_score', 0):.3f}",
+                "🎯 Strike": e.get("strike_display", "N/A"),
+                "📅 Expiry": f"{e.get('expiry_display', 'N/A')} ({e.get('dte', 0)}d)",
+                "OTM %": f"{e.get('otm_pct', 0):.1f}%",
+                "Signals": ", ".join(e.get("signals", [])[:3]) or "-",
+                "Pre-Signal": ", ".join(e.get("pre_signals", [])[:2]) or "-",
+                "Timing": e.get("timing", "-"),
+                "Target δ": e.get("delta_target", "-0.30"),
+                "Potential": e.get("potential_mult", "3x-5x")
+            }
+            for e in engine_conviction[:20]
+        ])
+        st.dataframe(df_ec, use_container_width=True, hide_index=True, height=420)
+        st.caption("🏛️ These candidates have institutional flow signals but NO price-pattern trigger yet — they may crash BEFORE a pattern forms.")
+    else:
+        st.info("No additional engine-only conviction candidates beyond pattern-detected stocks.")
+    
+    st.divider()
+    
+    # =========================================================================
+    # Pattern 5: Sector Contagion Watch
+    # =========================================================================
+    st.markdown("### 🔗 Pattern 5: Sector Contagion Watch")
     st.markdown("*Sectors with multiple stocks showing weakness. When one crashes, others follow.*")
     
     # Group pump_reversal candidates by sector
@@ -2061,6 +2123,42 @@ def render_big_movers_analysis():
             "TierIcon": tier_icon,
             "EngineConfirmed": p["symbol"] in engine_confirmed_symbols,
             "ConfirmingEngines": engine_confirmation_map.get(p["symbol"], [])
+        })
+    
+    for p in engine_conviction:
+        # Engine conviction candidates always have engine confirmation
+        ec_score = p.get("engine_score", 0)
+        if ec_score >= 0.55:
+            ec_tier, ec_icon = "HIGH", "🟢"
+        elif ec_score >= 0.45:
+            ec_tier, ec_icon = "MEDIUM", "🟡"
+        else:
+            ec_tier, ec_icon = "LOW", "🔴"
+        
+        engine_labels_map = {
+            "gamma_drain": "🔥 Gamma",
+            "distribution_trap": "📉 Dist",
+            "liquidity_vacuum": "💧 Liq",
+        }
+        confirming = [engine_labels_map.get(p.get("engine_type", ""), p.get("engine_type", ""))]
+        
+        all_candidates.append({
+            "Symbol": p["symbol"],
+            "Pattern": "🏛️ Engine Signal",
+            "Price": p.get("price", 0),
+            "Strike": p.get("strike_display", "N/A"),
+            "Expiry": p.get("expiry_display", "N/A"),
+            "DTE": p.get("dte", 0),
+            "OTM": p.get("otm_pct", 0),
+            "Gain/Move": 0,
+            "Signals": p.get("signal_count", len(p.get("signals", []))),
+            "Delta": p.get("delta_target", "-0.30"),
+            "Potential": p.get("potential_mult", "3x-5x"),
+            "Score Boost": p.get("score_boost", 0.1),
+            "Tier": ec_tier,
+            "TierIcon": ec_icon,
+            "EngineConfirmed": True,
+            "ConfirmingEngines": confirming
         })
     
     if all_candidates:
@@ -2178,8 +2276,8 @@ def main():
         render_config_view()
     
     elif "Dashboard" in page or "Puts Scanner" in page:
-        # Main tabs - 8 tabs including new Predictive System
-        tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
+        # Main tabs - 9 tabs including Universe Scanner
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
             "🔥 Gamma Drain", 
             "📉 Distribution", 
             "💧 Liquidity", 
@@ -2187,7 +2285,8 @@ def main():
             "📊 48-Hour",
             "🎯 Big Movers",
             "🌊 Market Direction",
-            "🎯 Predictive System"
+            "🎯 Predictive System",
+            "🌐 Universe Scanner"
         ])
 
         with tab1:
@@ -2233,6 +2332,10 @@ def main():
         with tab8:
             # Predictive System tab - Bulletproof Put Detection
             render_predictive_tab()
+
+        with tab9:
+            # Universe Scanner tab - All stocks sorted by bearishness
+            render_universe_tab()
 
     elif "Trade History" in page:
         render_ledger_view()

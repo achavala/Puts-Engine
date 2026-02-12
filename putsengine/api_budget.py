@@ -40,8 +40,22 @@ from loguru import logger
 # AFTERNOON BUDGET RESERVATION
 # ======================================================================
 # Reserve this many calls for the 2 PM - 4 PM window so the critical
-# 3 PM Market Pulse scan (361 tickers x ~6 UW endpoints = ~2,200 calls)
+# 2:45 PM Market Pulse scan (361 tickers x ~6 UW endpoints = ~2,200 calls)
 # always has budget.  4,000 provides ~80% headroom.
+#
+# FEB 10 SCHEDULE OPTIMIZATION:
+#   - 12 PM EWS REMOVED (saves 1,800)
+#   - daily_report_3pm REMOVED (saves 2,200 — was duplicate of market_pulse)
+#   - early_warning_3pm REMOVED (saves 1,800)
+#   - market_pulse moved 3:00 PM → 2:45 PM (finishes by ~3:06 PM)
+#   - Meta Engine reads at 3:15 PM → ONE combined pipeline
+#
+# Budget projection:
+#   8 AM EWS: 1,800 | 9 AM Full: 4,000 | 9:45 AM EWS: 1,800
+#   11 AM EWS: 1,800 | 1 PM EWS: 1,600 (ceiling) = 11,000
+#   --- 2 PM: release to 15,000 ---
+#   2 PM EWS: 1,800 | 2:45 PM Market Pulse: 2,200 = 15,000
+#   3:15 PM Meta Engine: reads files (0 UW calls)
 AFTERNOON_RESERVE = 4000
 # The cutoff time: before this, the reserve is enforced.
 # After this, the full remaining budget is released.

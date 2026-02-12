@@ -1,0 +1,155 @@
+{
+  "timestamp": "2026-02-11T11:31:11.316654",
+  "alerts_count": 7,
+  "critical_count": 7,
+  "alerts": [
+    {
+      "symbol": "APLD",
+      "current_ipi": 1.0,
+      "previous_ipi": 0.5770516557758096,
+      "ipi_change": 0.42294834422419036,
+      "minutes_elapsed": 65,
+      "unique_footprints": 5,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "net_premium_flow",
+        "quote_degradation",
+        "cross_asset_divergence",
+        "iv_term_inversion",
+        "iv_term_inversion",
+        "quote_degradation",
+        "iv_term_inversion",
+        "quote_degradation",
+        "net_premium_flow"
+      ],
+      "is_critical": true,
+      "recommendation": "\ud83d\udea8 CRITICAL FLASH ALERT: APLD IPI surged +0.42 in 65 min. INSTITUTIONAL CONSENSUS FORMING. Drop everything and analyze immediately."
+    },
+    {
+      "symbol": "XLP",
+      "current_ipi": 1.0,
+      "previous_ipi": 0.5911965765668944,
+      "ipi_change": 0.4088034234331056,
+      "minutes_elapsed": 65,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "iv_term_inversion",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "iv_term_inversion",
+        "quote_degradation",
+        "dark_pool_sequence",
+        "quote_degradation"
+      ],
+      "is_critical": true,
+      "recommendation": "\ud83d\udea8 CRITICAL FLASH ALERT: XLP IPI surged +0.41 in 65 min. INSTITUTIONAL CONSENSUS FORMING. Drop everything and analyze immediately."
+    },
+    {
+      "symbol": "SNY",
+      "current_ipi": 0.9516473271203028,
+      "previous_ipi": 0.5760006246500582,
+      "ipi_change": 0.37564670247024456,
+      "minutes_elapsed": 65,
+      "unique_footprints": 4,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "iv_term_inversion",
+        "quote_degradation",
+        "multi_day_distribution",
+        "iv_term_inversion",
+        "dark_pool_sequence",
+        "iv_term_inversion",
+        "quote_degradation",
+        "quote_degradation",
+        "quote_degradation"
+      ],
+      "is_critical": true,
+      "recommendation": "\u26a1 FLASH ALERT: SNY IPI surged +0.38 in 65 min. Rapid pressure accumulation detected. Review for potential entry timing."
+    },
+    {
+      "symbol": "MO",
+      "current_ipi": 0.8904567279427917,
+      "previous_ipi": 0.555660904910449,
+      "ipi_change": 0.3347958230323428,
+      "minutes_elapsed": 65,
+      "unique_footprints": 3,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "dark_pool_sequence",
+        "iv_term_inversion",
+        "multi_day_distribution"
+      ],
+      "is_critical": true,
+      "recommendation": "\u26a1 FLASH ALERT: MO IPI surged +0.33 in 65 min. Rapid pressure accumulation detected. Review for potential entry timing."
+    },
+    {
+      "symbol": "IBM",
+      "current_ipi": 0.9757416592783907,
+      "previous_ipi": 0.656326692981724,
+      "ipi_change": 0.31941496629666677,
+      "minutes_elapsed": 65,
+      "unique_footprints": 6,
+      "footprint_types": [
+        "iv_term_inversion",
+        "net_premium_flow",
+        "quote_degradation",
+        "cross_asset_divergence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "iv_term_inversion",
+        "quote_degradation",
+        "iv_term_inversion",
+        "quote_degradation"
+      ],
+      "is_critical": true,
+      "recommendation": "\u26a1 FLASH ALERT: IBM IPI surged +0.32 in 65 min. Rapid pressure accumulation detected. Review for potential entry timing."
+    },
+    {
+      "symbol": "AMGN",
+      "current_ipi": 0.7966203592348292,
+      "previous_ipi": 0.4927736568057289,
+      "ipi_change": 0.30384670242910033,
+      "minutes_elapsed": 65,
+      "unique_footprints": 5,
+      "footprint_types": [
+        "iv_term_inversion",
+        "net_premium_flow",
+        "quote_degradation",
+        "cross_asset_divergence",
+        "dark_pool_sequence",
+        "iv_term_inversion",
+        "cross_asset_divergence",
+        "iv_term_inversion",
+        "net_premium_flow",
+        "cross_asset_divergence"
+      ],
+      "is_critical": true,
+      "recommendation": "\u26a1 FLASH ALERT: AMGN IPI surged +0.30 in 65 min. Rapid pressure accumulation detected. Review for potential entry timing."
+    },
+    {
+      "symbol": "CHWY",
+      "current_ipi": 1.0,
+      "previous_ipi": 0.6991332392282802,
+      "ipi_change": 0.3008667607717198,
+      "minutes_elapsed": 65,
+      "unique_footprints": 5,
+      "footprint_types": [
+        "dark_pool_sequence",
+        "quote_degradation",
+        "cross_asset_divergence",
+        "dark_pool_sequence",
+        "multi_day_distribution",
+        "dark_pool_sequence",
+        "iv_term_inversion",
+        "iv_term_inversion",
+        "cross_asset_divergence",
+        "dark_pool_sequence"
+      ],
+      "is_critical": true,
+      "recommendation": "\u26a1 FLASH ALERT: CHWY IPI surged +0.30 in 65 min. Rapid pressure accumulation detected. Review for potential entry timing."
+    }
+  ]
+}

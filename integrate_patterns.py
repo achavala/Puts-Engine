@@ -385,7 +385,26 @@ async def scan_patterns():
                     atr = sum(tr_list) / len(tr_list) if tr_list else None
                 
                 # Calculate score for DTE selection
-                score_boost = min(0.20, 0.05 + len(reversal_signals) * 0.04 + max_gain * 0.01)
+                # ═══ Rec 2: Weight pump magnitude — factor gain % into score ═══
+                # +28% pump = ~5x the crash risk of +1%
+                # OLD: max_gain * 0.01 (way too weak: +28% → only 0.28)
+                # NEW: Linear + super-linear scaling for large pumps
+                pump_weight = total_gain * 0.008  # +28% → 0.224, +5% → 0.04
+                if total_gain > 15:
+                    pump_weight += (total_gain - 15) * 0.005  # Extra for massive pumps
+                pump_weight = min(pump_weight, 0.25)
+                
+                score_boost = min(0.35, 0.05 + len(reversal_signals) * 0.04 + pump_weight)
+                
+                # ═══ Rec 5: exhaustion is tier-1 amplifier (3x crasher correlation) ═══
+                if "exhaustion" in reversal_signals:
+                    score_boost = min(0.40, score_boost * 1.30)
+                
+                # ═══ Rec 6: Penalize below_prior_low — reactive, not predictive ═══
+                # This signal means the crash ALREADY happened, reducing predictive value
+                if "below_prior_low" in reversal_signals and len(reversal_signals) <= 2:
+                    score_boost *= 0.70
+                
                 base_score = 0.45 + score_boost
                 
                 # Get institutional contract recommendation
@@ -631,11 +650,22 @@ def integrate_with_scheduled_results(pattern_results):
         scheduled = {"gamma_drain": [], "distribution": [], "liquidity": []}
     
     # Check if ALL engines are empty - if so, POPULATE from patterns
+    # Gap 2 Fix (Feb 9, 2026): Instead of OVERWRITING, MERGE pattern data
+    # alongside engine data. This preserves any real engine results and
+    # supplements with pattern data, tagged as "pattern_populated".
     total_existing = sum(len(scheduled.get(e, [])) for e in ["gamma_drain", "distribution", "liquidity"])
     
     if total_existing == 0:
         print("  [INFO] Scheduled results empty - POPULATING from patterns...")
-        scheduled = _populate_from_patterns(pattern_results)
+        pattern_populated = _populate_from_patterns(pattern_results)
+        
+        # Mark ALL pattern entries clearly so Convergence can distinguish
+        for engine_key in ["gamma_drain", "distribution", "liquidity"]:
+            for c in pattern_populated.get(engine_key, []):
+                c["source"] = "pattern_scan"
+                c["is_pattern_only"] = True
+        
+        scheduled = pattern_populated
         
         # Save and return early
         with open(SCHEDULED_RESULTS_FILE, 'w') as f:
@@ -674,21 +704,68 @@ def integrate_with_scheduled_results(pattern_results):
     updated_count = 0
     added_count = 0
     
+    # ═══ FIRST PASS: Deduplicate ALL signals in scheduled results (Rec 4) ═══
+    # This fixes the exponential signal accumulation bug where each pattern
+    # integration run appended duplicate signals without deduplication.
+    for engine in ["gamma_drain", "distribution", "liquidity"]:
+        for candidate in scheduled.get(engine, []):
+            signals = candidate.get("signals", [])
+            if len(signals) != len(set(signals)):
+                candidate["signals"] = list(dict.fromkeys(signals))
+    
     for engine in ["gamma_drain", "distribution", "liquidity"]:
         candidates = scheduled.get(engine, [])
         
         for candidate in candidates:
             symbol = candidate.get("symbol")
             if symbol in pattern_boosts:
-                # Boost existing score
+                # ═══ SCORE: Don't cap at 0.95 — allow differentiation ═══
+                # Old: min(old_score + boost, 0.95) → everything = 0.95 (saturation)
+                # New: Keep UW score unchanged, store pattern_score independently
+                # The convergence engine will use max(uw_score, pattern_score)
                 old_score = candidate.get("score", 0)
-                boost = min(pattern_boosts[symbol], 0.25)  # Cap boost at 0.25
-                new_score = min(old_score + boost, 0.95)
-                candidate["score"] = round(new_score, 4)
+                boost = min(pattern_boosts[symbol], 0.35)  # Raised cap from 0.25
                 
-                # Add pattern signals
+                # ═══ Rec 4: Deduplicate signals ═══
                 existing_signals = candidate.get("signals", [])
-                candidate["signals"] = existing_signals + pattern_signals.get(symbol, [])
+                new_signals = pattern_signals.get(symbol, [])
+                candidate["signals"] = list(dict.fromkeys(existing_signals + new_signals))
+                
+                # ═══ Rec 1: Compute meaningful pattern_score ═══
+                # Pattern score reflects pattern QUALITY, not just a base+boost
+                # Components: base (0.40) + signal_quality + pump_magnitude
+                sig_list = candidate["signals"]
+                quality_bonus = 0
+                for sig in sig_list:
+                    if sig == "exhaustion":
+                        quality_bonus += 0.12  # Tier-1 signal
+                    elif sig == "topping_tail":
+                        quality_bonus += 0.08
+                    elif sig == "high_vol_red":
+                        quality_bonus += 0.06
+                    elif sig.startswith("pump_reversal"):
+                        quality_bonus += 0.04
+                    elif sig.startswith("two_day_rally"):
+                        quality_bonus += 0.04
+                    elif sig == "below_prior_low":
+                        quality_bonus -= 0.05  # Rec 6: reactive penalty
+                    elif sig == "is_post_earnings_negative":
+                        quality_bonus += 0.15  # Rec 7: earnings boost
+                
+                pattern_score = min(0.95, 0.40 + boost + quality_bonus)
+                candidate["pattern_score"] = round(pattern_score, 4)
+                
+                # ═══ Rec 2: Extract and store total_gain for pump magnitude ═══
+                if not candidate.get("total_gain"):
+                    # Extract from signal names (e.g. "pump_reversal_+28%")
+                    for sig in sig_list:
+                        if sig.startswith("pump_reversal_") or sig.startswith("pump_"):
+                            try:
+                                pct_str = sig.split("_")[-1].replace("%", "").replace("+", "")
+                                candidate["total_gain"] = abs(float(pct_str))
+                                break
+                            except (ValueError, IndexError):
+                                pass
                 
                 # Mark as pattern-enhanced
                 candidate["pattern_enhanced"] = True
@@ -707,17 +784,20 @@ def integrate_with_scheduled_results(pattern_results):
         symbol = pr["symbol"]
         if symbol not in existing_symbols and len(pr.get("signals", [])) >= 2:
             # This is a high-confidence pattern not in existing scan
+            new_score = round(0.35 + pr["score_boost"], 4)  # Base 0.35 + boost
             new_candidate = {
                 "symbol": symbol,
-                "score": round(0.35 + pr["score_boost"], 4),  # Base 0.35 + boost
+                "score": new_score,
+                "pattern_score": new_score,  # Rec 1: preserve for UW merge
                 "tier": "🟡 CLASS B",
                 "engine_type": "distribution_trap",
                 "current_price": pr["price"],
                 "expiry": "TBD",
                 "dte": 7,
-                "signals": pr["signals"] + [f"pump_{pr['total_gain']:+.0f}%"],
+                "signals": list(dict.fromkeys(pr["signals"] + [f"pump_{pr['total_gain']:+.0f}%"])),  # Rec 4: dedup
                 "pattern_enhanced": True,
-                "pattern_source": "pump_reversal"
+                "pattern_source": "pump_reversal",
+                "total_gain": pr.get("total_gain", 0),  # Rec 2: for convergence pump magnitude
             }
             scheduled.setdefault("distribution", []).append(new_candidate)
             added_count += 1

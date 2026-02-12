@@ -147,6 +147,12 @@ class ConvergenceCandidate:
     """A single stock scored across all 4 systems"""
     symbol: str
     convergence_score: float = 0.0
+    
+    # Uncapped score for ranking tiebreaker.
+    # When 12+ stocks all cap at 1.0, this raw value breaks ties:
+    # a stock with raw 1.15 (ultra-high conviction) outranks one at raw 1.01.
+    convergence_score_raw: float = 0.0
+    
     permission_light: str = "🔴"     # 🟢 / 🟡 / 🔴
     
     # Source scores (0-1 normalized)
@@ -194,6 +200,14 @@ class ConvergenceCandidate:
     finviz_bearish: bool = False      # Gap 5/6: FinViz bearish signal
     short_float: float = 0.0          # Gap 7: Short interest %
     sector_contagion: bool = False    # Gap 11: Sector contagion detected
+    
+    # v4.0: Put Return Quality — Rank by OPTIONS RETURN potential, not just probability
+    # A stock that drops 3% on a $400 name with 80% IV pays 1-2x.
+    # A stock that drops 7% on a $40 name with 35% IV pays 5-10x.
+    # This score captures WHICH stocks produce the best put returns.
+    put_return_quality: float = 0.0   # 0-1 composite options return quality
+    signal_density: int = 0           # Number of unique bearish signals
+    pump_magnitude: float = 0.0       # % rally before reversal
 
 
 class ConvergenceEngine:
@@ -597,12 +611,75 @@ class ConvergenceEngine:
                 engine_membership[sym].add(engine_key)
                 
                 score = c.get("score", 0.0)
+                
+                # ─── FEB 11 FIX v2: Targeted Rally Exhaustion Scoring ───
+                # PRINCIPLE: Only boost gamma_score when institutional selling
+                # (dark_pool_violence) is CONFIRMED and the rally is extreme (≥15%).
+                # v1 was too broad — pattern_boost boosted 200+ stocks, causing
+                # false positives (CAT +4%, SNDK +10%) to outrank real crashers.
+                #
+                # KEY INSIGHT from backtesting U(-30%), ALAB(-19%), HOOD(-12%):
+                #   The differentiator was pump_pct ≥ 15% + dark_pool_violence.
+                #   Stocks with pump_pct < 12% and dark_pool_violence were noise.
+                
+                signals = c.get("signals", [])
+                has_pump = any("pump_reversal" in s or "pump_+" in s for s in signals)
+                has_dpv = "dark_pool_violence" in signals
+                has_exhaustion = "exhaustion" in signals
+                has_topping = "topping_tail" in signals
+                
+                # Extract pump magnitude from signal names or total_gain
+                pump_pct = c.get("total_gain", 0)
+                if not pump_pct:
+                    import re
+                    for s in signals:
+                        if "pump_reversal" in s or "pump_+" in s or "two_day_rally" in s:
+                            match = re.search(r'[+\-](\d+\.?\d*)', s)
+                            if match:
+                                pump_pct = max(pump_pct, float(match.group(1)))
+                
+                # Pattern boost: only add when dark_pool_violence confirms
+                # institutional distribution. Without DPV, rally patterns
+                # could just be normal momentum — not worth boosting.
+                pattern_boost = c.get("pattern_boost", 0.0)
+                if pattern_boost > 0 and has_dpv:
+                    score = min(1.0, score + pattern_boost)
+                    logger.debug(f"  {sym}: Pattern boost +{pattern_boost:.2f} (DPV-confirmed) → {score:.2f}")
+                elif pattern_boost > 0 and has_pump and pump_pct >= 15:
+                    # Very large rally even without DPV is notable
+                    score = min(1.0, score + pattern_boost * 0.5)
+                    logger.debug(f"  {sym}: Pattern boost +{pattern_boost*0.5:.2f} (pump={pump_pct:.0f}%, no DPV) → {score:.2f}")
+                
+                # REC bonus: ONLY when pump is extreme (≥15%) AND dark pool confirms.
+                # This is the "institutional distribution into rally" signal.
+                # Proportional to pump magnitude — bigger rally = more overextended.
+                rec_bonus = 0.0
+                if has_pump and has_dpv and pump_pct >= 20 and (has_exhaustion or has_topping):
+                    # Massive pump (20%+) + DPV + exhaustion/topping = highest conviction
+                    rec_bonus = min(0.55, (pump_pct - 10) * 0.035)
+                elif has_pump and has_dpv and pump_pct >= 15 and (has_exhaustion or has_topping):
+                    # Strong pump (15%+) + DPV + confirming technical weakness
+                    # (exhaustion or topping_tail). The triple combination is
+                    # extremely predictive — steeper slope rewards the full thesis.
+                    rec_bonus = min(0.50, (pump_pct - 8) * 0.04)
+                elif has_pump and has_dpv and pump_pct >= 15:
+                    # Strong pump (15%+) + DPV = very high conviction
+                    rec_bonus = min(0.45, (pump_pct - 10) * 0.035)
+                elif has_pump and has_dpv and pump_pct >= 12:
+                    # Moderate pump (12%+) + DPV = moderate conviction
+                    rec_bonus = min(0.15, (pump_pct - 10) * 0.02)
+                # No bonus for pump < 12% or without DPV — too many false positives
+                
+                if rec_bonus > 0:
+                    score = min(1.0, score + rec_bonus)
+                    logger.debug(f"  {sym}: REC bonus +{rec_bonus:.2f} (pump={pump_pct:.0f}%) → score={score:.2f}")
+                
                 # Keep highest score if in multiple engines
                 existing = universe[sym].get("gamma_score", 0.0)
                 if score > existing:
                     universe[sym]["gamma_score"] = score
                     universe[sym]["gamma_engine"] = engine_key
-                    universe[sym]["gamma_signals"] = c.get("signals", [])
+                    universe[sym]["gamma_signals"] = signals
                 
                 # Capture price/sector from scan data
                 if c.get("current_price"):
@@ -968,6 +1045,36 @@ class ConvergenceEngine:
             elif intraday_drop < -1.5:
                 raw_score = raw_score * 1.03
             
+            # ─── FEB 11 FIX v2: Targeted rally-exhaustion boost ───
+            # Only apply at convergence level when ALL THREE conditions met:
+            # 1) pump_pct >= 15% (extreme rally), 2) dark_pool_violence, 3) EWS >= 0.7
+            # This is ADDITIVE (not multiplicative) to avoid compounding with
+            # the gamma-level REC bonus. v1 used 1.08-1.12x multiplier which
+            # inflated many non-crashers above the real targets.
+            gamma_sigs = c.gamma_signals
+            has_pump_sig = any("pump_reversal" in s or "pump_+" in s for s in gamma_sigs)
+            has_dpv_sig = "dark_pool_violence" in gamma_sigs
+            
+            # Extract pump % from gamma_signals
+            conv_pump_pct = 0
+            if has_pump_sig:
+                import re as _re
+                for s in gamma_sigs:
+                    if "pump_reversal" in s or "pump_+" in s or "two_day_rally" in s:
+                        _m = _re.search(r'[+\-](\d+\.?\d*)', s)
+                        if _m:
+                            conv_pump_pct = max(conv_pump_pct, float(_m.group(1)))
+            
+            if has_pump_sig and has_dpv_sig and conv_pump_pct >= 15 and c.ews_score >= 0.7:
+                # Proportional to pump magnitude — bigger rally = more overextended.
+                # pump=15% → +0.075, pump=20% → +0.10, pump=30% → +0.15 (capped)
+                conv_boost_val = min(0.15, conv_pump_pct * 0.005)
+                raw_score += conv_boost_val
+                logger.debug(f"  {sym}: Rally Exhaustion convergence boost +{conv_boost_val:.3f} (pump={conv_pump_pct:.0f}%+DPV+EWS)")
+            elif has_pump_sig and has_dpv_sig and conv_pump_pct >= 12 and c.ews_score >= 0.5:
+                raw_score += 0.04
+                logger.debug(f"  {sym}: Rally Exhaustion convergence boost +0.04 (pump={conv_pump_pct:.0f}%+DPV+EWS)")
+            
             # CONVERGENCE BONUS: Multiple systems agreeing = non-linear boost
             # This is the key insight: independent confirmation compounds conviction.
             # 5+/6 systems → 1.35x (massive consensus across independent systems)
@@ -979,6 +1086,12 @@ class ConvergenceEngine:
             multiplier = convergence_multiplier.get(min(c.sources_agreeing, 6), 1.0)
             
             c.convergence_score = min(1.0, raw_score * multiplier)
+            # CRITICAL: Store uncapped raw score for tiebreaking.
+            # When 12+ stocks cap at 1.0, this raw value (e.g. 1.15 vs 1.01)
+            # determines who makes the Top 9. Without this, the order
+            # among tied stocks was arbitrary — causing U (#176), HOOD (#156)
+            # to be buried below weaker picks.
+            c.convergence_score_raw = raw_score * multiplier
             
             # --- Metadata ---
             c.sector = data.get("sector", "unknown")
@@ -993,6 +1106,35 @@ class ConvergenceEngine:
             c.short_float = data.get("short_float", 0.0)
             c.sector_contagion = data.get("sector_contagion", False)
             
+            # ─── v4.0: PUT RETURN QUALITY — Rank by expected options return ───
+            # This is the key differentiator: a $40 stock with 9 signals, 20%
+            # pump, and DPV produces 5-10x put returns. A $400 stock with 2
+            # signals and no pump produces 1-2x. BOTH may drop 5%, but the
+            # options payoff is radically different.
+            #
+            # Components:
+            #   1. PRICE TIER: $20-200 = best strike granularity + liquidity + gamma
+            #   2. SIGNAL DENSITY: More signals = higher conviction = willing to take more risk
+            #   3. PUMP MAGNITUDE: Bigger rally = more overextended = sharper reversal
+            #   4. DPV + EXHAUSTION: Institutional distribution confirmed = sustained drop
+            #   5. EARNINGS PROXIMITY: IV expansion amplifies put returns
+            #   6. POST-EARNINGS NEGATIVE: Direction confirmed, IV hasn't crushed yet
+            #
+            # This does NOT change whether a stock is detected. It changes
+            # the RANKING among detected stocks to favor the ones where puts
+            # produce the highest risk-adjusted returns.
+            prq = self._calculate_put_return_quality(c, data, gamma_sigs, conv_pump_pct)
+            c.put_return_quality = prq
+            c.signal_density = len(gamma_sigs)
+            c.pump_magnitude = conv_pump_pct
+            
+            # Apply put return quality as a TIEBREAKER boost to raw score.
+            # At most +15% to convergence_score_raw — enough to reorder ties
+            # but not enough to override the fundamental convergence logic.
+            # A stock with prq=1.0 gets up to +15% boost on its raw score.
+            c.convergence_score_raw *= (1.0 + 0.15 * prq)
+            logger.debug(f"  {sym}: PutReturnQuality={prq:.2f} → raw_adj={c.convergence_score_raw:.3f}")
+            
             # Data age = oldest source
             ages = []
             for src_key in ["ews", "direction", "gamma", "weather"]:
@@ -1004,6 +1146,187 @@ class ConvergenceEngine:
             candidates.append(c)
         
         return candidates
+    
+    def _calculate_put_return_quality(
+        self,
+        candidate: ConvergenceCandidate,
+        data: Dict,
+        gamma_signals: List[str],
+        pump_pct: float
+    ) -> float:
+        """
+        v4.0: PUT RETURN QUALITY SCORE — Institutional microstructure lens
+        ═══════════════════════════════════════════════════════════════════
+        
+        Scores each candidate on expected OPTIONS RETURN (3-10x), not just
+        probability of price drop. Two stocks can both drop 5%, but:
+        
+          • $40 stock with low IV, 8 signals, 20% pump → OTM put pays 5-8x
+          • $400 stock with high IV, 2 signals, no pump → OTM put pays 1-2x
+        
+        WHY THIS MATTERS (PhD quant perspective):
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        Options are NON-LINEAR. A 5% move on a stock with low gamma pays
+        differently than 5% on a stock with high gamma. The key factors:
+        
+        1. PRICE TIER ($20-200): Strike granularity matters. $2.50 strikes
+           on a $40 stock = 6.25% step. $5 strikes on a $100 stock = 5%
+           step. Below $20 = illiquid options. Above $200 = expensive
+           premium = lower leverage. Best: $30-120 (maximum gamma per $).
+        
+        2. SIGNAL DENSITY: 6+ signals = multi-dimensional confirmation.
+           Each independent signal reduces false-positive rate exponentially.
+           More signals → higher conviction → willing to buy shorter DTE
+           (more gamma) → higher returns. 3-4 signals = 2-3x, 7+ = 5-10x.
+        
+        3. PUMP MAGNITUDE: A stock that rallied 20%+ in 5-10 days has:
+           - Exhausted buyers (who already bought)
+           - Extended from moving averages (mean-reversion pressure)
+           - Low IV (low realized vol during rally) → IV EXPANSION on drop
+           - Gamma flip: when direction reverses, dealer hedging AMPLIFIES
+           Bigger pump = more explosive reversal. 10-15% = moderate,
+           15-25% = strong, 25%+ = extreme return potential.
+        
+        4. DPV + EXHAUSTION: Dark pool violence = institutions selling blocks.
+           Combined with exhaustion = the rally is OVER. This is the highest-
+           conviction setup for put buying because you have:
+           - WHO is selling (institutions via dark pool)
+           - WHAT they're doing (distributing before bad news)
+           - WHEN it reverses (exhaustion = topping pattern formed)
+        
+        5. EARNINGS PROXIMITY: Options IV typically inflates 20-50% into
+           earnings. If you buy puts BEFORE IV inflation, the IV expansion
+           itself adds value to the put position even if the stock hasn't
+           dropped yet. Pre-earnings with distribution signals = double
+           tailwind (direction + IV).
+        
+        6. POST-EARNINGS NEGATIVE: Stock missed earnings or guided down.
+           Post-earnings puts benefit from:
+           - Continued selling pressure (fund managers rebalancing)
+           - IV hasn't fully crushed yet (1-2 day window)
+           - Direction clarity (no more binary event risk)
+        
+        Returns: 0-1 score (higher = better put return potential)
+        Uses: ZERO additional API calls — all from cached scan data
+        """
+        score_components = []
+        
+        # ── 1. PRICE TIER SCORING ──
+        # Optimal put return zone: $20-200 for best gamma/premium ratio
+        price = candidate.current_price
+        if 30 <= price <= 120:
+            price_score = 1.0     # Sweet spot: best strike granularity + liquidity
+        elif 20 <= price < 30 or 120 < price <= 200:
+            price_score = 0.7     # Good: still tradeable with good leverage
+        elif 10 <= price < 20 or 200 < price <= 400:
+            price_score = 0.4     # Moderate: wider strikes or expensive premium
+        elif price > 400:
+            price_score = 0.15    # Poor: very expensive premium, low leverage
+        elif price > 0:
+            price_score = 0.2     # Low price: illiquid options
+        else:
+            price_score = 0.0     # No price data
+        score_components.append(("price_tier", price_score, 0.15))
+        
+        # ── 2. SIGNAL DENSITY SCORING ──
+        # More unique bearish signals = higher conviction = more gamma-friendly
+        sig_count = len(gamma_signals) if gamma_signals else 0
+        if sig_count >= 8:
+            density_score = 1.0   # Overwhelming confirmation
+        elif sig_count >= 6:
+            density_score = 0.85  # Very strong
+        elif sig_count >= 4:
+            density_score = 0.65  # Strong
+        elif sig_count >= 2:
+            density_score = 0.4   # Moderate
+        elif sig_count >= 1:
+            density_score = 0.2   # Minimal
+        else:
+            density_score = 0.0   # No signals
+        score_components.append(("signal_density", density_score, 0.20))
+        
+        # ── 3. PUMP MAGNITUDE SCORING ──
+        # Bigger rally = more IV expansion potential + sharper reversal
+        if pump_pct >= 25:
+            pump_score = 1.0      # Extreme overextension — explosive puts
+        elif pump_pct >= 20:
+            pump_score = 0.85
+        elif pump_pct >= 15:
+            pump_score = 0.70
+        elif pump_pct >= 10:
+            pump_score = 0.50
+        elif pump_pct >= 5:
+            pump_score = 0.25
+        else:
+            pump_score = 0.0      # No pump — standard reversion
+        score_components.append(("pump_magnitude", pump_score, 0.25))
+        
+        # ── 4. DPV + EXHAUSTION CONFIRMATION ──
+        # Institutional selling + technical exhaustion = highest conviction
+        has_dpv = "dark_pool_violence" in gamma_signals
+        has_exhaust = "exhaustion" in gamma_signals
+        has_topping = "topping_tail" in gamma_signals
+        has_sell_blocks = "repeated_sell_blocks" in gamma_signals
+        has_vpd = "volume_price_divergence" in gamma_signals
+        
+        confirm_score = 0.0
+        if has_dpv and has_exhaust and has_topping:
+            confirm_score = 1.0   # Triple confirmation — highest conviction
+        elif has_dpv and (has_exhaust or has_topping):
+            confirm_score = 0.8   # Double confirmation
+        elif has_dpv and has_sell_blocks:
+            confirm_score = 0.75  # Institutional blocks confirmed
+        elif has_dpv and has_vpd:
+            confirm_score = 0.70  # Divergence + institutional
+        elif has_dpv:
+            confirm_score = 0.50  # DPV alone is still significant
+        elif has_exhaust or has_topping:
+            confirm_score = 0.25  # Technical only, no institutional
+        score_components.append(("dpv_confirmation", confirm_score, 0.20))
+        
+        # ── 5. EARNINGS PROXIMITY ──
+        # Pre-earnings: IV expansion tailwind
+        # Post-earnings negative: direction clarity + residual selling
+        has_pre_earnings = "is_pre_earnings" in gamma_signals
+        has_post_neg = "is_post_earnings_negative" in gamma_signals
+        
+        earnings_score = 0.0
+        if has_pre_earnings and has_dpv:
+            earnings_score = 1.0   # Pre-earnings + institutional distribution = perfect storm
+        elif has_pre_earnings:
+            earnings_score = 0.7   # Pre-earnings IV expansion (but direction less certain)
+        elif has_post_neg and has_dpv:
+            earnings_score = 0.85  # Post-miss + institutional selling = sustained drop
+        elif has_post_neg:
+            earnings_score = 0.5   # Post-miss but may have bottomed
+        score_components.append(("earnings_proximity", earnings_score, 0.10))
+        
+        # ── 6. TIMING / PREDICTIVENESS ──
+        # Predictive signals (pre-breakdown) = earlier entry = better R/R
+        is_predictive = data.get("is_predictive", False)
+        timing_rec = data.get("timing_recommendation", "")
+        
+        timing_score = 0.0
+        if is_predictive or timing_rec == "EARLY_ENTRY":
+            timing_score = 1.0    # Predictive — earliest possible entry
+        elif timing_rec == "CONFIRM_WAIT":
+            timing_score = 0.5    # Wait for confirmation, still good
+        else:
+            timing_score = 0.3    # Standard timing
+        score_components.append(("timing", timing_score, 0.10))
+        
+        # ── COMPOSITE SCORE ──
+        total_weight = sum(w for _, _, w in score_components)
+        prq = sum(s * w for _, s, w in score_components) / max(total_weight, 0.01)
+        
+        if prq > 0.5:
+            logger.debug(
+                f"  {candidate.symbol}: PUT_RETURN_QUALITY={prq:.2f} ["
+                + ", ".join(f"{n}={s:.2f}" for n, s, _ in score_components)
+                + f"] price=${price:.0f} sigs={sig_count} pump={pump_pct:.0f}%"
+            )
+        
+        return min(1.0, prq)
     
     def _compute_source_penalty(self) -> Dict[str, float]:
         """
@@ -1044,8 +1367,11 @@ class ConvergenceEngine:
         stopped out simultaneously. Sector diversification reduces correlated
         risk. This is portfolio construction 101 (Markowitz 1952).
         """
-        # Sort by convergence score descending
-        ranked = sorted(scored, key=lambda c: c.convergence_score, reverse=True)
+        # Sort by UNCAPPED raw score for tiebreaking.
+        # When 12+ stocks cap at convergence_score=1.0, the raw value
+        # (e.g. 1.15 vs 1.01) determines who's truly higher conviction.
+        # Falls back to capped score if raw is 0 (shouldn't happen).
+        ranked = sorted(scored, key=lambda c: c.convergence_score_raw or c.convergence_score, reverse=True)
         
         if len(ranked) <= 9:
             return ranked
@@ -1224,6 +1550,12 @@ class ConvergenceEngine:
                 "finviz_bearish": getattr(c, "finviz_bearish", False),
                 "short_float": getattr(c, "short_float", 0.0),
                 "sector_contagion": getattr(c, "sector_contagion", False),
+                
+                # v4.0: Put Return Quality — Options return ranking
+                "put_return_quality": round(getattr(c, "put_return_quality", 0.0), 3),
+                "signal_density": getattr(c, "signal_density", 0),
+                "pump_magnitude": round(getattr(c, "pump_magnitude", 0.0), 1),
+                "convergence_score_raw": round(getattr(c, "convergence_score_raw", 0.0), 4),
             })
         
         # Permission light summary
@@ -1382,6 +1714,80 @@ class ConvergenceEngine:
                 if engine_key not in eng_list:
                     eng_list.append(engine_key)
                 all_scan_picks.setdefault(sym, {})["engines"] = eng_list
+        
+        # v4.0: Compute a simplified put_return_quality for each scan pick
+        for sym, pick in all_scan_picks.items():
+            price = pick.get("current_price", 0)
+            sigs = pick.get("signals", [])
+            sig_count = len(sigs) if isinstance(sigs, list) else 0
+            
+            # Price tier
+            if 30 <= price <= 120:
+                pt = 1.0
+            elif 20 <= price < 30 or 120 < price <= 200:
+                pt = 0.7
+            elif 10 <= price < 20 or 200 < price <= 400:
+                pt = 0.4
+            elif price > 400:
+                pt = 0.15
+            elif price > 0:
+                pt = 0.2
+            else:
+                pt = 0.0
+            
+            # Signal density
+            if sig_count >= 8:
+                sd = 1.0
+            elif sig_count >= 6:
+                sd = 0.85
+            elif sig_count >= 4:
+                sd = 0.65
+            elif sig_count >= 2:
+                sd = 0.4
+            else:
+                sd = 0.2
+            
+            # Pump magnitude from signals
+            pump = 0.0
+            sig_list = sigs if isinstance(sigs, list) else []
+            has_dpv = False
+            has_exhaust = False
+            import re as _re2
+            for s in sig_list:
+                if isinstance(s, str):
+                    if "pump_reversal" in s or "two_day_rally" in s:
+                        m = _re2.search(r'[+\-](\d+\.?\d*)', s)
+                        if m:
+                            pump = max(pump, float(m.group(1)))
+                    if "dark_pool_violence" in s:
+                        has_dpv = True
+                    if "exhaustion" in s:
+                        has_exhaust = True
+            
+            if pump >= 25:
+                ps = 1.0
+            elif pump >= 20:
+                ps = 0.85
+            elif pump >= 15:
+                ps = 0.70
+            elif pump >= 10:
+                ps = 0.50
+            elif pump >= 5:
+                ps = 0.25
+            else:
+                ps = 0.0
+            
+            # DPV confirmation
+            cs = 0.0
+            if has_dpv and has_exhaust:
+                cs = 0.8
+            elif has_dpv:
+                cs = 0.5
+            elif has_exhaust:
+                cs = 0.25
+            
+            prq = pt * 0.15 + sd * 0.25 + ps * 0.30 + cs * 0.30
+            pick["put_return_quality"] = round(min(1.0, prq), 3)
         
         # Sort by score descending, take top 10
         sorted_picks = sorted(all_scan_picks.values(), key=lambda x: x.get("score", 0), reverse=True)

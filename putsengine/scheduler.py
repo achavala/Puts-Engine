@@ -302,18 +302,25 @@ class PutsEngineScheduler:
         # REMOVED: End of Day Scan (5:00 PM) - redundant with EWS at 10 PM
         
         # ============================================================================
-        # MARKET PULSE SCAN - Power Hour (Feb 4, 2026)
+        # MARKET PULSE SCAN - Pre-Meta-Engine Data Collection (Feb 10, 2026)
         # ============================================================================
-        # 3:00 PM ET - Critical for next-day trading decisions
-        # Uses full UW API (dark pool, options flow, IV, GEX)
-        # Captures power hour institutional activity
+        # 2:45 PM ET — Moved from 3:00 PM → 2:45 PM so it finishes (~21 min)
+        # BEFORE Meta Engine reads at 3:15 PM. This is the SINGLE combined
+        # scan that feeds BOTH Meta Engine cross-analysis AND market direction.
+        #
+        # FEB 10 FIX: At 3:00 PM the scan took 21 min → finished at 3:21 PM,
+        # but Meta Engine reads at 3:15 PM — ALWAYS reading stale 9 AM data.
+        # Moving to 2:45 PM → finishes ~3:06 PM → 9 min buffer before 3:15 PM.
+        #
+        # Also removed: daily_report_3pm (was a DUPLICATE full scan at 3:00 PM)
+        #               early_warning_3pm (saves 1,800 UW calls)
         # ============================================================================
         self.scheduler.add_job(
             self._run_scan_wrapper,
-            CronTrigger(hour=15, minute=0, timezone=EST),
+            CronTrigger(hour=14, minute=45, timezone=EST),
             args=["market_pulse"],
-            id="market_pulse_3pm",
-            name="📊 Market Pulse Full Scan (3:00 PM ET) - 361 tickers - UW API",
+            id="market_pulse_245pm",
+            name="📊 Market Pulse Full Scan (2:45 PM ET) - 361 tickers - Feeds Meta Engine 3:15 PM",
             replace_existing=True
         )
         
@@ -557,16 +564,18 @@ class PutsEngineScheduler:
         )
         
         # ============================================================================
-        # DAILY REPORT SCAN (3 PM EST) - Email with best picks
-        # Scans all 3 engines and sends email with top 5 picks (1x-5x potential)
+        # DAILY REPORT SCAN — REMOVED (Feb 10, 2026)
+        # Was a DUPLICATE full 361-ticker scan at 3:00 PM overlapping market_pulse.
+        # Meta Engine at 3:15 PM now handles all reporting (Email + Telegram + X).
+        # Savings: ~2,200 UW API calls/day.
         # ============================================================================
-        self.scheduler.add_job(
-            self._run_daily_report_scan_wrapper,
-            CronTrigger(hour=15, minute=0, timezone=EST),
-            id="daily_report_3pm",
-            name="📧 Daily Report Scan (3:00 PM ET) - Email",
-            replace_existing=True
-        )
+        # self.scheduler.add_job(
+        #     self._run_daily_report_scan_wrapper,
+        #     CronTrigger(hour=15, minute=0, timezone=EST),
+        #     id="daily_report_3pm",
+        #     name="📧 Daily Report Scan (3:00 PM ET) - Email",
+        #     replace_existing=True
+        # )
         
         # ============================================================================
         # NEW SCANNERS (Jan 29, 2026) - Would have caught 90% of missed puts
@@ -733,14 +742,16 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        # 12:00 PM EWS - Midday update for afternoon positioning
-        self.scheduler.add_job(
-            self._run_early_warning_scan_wrapper,
-            CronTrigger(hour=12, minute=0, timezone=EST),
-            id="early_warning_12pm",
-            name="🚨 Early Warning Scan (12:00 PM ET) - MIDDAY UPDATE",
-            replace_existing=True
-        )
+        # 12:00 PM EWS — REMOVED (Feb 10, 2026)
+        # Uses cached data from 11 AM EWS. Saves ~1,800 UW API calls/day.
+        # The 11 AM → 1 PM gap is acceptable; 11 AM data is <2 hours stale.
+        # self.scheduler.add_job(
+        #     self._run_early_warning_scan_wrapper,
+        #     CronTrigger(hour=12, minute=0, timezone=EST),
+        #     id="early_warning_12pm",
+        #     name="🚨 Early Warning Scan (12:00 PM ET) - MIDDAY UPDATE",
+        #     replace_existing=True
+        # )
         
         # 1:00 PM EWS - EARLY AFTERNOON (FEB 7, 2026)
         # Captures lunch-hour institutional accumulation/distribution
@@ -762,19 +773,17 @@ class PutsEngineScheduler:
             replace_existing=True
         )
         
-        # 3:02 PM EWS - AFTERNOON CLOSE PREP (FEB 8, 2026 — staggered)
-        # STAGGERED from 3:00→3:02 PM to maximize UW response cache hits.
-        # daily_report_3pm starts at 3:00 PM and populates cache for
-        # flow_recent, oi_change, dark_pool on 361 tickers.
-        # By 3:02, many tickers are cached → EWS gets cache hits for
-        # 3 of its 4 UW endpoints. SAVINGS: ~1,083 UW calls/day.
-        self.scheduler.add_job(
-            self._run_early_warning_scan_wrapper,
-            CronTrigger(hour=15, minute=2, timezone=EST),
-            id="early_warning_3pm",
-            name="🚨 Early Warning Scan (3:02 PM ET) - AFTERNOON CLOSE PREP",
-            replace_existing=True
-        )
+        # 3:02 PM EWS — REMOVED (Feb 10, 2026)
+        # Was staggered after daily_report_3pm for cache hits, but daily_report
+        # is also removed. The 2:45 PM market_pulse full scan now covers this window.
+        # Savings: ~1,800 UW API calls/day.
+        # self.scheduler.add_job(
+        #     self._run_early_warning_scan_wrapper,
+        #     CronTrigger(hour=15, minute=2, timezone=EST),
+        #     id="early_warning_3pm",
+        #     name="🚨 Early Warning Scan (3:02 PM ET) - AFTERNOON CLOSE PREP",
+        #     replace_existing=True
+        # )
         
         # 4:30 PM EWS - After-hours positioning detection
         self.scheduler.add_job(
@@ -1668,16 +1677,18 @@ class PutsEngineScheduler:
     
     async def _run_early_warning_scan_wrapper(self):
         """
-        Wrapper to run early warning institutional footprint scan — async for stable event loop.                                                                                      
+        Wrapper to run early warning institutional footprint scan — async for stable event loop.
         
         This is the KEY scan for 1-3 day early detection.
-        Schedule: 8 AM, 9:45 AM, 11 AM, 12 PM, 1 PM, 2 PM, 3:02 PM, 4:30 PM, 10 PM ET.
-        (Feb 8, 2026: 3 PM → 3:02 PM stagger for UW cache optimization)
+        Schedule (FEB 10 OPTIMIZED):
+            8 AM, 9:45 AM, 11 AM, 1 PM, 2 PM, 4:30 PM, 10 PM ET
+            (12 PM REMOVED — uses 11 AM cache, saves 1,800 UW calls)
+            (3:02 PM REMOVED — 2:45 PM market_pulse covers this window)
         
         FEB 10 FIX: force_scan_mode is ONLY enabled for PM window (after 2 PM ET).
         Before 2 PM, EWS respects the budget ceiling so that 4,000 calls are
-        reserved for the critical 3 PM market_pulse scan.
-        After 2 PM, force_scan_mode is enabled so the 3:02 PM EWS can use
+        reserved for the 2:45 PM market_pulse scan.
+        After 2 PM, force_scan_mode is enabled so the 2 PM EWS can use
         the remaining budget freely alongside the market_pulse scan.
         
         FEB 9 FIX: Now async — runs on APScheduler's event loop directly.

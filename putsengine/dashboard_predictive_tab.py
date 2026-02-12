@@ -71,6 +71,9 @@ def _render_scan_engine_section(conv_data: Dict):
     """
     v2.1: Render the Scan Engine Top 10 picks below the Convergence board.
     Shows overlap with Top 9 for cross-validation.
+    
+    v2.2 (Feb 11, 2026): Improved visibility — high-contrast colors,
+    readable signal badges, informative overlap message.
     """
     scan_top10 = conv_data.get("scan_engine_top10", [])
     top9 = conv_data.get("top9", [])
@@ -84,44 +87,76 @@ def _render_scan_engine_section(conv_data: Dict):
     <div style="background: linear-gradient(135deg, #0a0a2e 0%, #1a0a0a 100%);
          padding: 14px 20px; border-radius: 10px; border: 1px solid #2a2a4a; margin: 10px 0;">
         <span style="color: #ff8844; font-size: 16px; font-weight: bold;">🔥 SCAN ENGINE TOP 10</span>
-        <span style="color: #888; font-size: 11px; margin-left: 12px;">
+        <span style="color: #aaa; font-size: 11px; margin-left: 12px;">
             From Gamma Drain + Distribution + Liquidity engines · Pattern-based detection
         </span>
     </div>
     """, unsafe_allow_html=True)
     
-    # Build table
+    # Build table — format signals as readable comma-separated string
     scan_rows = []
     for i, pick in enumerate(scan_top10, 1):
         sym = pick.get("symbol", "")
-        in_conv = "✅" if sym in top9_symbols else "—"
+        in_conv = "✅ YES" if sym in top9_symbols else "—"
         eng_list = pick.get("engines", [])
         eng_count = len(eng_list)
         eng_badge = "🏆 TRI" if eng_count >= 3 else f"🔥 {eng_count}" if eng_count >= 2 else ""
         
+        # Format signals: convert list to readable comma-separated string
+        raw_signals = pick.get("signals", [])
+        if isinstance(raw_signals, list):
+            signals_str = ", ".join(str(s) for s in raw_signals[:6])
+            if len(raw_signals) > 6:
+                signals_str += f" (+{len(raw_signals) - 6})"
+        else:
+            signals_str = str(raw_signals)
+        
+        # Get signal count for separate column
+        signal_count = len(raw_signals) if isinstance(raw_signals, list) else 0
+        
+        # v4.0: Put Return Quality for scan engine picks
+        scan_prq = pick.get("put_return_quality", 0.0)
+        scan_prq_str = f"{scan_prq:.2f}" if scan_prq > 0 else "—"
+        
         scan_rows.append({
             "#": i,
             "Symbol": sym,
-            "Score": f"{pick.get('score', 0):.2f}",
+            "Score": round(pick.get('score', 0), 2),
+            "PRQ": scan_prq_str,
             "Engine": pick.get("engine", ""),
             "Multi": eng_badge,
-            "Signals": pick.get("signals", 0),
-            "Sector": pick.get("sector", ""),
+            "Signals": signals_str,
+            "# Sigs": signal_count,
+            "Sector": pick.get("sector", "") or "—",
             "In Top 9?": in_conv,
         })
     
     if scan_rows:
         df_scan = pd.DataFrame(scan_rows)
         
-        def style_scan(row):
-            if row["In Top 9?"] == "✅":
-                return ["background-color: #0a2a0a; color: #44ff44;"] * len(row)
-            return ["background-color: #1a1a2a; color: #cccccc;"] * len(row)
+        # Use Streamlit column_config for better formatting & readability
+        col_config = {
+            "#": st.column_config.NumberColumn("#", width="small"),
+            "Symbol": st.column_config.TextColumn("Symbol", width="small"),
+            "Score": st.column_config.NumberColumn("Score", format="%.2f", width="small"),
+            "PRQ": st.column_config.TextColumn("PRQ 💰", width="small", help="Put Return Quality — higher = better 3-10x potential"),
+            "Engine": st.column_config.TextColumn("Engine", width="small"),
+            "Multi": st.column_config.TextColumn("Multi", width="small"),
+            "Signals": st.column_config.TextColumn("Signals", width="large"),
+            "# Sigs": st.column_config.NumberColumn("# Sigs", width="small"),
+            "Sector": st.column_config.TextColumn("Sector", width="small"),
+            "In Top 9?": st.column_config.TextColumn("In Top 9?", width="small"),
+        }
         
-        styled = df_scan.style.apply(style_scan, axis=1)
-        st.dataframe(styled, use_container_width=True, height=min(380, 55 + len(scan_rows) * 38))
+        st.dataframe(
+            df_scan,
+            use_container_width=True,
+            height=min(430, 55 + len(scan_rows) * 38),
+            hide_index=True,
+            column_config=col_config,
+        )
         
-        # Overlap count
+        # Overlap count — informative message regardless of overlap
         overlap_count = sum(1 for p in scan_top10 if p.get("symbol", "") in top9_symbols)
         if overlap_count > 0:
             st.success(
@@ -129,11 +164,10 @@ def _render_scan_engine_section(conv_data: Dict):
                 f"→ highest conviction (multiple independent systems agree)"
             )
         else:
-            st.warning(
-                "⚠️ **Zero overlap** between Convergence and Scan Engine picks. "
-                "This indicates different detection windows — EWS detects institutional footprints "
-                "while Scan Engine uses pattern-based scoring. "
-                "EWS picks are now auto-injected into the scan universe for future coverage."
+            st.info(
+                "ℹ️ **Convergence Top 9** uses EWS institutional footprints (dark pool, IV inversion, flow divergence) "
+                "while **Scan Engine Top 10** uses pattern-based scoring (pump reversal, distribution signals). "
+                "Both lists are valid — different detection windows catch different phases of the breakdown cycle."
             )
 
 
@@ -384,11 +418,18 @@ def render_convergence_board():
         delta_str = f"{delta:+.3f}" if delta != 0 else ""
         days_on = c.get("days_on_list", 0)
         
+        # v4.0: Put Return Quality
+        prq_val = c.get("put_return_quality", 0.0)
+        prq_display = f"{prq_val:.2f}" if prq_val > 0 else "—"
+        sig_density = c.get("signal_density", 0)
+        pump_mag = c.get("pump_magnitude", 0.0)
+        
         df_data.append({
             "": perm,
             "#": i,
             "Symbol": c["symbol"],
             "Conv.": f"{c['convergence_score']:.3f}",
+            "PRQ": prq_display,
             "Trend": f"{traj} {delta_str}".strip(),
             "Days": days_on if days_on > 0 else "NEW",
             "Src": f"{src_count}/6",
@@ -399,6 +440,8 @@ def render_convergence_board():
             "Eng": eng_badge,
             "Storm": f"{c.get('weather_score', 0):.2f}",
             "Dir.": f"{c.get('direction_alignment', 0):.2f}",
+            "Sigs": sig_density if sig_density > 0 else "—",
+            "Pump%": f"{pump_mag:.0f}%" if pump_mag > 0 else "—",
             "Price": f"${c['current_price']:.2f}" if c.get("current_price") else "—",
         })
     
@@ -508,6 +551,31 @@ def render_convergence_board():
                     f"Previous: {prev_s:.3f} → Current: {conv:.3f} · "
                     f"<span style='color:{delta_color};'>Δ {delta:+.3f}</span> · "
                     f"Day {days_on} on convergence list",
+                    unsafe_allow_html=True
+                )
+            
+            # v4.0: Put Return Quality detail
+            prq_detail = c.get("put_return_quality", 0.0)
+            sig_dens = c.get("signal_density", 0)
+            pump_mag = c.get("pump_magnitude", 0.0)
+            if prq_detail > 0:
+                prq_color = "#44ff44" if prq_detail >= 0.7 else "#ffaa00" if prq_detail >= 0.4 else "#888"
+                # Return potential label
+                if prq_detail >= 0.75:
+                    ret_label = "🔥 5-10x"
+                elif prq_detail >= 0.55:
+                    ret_label = "💰 3-5x"
+                elif prq_detail >= 0.35:
+                    ret_label = "📈 2-3x"
+                else:
+                    ret_label = "⚡ 1-2x"
+                st.markdown(
+                    f"**💰 Put Return Quality:** "
+                    f"<span style='color:{prq_color}; font-size:16px; font-weight:bold;'>{prq_detail:.2f}</span> "
+                    f"({ret_label}) · "
+                    f"{sig_dens} signals · "
+                    f"{'Pump: ' + str(round(pump_mag)) + '%' if pump_mag > 0 else 'No pump'} · "
+                    f"Price: ${c.get('current_price', 0):.0f}",
                     unsafe_allow_html=True
                 )
             
